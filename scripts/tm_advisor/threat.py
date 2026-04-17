@@ -74,6 +74,11 @@ class OpponentReactiveAdjuster:
             "Birds": self._birds,
             "Decomposers": self._decomposers,
             "Vermin": self._vermin,
+            "Asteroid": self._plant_attack,
+            "Big Asteroid": self._plant_attack,
+            "Comet": self._plant_attack,
+            "Sabotage": self._sabotage,
+            "Virus": self._virus,
         }.get(card_name)
         if handler is None:
             return 0, ""
@@ -120,6 +125,62 @@ class OpponentReactiveAdjuster:
                     bio += 1
         if bio >= 3:
             return 3, f"opp bio tags={bio}"
+        return 0, ""
+
+    def _plant_attack(self, state) -> tuple[int, str]:
+        """Asteroid/Big Asteroid/Comet: remove plants from any player."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        player_count = 1 + len(opps)
+        max_plants = 0
+        for opp in opps:
+            raw_plants = self._to_int(getattr(opp, "plants", 0))
+            max_plants = max(max_plants, raw_plants)
+        if max_plants >= 3:
+            return 3, f"opp plants={max_plants} (attack target)"
+        if player_count >= 3 and max_plants == 0:
+            return -5, "3P take-that: no target, feeds third"
+        return 0, ""
+
+    def _sabotage(self, state) -> tuple[int, str]:
+        """Sabotage: remove up to 3 ti, 4 steel, or 7 MC from any player."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        player_count = 1 + len(opps)
+        max_value = 0
+        for opp in opps:
+            raw = getattr(opp, "raw", None) or {}
+            ti = self._to_int(getattr(opp, "titanium", 0))
+            steel = self._to_int(getattr(opp, "steel", 0))
+            mc = self._to_int(getattr(opp, "mc", 0))
+            max_value = max(max_value, ti * 3, steel * 2, mc)
+        if max_value >= 7:
+            return 4, f"opp resources worth {max_value} MC+"
+        if player_count >= 3 and max_value < 3:
+            return -5, "3P take-that waste (no rich opp)"
+        return 0, ""
+
+    def _virus(self, state) -> tuple[int, str]:
+        """Virus: remove 2 animals OR reduce plant-prod 2 from any player."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        best_signal = 0
+        for opp in opps:
+            animals = 0
+            raw = getattr(opp, "raw", None) or {}
+            if isinstance(raw, dict):
+                # Animals live on tableau cards (Birds/Pets resources), не agg resource
+                for card in getattr(opp, "tableau", []) or []:
+                    if isinstance(card, dict):
+                        animals += self._to_int(card.get("resources", 0))
+            plant_prod = self._to_int(getattr(opp, "plant_prod", 0))
+            signal = max(animals, plant_prod * 2)
+            best_signal = max(best_signal, signal)
+        if best_signal >= 4:
+            return 3, f"opp animals/plant-prod signal {best_signal}"
         return 0, ""
 
     def _vermin(self, state) -> tuple[int, str]:

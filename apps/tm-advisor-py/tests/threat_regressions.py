@@ -24,6 +24,10 @@ def build_state_with_opp(
     opp_tableau=None,
     opp2_animal_prod=0,
     opp2_tableau=None,
+    opp_plants=0,
+    opp_steel=0,
+    opp_titanium=0,
+    opp_mc=20,
     player_count=3,
     funded_awards=None,
     claimed_milestones=None,
@@ -65,8 +69,11 @@ def build_state_with_opp(
         opp_data = {
             "color": color,
             "name": f"opp{idx + 1}",
-            "megaCredits": 20,
+            "megaCredits": opp_mc if idx == 0 else 20,
             "megaCreditProduction": 2,
+            "steel": opp_steel if idx == 0 else 0,
+            "titanium": opp_titanium if idx == 0 else 0,
+            "plants": opp_plants if idx == 0 else 0,
             "steelProduction": 0,
             "titaniumProduction": 0,
             "plantProduction": plant_p,
@@ -375,6 +382,70 @@ def test_multiple_opps_first_has_threat():
     score, reason = adj.adjust(76, "Birds", state)
 
     assert score >= 81, f"expected score>=81, got {score}"
+
+
+def test_asteroid_opp_has_plants_bonus():
+    """Asteroid in 3P, opp with 5 plants → +3 attack bonus."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plants=5, player_count=3)
+    score, reason = adj.adjust(60, "Asteroid", state)
+    assert score == 63, f"expected 63 (+3), got {score} / {reason!r}"
+    assert "plants" in reason.lower() or "5" in reason
+
+
+def test_asteroid_no_target_3p_waste():
+    """Asteroid in 3P with all opps at 0 plants → -5 (fuels third player)."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plants=0, player_count=3)
+    score, reason = adj.adjust(60, "Asteroid", state)
+    assert score == 55, f"expected 55 (-5), got {score} / {reason!r}"
+
+
+def test_big_asteroid_shares_handler():
+    """Big Asteroid uses same plant-attack logic."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plants=4, player_count=3)
+    score, _ = adj.adjust(60, "Big Asteroid", state)
+    assert score == 63
+
+
+def test_sabotage_rich_opp_bonus():
+    """Sabotage against opp with 10 MC → +4."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_mc=12, player_count=3)
+    score, reason = adj.adjust(55, "Sabotage", state)
+    assert score == 59, f"expected 59 (+4), got {score} / {reason!r}"
+
+
+def test_sabotage_3p_waste_poor_opp():
+    """Sabotage in 3P when all opps poor (no resources) → -5.
+
+    Builder's default opp2 has MC=20, so test uses 2P to isolate opp1.
+    The 3P waste rule still triggers via player_count arg.
+    """
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    # 2P setup but patched to report player_count=3 through a single rich-free opp
+    state = build_state_with_opp(opp_mc=2, player_count=2)
+    # Manually inflate player_count by appending a duplicate poor opp view
+    from copy import copy
+    poor_opp = copy(state.opponents[0])
+    state.opponents = list(state.opponents) + [poor_opp]
+    score, _ = adj.adjust(55, "Sabotage", state)
+    assert score == 50
+
+
+def test_virus_opp_with_plant_prod():
+    """Virus against opp with plant_prod=3 (signal=6) → +3."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plant_prod=3, player_count=3)
+    score, reason = adj.adjust(70, "Virus", state)
+    assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
 def test_to_int_handles_string():
