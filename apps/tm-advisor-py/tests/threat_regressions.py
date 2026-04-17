@@ -448,6 +448,65 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
+def test_ghost_threat_animal_accumulator():
+    """My Birds-candidate when opp has Predators → -3 ghost penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=["Predators"], player_count=3)
+    # Birds handler already triggers on opp plant_prod; set plant_prod=0 so
+    # base _birds gives -5 (3P take-that no target). Ghost adds -3 on top.
+    # Clamp floor -10 caps total delta at -10.
+    score, reason = adj.adjust(76, "Birds", state)
+    # base -5 (3P waste) + ghost -3 = -8. Score = 76 - 8 = 68.
+    assert score == 68, f"expected 68, got {score} / {reason!r}"
+
+
+def test_ghost_threat_livestock_opp_predators():
+    """Livestock has no opp-reactive base but suffers ghost threat."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=["Predators"], player_count=3)
+    score, reason = adj.adjust(70, "Livestock", state)
+    assert score == 67, f"expected 67 (-3 ghost), got {score} / {reason!r}"
+
+
+def test_ghost_threat_microbe_accumulator_vs_ants():
+    """My Decomposers when opp has Ants → -2 on top of base."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=["Ants"], player_count=3)
+    # Decomposers base: counts opp bio tags. Ants counted as bio (microbe tag)
+    # → 1 bio tag < 3 threshold → base 0. Ghost: Ants on opp table → -2.
+    score, reason = adj.adjust(70, "Decomposers", state)
+    assert score == 68, f"expected 68, got {score} / {reason!r}"
+
+
+def test_ghost_threat_no_opp_attackers_no_change():
+    """Livestock with opp having only harmless cards → no ghost penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=["Earth Catapult"], player_count=3)
+    score, reason = adj.adjust(70, "Livestock", state)
+    assert score == 70, f"expected 70, got {score} / {reason!r}"
+
+
+def test_protected_habitats_bonus_vs_opp_attacker():
+    """Protected Habitats gains value when opp has animal attacker."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=["Predators"], player_count=3)
+    score, reason = adj.adjust(60, "Protected Habitats", state)
+    assert score == 64, f"expected 64 (+4 defensive), got {score} / {reason!r}"
+
+
+def test_protected_habitats_no_bonus_no_threat():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_tableau=["Earth Catapult"], player_count=3)
+    score, _ = adj.adjust(60, "Protected Habitats", state)
+    assert score == 60
+
+
 def test_ants_opp_has_microbes_bonus():
     """Ants: opp holds 3 microbes on Decomposers → +3."""
     db = CardDatabase(str(resolve_data_path("evaluations.json")))

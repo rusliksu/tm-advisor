@@ -19,6 +19,27 @@ from __future__ import annotations
 
 _CLAMP = 10
 
+# Cards whose resources (animals) are lost to opp Predators/Virus
+_ANIMAL_ACCUMULATORS = {
+    "Birds", "Fish", "Livestock", "Penguins", "Small Animals",
+    "Herbivores", "Predators",
+    # Ecological Zone holds animals but also microbes; treat conservatively
+    "Ecological Zone",
+}
+
+# Cards storing microbes, vulnerable to opp Ants
+_MICROBE_ACCUMULATORS = {
+    "Decomposers", "Tardigrades", "Extremophiles",
+    "GHG Producing Bacteria", "Nitrite Reducing Bacteria",
+    "Sulphur-Eating Bacteria", "Regolith Eaters", "Psychrophiles",
+    "ArchaeBacteria",
+}
+
+# Attack cards on opp tableau that pose ghost threats
+_OPP_ANIMAL_ATTACKERS = {"Predators", "Small Animals", "Herbivores"}
+_OPP_MICROBE_ATTACKERS = {"Ants"}
+_OPP_RESOURCE_STEALERS = {"Hired Raiders", "Sabotage"}
+
 
 class OpponentReactiveAdjuster:
     """Layer over adjusted_score that reacts to opponent state."""
@@ -87,10 +108,15 @@ class OpponentReactiveAdjuster:
             "Small Animals": self._plant_prod_attack,
             "Predators": self._predators,
             "Lava Flows": self._lava_flows,
+            "Protected Habitats": self._protected_habitats,
         }.get(card_name)
-        if handler is None:
-            return 0, ""
-        return handler(state)
+        if handler is not None:
+            base = handler(state)
+            # stack ghost-threat for dual-role cards (Birds/Decomposers are
+            # both opp-reactive and accumulators)
+            ghost = self._ghost_threat(card_name, state)
+            return base[0] + ghost[0], ghost[1] or base[1]
+        return self._ghost_threat(card_name, state)
 
     @staticmethod
     def _card_name(entry) -> str | None:
@@ -191,7 +217,41 @@ class OpponentReactiveAdjuster:
             return 3, f"opp animals/plant-prod signal {best_signal}"
         return 0, ""
 
+
     _LAVA_SPOT_NAMES = {"tharsis tholus", "ascraeus mons", "pavonis mons", "arsia mons"}
+
+    def _opp_has_any(self, state, names: set[str]) -> str | None:
+        for opp in getattr(state, "opponents", []) or []:
+            for card in getattr(opp, "tableau", []) or []:
+                if not isinstance(card, dict):
+                    continue
+                cname = card.get("name")
+                if cname in names:
+                    return cname
+        return None
+
+    def _ghost_threat(self, card_name: str, state) -> tuple[int, str]:
+        """Penalty for my accumulator cards when opp already has an attacker
+        on the table. The threat isn't active yet, but opp can strike."""
+        if card_name in _ANIMAL_ACCUMULATORS:
+            hit = self._opp_has_any(state, _OPP_ANIMAL_ATTACKERS)
+            if hit:
+                return -3, f"opp has {hit} in tableau (animals at risk)"
+        if card_name in _MICROBE_ACCUMULATORS:
+            hit = self._opp_has_any(state, _OPP_MICROBE_ATTACKERS)
+            if hit:
+                return -2, f"opp has {hit} in tableau (microbes at risk)"
+        return 0, ""
+
+    def _protected_habitats(self, state) -> tuple[int, str]:
+        """Protected Habitats defensive value rises when opp has attackers."""
+        attackers = (
+            _OPP_ANIMAL_ATTACKERS | _OPP_MICROBE_ATTACKERS | _OPP_RESOURCE_STEALERS
+        )
+        hit = self._opp_has_any(state, attackers)
+        if hit:
+            return 4, f"opp threat {hit}: defense worth more"
+        return 0, ""
 
     def _ants(self, state) -> tuple[int, str]:
         """Ants: action eats opponent microbes. Good when opps stockpile microbes."""
