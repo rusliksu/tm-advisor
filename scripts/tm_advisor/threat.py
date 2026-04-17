@@ -79,6 +79,8 @@ class OpponentReactiveAdjuster:
             "Comet": self._plant_attack,
             "Sabotage": self._sabotage,
             "Virus": self._virus,
+            "Mining Rights": self._mining_rights,
+            "Mining Area": self._mining_area,
         }.get(card_name)
         if handler is None:
             return 0, ""
@@ -181,6 +183,51 @@ class OpponentReactiveAdjuster:
             best_signal = max(best_signal, signal)
         if best_signal >= 4:
             return 3, f"opp animals/plant-prod signal {best_signal}"
+        return 0, ""
+
+    @staticmethod
+    def _free_mining_spaces(state) -> int:
+        """Count land spaces with steel(2) or titanium(3) bonus, not yet tiled."""
+        spaces = getattr(state, "spaces", None)
+        if spaces is None:
+            spaces = (getattr(state, "game", {}) or {}).get("spaces") or []
+        if not isinstance(spaces, list):
+            return 99
+        count = 0
+        for s in spaces:
+            if not isinstance(s, dict):
+                continue
+            if s.get("tile") is not None:
+                continue
+            if s.get("spaceType") != "land":
+                continue
+            bonus = s.get("bonus") or []
+            if any(b in (2, 3) for b in bonus):
+                count += 1
+        return count
+
+    def _mining_rights(self, state) -> tuple[int, str]:
+        """Mining Rights: place on free steel/ti bonus space.
+        If only 0-2 spots left, opps may grab them first."""
+        free = self._free_mining_spaces(state)
+        if free >= 5:
+            return 0, ""
+        if free == 0:
+            return -10, "no free steel/ti space left"
+        if free <= 2:
+            return -3, f"only {free} steel/ti spots remain"
+        return 0, ""
+
+    def _mining_area(self, state) -> tuple[int, str]:
+        """Mining Area: steel/ti space adjacent to own tile.
+        More restrictive than Mining Rights; penalize harder when spots scarce."""
+        free = self._free_mining_spaces(state)
+        if free >= 6:
+            return 0, ""
+        if free == 0:
+            return -10, "no free steel/ti space left"
+        if free <= 3:
+            return -4, f"only {free} steel/ti spots remain (adj required)"
         return 0, ""
 
     def _vermin(self, state) -> tuple[int, str]:

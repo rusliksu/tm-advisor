@@ -448,6 +448,67 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
+def _build_state_with_spaces(free_steel_ti: int, taken: int = 0):
+    """Build state with N free land+steel/ti spaces and `taken` occupied ones."""
+    spaces = []
+    for i in range(free_steel_ti):
+        spaces.append({"id": f"s{i:02d}", "bonus": [2, 3],
+                       "tile": None, "spaceType": "land"})
+    for i in range(taken):
+        spaces.append({"id": f"t{i:02d}", "bonus": [2],
+                       "tile": {"tileType": "mine"}, "spaceType": "land"})
+    # Add a few no-bonus filler
+    spaces.append({"id": "f00", "bonus": [], "tile": None, "spaceType": "land"})
+    return GameState({
+        "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {}},
+        "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {}}],
+        "game": {
+            "generation": 4, "phase": "action",
+            "oxygenLevel": 0, "temperature": -20, "oceans": 3,
+            "venusScaleLevel": 0,
+            "milestones": [], "awards": [], "colonies": [],
+            "spaces": spaces,
+            "gameOptions": {"expansions": {"colonies": True}},
+        },
+    })
+
+
+def test_mining_rights_plenty_of_spots():
+    """Mining Rights with 6+ free steel/ti spots → no penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_spaces(free_steel_ti=7)
+    score, _ = adj.adjust(60, "Mining Rights", state)
+    assert score == 60
+
+
+def test_mining_rights_scarce_spots():
+    """Mining Rights with only 2 free spots → -3 penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_spaces(free_steel_ti=2, taken=5)
+    score, reason = adj.adjust(60, "Mining Rights", state)
+    assert score == 57, f"expected 57 (-3), got {score} / {reason!r}"
+
+
+def test_mining_rights_no_spots():
+    """Mining Rights with 0 free spots → -10."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_spaces(free_steel_ti=0, taken=7)
+    score, _ = adj.adjust(60, "Mining Rights", state)
+    assert score == 50
+
+
+def test_mining_area_harder_threshold():
+    """Mining Area penalizes at 3 spots (stricter than Rights)."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_spaces(free_steel_ti=3)
+    score, _ = adj.adjust(60, "Mining Area", state)
+    assert score == 56, f"expected 56 (-4), got {score}"
+
+
 def test_to_int_handles_string():
     """_to_int converts string ints; returns 0 on garbage/None."""
     assert OpponentReactiveAdjuster._to_int("3") == 3
