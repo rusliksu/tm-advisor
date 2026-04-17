@@ -747,55 +747,44 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                         f"Milestone {m['name']}: оппонент тоже может заявить!")
                 break
 
-    # 2. Awards (with overtake risk analysis)
-    funded_count = sum(1 for a in state.awards if a.get("funded_by"))
-    if funded_count < 3:
-        cost_award = [8, 14, 20][funded_count]
-        min_lead = {"early": 8, "mid": 5, "late": 3, "endgame": 2}.get(phase, 5)
-        best_award = None
-        best_award_lead = -999
-        for a in state.awards:
-            if a.get("funded_by"):
-                # Check already funded awards: am I at risk of losing?
-                my_val = a.get("scores", {}).get(me.color, 0)
-                scores_sorted = sorted(
-                    ((c, v) for c, v in a.get("scores", {}).items()),
-                    key=lambda x: -x[1])
-                if len(scores_sorted) >= 2:
-                    first_c, first_v = scores_sorted[0]
-                    second_c, second_v = scores_sorted[1]
-                    if first_c == me.color and second_v >= first_v - 1:
-                        warnings.append(
-                            f"Award {a['name']}: тебя могут обойти! "
-                            f"Лид всего +{first_v - second_v}")
-                continue
-            my_val = a.get("scores", {}).get(me.color, 0)
-            opp_max = max((v for c, v in a.get("scores", {}).items()
-                           if c != me.color), default=0)
-            lead = my_val - opp_max
-            if lead >= min_lead and lead > best_award_lead:
-                best_award = a
-                best_award_lead = lead
-
-        if best_award and budget >= cost_award:
-            # Check overtake risk: can opponents close the gap?
-            overtake_risk = ""
-            opp_second = sorted(
-                ((c, v) for c, v in best_award.get("scores", {}).items()
-                 if c != me.color),
-                key=lambda x: -x[1])
-            if opp_second and best_award_lead <= 3 and phase in ("late", "endgame"):
-                overtake_risk = " ⚠️risk"
+    # 2. Awards — delegated to award_capture (urgency-based slot capture)
+    from .award_capture import urgent_award_actions
+    _URGENCY_PRIORITY = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2}
+    _URGENCY_VALUE_FACTOR = {"CRITICAL": 1.2, "HIGH": 0.9, "MEDIUM": 0.6}
+    for a in state.awards:
+        if not a.get("funded_by"):
+            continue
+        scores_sorted = sorted(
+            ((c, v) for c, v in a.get("scores", {}).items()),
+            key=lambda x: -x[1])
+        if len(scores_sorted) >= 2:
+            first_c, first_v = scores_sorted[0]
+            _, second_v = scores_sorted[1]
+            if first_c == me.color and second_v >= first_v - 1:
                 warnings.append(
-                    f"Award {best_award['name']}: лид тонкий (+{best_award_lead}), "
-                    f"фондируй сейчас!")
-
-            value_mc = round(5 * rv["vp"] * 0.7)
-            allocations.append({
-                "action": f"Fund {best_award['name']} (лид +{best_award_lead}){overtake_risk}",
-                "cost": cost_award, "value_mc": value_mc,
-                "priority": 2, "type": "award",
-            })
+                    f"Award {a['name']}: тебя могут обойти! "
+                    f"Лид всего +{first_v - second_v}")
+    for ua in urgent_award_actions(state):
+        if budget < ua["cost"]:
+            continue
+        factor = _URGENCY_VALUE_FACTOR[ua["urgency"]]
+        value_mc = round(5 * rv["vp"] * factor)
+        label = f"Fund {ua['award_name']} ({ua['urgency']}, лид +{ua['lead']})"
+        if ua["urgency"] == "CRITICAL":
+            label += " \u26a0\ufe0frisk"
+            warnings.append(
+                f"Award {ua['award_name']}: LAST SLOT, opp может фондировать — "
+                f"фондируй сейчас!")
+        elif ua["urgency"] == "HIGH" and ua["lead"] <= 1:
+            label += " \u26a0\ufe0frisk"
+            warnings.append(
+                f"Award {ua['award_name']}: лид тонкий (+{ua['lead']}), фондируй сейчас!")
+        allocations.append({
+            "action": label,
+            "cost": ua["cost"], "value_mc": value_mc,
+            "priority": _URGENCY_PRIORITY[ua["urgency"]],
+            "type": "award", "urgency": ua["urgency"],
+        })
 
     # 3. Colony trade
     if state.colonies_data and (me.energy >= 3 or budget >= 9):
