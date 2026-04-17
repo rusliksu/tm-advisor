@@ -139,6 +139,31 @@ def test_great_aquifer_override_applied():
     assert "ovr" in reason
 
 
+def test_empty_behavior_prelude_falls_back_to_base():
+    """Pathfinder prelude with empty behavior (Central Reservoir) → base COTD score."""
+    sc = PreludeScorer(db())
+    base = db().get_score("Central Reservoir")
+    assert base >= 80, "fixture assumes Central Reservoir base >= 80"
+    result = sc.score("Central Reservoir")
+    # Pure base (no MC dilution because behavior is empty)
+    assert result == base
+
+
+def test_empty_behavior_prelude_not_diluted():
+    """Business Empire (A-tier base 80, empty behavior) stays in A range."""
+    sc = PreludeScorer(db())
+    result = sc.score("Business Empire")
+    assert result >= 75, f"expected A-range, got {result}"
+
+
+def test_override_still_wins_over_empty_behavior_path():
+    """Great Aquifer has empty behavior BUT an override — override applies."""
+    sc = PreludeScorer(db())
+    # Override adds +14 to mc value; score should show MC-blend effect
+    mc, reason = sc.immediate_value("Great Aquifer")
+    assert "ovr" in reason, "override should be applied for Great Aquifer"
+
+
 def test_score_unknown_prelude_uses_base():
     """Unknown prelude name falls back to base score safely (no crash)."""
     sc = PreludeScorer(db())

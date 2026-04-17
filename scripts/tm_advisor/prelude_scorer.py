@@ -169,10 +169,32 @@ class PreludeScorer:
         applies corp-specific bonuses (Splice/IC/Aridor branches at
         synergy.py:615+) that expect the COTD score as a baseline.
         Overriding too aggressively breaks those branches.
+
+        Pathfinder preludes with empty behavior JSON and no manual override
+        fall back to pure COTD score — otherwise the MC floor (50) would
+        erase their A-tier calibration.
         """
         base = self.db.get_score(name) if self.db else 50
+        if self._is_behavior_empty(name):
+            return max(0, min(100, int(round(base))))
         mc, _ = self.immediate_value(name, corp_name)
         score_from_mc = 50.0 + (mc - 10.0) * 1.6
         score_from_mc = max(20.0, min(95.0, score_from_mc))
         blended = round(0.7 * base + 0.3 * score_from_mc)
         return max(0, min(100, blended))
+
+    def _is_behavior_empty(self, name: str) -> bool:
+        """True if all-card-behaviors has no parseable effect AND no override
+        compensates for the gap. Used to avoid MC-based under-scoring of
+        Pathfinder prelude with ongoing/contextual effects."""
+        if name in _OVERRIDES:
+            return False
+        entry = self._behaviors.get(name, {}) or {}
+        beh = entry.get("behavior") or {}
+        if not isinstance(beh, dict):
+            return True
+        for key in ("production", "stock", "global", "tr", "drawCard",
+                    "greenery", "city"):
+            if beh.get(key):
+                return False
+        return True
