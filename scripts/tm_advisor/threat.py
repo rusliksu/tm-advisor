@@ -138,38 +138,66 @@ class OpponentReactiveAdjuster:
     _UNITY_TAGS = {"space", "venus", "jovian"}
 
     def _turmoil_delta(self, card_name: str, state) -> tuple[int, str]:
-        """Ruling-party bonuses (Scientists/Unity/Greens/MarsFirst/Kelvinists)
-        and Reds cost-penalty for global-param raisers."""
+        """Ruling-party bonuses/penalty + soft forecast for the dominant party
+        (which becomes ruling next generation)."""
         turmoil = getattr(state, "turmoil", None)
         if not turmoil or not isinstance(turmoil, dict):
             return 0, ""
         ruling = turmoil.get("ruling")
-        if not ruling:
-            return 0, ""
+        dominant = turmoil.get("dominant")
         info = self.db.get_info(card_name) if self.db else None
 
-        # Reds: penalize any card that raises a global param or TR
-        if ruling == "Reds":
-            raises = self._count_global_raises(card_name)
-            if raises > 0:
-                penalty = min(10, 3 * raises)
-                return -penalty, f"Reds ruling: {raises} global raise(s) cost +3 MC each"
-            return 0, ""
+        total = 0
+        reasons: list[str] = []
 
+        cur_delta, cur_reason = self._party_effect(card_name, ruling, info, full=True)
+        if cur_delta:
+            total += cur_delta
+            reasons.append(cur_reason)
+
+        # Dominant != ruling → half-effect forecast
+        if dominant and dominant != ruling:
+            fc_delta, fc_reason = self._party_effect(card_name, dominant, info, full=False)
+            if fc_delta:
+                total += fc_delta
+                reasons.append(f"forecast: {fc_reason}")
+
+        if total == 0:
+            return 0, ""
+        return total, "; ".join(reasons)
+
+    def _party_effect(self, card_name: str, party: str, info, *, full: bool) -> tuple[int, str]:
+        """Compute delta for a party effect. full=False halves the magnitude
+        (rounded toward zero)."""
+        if not party:
+            return 0, ""
+        if party == "Reds":
+            raises = self._count_global_raises(card_name)
+            if raises <= 0:
+                return 0, ""
+            base = 3 * raises
+            val = base if full else base // 2
+            if val <= 0:
+                return 0, ""
+            penalty = -min(10, val)
+            tag = "Reds ruling" if full else "Reds dominant"
+            return penalty, f"{tag}: {raises} global raise(s)"
         if not info:
             return 0, ""
         tags = [str(t).lower() for t in (info.get("tags") or [])]
         if not tags:
             return 0, ""
-        if ruling == "Unity":
+        if party == "Unity":
             if any(t in self._UNITY_TAGS for t in tags):
-                return 2, "Unity ruling: Space/Venus/Jovian bonus"
+                bonus = 2 if full else 1
+                return bonus, f"Unity {'ruling' if full else 'dominant'}: space/venus/jovian"
             return 0, ""
-        cfg = self._RULING_TAG_BONUS.get(ruling)
+        cfg = self._RULING_TAG_BONUS.get(party)
         if cfg:
             need_tag, bonus = cfg
             if need_tag in tags:
-                return bonus, f"{ruling} ruling: {need_tag} tag bonus"
+                val = bonus if full else max(1, bonus // 2)
+                return val, f"{party} {'ruling' if full else 'dominant'}: {need_tag}"
         return 0, ""
 
     def _count_global_raises(self, card_name: str) -> int:

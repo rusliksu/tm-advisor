@@ -448,8 +448,11 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
-def _build_state_with_turmoil(ruling: str):
+def _build_state_with_turmoil(ruling: str, dominant: str | None = None):
     from tm_advisor.models import GameState
+    t = {"ruling": ruling, "parties": []}
+    if dominant is not None:
+        t["dominant"] = dominant
     return GameState({
         "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {}},
         "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {}}],
@@ -458,10 +461,39 @@ def _build_state_with_turmoil(ruling: str):
             "oxygenLevel": 5, "temperature": -18, "oceans": 3,
             "venusScaleLevel": 5,
             "milestones": [], "awards": [], "colonies": [], "spaces": [],
-            "turmoil": {"ruling": ruling, "parties": []},
+            "turmoil": t,
             "gameOptions": {"expansions": {"colonies": True, "turmoil": True}},
         },
     })
+
+
+def test_turmoil_dominant_forecast_adds_half_bonus():
+    """Scientists dominant (Greens ruling) → plant +2 ruling, science +1 forecast = +3."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Greens", dominant="Scientists")
+    # Mars University: only science tag → 0 ruling, +1 forecast
+    score, reason = adj.adjust(80, "Mars University", state)
+    assert score == 81, f"expected +1 forecast, got {score} / {reason!r}"
+
+
+def test_turmoil_dominant_same_as_ruling_no_double_count():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Scientists", dominant="Scientists")
+    score, _ = adj.adjust(80, "Mars University", state)
+    assert score == 82  # full +2, no extra forecast
+
+
+def test_turmoil_reds_dominant_half_penalty():
+    """Reds dominant (not yet ruling) → half of Reds penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Unity", dominant="Reds")
+    # Asteroid: 1 temp raise. Reds full would be -3; dominant = 3//2 = -1.
+    # Plus Unity ruling: Asteroid has Space tag → +2.
+    score, _ = adj.adjust(60, "Asteroid", state)
+    assert score == 61  # 60 + 2 (Unity) - 1 (Reds forecast)
 
 
 def test_turmoil_scientists_bonus_science_card():
