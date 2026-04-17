@@ -92,6 +92,12 @@ class OpponentReactiveAdjuster:
     def compute_delta(self, card_name: str, state) -> tuple[int, str]:
         """Return (clamped_delta, reason_or_empty) for the card vs opponents."""
         raw_delta, raw_reason = self._dispatch(card_name, state)
+        t_delta, t_reason = self._turmoil_delta(card_name, state)
+        raw_delta += t_delta
+        if t_reason and not raw_reason:
+            raw_reason = t_reason
+        elif t_reason:
+            raw_reason = f"{raw_reason}; {t_reason}"
         if raw_delta > _CLAMP:
             raw_delta = _CLAMP
         elif raw_delta < -_CLAMP:
@@ -107,6 +113,39 @@ class OpponentReactiveAdjuster:
         if delta == 0:
             return base_score, ""
         return base_score + delta, reason
+
+    _RULING_TAG_BONUS = {
+        "Scientists": ("science", 2),
+        "Greens": ("plant", 2),
+        "Mars First": ("building", 2),
+        "Kelvinists": ("power", 2),
+    }
+    _UNITY_TAGS = {"space", "venus", "jovian"}
+
+    def _turmoil_delta(self, card_name: str, state) -> tuple[int, str]:
+        """Ruling-party bonuses (Scientists/Unity/Greens/MarsFirst/Kelvinists)."""
+        turmoil = getattr(state, "turmoil", None)
+        if not turmoil or not isinstance(turmoil, dict):
+            return 0, ""
+        ruling = turmoil.get("ruling")
+        if not ruling:
+            return 0, ""
+        info = self.db.get_info(card_name) if self.db else None
+        if not info:
+            return 0, ""
+        tags = [str(t).lower() for t in (info.get("tags") or [])]
+        if not tags:
+            return 0, ""
+        if ruling == "Unity":
+            if any(t in self._UNITY_TAGS for t in tags):
+                return 2, "Unity ruling: Space/Venus/Jovian bonus"
+            return 0, ""
+        cfg = self._RULING_TAG_BONUS.get(ruling)
+        if cfg:
+            need_tag, bonus = cfg
+            if need_tag in tags:
+                return bonus, f"{ruling} ruling: {need_tag} tag bonus"
+        return 0, ""
 
     def _dispatch(self, card_name: str, state) -> tuple[int, str]:
         handler = {

@@ -448,6 +448,68 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
+def _build_state_with_turmoil(ruling: str):
+    from tm_advisor.models import GameState
+    return GameState({
+        "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {}},
+        "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {}}],
+        "game": {
+            "generation": 5, "phase": "action",
+            "oxygenLevel": 5, "temperature": -18, "oceans": 3,
+            "venusScaleLevel": 5,
+            "milestones": [], "awards": [], "colonies": [], "spaces": [],
+            "turmoil": {"ruling": ruling, "parties": []},
+            "gameOptions": {"expansions": {"colonies": True, "turmoil": True}},
+        },
+    })
+
+
+def test_turmoil_scientists_bonus_science_card():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Scientists")
+    # Mars University has Science tag
+    score, reason = adj.adjust(80, "Mars University", state)
+    assert score == 82, f"expected +2 science bonus, got {score} / {reason!r}"
+
+
+def test_turmoil_unity_bonus_space_card():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Unity")
+    # Saturn Surfing: Jovian + Earth tags → Jovian hits Unity bonus
+    score, _ = adj.adjust(70, "Saturn Surfing", state)
+    assert score == 72
+
+
+def test_turmoil_greens_bonus_plant_card():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Greens")
+    # Grass has plant tag
+    score, _ = adj.adjust(60, "Grass", state)
+    assert score == 62
+
+
+def test_turmoil_mars_first_bonus_building_card():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Mars First")
+    # Mining Rights has Building tag — but threat already scores it; stack should work.
+    # Use a pure-building card — Electro Catapult (Building)
+    score, _ = adj.adjust(70, "Electro Catapult", state)
+    assert score == 72
+
+
+def test_turmoil_no_match_no_bonus():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Scientists")
+    # Grass (plant tag) doesn't match Scientists (science)
+    score, _ = adj.adjust(60, "Grass", state)
+    assert score == 60
+
+
 def _build_state_with_fleet(trades_done: int, fleet_size: int):
     from tm_advisor.models import GameState
     return GameState({
