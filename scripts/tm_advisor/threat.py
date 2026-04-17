@@ -66,6 +66,21 @@ class OpponentReactiveAdjuster:
         self.db = db
         self._bio_cards = self._build_bio_set(db)
         self._animal_sources = self._build_animal_source_set(db)
+        self._behaviors = self._load_behaviors()
+
+    @staticmethod
+    def _load_behaviors() -> dict:
+        import json
+        import os
+        from .shared_data import resolve_data_path
+        path = resolve_data_path("all-card-behaviors.json")
+        if not os.path.exists(path):
+            return {}
+        try:
+            with open(path, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
 
     @staticmethod
     def _build_bio_set(db) -> set[str]:
@@ -123,7 +138,8 @@ class OpponentReactiveAdjuster:
     _UNITY_TAGS = {"space", "venus", "jovian"}
 
     def _turmoil_delta(self, card_name: str, state) -> tuple[int, str]:
-        """Ruling-party bonuses (Scientists/Unity/Greens/MarsFirst/Kelvinists)."""
+        """Ruling-party bonuses (Scientists/Unity/Greens/MarsFirst/Kelvinists)
+        and Reds cost-penalty for global-param raisers."""
         turmoil = getattr(state, "turmoil", None)
         if not turmoil or not isinstance(turmoil, dict):
             return 0, ""
@@ -131,6 +147,15 @@ class OpponentReactiveAdjuster:
         if not ruling:
             return 0, ""
         info = self.db.get_info(card_name) if self.db else None
+
+        # Reds: penalize any card that raises a global param or TR
+        if ruling == "Reds":
+            raises = self._count_global_raises(card_name)
+            if raises > 0:
+                penalty = min(10, 3 * raises)
+                return -penalty, f"Reds ruling: {raises} global raise(s) cost +3 MC each"
+            return 0, ""
+
         if not info:
             return 0, ""
         tags = [str(t).lower() for t in (info.get("tags") or [])]
@@ -146,6 +171,27 @@ class OpponentReactiveAdjuster:
             if need_tag in tags:
                 return bonus, f"{ruling} ruling: {need_tag} tag bonus"
         return 0, ""
+
+    def _count_global_raises(self, card_name: str) -> int:
+        """How many 'Reds-taxed' raise-events does this card trigger?
+
+        Counts: TR increments, global param steps (temp/oxygen/venus),
+        placing an ocean, placing a greenery (greenery raises oxygen),
+        placing a city adjacent to ocean (not counted — conditional).
+        """
+        entry = self._behaviors.get(card_name, {}) or {}
+        beh = entry.get("behavior") or {}
+        total = 0
+        if beh.get("tr"):
+            total += self._to_int(beh.get("tr"))
+        glob = beh.get("global") or {}
+        for v in glob.values():
+            total += self._to_int(v)
+        if beh.get("ocean"):
+            total += self._to_int(beh.get("ocean"))
+        if beh.get("greenery"):
+            total += 1  # greenery raises oxygen 1 step
+        return max(0, total)
 
     def _dispatch(self, card_name: str, state) -> tuple[int, str]:
         handler = {

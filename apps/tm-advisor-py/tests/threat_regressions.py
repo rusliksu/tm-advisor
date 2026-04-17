@@ -501,6 +501,37 @@ def test_turmoil_mars_first_bonus_building_card():
     assert score == 72
 
 
+def test_turmoil_reds_penalizes_temp_raiser():
+    """Reds ruling: Asteroid raises temp 1 step → -3."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Reds")
+    # Asteroid from all-card-behaviors has {global:{temperature:1}}
+    score, reason = adj.adjust(60, "Asteroid", state)
+    # Asteroid also triggers plant-attack handler → base handler may add another delta.
+    # Without opps set, _plant_attack returns 0. So only Reds -3.
+    assert score == 57, f"expected 57 (-3), got {score} / {reason!r}"
+
+
+def test_turmoil_reds_penalizes_multi_raise():
+    """Reds + Big Asteroid (2 temp steps) → -6."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Reds")
+    score, _ = adj.adjust(60, "Big Asteroid", state)
+    assert score == 54
+
+
+def test_turmoil_reds_no_penalty_non_raiser():
+    """Reds + card without global raise → no penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = _build_state_with_turmoil(ruling="Reds")
+    # Earth Catapult: discount card, no global raise
+    score, _ = adj.adjust(70, "Earth Catapult", state)
+    assert score == 70
+
+
 def test_turmoil_no_match_no_bonus():
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
     adj = OpponentReactiveAdjuster(db)
