@@ -40,6 +40,15 @@ _OPP_ANIMAL_ATTACKERS = {"Predators", "Small Animals", "Herbivores"}
 _OPP_MICROBE_ATTACKERS = {"Ants"}
 _OPP_RESOURCE_STEALERS = {"Hired Raiders", "Sabotage"}
 
+# Cards that must place a settler on a Colony tile; value falls when most
+# active colonies already have 3 settlers.
+_COLONY_BUILDERS = {
+    "Mining Colony", "Trading Colony", "Pioneer Settlement",
+    "Research Colony", "Ice Moon Colony", "Minority Refuge",
+    "Space Port Colony", "Titan Shipyards",
+    "Early Colonization",  # prelude
+}
+
 
 class OpponentReactiveAdjuster:
     """Layer over adjusted_score that reacts to opponent state."""
@@ -109,6 +118,15 @@ class OpponentReactiveAdjuster:
             "Predators": self._predators,
             "Lava Flows": self._lava_flows,
             "Protected Habitats": self._protected_habitats,
+            "Mining Colony": self._colony_builder,
+            "Trading Colony": self._colony_builder,
+            "Pioneer Settlement": self._colony_builder,
+            "Research Colony": self._colony_builder,
+            "Ice Moon Colony": self._colony_builder,
+            "Minority Refuge": self._colony_builder,
+            "Space Port Colony": self._colony_builder,
+            "Titan Shipyards": self._colony_builder,
+            "Early Colonization": self._colony_builder,
         }.get(card_name)
         if handler is not None:
             base = handler(state)
@@ -241,6 +259,34 @@ class OpponentReactiveAdjuster:
             hit = self._opp_has_any(state, _OPP_MICROBE_ATTACKERS)
             if hit:
                 return -2, f"opp has {hit} in tableau (microbes at risk)"
+        return 0, ""
+
+    def _colony_builder(self, state) -> tuple[int, str]:
+        """Colony-builder cards require an empty settler slot on some colony.
+        When most active colonies are saturated (3/3), value drops sharply."""
+        colonies = getattr(state, "colonies_data", None)
+        if colonies is None:
+            colonies = [c for c in (getattr(state, "game", {}) or {}).get("colonies", [])
+                        if c.get("isActive", True)]
+        if not colonies:
+            return 0, ""
+        active = len(colonies)
+
+        def _settler_list(c):
+            if not isinstance(c, dict):
+                return []
+            return c.get("settlers") or c.get("colonies") or []
+
+        saturated = sum(1 for c in colonies if len(_settler_list(c)) >= 3)
+        if active == 0:
+            return 0, ""
+        free = active - saturated
+        if free == 0:
+            return -10, "all active colonies saturated (3 settlers)"
+        if free == 1:
+            return -4, f"only 1 open colony slot left ({saturated}/{active} saturated)"
+        if saturated * 2 >= active:
+            return -2, f"{saturated}/{active} colonies saturated"
         return 0, ""
 
     def _protected_habitats(self, state) -> tuple[int, str]:

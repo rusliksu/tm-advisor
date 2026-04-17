@@ -448,6 +448,82 @@ def test_virus_opp_with_plant_prod():
     assert score == 73, f"expected 73 (+3), got {score} / {reason!r}"
 
 
+def _build_state_with_colonies(colonies: list[dict]):
+    """Build state with given list of colonies (dicts with 'name', 'colonies', 'isActive')."""
+    from tm_advisor.models import GameState
+    return GameState({
+        "thisPlayer": {"color": "red", "megaCredits": 30, "tableau": [], "tags": {}},
+        "players": [{"color": "red", "megaCredits": 30, "tableau": [], "tags": {}}],
+        "game": {
+            "generation": 4, "phase": "action",
+            "oxygenLevel": 5, "temperature": -20, "oceans": 2,
+            "venusScaleLevel": 5,
+            "milestones": [], "awards": [],
+            "colonies": colonies,
+            "spaces": [],
+            "gameOptions": {"expansions": {"colonies": True}},
+        },
+    })
+
+
+def test_mining_colony_saturated_hard_penalty():
+    """All colonies saturated → -10 for Mining Colony."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    colonies = [
+        {"name": "Callisto", "isActive": True, "colonies": ["red", "blue", "green"],
+         "trackPosition": 3},
+        {"name": "Ceres", "isActive": True, "colonies": ["red", "blue", "green"],
+         "trackPosition": 2},
+    ]
+    state = _build_state_with_colonies(colonies)
+    score, reason = adj.adjust(75, "Mining Colony", state)
+    assert score == 65, f"expected 65 (-10), got {score} / {reason!r}"
+
+
+def test_trading_colony_one_slot_left():
+    """Only 1 non-saturated colony out of 3 → -4."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    colonies = [
+        {"name": "Callisto", "isActive": True, "colonies": ["red", "blue", "green"]},
+        {"name": "Ceres", "isActive": True, "colonies": ["red", "blue", "green"]},
+        {"name": "Europa", "isActive": True, "colonies": []},
+    ]
+    state = _build_state_with_colonies(colonies)
+    score, _ = adj.adjust(60, "Trading Colony", state)
+    assert score == 56, f"expected 56 (-4), got {score}"
+
+
+def test_mining_colony_plenty_of_slots():
+    """Most colonies free → no penalty."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    colonies = [
+        {"name": "Callisto", "isActive": True, "colonies": []},
+        {"name": "Ceres", "isActive": True, "colonies": ["red"]},
+        {"name": "Europa", "isActive": True, "colonies": []},
+    ]
+    state = _build_state_with_colonies(colonies)
+    score, _ = adj.adjust(75, "Mining Colony", state)
+    assert score == 75
+
+
+def test_colony_builder_half_saturated_soft_penalty():
+    """Half active colonies saturated → -2."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    colonies = [
+        {"name": "A", "isActive": True, "colonies": ["red", "blue", "green"]},
+        {"name": "B", "isActive": True, "colonies": ["red", "blue", "green"]},
+        {"name": "C", "isActive": True, "colonies": ["red"]},
+        {"name": "D", "isActive": True, "colonies": []},
+    ]
+    state = _build_state_with_colonies(colonies)
+    score, _ = adj.adjust(70, "Pioneer Settlement", state)
+    assert score == 68
+
+
 def test_ghost_threat_animal_accumulator():
     """My Birds-candidate when opp has Predators → -3 ghost penalty."""
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
