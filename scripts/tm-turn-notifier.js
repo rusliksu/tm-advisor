@@ -112,7 +112,7 @@ function normalizeChatId(raw) {
 
 function getActivePlayerEntriesFromDb() {
   const rows = runSql(
-    "SELECT g.game FROM games g " +
+    "SELECT g.game_id || char(31) || g.game FROM games g " +
     "JOIN (SELECT game_id, MAX(save_id) AS save_id FROM games WHERE status = 'running' GROUP BY game_id) latest " +
     "ON latest.game_id = g.game_id AND latest.save_id = g.save_id " +
     "LEFT JOIN completed_game c ON g.game_id = c.game_id " +
@@ -125,7 +125,10 @@ function getActivePlayerEntriesFromDb() {
   for (const line of rows.split('\n')) {
     if (!line.trim()) continue;
     try {
-      const game = JSON.parse(line);
+      const separator = line.indexOf('\u001F');
+      const dbGameId = separator >= 0 ? line.slice(0, separator) : '';
+      const gameJson = separator >= 0 ? line.slice(separator + 1) : line;
+      const game = JSON.parse(gameJson);
       const phase = game.phase || '';
       const activePlayerId = game.activePlayer || '';
       for (const player of Array.isArray(game.players) ? game.players : []) {
@@ -133,7 +136,7 @@ function getActivePlayerEntriesFromDb() {
         entries.set(player.id, {
           activePlayerId,
           chatId: normalizeChatId(player.telegramID),
-          gameId: game.id || '',
+          gameId: dbGameId || game.id || '',
           phase,
           needsToDraft: player.needsToDraft === true,
           playerId: player.id,
@@ -250,6 +253,15 @@ function buildActionLabel(entry, state) {
   return 'Твой ход';
 }
 
+function buildGameLabel(entry, state) {
+  const gameId = String(state.game?.id || entry.gameId || '').trim();
+  if (gameId) {
+    return `Игра ${gameId.slice(0, 8)}`;
+  }
+  const playerId = String(entry.playerId || '').trim();
+  return playerId ? `Слот ${playerId.slice(0, 8)}` : '';
+}
+
 async function clearPlayerNotice(playerId) {
   const previous = playerState.get(playerId);
   if (!previous) return;
@@ -290,9 +302,11 @@ async function checkPlayer(entry) {
     const gen = game.generation || '?';
     const phase = getPhase(state, entry) || '?';
     const action = buildActionLabel(entry, state);
+    const gameLabel = buildGameLabel(entry, state);
 
     const link = `${BASE_URL}/player?id=${playerId}`;
-    const msg = `<b>Твой ход!</b>\nGen ${gen} · ${phase}\n${action}\n\n<a href="${link}">Открыть игру</a>`;
+    const header = gameLabel ? `${gameLabel}\n` : '';
+    const msg = `<b>Твой ход!</b>\n${header}Gen ${gen} · ${phase}\n${action}\n\n<a href="${link}">Открыть игру</a>`;
 
     if (previous) {
       await deleteTelegramMessage(previous.chatId, previous.messageId);
