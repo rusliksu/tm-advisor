@@ -60,6 +60,32 @@ function testCoreHelpers() {
   assert.strictEqual(interpolated.gensLeft, 4);
   assert.strictEqual(interpolated.ratePerGen, 2.5);
 
+  const closeoutState = {
+    game: {
+      generation: 8,
+      temperature: -6,
+      oxygenLevel: 9,
+      oceans: 4,
+      venusScaleLevel: 18,
+      gameOptions: {solarPhaseOption: true},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+  };
+  assert.strictEqual(
+    core.estimateGensLeftFromState(closeoutState),
+    2,
+    'late 3P WGT closeout should estimate two generations, not three'
+  );
+  const closeoutInterpolated = core.estimateScoreCardTimingInterpolated({
+    state: closeoutState,
+    steps: 20,
+    gen: 8,
+    playerCount: 3,
+    totalSteps: 49,
+  });
+  assert.strictEqual(closeoutInterpolated.boardBased, 2);
+  assert.strictEqual(closeoutInterpolated.gensLeft, 2);
+
   const accelerating = core.estimateScoreCardTimingAccelerating({
     steps: 10,
     playerCount: 3,

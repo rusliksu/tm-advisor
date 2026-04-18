@@ -27,6 +27,7 @@
     var injectPlayPriorityBadges = input && input.injectPlayPriorityBadges;
     var trackDraftHistory = input && input.trackDraftHistory;
     var rateStandardProjects = input && input.rateStandardProjects;
+    var enhanceGameLog = input && input.enhanceGameLog;
     var highlightPlayable = input && input.highlightPlayable;
     var tmLog = input && input.tmLog;
     var setLastProcessAllMs = input && input.setLastProcessAllMs;
@@ -74,6 +75,7 @@
 
       if (typeof trackDraftHistory === 'function') trackDraftHistory();
       if (typeof rateStandardProjects === 'function') rateStandardProjects();
+      if (typeof enhanceGameLog === 'function') enhanceGameLog();
       if (typeof highlightPlayable === 'function') highlightPlayable();
     } finally {
       setProcessingNow(false);
@@ -96,7 +98,7 @@
     var clearReasonPayload = input && input.clearReasonPayload;
     if (!documentObj) return;
 
-    documentObj.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo').forEach(function(el) {
+    documentObj.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score').forEach(function(el) {
       el.remove();
     });
     documentObj.querySelectorAll('.tm-combo-highlight, .tm-combo-godmode, .tm-combo-great, .tm-combo-good, .tm-combo-decent, .tm-combo-niche').forEach(function(el) {

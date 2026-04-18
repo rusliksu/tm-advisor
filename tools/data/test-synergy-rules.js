@@ -209,7 +209,7 @@ if (predFx && predFx.res === 'animal' && !predFx.places && predFx.eats === 'anim
 // New annotations: fighter, floater, animal (missed in v1)
 const newAnnotations = [
   ['Security Fleet', 'res', 'fighter'],
-  ['Asteroid Hollowing', 'res', 'fighter'],
+  ['Asteroid Hollowing', 'res', 'asteroid'],
   ['St. Joseph of Cupertino Mission', 'res', 'fighter'],
   ['Herbivores', 'res', 'animal'],
   ['Vermin', 'res', 'animal'],
@@ -335,7 +335,7 @@ test('Predators без своих animals', 'Predators', ['Strip Mine', 'Space M
 test('Predators + Large Convoy (accum+placer)', 'Predators', ['Large Convoy'], 3);
 
 // 17. Fighter cards don't interact (no fighter placers)
-test('Security Fleet solo (no interaction)', 'Security Fleet', ['Asteroid Hollowing'], 0);
+test('Security Fleet solo (no interaction)', 'Security Fleet', ['St. Joseph of Cupertino Mission'], 0);
 
 // ── 48d: Opponent context ──
 console.log('\n── Eater + opponent ctx ──');

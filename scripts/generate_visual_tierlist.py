@@ -1697,7 +1697,7 @@ body {{
 
 <div class="footer">
     Terraforming Mars Tier List — <a href="https://github.com/rusliksu/tm-tierlist" target="_blank" style="color:#ff5577;text-decoration:none">github.com/rusliksu/tm-tierlist</a>
-    <br><span style="font-size:11px;color:#555">{"Клавиши: / поиск · j/k тиры · ←→ навигация · Esc закрыть" if LANG_RU else "Keys: / search · j/k tiers · ←→ navigate · Esc close"}</span>
+    <br><span style="font-size:11px;color:#9ca3af">{"Клавиши: / поиск · j/k тиры · ←→ навигация · Esc закрыть" if LANG_RU else "Keys: / search · j/k tiers · ←→ navigate · Esc close"}</span>
 </div>
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({{top:0,behavior:'smooth'}})">↑</button>

@@ -2309,18 +2309,18 @@
   },
   "Psychrophiles": {
     "name": "Psychrophiles",
-    "score": 82,
-    "tier": "A",
+    "score": 76,
+    "tier": "B",
     "type": "project",
-    "economy": "5 MC total (2+3) for effectively ~2 MC/gen discount on plant cards + Microbe tag + stall action. icehawk84 calls it 'most impactful card under 5 MC.'",
-    "reasoning": "Extremely cheap and high value. Acts as ~2 MC production specifically for plant cards, which are common in any strategy. Max -20C requirement ensures early game play only. Microbe tag adds Ecologist/Decomposers synergy. Universally praised in COTD. One of the best low-cost cards in the game.",
+    "economy": "5 MC total (2+3) for a cheap Microbe tag, stall action, and situational plant-payment discount. Strong only while Mars is still at -20C or colder; once that max-temperature window is closed, most of the card becomes dead text and it should be downgraded hard.",
+    "reasoning": "Strong early specialist, not a universal auto-pick. When live on gen 1-2 it can behave like plant-only income and gets much better with microbe placers or dense green-card hands. But the floor is only a cheap tag plus weak action, and many openings simply do not convert enough plant cards before -20C disappears. If Mars is already warmer than -20C, treat Psychrophiles mostly as a bad Microbe tag with a dead action rather than an engine card.",
     "synergies": [
+      "Imported Nutrients",
       "Extreme-Cold Fungus",
       "Nitrogen-Rich Asteroid",
-      "Symbiotic Fungus",
-      "Soil Studies"
+      "Symbiotic Fungus"
     ],
-    "when_to_pick": "Always draft if temp <= -20C. Play immediately. Loses value rapidly as temperature rises.",
+    "when_to_pick": "Draft only while the temperature window is still open and your hand already points to plant cards or microbe support. Play early; if Mars is already warmer than -20C, this is usually a skip rather than a speculative keep.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1jh546y/cotd_psychrophiles_22_mar_2025/"
   },
   "Viral Enhancers": {
@@ -2360,16 +2360,18 @@
   },
   "Conscription": {
     "name": "Conscription",
-    "score": 67,
-    "tier": "C",
+    "score": 71,
+    "tier": "B",
     "type": "project",
-    "economy": "5+3=8 MC cost. -16 MC discount on next card. Net: +8 MC gain - 1 VP (5 MC late-game). Net +3-8 MC depending on timing. Earth tag (2-3 MC) adds value.",
-    "reasoning": "Like Indentured Workers on steroids — net 8 MC for -1 VP. Per COTD community, 'better Indentured Workers, and Indentured Workers is already really good.' Playing economy cards a turn earlier can be game-defining. Earth tag adds Point Luna/Earth Office synergy. Requirement (2 Earth) is achievable with preludes. Scary tempo card in early-mid game.",
+    "economy": "5+3=8 MC cost. If you can convert the full 16 MC immediately, this is effectively +8 MC tempo for -1 VP, before counting Earth-tag discounts or event rebates. The floor is poor only when the requirement or follow-up card is missing.",
+    "reasoning": "Stronger than the old C-tier baseline, but still not generic goodstuff. COTD and desktop both treat this as a premium tempo card once it is live, and that matches practice: pulling a 16+ MC play forward by a generation often matters more than the nominal VP loss. The catch is real setup cost: you need 2 Earth tags and an actual target, so cold hands can still leave it stranded. In Earth shells or rich early-midgame turns, though, this behaves like one of the better Colonies swing cards.",
     "synergies": [
+      "Point Luna",
       "Earth Office",
+      "Earth Catapult",
       "Media Group"
     ],
-    "when_to_pick": "When you have 2 Earth tags and a 16+ MC card to play. Almost always worth it gens 1-6, and sometimes a strong denial pick if a rival Earth engine is about to spike.",
+    "when_to_pick": "When you either already have 2 Earth tags or are one cheap tag away and can cash the 16 MC into a real payoff immediately. Excellent gens 1-6; much worse as a blind late hold.",
     "winratio_note": "Win ratio 2.16x in 107 games. Cost reduction underrated.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1hg7gfo/cotd_conscription_17_dec_2024/"
   },
@@ -2505,14 +2507,14 @@
     "tier": "A",
     "type": "project",
     "economy": "12+3=15 MC for Plant tag (1-2 MC) + 1 plant (2 MC) + effect: 2 plants per ocean placed. If 5+ oceans after play: 10+ plants = 1+ greenery (8+ MC value).",
-    "reasoning": "Extremely strong when played before many oceans. 2 plants per ocean placed by anyone gives huge value -- if 5 oceans come after you play this, that is 10 plants (more than a greenery). The plants come all at once when oceans drop, making them harder to attack. Max -12C requirement can be tricky -- sometimes temperature races past it before you play. In 3P with preludes, a great gen 1 card.",
+    "reasoning": "Extremely strong when played before many oceans. 2 plants per ocean placed by anyone gives huge value -- if 5 oceans come after you play this, that is 10 plants (more than a greenery). The plants come all at once when oceans drop, making them harder to attack. But the entire payoff only matters while the -12C window is still open. If Mars is already warmer than -12C, this is just a dead card and should be treated as a full skip, not as a generic plant synergy pickup.",
     "synergies": [
       "Giant Ice Asteroid",
       "Ice Asteroid",
       "Towing a Comet",
       "Protected Habitats"
     ],
-    "when_to_pick": "Gen 1 starting hand if -12C is met. High priority -- the earlier you play it, the more oceans you catch.",
+    "when_to_pick": "Gen 1-2 while Mars is still -12C or colder and plenty of oceans remain. Once the temperature is warmer than -12C, skip completely.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1jethte/cotd_arctic_algae_19_mar_2025/"
   },
   "Advanced Ecosystems": {
@@ -2745,16 +2747,18 @@
   },
   "Media Group": {
     "name": "Media Group",
-    "score": 76,
-    "tier": "B",
+    "score": 79,
+    "tier": "A",
     "type": "project",
     "economy": "Cost 6+3=9 MC. Value: Earth tag (2-3) + 3 MC per event played. Breaks even at 3 events. After 5 events = +6 MC profit.",
-    "reasoning": "Excellent rebate card. Events are generally strong cards you want to play anyway, so this adds pure value. Breaks even after just 3 events, which is very achievable. The Week 16 SHOTW line also showed the important nuance: in rich event shells Media Group moves from 'solid B' toward a real opener consideration, but it can still be one greed card too many if the rest of the hand is already overloaded with expensive setup. Earth tag adds useful support for Point Luna, Teractor, and other Earth payoffs.",
+    "reasoning": "Closer to low-A than mid-B in the repo's default all-expansions environment. Three future events is a low bar, and many real hands cash the rebate almost immediately because event chains are already attractive on their own. SHOTW added the important nuance that Media Group is not an automatic opener keep in every rich hand, since it can be one setup piece too many, but once the event volume is there this is one of the cleanest rebate engines in the game. Earth tag adds extra support for Point Luna, Teractor, Earth Office, and related shells.",
     "synergies": [
+      "Earth Office",
       "Optimal Aerobraking",
-      "Nuclear Zone"
+      "Technology Demonstration",
+      "Conscription"
     ],
-    "when_to_pick": "Early game with events in hand. In rich event-heavy openers it becomes a serious keep, especially if the hand already wants Deimos Down, Martian Survey, or other cheap-to-medium event chains. Still cuttable when the opener is already too greedy. Even mid-game it's good if you expect 3+ more events.",
+    "when_to_pick": "Very high draft priority early or mid-game when you expect 3+ more events. In event-heavy openers it is often a keep; if the opener is already overloaded with setup, you can delay or cut it. Still excellent once drawn before a real event chain.",
     "opening_hand_bias": 3,
     "opening_hand_note": "Week 16 SHOTW suggested a small opener bump: Media Group is better than baseline in rich event shells, but not so strong that every busted event hand should automatically keep it.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1dvuelg/cotd_media_group_5_jul_2024/"
@@ -2922,19 +2926,21 @@
   },
   "Atalanta Planitia Lab": {
     "name": "Atalanta Planitia Lab",
-    "score": 74,
+    "score": 76,
     "tier": "B",
     "type": "project",
-    "economy": "10+3=13 MC for 2 VP (10 MC) + 2 cards (6-8 MC) + Venus tag (2-3 MC) + Science tag (3-5 MC). Total ~21-26 MC. Excellent value.",
-    "reasoning": "2 VP + 2 cards + Science/Venus tags for 16 MC — fantastic deal. Per COTD: 'good card at a very good price.' Most players reach 3 science tags. Great mid/late game as efficient VP dump. Better than Research with Venus tag bonus. Science+Venus dual tag helps Diversifier and Venus strategies.",
+    "opening_hand_bias": -2,
+    "opening_hand_note": "Strong overall, but cold opening keeps should still ask whether the third science tag is realistically close. Midgame science shells exploit this much better than random start hands.",
+    "economy": "10+3=13 MC for 2 VP, 2 cards, and Venus+Science tags. Once the 3-Science requirement is live, the bundle is comfortably above rate and ages well because random card draw stays valuable all game.",
+    "reasoning": "This is one of the cleaner science payoff cards in Venus. Compared with clunkier 3-science gates like Gene Repair, Atalanta keeps its value profile relevant because 2 cards are useful both when stabilizing an engine and when digging for endgame payoffs. COTD consensus was not 'auto-keep cold', but once you are actually on a science line this is a very happy play: efficient VP, live card flow, and a useful Venus tag on top.",
     "synergies": [
       "Venus Waystation",
       "Mars University",
       "Olympus Conference",
-      "Research",
-      "Venusian Animals"
+      "Mass Converter",
+      "Quantum Extractor"
     ],
-    "when_to_pick": "When you have 2+ Science tags and expect to reach 3. High priority for engine players. Good anytime mid-to-late game.",
+    "when_to_pick": "High priority once you already have 2+ science tags or multiple cheap science bridges and expect the third soon. Excellent midgame engine play; not a blind opener keep without science density.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1n7aqq5/cotd_atalanta_planitia_lab_3_sept_2025/"
   },
   "Big Asteroid": {
@@ -3579,18 +3585,19 @@
   },
   "Standard Technology": {
     "name": "Standard Technology",
-    "score": 74,
-    "tier": "B",
+    "score": 78,
+    "tier": "A",
     "type": "project",
-    "economy": "6+3=9 MC for Science tag + 1 VP (5 MC) + 3 MC rebate per SP. Net cost ~4 MC for the effect. With 3+ SPs the effect generates 9+ MC. Credicor combo: greenery for 16 MC.",
-    "reasoning": "Strong with Credicor ('Creditech' archetype), enabling cheap greeneries and cities. icehawk84 notes the science tag is often more relevant than the effect. Solid in any game where you plan to do standard projects, which is most games. Science tag has high value for requirements. Low-player rush starts also use it as a clean backup when you expect multiple oceans, heat, or city SPs.",
+    "economy": "6+3=9 MC for a Science tag, 1 VP, and 3 MC rebate on standard projects. In the repo's default format that rebate hits not only oceans, greenery, and power, but also colony builds. The floor is already reasonable; 3+ standard projects makes the card clearly profitable.",
+    "reasoning": "The old B-tier baseline was too conservative for all-expansions play. Standard Technology is not just a Credicor gimmick: Colonies, rush lines, emergency power, oceans, greeneries, and late city pushes all make 3 MC rebates happen in ordinary games. COTD and desktop both point the same way here: the card frequently changes how willing you are to use standard projects, and that tempo swing can move the game by a generation. The Science tag and 1 VP keep the floor high even when the rebate engine is only medium.",
     "synergies": [
       "Credicor",
+      "Poseidon",
+      "Ecoline",
       "AI Central",
-      "Mass Converter",
-      "Anti-Gravity Technology"
+      "Mass Converter"
     ],
-    "when_to_pick": "When planning to do 3+ standard projects, especially with Credicor or an EcoLine rush that expects early SP oceans or temperature. Science tag always useful.",
+    "when_to_pick": "High priority early when your line expects multiple standard projects, especially Colonies builds, Credicor, or rush shells that buy oceans, power, greeneries, or cities. Still acceptable as cheap science-plus-VP glue even when the rebate count is only moderate.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1ipy9rd/cotd_standard_technology_15_feb_2025/",
     "opening_hand_bias": 5,
     "opening_hand_note": "Gets a real opener bump when your plan already involves repeated standard projects rather than greedy engine keeps."
@@ -3754,18 +3761,20 @@
   },
   "Gene Repair": {
     "name": "Gene Repair",
-    "score": 71,
-    "tier": "B",
+    "score": 67,
+    "tier": "C",
     "type": "project",
-    "economy": "12 MC + 3 MC card = 15 MC cost. Returns: 2 MC-prod (~10 MC gen1) + 2 VP (~10 MC late) + Science tag (~4 MC). Total ~24 MC. Requires 3 Science tags.",
-    "reasoning": "Efficient production + VP bundle for science engines. Per the game's formula, 3 Science tag discount makes this effectively cheaper. At 15 MC for 2 MC-prod + 2 VP + Science tag, it's solid value. The 3 Science tag requirement is easily met by mid-game in science engines. Late-game play still yields 2 VP for 15 MC minus whatever MC-prod returns. A reliable mid-game play for engine builders.",
+    "economy": "12 MC + 3 MC card = 15 MC for 2 MC-prod, 2 VP, and a Science tag. Solid once the requirement is already live, but the 3-Science gate makes the average game clunkier than the raw bundle suggests.",
+    "reasoning": "The bundle is real, but this is not an easy early keep. In opening and early-mid hands it is often a dead science payoff that asks for multiple earlier tags before doing anything, and the mix of MC production plus VP means it rarely excels at a single job. Its best home is an already-online science engine where the extra tag matters for Mars University, Olympus Conference, and high-end science payoffs. Outside that shell it is noticeably worse than the old low-B baseline.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
       "Research",
-      "AI Central"
+      "Mass Converter"
     ],
-    "when_to_pick": "Gen 3-6 with 3+ science tags. Good bundle of economy and VP for science players.",
+    "when_to_pick": "Mid-game once you already have 2-3 science tags or can turn it on immediately. Weak as an opening keep unless the start is already science-dense and cash-rich.",
+    "opening_hand_bias": -5,
+    "opening_hand_note": "Opening hands overrate the raw bundle; until the third science tag is actually close, this is usually a dead keep rather than a real engine piece.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1hrqjig/cotd_gene_repair_2_jan_2024/"
   },
   "Luna Metropolis": {
@@ -4006,15 +4015,16 @@
     "score": 70,
     "tier": "B",
     "type": "project",
-    "economy": "5+3=8 MC for 2 cards (6-8 MC) + Science+Space+Event tags. With ti payment: ~5 MC net. With IC: 2 MC rebate. With space discounts: can be very cheap. Science tag triggers Olympus Conf/Mars U.",
-    "reasoning": "Mediocre standalone but becomes excellent with synergies. Triple tag value (Science, Space, Event) makes it work with IC, Point Luna, Mars University, Olympus Conference. shai_aus confirms 'consistently good pick' especially with discounts. The tags do more than the cards most of the time.",
+    "economy": "5+3=8 MC for 2 random cards plus Science+Space+Event tag package. Standalone card draw is only fair, but space discounts, event rebates, and science triggers can push the net cost down sharply.",
+    "reasoning": "The card is good because the tag bundle is unusually dense, not because 8 MC for 2 random cards is exciting on its own. In shells with Media Group, Optimal Aerobraking, Warp Drive, Mars University, or Olympus Conference, it often turns into a very efficient glue card that advances multiple engines at once. Without at least one such payoff it is much closer to replaceable filler than the old wording implied.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
       "Media Group",
-      "Optimal Aerobraking"
+      "Optimal Aerobraking",
+      "Warp Drive"
     ],
-    "when_to_pick": "When you have space/event rebates or science tag triggers. Good engine card. Even without synergies, 8 MC for 2 cards is acceptable.",
+    "when_to_pick": "Best when you already have at least one space/event/science payoff or discount. Fine engine glue in slower science-space starts; generic openers without support can pass it.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1c5cd9w/cotd_technology_demonstration_16_apr_2024/"
   },
   "Wildlife Dome": {
@@ -4357,13 +4367,15 @@
     "score": 67,
     "tier": "C",
     "type": "project",
-    "economy": "25+3=28 MC, minus 2 energy-prod (14 MC) = effective cost 42 MC. Gains: 2 steel-prod (16 MC) + 1 ti-prod (12.5 MC) + 2 O2 (14 MC) + Building tag. Total value ~44 MC gen 1. Steel-payable.",
-    "reasoning": "+2 steel-prod + 1 ti-prod + 2 oxygen TR (= 14 MC immediate). -2 energy-prod penalty. Building tag = steel payable (effective cost ~15-20 MC). Gen 1-2 with energy preludes = excellent. Without energy = need Power Plant SP first. With colonies: energy penalty hurts more (energy = 2.0× multiplier), but steel/ti prod is premium and 2 oxygen = 2 TR immediate. Robotic Workforce combo = copy steel+ti prod (no O2). BonelessDota: good combo target. 73/B.",
+    "economy": "25+3=28 MC plus a steep -2 energy production cost. If energy is already covered, you get 2 steel production, 1 titanium production, and 2 oxygen for a very efficient early spike; if you must buy power first, the economics collapse fast.",
+    "reasoning": "Powerful opener, mediocre average draw. COTD is fairly consistent on this: Strip Mine is great on gen 1-2 when energy is already online and you can spend the steel or titanium, but much worse if it asks for a standard-project power detour or lands after the engine window has passed. In all-expansions play, Colonies makes the energy hit more painful and lower steel density makes the production less automatic than older metas implied. It is still a real payoff card, just not a reliable one.",
     "synergies": [
       "Power Generation prelude",
+      "Geothermal Power",
+      "Mohole Excavation",
       "Robotic Workforce"
     ],
-    "when_to_pick": "Gen 1 only when you already have 2+ energy production from preludes/corp. Skip if you'd need SP power plant.",
+    "when_to_pick": "Best in the opening or very early game when you already have 2+ spare energy and a way to monetize the metals. Usually skip if it needs a power-project detour; sometimes still fine late as a steel sink that closes oxygen.",
     "ml_cotd_note": "ML -5.4, WR 24%/63g. Worst WR of any B-tier. Req 2 energy prod.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1egjbwv/cotd_strip_mine_31_jul_2024/"
   },
@@ -4512,7 +4524,7 @@
     "tier": "B",
     "type": "project",
     "economy": "13+3=16 MC for plants per Venus+Plant+Colony tag. Microbe+Plant tags (3-4 MC). With 4 Venus+Plant+colony tags = 4 plants. With 8 tags = 8 plants = 1 greenery. Max -4C req. Total value ~10-20 MC depending on tags. Net -6 to +4 MC.",
-    "reasoning": "Scaling event: Venus+Plant+Colony tags = plants. Microbe+Plant dual tag. Per COTD: 'pretty strong, combos with unrelated stuff.' Aim 8+ plants = greenery. Need 6-7 plants for break-even. Doesn't change draft choices — play when tags align. Triple tag (Microbe+Plant+Event) triggers many combos. Max -4C limits window.",
+    "reasoning": "Scaling event: Venus+Plant+Colony tags = plants. Microbe+Plant dual tag. Per COTD: 'pretty strong, combos with unrelated stuff.' Aim 8+ plants = greenery. Need 6-7 plants for break-even. Doesn't change draft choices — play when tags align. Triple tag (Microbe+Plant+Event) triggers many combos. But this is still a max-window payoff card: once Mars is warmer than -4C, the whole tag-counting upside stops mattering because the card is simply dead.",
     "synergies": [
       "Nitrogen Rich Asteroid",
       "Decomposers",
@@ -4520,7 +4532,7 @@
       "Venus Soils",
       "Mining Colony"
     ],
-    "when_to_pick": "Gen 2-4 with 4+ Venus/Plant/Colony tags for cheap greenery. Microbe+Plant tags are the floor value. Skip with fewer than 3 qualifying tags.",
+    "when_to_pick": "Gen 2-4 with 4+ Venus/Plant/Colony tags while Mars is still -4C or colder. Above -4C, skip regardless of synergies.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1ov1eej/cotd_soil_studies_12_nov_2025/"
   },
   "Neptunian Power Consultants": {
@@ -5063,19 +5075,20 @@
   },
   "Extremophiles": {
     "name": "Extremophiles",
-    "score": 64,
+    "score": 68,
     "tier": "C",
     "type": "project",
-    "economy": "3 MC + 3 MC card = 6 MC cost. Action: add 1 microbe to ANY card. 1 VP per 3 resources. 2 Science tag req. Venus+Microbe tags (~4 MC). Cheapest Venus tag speculation.",
-    "reasoning": "Cheap microbe dispenser with VP accumulation. The 'add microbe to ANY card' is the key strength — feeds GHG Producing Bacteria, Ants, or Decomposers. Per warpspeed100, always speculate on if you have science tags. The VP accumulation (1 per 3) is slow on its own but adds up. Venus+Microbe dual tag is good for Venuphile and Splice synergies. At 6 MC it's low-risk speculation.",
+    "economy": "3 MC + 3 MC card = 6 MC for a cheap Venus+Microbe tag package and an action that adds a microbe to ANY card. On rate it is modest, but the floor is unusually safe because the entry cost is so low.",
+    "reasoning": "The old score slightly understated how useful the 'any card' wording is. This is not just a worse Tardigrades: it is a flexible microbe feeder that can patch mediocre bio cards into real engines while also carrying a cheap Venus tag. COTD was still mixed because microbe shells are not automatic, but once 2 science tags are online this becomes a low-risk enabler rather than a narrow gimmick. It is better than generic filler, just not enough of a payoff to break into B on base score alone.",
     "synergies": [
       "GHG Producing Bacteria",
       "Sulphur-Eating Bacteria",
       "Decomposers",
       "Enceladus colony",
-      "Ants"
+      "Ants",
+      "Nitrite Reducing Bacteria"
     ],
-    "when_to_pick": "Early game with 2 science tags and microbe targets. Good cheap Venus tag for speculation.",
+    "when_to_pick": "When 2 science tags are already live or close and you have real microbe payoffs, Enceladus access, or simply want a cheap Venus tag with upside. Fine speculative keep in science-bio shells; weak outside them.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1cq4vej/cotd_extremophiles_12_may_2024/"
   },
   "GHG Factories": {
@@ -5515,15 +5528,15 @@
     "score": 63,
     "tier": "C",
     "type": "project",
-    "economy": "9+3=12 MC for action: add 2 floaters to Venus card. Venus tag (2-3 MC). Floaters accumulate slowly. 2 floaters/gen supports Venus raise via Dirigibles (2 floaters = 1 Venus step). Net value depends on floater usage. Break-even gen 4-5.",
-    "reasoning": "Floater generation action for Venus engines. 2 floaters per gen is decent but slow -- need a strong Venus floater target (Dirigibles, Stratospheric Birds, Floating Habs) to convert floaters into VP or TR. Venus tag triggers Aphrodite and Venus counting cards. The 12 MC cost is moderate for a support card. Without good floater targets this is dead weight. In Venus-focused games with Dirigibles it becomes much stronger as each action effectively = 1 Venus raise. Otherwise it is a slow floater drip.",
+    "economy": "9+3=12 MC for a Venus tag plus repeatable floater support. On its own that is too slow, but with a real Venus floater payoff it can function as repeatable track pressure or VP support over several generations.",
+    "reasoning": "This is a support card, not a standalone Venus engine. The action becomes respectable when you already have a Venus card worth feeding or urgently need to unlock Venus requirements, but the baseline remains weak because 12 MC for a tag plus slow setup is a poor blind investment. COTD was mixed for exactly that reason: playable in the right shell, mediocre otherwise. The old score is fine, but the real use case is narrower and more tactical than generic 'Venus strategy' wording suggests.",
     "synergies": [
       "Dirigibles",
       "Stratospheric Birds",
       "Floating Habs",
       "Morning Star Inc"
     ],
-    "when_to_pick": "When running Venus floater strategy with Dirigibles or Floating Habs. Skip without strong floater payoffs. Venus tag is the floor value.",
+    "when_to_pick": "When you already have, or are very likely to have soon, a Venus floater payoff or a real need to accelerate the Venus track. Skip as a blind value card; the Venus tag alone is not enough.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1o16cby/cotd_venus_shuttles_8_oct_2025/"
   },
   "Energy Tapping": {
@@ -5684,17 +5697,18 @@
   },
   "Inventors' Guild": {
     "name": "Inventors' Guild",
-    "score": 60,
+    "score": 66,
     "tier": "C",
     "type": "project",
-    "economy": "9 MC + 3 MC card = 12 MC for Science tag + repeatable card draw (3 MC per card kept). Over 5 gens: 5 draws, maybe keep 3 = 12 + 9 = 21 MC for 3 cards. ~7 MC/card is expensive.",
-    "reasoning": "Continuous card draw is powerful in TM but this implementation is expensive and slow. At 12 MC upfront plus 3 MC per card kept, the per-card cost is high. In 8-gen games with WGT, you get maybe 4-5 uses which isn't enough to justify the investment. Better in longer 2P games. The Science tag is its saving grace for milestone/payoff purposes.",
+    "economy": "9 MC + 3 MC card = 12 MC for a Science tag plus repeatable filtering. If played on gen 1-3 and used 4-6 times, it often pays back through card quality, stall value, and finding missing engine links rather than raw cheap draw.",
+    "reasoning": "Still expensive in Prelude-speed games, but the old C60 baseline underrated how often early Inventors' Guild is exactly the glue that keeps a science engine from stalling. The value is not just cards kept: it is a live science tag, a repeatable stall action, and the ability to dig toward payoffs or missing requirements without committing to every draw. It remains mediocre when played late or into weak economy, yet in real early engine starts it performs much closer to solid upper-C or low-B territory.",
     "synergies": [
       "Mars University",
+      "Olympus Conference",
       "AI Central",
-      "Terralabs"
+      "Atalanta Planitia Lab"
     ],
-    "when_to_pick": "Gen 2-3 when building science engine and game looks to go 9+ gens. Pass in short 8-gen games unless you need the Science tag.",
+    "when_to_pick": "Strong on gen 1-3 in engine starts, especially when you can play it immediately and your hand already has science payoffs or missing links to dig for. Downshifts hard once the game is short or your economy cannot afford kept cards.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1m0drfs/cotd_inventors_guild_15_jul_2025/"
   },
   "Lake Marineris": {
@@ -5729,17 +5743,20 @@
   },
   "Lightning Harvest": {
     "name": "Lightning Harvest",
-    "score": 64,
+    "score": 63,
     "tier": "C",
     "type": "project",
+    "opening_hand_bias": -3,
+    "opening_hand_note": "Looks efficient on paper, but cold opening keeps often overrate it because the third science tag and actual need for energy are both still uncertain.",
     "economy": "8 MC + 3 MC card = 11 MC for 1 energy prod (~7.5 MC) + 1 MC-prod (~5 MC) + 1 VP (~5 MC) + Power tag (~1 MC). Requires 3 Science tags. Total: ~18.5 MC value.",
-    "reasoning": "Good value at 11 MC for ~18 MC with requirements met. Per COTD community, 'used to think it's good, now think it's usually not good enough.' The 3 Science tag requirement is heavy for what's essentially a vanilla production card. By the time you have 3 science tags, you often have better energy options. Rarely a priority during draft.",
+    "reasoning": "Reasonable card once live, but easier to admire in theory than in real drafts. COTD landed in a pretty clear place: if you already have 3 science tags and genuinely need the energy threshold, this is efficient and perfectly fine. The problem is that many games reach that point with better alternatives already available, making Lightning Harvest more of a tactical fixer than a card you want to speculate on early. The requirement is simply too high for such a plain bundle.",
     "synergies": [
       "AI Central",
       "Research",
-      "Power Infrastructure"
+      "Power Infrastructure",
+      "Mass Converter"
     ],
-    "when_to_pick": "When you have 3+ Science tags and need energy production. Good incidental value, not a strategy-defining pick.",
+    "when_to_pick": "When 3 science tags are already online and you still need energy for a real threshold, trade line, or milestone. Usually pass as a speculative opener; fine midgame glue if the need is immediate.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1gd7n5c/cotd_lightning_harvest_27_oct_2024/"
   },
   "Lunar Beam": {
@@ -5930,15 +5947,16 @@
     "score": 67,
     "tier": "C",
     "type": "project",
-    "economy": "12+3=15 MC (ti-payable) for effect (likely trade bonus) + 1 VP + Venus+Space tags. No COTD data. Req 2 Venus tags. Comparable to other Venus combo enablers.",
-    "reasoning": "No COTD data available. Based on cost structure: 15 MC ti-payable for 1 VP + effect + Venus+Space tags. The 2 Venus tag requirement limits use. With Colonies compatibility, likely a trade-enhancing effect. The Venus+Space dual tag helps with Venuphile and ti-payment. Mid-tier Venus support card.",
+    "economy": "12+3=15 MC (ti-payable) for 1 VP + Venus+Space tags + when you trade gain 3 MC. With 2 trades ready this turn, immediate swing is already +6 MC before future trades.",
+    "reasoning": "Trade payoff, not just generic Venus support. The floor is still modest because of the 2 Venus tag requirement, but in Colonies games this scales fast with extra trade fleets and repeated trading. Venus+Space tags help with Venuphile, titanium payment, and general space-discount shells. Better than the old text suggested when the board already supports active trading.",
     "synergies": [
       "Venus Waystation",
       "Trade Fleet",
       "Productive Outpost",
-      "Rim Freighters"
+      "Rim Freighters",
+      "Cryo-Sleep"
     ],
-    "when_to_pick": "When playing Venus + Colonies combo and have 2+ Venus tags. Ti-payable makes it accessible.",
+    "when_to_pick": "When playing Colonies with active trading, especially if you can trade twice, and already have or expect 2 Venus tags. Stronger with trade-discount cards and extra-fleet engines.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1nq2qpi/cotd_venus_trade_hub_25_sept_2025/"
   },
   "Casinos": {
@@ -6183,17 +6201,19 @@
   },
   "Minority Refuge": {
     "name": "Minority Refuge",
-    "score": 58,
+    "score": 64,
     "tier": "C",
     "type": "project",
-    "economy": "Cost 5+3=8 MC + 2 MC-prod lost (10). Total effective ~18 MC for a colony (SP costs 17). Space tag (1-2). Late game: -2 prod irrelevant.",
-    "reasoning": "Early game it's slightly worse than SP colony due to MC-prod loss. But it's titanium-payable via Space tag and gets better late-game when the -2 MC-prod doesn't matter. Good for grabbing placement bonuses (Europa ocean, Miranda animal) cheaply in final gens. benbever provides detailed analysis of niche scenarios.",
+    "opening_hand_bias": 4,
+    "opening_hand_note": "Meaningfully better in colony openers when grabbing a premium colony spot or build bonus one generation earlier matters more than preserving 2 MC production.",
+    "economy": "Cost 5+3=8 MC plus -2 MC production. Early this is roughly a discounted colony with a meaningful tempo tax; late the production loss matters much less. Space tag helps through titanium payment and discount shells.",
+    "reasoning": "The old entry leaned too hard on 'late game only'. In real Colonies tables this is often a tactical tempo card: paying 8 now instead of waiting for the 17 MC standard project can secure a premium colony spot or build bonus before the board closes. It is still much fairer than the best colony cards because -2 MC production is a real cost and weak colony pools make it unattractive. But in the repo's default format it deserves to sit well above low-C filler.",
     "synergies": [
-      "Phobolog",
-      "Europa colony",
-      "Miranda colony"
+      "Rim Freighters",
+      "Warp Drive",
+      "Luna colony"
     ],
-    "when_to_pick": "Late game for colony placement bonuses when -2 MC-prod is irrelevant. Early game only if securing a critical colony spot.",
+    "when_to_pick": "Early when securing a premium colony spot or build bonus matters, or late when the -2 MC production barely matters. Much worse on weak colony pools or when your economy is already fragile.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1cx4bs9/cotd_minority_refuge_21_may_2024/"
   },
   "Mohole Lake": {
@@ -6214,17 +6234,19 @@
   },
   "Omnicourt": {
     "name": "Omnicourt",
-    "score": 72,
-    "tier": "B",
+    "score": 70,
+    "tier": "C",
     "type": "project",
-    "economy": "Cost 11+3=14 MC (steel payable). Value: 2 TR (14.8) + Building tag (1-2). Total ~16 MC. Net ~+2 MC. Req: Venus+Earth+Jovian tags.",
-    "reasoning": "11 MC for 2 TR = 5.5 MC/TR. Excellent rate. Req Venus+Earth+Jovian = strict but achievable mid-game. Building tag = steel payable (effective ~7-9 MC). With steel: 4 MC/TR = outstanding. 72/B.",
+    "opening_hand_bias": -4,
+    "opening_hand_note": "Cold starting hands rarely want this unless multiple planet tags are already present. The card is fine when live, but poor as a speculative keep toward awkward requirements.",
+    "economy": "Cost 11+3=14 MC (steel payable) for 2 TR and a Building tag. The raw rate is acceptable, but the triple planet-tag gate means the average game does not get full access to that rate on demand.",
+    "reasoning": "More average than the old low-B baseline implied. COTD consensus was basically 'it's aight': once Venus, Earth, and Jovian are naturally online, Omnicourt is a serviceable 2 TR card and a decent steel dump. What it is not is a payoff worth drafting toward or warping your line around. The heavy mixed-tag requirement keeps it out of many openers and makes it feel like a convenience card rather than a premium one.",
     "synergies": [
-      "Strip Mine",
+      "Advanced Alloys",
       "Terraforming Contract",
-      "Advanced Alloys"
+      "Jovian tag shell"
     ],
-    "when_to_pick": "When you naturally have Venus+Earth+Jovian tags and excess steel. Late-game steel dump for TR.",
+    "when_to_pick": "When Venus, Earth, and Jovian tags are already online and you can pay with steel or spare cash. Fine mid-late pickup; not something to work toward proactively.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1kg0q5l/cotd_omnicourt_6_may_2025/"
   },
   "Political Alliance": {
@@ -6938,13 +6960,13 @@
     "tier": "C",
     "type": "project",
     "economy": "6+3=9 MC (steel-payable) for 1 energy-prod (7.5 MC) + 1 VP (5 MC) + Power+Building tags (~2-3 MC). Req 7% O2. Total ~15 MC. Very cheap with steel.",
-    "reasoning": "6 MC for 1 energy-prod + 1 VP. Req 7% O2 (mild). Building+Power dual tags. Steel payable = effective cost ~2-4 MC. Last gen play: 1 VP for 2-4 MC = excellent conversion. Early game: 1 energy-prod = ~10 MC value (top player consensus) but 6 MC cost = fair, not exciting. Key value: cheapest VP card with Building tag. Steel dump + VP in one card. Old 56/C too low — the VP + steel payability + cheap cost make this a solid late game closer. 64/C.",
+    "reasoning": "Solid filler, not a hidden engine card. By the time 7% oxygen is reached, many games already have their energy plan solved, so the main appeal is efficient steel-to-VP conversion with a useful Power+Building tag package attached. That still makes it better than pure junk, especially as a late steel dump or small threshold fixer, but COTD is right that it rarely rises above 'ok'.",
     "synergies": [
       "Power Infrastructure",
       "AI Central",
       "Strip Mine"
     ],
-    "when_to_pick": "When 7% O2 is met and you have steel. Cheap VP + energy. Fine filler for late game.",
+    "when_to_pick": "When 7% oxygen is near or met and you either have spare steel or a real power threshold to patch. Good late VP filler; not something to draft early as colony-trade setup.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1gn6w4m/cotd_windmills_9_nov_2024/"
   },
   "Biomass Combustors": {
@@ -7221,21 +7243,22 @@
   },
   "Search For Life": {
     "name": "Search For Life",
-    "score": 60,
+    "score": 63,
     "tier": "C",
     "type": "project",
-    "opening_hand_bias": 5,
-    "opening_hand_note": "Cheap science tags are more valuable in the opening hand than in a generic average-game score.",
-    "economy": "6 MC total (3+3) for cheapest Science tag + stall action + lottery for 3 VP. Max 6% O2 requirement. ~15-20% chance of hitting microbe tag per flip.",
-    "reasoning": "3 MC for Science tag plus action (look at top card, if microbe -> 3 VP). Cheapest Science tag in the game (3+3=6 MC total). SHOTW treats it less like filler and more like a real opener keep when cheap science matters immediately. Value is still primarily the cheap Science tag, not the lottery, but that tag is often exactly what Inventrix, AI Central, or Mars University shells need before oxygen closes. With Inventrix the requirement effectively becomes 8% O2.",
+    "opening_hand_bias": 6,
+    "opening_hand_note": "Cheap science bridges matter a lot in opening hands when they turn on AI Central, Atalanta Planitia Lab, or other science gates a generation earlier.",
+    "economy": "6 MC total (3+3) for one of the cheapest early science setup cards, plus a stall action and upside lottery for 3 VP. Max 6% O2 requirement keeps most of the value in the early game.",
+    "reasoning": "The card is still not about the 3 VP gamble. Its real job is being a very cheap science bridge that can be played before oxygen closes, while also giving you a harmless stall action. That matters more than the old baseline admitted in science-heavy openers and SHOTW-style engine starts, where getting to AI Central, Atalanta Planitia Lab, or similar payoffs one generation earlier is a real swing. Outside those shells it is still mostly a tag plus lottery, so the bump should stay modest. If oxygen is already above 6%, though, the bridge is gone and the card should be treated as dead, not as a speculative science filler.",
     "synergies": [
       "Mars University",
       "Research",
       "Olympus Conference",
       "AI Central",
-      "Inventrix"
+      "Atalanta Planitia Lab"
     ],
-    "when_to_pick": "Early when you need a cheap science tag and already have science payoffs or Scientist pressure. The action is bonus, not the main reason."
+    "when_to_pick": "Early when oxygen is still 6% or lower and you need a cheap science tag immediately to bridge into science payoffs or milestone pressure. Above 6% oxygen, skip.",
+    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1flzmhy/cotd_search_for_life_21_sept_2024/"
   },
   "Stanford Torus": {
     "name": "Stanford Torus",
@@ -7383,7 +7406,7 @@
     "tier": "C",
     "type": "project",
     "economy": "13 MC + 3 MC card = 16 MC cost. Action: gain 1 plant OR add 2 microbes to any card. Max -10°C requirement. Microbe tag. As plant gen: 16 MC for ~1 plant-prod = terrible. As microbe feeder: depends on target.",
-    "reasoning": "Too expensive as a plant generator (16 MC for 1 plant/gen is far worse than Adapted Lichen at 12 MC). The microbe feeding action is the real value, but requires a premium microbe target like GHG Producing Bacteria or Sulphur-Eating Bacteria. Per ad_hocNC, it's 'not worth it most of the time' and 'GHG or bust.' The max -10°C requirement limits it to early game when 16 MC is a huge investment.",
+    "reasoning": "Too expensive as a plant generator (16 MC for 1 plant/gen is far worse than Adapted Lichen at 12 MC). The microbe feeding action is the real value, but requires a premium microbe target like GHG Producing Bacteria or Sulphur-Eating Bacteria. Per ad_hocNC, it's 'not worth it most of the time' and 'GHG or bust.' The max -10°C requirement limits it to early game when 16 MC is a huge investment. If Mars is already warmer than -10°C, the action text is irrelevant because the card is fully dead and should not keep any microbe-engine halo.",
     "synergies": [
       "GHG Producing Bacteria",
       "Sulphur-Eating Bacteria",
@@ -7391,7 +7414,7 @@
       "Decomposers",
       "Enceladus colony"
     ],
-    "when_to_pick": "Only with a high-value microbe target already in play or in hand. Skip for plant generation alone.",
+    "when_to_pick": "Only with a high-value microbe target already in play or in hand while Mars is still -10C or colder. Above -10C, skip completely.",
     "game_data_note": "Fix: D-52 undervalued recurring action. Main value = 2 microbes/turn to any microbe card (Decomposers VP, Nitrite Reducing, etc). Plant gain is backup mode. 7 MC total = low entry cost for microbe feeder."
   },
   "Interplanetary Trade": {
@@ -7663,18 +7686,20 @@
   },
   "Venusian Insects": {
     "name": "Venusian Insects",
-    "score": 57,
+    "score": 62,
     "tier": "C",
     "type": "project",
-    "economy": "5+3=8 MC for action: add 1 microbe, 1 VP per 2 microbes. Req Venus 12%. Venus+Microbe tags ~3 MC. In 3 gens: 3 microbes = 1.5 VP = ~7.5 MC. Req limits timing.",
-    "reasoning": "Similar to Tardigrades but with Venus requirement and slightly better VP rate (1/2 vs 1/4). The Venus 12% requirement delays deployment in all-expansions play. 1 VP per 2 microbes is still subpar for animal placement. Venus+Microbe tags have some value for Ecologist. Strictly worse than 1/resource animals.",
+    "economy": "5+3=8 MC for action: add 1 microbe, 1 VP per 2 microbes. Req Venus 12%. In a typical 3-gen window this is ~1.5 VP from self-feeding alone, with a much higher ceiling from Enceladus or cheap microbe placers. Venus+Microbe tags add milestone and synergy value.",
+    "reasoning": "The old entry leaned too hard on the Venus gate and not enough on how efficient the payoff is once live. This is the cleanest self-contained 1/2-VP microbe card in the pool: cheap, low-risk, and much better than Tardigrades when Venus 12% is online. Community takes are consistently positive, especially with Enceladus, Imported Nitrogen/Nutrients, or fungus placers. It still stays in C because 12% Venus is a real timing tax and the card is far below true animal engines without support.",
     "synergies": [
       "Symbiotic Fungus",
       "Extreme-Cold Fungus",
       "Enceladus colony",
+      "Imported Nitrogen",
+      "Imported Nutrients",
       "Hoverlord"
     ],
-    "when_to_pick": "When Venus 12% is met and you need VP accumulation. Significantly worse than Stratospheric Birds or Venusian Animals.",
+    "when_to_pick": "When Venus 12% is met or close and you have microbe placement support, especially Enceladus or fungus actions. Fine cheap VP card on its own; much better when you can add microbes in bursts.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1dlsmcc/cotd_venusian_insects_22_jun_2024/"
   },
   "Venusian Plants": {
@@ -8108,13 +8133,13 @@
     "tier": "C",
     "type": "project",
     "economy": "16 MC + 3 MC card = 19 MC cost. Returns: 2 plant-prod (~16 MC gen1) + Science+Microbe tags (~5 MC). Total ~21 MC. Looks balanced, but plant-prod early is weak.",
-    "reasoning": "Way too expensive for 2 plant production. The max -14°C requirement means it must be played early when 19 MC for plant production is a terrible investment — you want engine/economy cards, not slow greenery conversion. Per shai_aus (consistent across 3 COTD posts), this card is just too expensive. The Science tag is nice but not worth the price. Would need to be 3-4 MC cheaper to be playable.",
+    "reasoning": "Way too expensive for 2 plant production. The max -14°C requirement means it must be played early when 19 MC for plant production is a terrible investment — you want engine/economy cards, not slow greenery conversion. Per shai_aus (consistent across 3 COTD posts), this card is just too expensive. The Science tag is nice but not worth the price. Would need to be 3-4 MC cheaper to be playable. Once Mars is warmer than -14°C, even the tag floor disappears because the card is just unplayable.",
     "synergies": [
       "Ecoline",
       "Cutting Edge Technology",
       "Insects"
     ],
-    "when_to_pick": "Almost never. Only if desperate for a Science tag with Ecoline going for early Gardener milestone.",
+    "when_to_pick": "Almost never. Only if desperate for a Science tag with Ecoline going for early Gardener milestone, and only while Mars is still -14C or colder.",
     "game_data_note": "Fix: D-42 undervalued. 19 MC for 2 plant-prod (16 MC) + Science+Microbe tags (4-7 MC) = net positive. Max -14C req trivial gen 1-2.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1bwe7zy/cotd_designed_microorganisms_5_apr_2024/"
   },

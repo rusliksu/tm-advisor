@@ -34,7 +34,8 @@
   },
   "Desperate Measures": {
     "cost": 1,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Ecological Survey": {
     "cost": 9,
@@ -44,7 +45,8 @@
     "type": "ACTIVE",
     "requirements": {
       "greeneries": 3
-    }
+    },
+    "behavior": {}
   },
   "Geological Survey": {
     "cost": 8,
@@ -54,7 +56,8 @@
     "type": "ACTIVE",
     "requirements": {
       "greeneries": 5
-    }
+    },
+    "behavior": {}
   },
   "Marketing Experts": {
     "cost": 5,
@@ -140,25 +143,8 @@
       "power",
       "building"
     ],
-    "type": "AUTOMATED"
-  },
-  "AI Central": {
-    "cost": 21,
-    "tags": [
-      "science",
-      "building"
-    ],
-    "type": "ACTIVE",
-    "behavior": {
-      "production": {
-        "energy": -1
-      }
-    },
-    "action": {},
-    "vp": 1,
-    "requirements": {
-      "count": 3
-    }
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Acquired Company": {
     "cost": 10,
@@ -178,7 +164,8 @@
       "science"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Adapted Lichen": {
     "cost": 9,
@@ -208,7 +195,9 @@
       "animal"
     ],
     "type": "AUTOMATED",
-    "vp": 3
+    "vp": 3,
+    "requirements": [],
+    "behavior": {}
   },
   "Aerobraked Ammonia Asteroid": {
     "cost": 26,
@@ -221,6 +210,24 @@
         "heat": 3,
         "plants": 1
       }
+    }
+  },
+  "AI Central": {
+    "cost": 21,
+    "tags": [
+      "science",
+      "building"
+    ],
+    "type": "ACTIVE",
+    "behavior": {
+      "production": {
+        "energy": -1
+      }
+    },
+    "action": {},
+    "vp": 1,
+    "requirements": {
+      "count": 3
     }
   },
   "Algae": {
@@ -250,7 +257,9 @@
     "vp": 3,
     "requirements": {
       "count": 7
-    }
+    },
+    "cardDiscount": 2,
+    "behavior": {}
   },
   "Ants": {
     "cost": 9,
@@ -262,14 +271,16 @@
     "resourceType": "microbe",
     "requirements": {
       "oxygen": 4
-    }
+    },
+    "behavior": {}
   },
   "Aquifer Pumping": {
     "cost": 18,
     "tags": [
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "ArchaeBacteria": {
     "cost": 6,
@@ -364,7 +375,8 @@
     "vp": 1,
     "requirements": {
       "count": 1
-    }
+    },
+    "behavior": {}
   },
   "Beam From A Thorium Asteroid": {
     "cost": 32,
@@ -453,7 +465,8 @@
     "vp": 2,
     "requirements": {
       "oxygen": 7
-    }
+    },
+    "behavior": {}
   },
   "Bribed Committee": {
     "cost": 7,
@@ -517,11 +530,6 @@
     },
     "action": {}
   },
-  "CEO\\": {
-    "cost": 1,
-    "type": "EVENT",
-    "behavior": {}
-  },
   "Callisto Penal Mines": {
     "cost": 24,
     "tags": [
@@ -560,7 +568,8 @@
     },
     "requirements": {
       "temperature": 0
-    }
+    },
+    "behavior": {}
   },
   "Cartel": {
     "cost": 8,
@@ -568,6 +577,11 @@
       "earth"
     ],
     "type": "AUTOMATED",
+    "behavior": {}
+  },
+  "CEO\\": {
+    "cost": 1,
+    "type": "EVENT",
     "behavior": {}
   },
   "Cloud Seeding": {
@@ -594,7 +608,8 @@
     "vp": 2,
     "requirements": {
       "oxygen": 5
-    }
+    },
+    "behavior": {}
   },
   "Comet": {
     "cost": 21,
@@ -662,7 +677,8 @@
     "resourceType": "microbe",
     "requirements": {
       "oxygen": 3
-    }
+    },
+    "behavior": {}
   },
   "Deep Well Heating": {
     "cost": 13,
@@ -724,7 +740,8 @@
       "spend": {
         "energy": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Domed Crater": {
     "cost": 24,
@@ -754,27 +771,8 @@
     "vp": 1,
     "requirements": {
       "oceans": 3
-    }
-  },
-  "Eos Chasma National Park": {
-    "cost": 16,
-    "tags": [
-      "plant",
-      "building"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "megacredits": 2
-      },
-      "stock": {
-        "plants": 3
-      }
     },
-    "vp": 1,
-    "requirements": {
-      "temperature": -12
-    }
+    "behavior": {}
   },
   "Earth Catapult": {
     "cost": 23,
@@ -782,14 +780,21 @@
       "earth"
     ],
     "type": "ACTIVE",
-    "vp": 2
+    "vp": 2,
+    "cardDiscount": 2,
+    "behavior": {}
   },
   "Earth Office": {
     "cost": 1,
     "tags": [
       "earth"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "cardDiscount": {
+      "amount": 3,
+      "tag": "earth"
+    },
+    "behavior": {}
   },
   "Electro Catapult": {
     "cost": 17,
@@ -828,7 +833,28 @@
     "tags": [
       "power"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
+  },
+  "Eos Chasma National Park": {
+    "cost": 16,
+    "tags": [
+      "plant",
+      "building"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "megacredits": 2
+      },
+      "stock": {
+        "plants": 3
+      }
+    },
+    "vp": 1,
+    "requirements": {
+      "temperature": -12
+    }
   },
   "Equatorial Magnetizer": {
     "cost": 11,
@@ -841,7 +867,8 @@
       "production": {
         "energy": -1
       }
-    }
+    },
+    "behavior": {}
   },
   "Extreme-Cold Fungus": {
     "cost": 13,
@@ -851,7 +878,8 @@
     "type": "ACTIVE",
     "requirements": {
       "temperature": -10
-    }
+    },
+    "behavior": {}
   },
   "Farming": {
     "cost": 16,
@@ -893,7 +921,8 @@
   },
   "Flooding": {
     "cost": 7,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Food Factory": {
     "cost": 12,
@@ -909,20 +938,6 @@
     },
     "vp": 1
   },
-  "Fuel Factory": {
-    "cost": 6,
-    "tags": [
-      "building"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "energy": -1,
-        "megacredits": 1,
-        "titanium": 1
-      }
-    }
-  },
   "Fueled Generators": {
     "cost": 1,
     "tags": [
@@ -934,6 +949,20 @@
       "production": {
         "energy": 1,
         "megacredits": -1
+      }
+    }
+  },
+  "Fuel Factory": {
+    "cost": 6,
+    "tags": [
+      "building"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "energy": -1,
+        "megacredits": 1,
+        "titanium": 1
       }
     }
   },
@@ -952,40 +981,6 @@
     },
     "requirements": {
       "count": 2
-    }
-  },
-  "GHG Factories": {
-    "cost": 11,
-    "tags": [
-      "building"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "energy": -1,
-        "heat": 4
-      }
-    }
-  },
-  "GHG Producing Bacteria": {
-    "cost": 8,
-    "tags": [
-      "science",
-      "microbe"
-    ],
-    "type": "ACTIVE",
-    "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 2
-      },
-      "global": {
-        "temperature": 1
-      }
-    },
-    "resourceType": "microbe",
-    "requirements": {
-      "oxygen": 4
     }
   },
   "Ganymede Colony": {
@@ -1032,6 +1027,41 @@
         "energy": 2
       }
     }
+  },
+  "GHG Factories": {
+    "cost": 11,
+    "tags": [
+      "building"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "energy": -1,
+        "heat": 4
+      }
+    }
+  },
+  "GHG Producing Bacteria": {
+    "cost": 8,
+    "tags": [
+      "science",
+      "microbe"
+    ],
+    "type": "ACTIVE",
+    "action": {
+      "addResources": 1,
+      "spend": {
+        "resourcesHere": 2
+      },
+      "global": {
+        "temperature": 1
+      }
+    },
+    "resourceType": "microbe",
+    "requirements": {
+      "oxygen": 4
+    },
+    "behavior": {}
   },
   "Giant Ice Asteroid": {
     "cost": 36,
@@ -1099,7 +1129,8 @@
     "type": "AUTOMATED",
     "requirements": {
       "count": 1
-    }
+    },
+    "behavior": {}
   },
   "Greenhouses": {
     "cost": 6,
@@ -1120,20 +1151,6 @@
       }
     }
   },
-  "Heat Trappers": {
-    "cost": 6,
-    "tags": [
-      "power",
-      "building"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "energy": 1
-      },
-      "decreaseAnyProduction": 2
-    }
-  },
   "Heather": {
     "cost": 6,
     "tags": [
@@ -1150,6 +1167,20 @@
     },
     "requirements": {
       "temperature": -14
+    }
+  },
+  "Heat Trappers": {
+    "cost": 6,
+    "tags": [
+      "power",
+      "building"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "energy": 1
+      },
+      "decreaseAnyProduction": 2
     }
   },
   "Herbivores": {
@@ -1170,7 +1201,8 @@
   },
   "Hired Raiders": {
     "cost": 1,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Ice Asteroid": {
     "cost": 23,
@@ -1194,7 +1226,8 @@
       "city",
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Immigration Shuttles": {
     "cost": 31,
@@ -1206,19 +1239,6 @@
     "behavior": {
       "production": {
         "megacredits": 5
-      }
-    }
-  },
-  "Import of Advanced GHG": {
-    "cost": 9,
-    "tags": [
-      "earth",
-      "space"
-    ],
-    "type": "EVENT",
-    "behavior": {
-      "production": {
-        "heat": 2
       }
     }
   },
@@ -1261,9 +1281,23 @@
       "tr": 1
     }
   },
+  "Import of Advanced GHG": {
+    "cost": 9,
+    "tags": [
+      "earth",
+      "space"
+    ],
+    "type": "EVENT",
+    "behavior": {
+      "production": {
+        "heat": 2
+      }
+    }
+  },
   "Indentured Workers": {
     "cost": 0,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Industrial Microbes": {
     "cost": 12,
@@ -1292,7 +1326,8 @@
   },
   "Insulation": {
     "cost": 2,
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Interstellar Colony Ship": {
     "cost": 24,
@@ -1304,7 +1339,8 @@
     "vp": 4,
     "requirements": {
       "count": 5
-    }
+    },
+    "behavior": {}
   },
   "Invention Contest": {
     "cost": 2,
@@ -1320,7 +1356,8 @@
       "science"
     ],
     "type": "ACTIVE",
-    "action": {}
+    "action": {},
+    "behavior": {}
   },
   "Investment Loan": {
     "cost": 3,
@@ -1371,7 +1408,8 @@
       "global": {
         "oxygen": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Kelp Farming": {
     "cost": 17,
@@ -1416,7 +1454,8 @@
   },
   "Land Claim": {
     "cost": 1,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Large Convoy": {
     "cost": 36,
@@ -1485,7 +1524,8 @@
   },
   "Local Heat Trapping": {
     "cost": 1,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Lunar Beam": {
     "cost": 13,
@@ -1551,7 +1591,8 @@
       "building"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Martian Rails": {
     "cost": 13,
@@ -1563,7 +1604,8 @@
       "spend": {
         "energy": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Mass Converter": {
     "cost": 8,
@@ -1579,6 +1621,10 @@
     },
     "requirements": {
       "count": 5
+    },
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "space"
     }
   },
   "Media Archives": {
@@ -1586,14 +1632,16 @@
     "tags": [
       "earth"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Media Group": {
     "cost": 6,
     "tags": [
       "earth"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Medical Lab": {
     "cost": 13,
@@ -1798,7 +1846,8 @@
     ],
     "type": "ACTIVE",
     "vp": 1,
-    "resourceType": "science"
+    "resourceType": "science",
+    "behavior": {}
   },
   "Open City": {
     "cost": 23,
@@ -1827,7 +1876,8 @@
     "tags": [
       "space"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Ore Processor": {
     "cost": 13,
@@ -1845,7 +1895,8 @@
       "global": {
         "oxygen": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Permafrost Extraction": {
     "cost": 8,
@@ -1911,7 +1962,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "science"
+    "resourceType": "science",
+    "behavior": {}
   },
   "Plantation": {
     "cost": 15,
@@ -1940,7 +1992,8 @@
       "power",
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Power Plant": {
     "cost": 4,
@@ -1963,7 +2016,8 @@
     "type": "AUTOMATED",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Predators": {
     "cost": 14,
@@ -1975,11 +2029,13 @@
     "resourceType": "animal",
     "requirements": {
       "oxygen": 11
-    }
+    },
+    "behavior": {}
   },
   "Protected Habitats": {
     "cost": 5,
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Protected Valley": {
     "cost": 23,
@@ -2009,6 +2065,10 @@
     },
     "requirements": {
       "count": 4
+    },
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "space"
     }
   },
   "Rad-Chem Factory": {
@@ -2053,7 +2113,8 @@
         "oxygen": 1
       }
     },
-    "resourceType": "microbe"
+    "resourceType": "microbe",
+    "behavior": {}
   },
   "Release of Inert Gases": {
     "cost": 14,
@@ -2084,14 +2145,16 @@
     "type": "ACTIVE",
     "behavior": {
       "city": 1
-    }
+    },
+    "cardDiscount": 1
   },
   "Robotic Workforce": {
     "cost": 9,
     "tags": [
       "science"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Rover Construction": {
     "cost": 8,
@@ -2099,11 +2162,13 @@
       "building"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Sabotage": {
     "cost": 1,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Satellites": {
     "cost": 10,
@@ -2122,7 +2187,8 @@
     "resourceType": "science",
     "requirements": {
       "oxygen": 6
-    }
+    },
+    "behavior": {}
   },
   "Security Fleet": {
     "cost": 12,
@@ -2137,7 +2203,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "fighter"
+    "resourceType": "fighter",
+    "behavior": {}
   },
   "Shuttles": {
     "cost": 10,
@@ -2154,6 +2221,10 @@
     "vp": 1,
     "requirements": {
       "oxygen": 5
+    },
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "space"
     }
   },
   "Small Animals": {
@@ -2267,7 +2338,8 @@
       "production": {
         "energy": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Space Station": {
     "cost": 10,
@@ -2275,14 +2347,20 @@
       "space"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "space"
+    },
+    "behavior": {}
   },
   "Special Design": {
     "cost": 4,
     "tags": [
       "science"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Sponsors": {
     "cost": 6,
@@ -2296,12 +2374,43 @@
       }
     }
   },
+  "Convert Heat": {
+    "behavior": {}
+  },
+  "Convert Plants": {
+    "behavior": {}
+  },
+  "Aquifer": {
+    "cost": 18,
+    "behavior": {}
+  },
+  "Asteroid:SP": {
+    "cost": 14,
+    "behavior": {}
+  },
+  "City": {
+    "cost": 25,
+    "behavior": {}
+  },
+  "Greenery": {
+    "cost": 23,
+    "behavior": {}
+  },
+  "Power Plant:SP": {
+    "cost": 11,
+    "behavior": {}
+  },
+  "Sell Patents": {
+    "cost": 0,
+    "behavior": {}
+  },
   "Standard Technology": {
     "cost": 6,
     "tags": [
       "science"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Steelworks": {
     "cost": 15,
@@ -2319,7 +2428,8 @@
       "global": {
         "oxygen": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Strip Mine": {
     "cost": 25,
@@ -2352,7 +2462,8 @@
     "action": {},
     "requirements": {
       "temperature": -14
-    }
+    },
+    "behavior": {}
   },
   "Tardigrades": {
     "cost": 4,
@@ -2364,7 +2475,8 @@
       "addResources": 1
     },
     "vpPerResource": 1,
-    "resourceType": "microbe"
+    "resourceType": "microbe",
+    "behavior": {}
   },
   "Technology Demonstration": {
     "cost": 5,
@@ -2401,7 +2513,8 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "vp": 2
+    "vp": 2,
+    "behavior": {}
   },
   "Titanium Mine": {
     "cost": 7,
@@ -2445,7 +2558,8 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Trees": {
     "cost": 13,
@@ -2528,7 +2642,8 @@
       "production": {
         "heat": 2
       }
-    }
+    },
+    "behavior": {}
   },
   "Urbanized Area": {
     "cost": 10,
@@ -2564,14 +2679,16 @@
       "science",
       "microbe"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Virus": {
     "cost": 1,
     "tags": [
       "microbe"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Water Import From Europa": {
     "cost": 25,
@@ -2583,7 +2700,8 @@
     "vpPerTag": {
       "tag": "jovian",
       "per": 1
-    }
+    },
+    "behavior": {}
   },
   "Water Splitting Plant": {
     "cost": 12,
@@ -2601,7 +2719,8 @@
     },
     "requirements": {
       "oceans": 2
-    }
+    },
+    "behavior": {}
   },
   "Wave Power": {
     "cost": 8,
@@ -2660,75 +2779,125 @@
       "oxygen": 5
     }
   },
-  "Convert Heat": {},
-  "Convert Plants": {},
-  "Aquifer": {
-    "cost": 18
+  "Apollo": {
+    "behavior": {}
   },
-  "Asteroid:SP": {
-    "cost": 14
+  "Asimov": {
+    "behavior": {}
   },
-  "City": {
-    "cost": 25
+  "Bjorn": {
+    "behavior": {}
   },
-  "Greenery": {
-    "cost": 23
+  "Caesar": {
+    "behavior": {}
   },
-  "Power Plant:SP": {
-    "cost": 11
+  "Clarke": {
+    "behavior": {}
   },
-  "Sell Patents": {
-    "cost": 0
+  "Co-leadership": {
+    "behavior": {}
   },
-  "Apollo": {},
-  "Asimov": {},
-  "Bjorn": {},
-  "Caesar": {},
-  "Clarke": {},
-  "Co-leadership": {},
-  "Duncan": {},
-  "Ender": {},
-  "Faraday": {},
-  "Floyd": {},
-  "Gaia": {},
-  "Gordon": {},
-  "Greta": {},
-  "HAL 9000": {},
-  "Huan": {},
-  "Ingrid": {},
-  "Jansson": {},
-  "Karen": {},
+  "Duncan": {
+    "behavior": {}
+  },
+  "Ender": {
+    "behavior": {}
+  },
+  "Faraday": {
+    "behavior": {}
+  },
+  "Floyd": {
+    "behavior": {}
+  },
+  "Gaia": {
+    "behavior": {}
+  },
+  "Gordon": {
+    "behavior": {}
+  },
+  "Greta": {
+    "behavior": {}
+  },
+  "HAL 9000": {
+    "behavior": {}
+  },
+  "Huan": {
+    "behavior": {}
+  },
+  "Ingrid": {
+    "behavior": {}
+  },
+  "Jansson": {
+    "behavior": {}
+  },
+  "Karen": {
+    "behavior": {}
+  },
   "Lowell": {
     "tags": [
       "wild"
-    ]
+    ],
+    "behavior": {}
   },
-  "Maria": {},
-  "Musk": {},
-  "Naomi": {},
-  "Neil": {},
-  "Oscar": {},
-  "Petra": {},
-  "Quill": {},
-  "Rogers": {},
-  "Ryu": {},
-  "Shara": {},
-  "Stefan": {},
-  "Tate": {},
-  "Ulrich": {},
-  "Van Allen": {},
-  "Will": {},
-  "Xavier": {},
+  "Maria": {
+    "behavior": {}
+  },
+  "Musk": {
+    "behavior": {}
+  },
+  "Naomi": {
+    "behavior": {}
+  },
+  "Neil": {
+    "behavior": {}
+  },
+  "Oscar": {
+    "behavior": {}
+  },
+  "Petra": {
+    "behavior": {}
+  },
+  "Quill": {
+    "behavior": {}
+  },
+  "Rogers": {
+    "behavior": {}
+  },
+  "Ryu": {
+    "behavior": {}
+  },
+  "Shara": {
+    "behavior": {}
+  },
+  "Stefan": {
+    "behavior": {}
+  },
+  "Tate": {
+    "behavior": {}
+  },
+  "Ulrich": {
+    "behavior": {}
+  },
+  "Van Allen": {
+    "behavior": {}
+  },
+  "Will": {
+    "behavior": {}
+  },
+  "Xavier": {
+    "behavior": {}
+  },
   "Xu": {
     "tags": [
       "venus"
-    ]
+    ],
+    "behavior": {}
   },
-  "Yvonne": {},
-  "Zan": {},
-  "Air Raid": {
-    "cost": 0,
-    "type": "EVENT"
+  "Yvonne": {
+    "behavior": {}
+  },
+  "Zan": {
+    "behavior": {}
   },
   "Airliners": {
     "cost": 11,
@@ -2743,7 +2912,14 @@
       "floaters": 3
     }
   },
-  "Aridor": {},
+  "Air Raid": {
+    "cost": 0,
+    "type": "EVENT",
+    "behavior": {}
+  },
+  "Aridor": {
+    "behavior": {}
+  },
   "Arklight": {
     "tags": [
       "animal"
@@ -2772,12 +2948,14 @@
     "resourceType": "floater"
   },
   "Colony": {
-    "cost": 17
+    "cost": 17,
+    "behavior": {}
   },
   "Community Services": {
     "cost": 13,
     "type": "AUTOMATED",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Conscription": {
     "cost": 5,
@@ -2787,7 +2965,8 @@
     "type": "EVENT",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Corona Extractor": {
     "cost": 10,
@@ -2811,7 +2990,12 @@
       "science"
     ],
     "type": "ACTIVE",
-    "behavior": {},
+    "behavior": {
+      "tradeDiscount": 1,
+      "colonies": {
+        "tradeDiscount": 1
+      }
+    },
     "vp": 1
   },
   "Earth Elevator": {
@@ -2859,7 +3043,8 @@
       "science"
     ],
     "type": "ACTIVE",
-    "action": {}
+    "action": {},
+    "behavior": {}
   },
   "Galilean Waystation": {
     "cost": 15,
@@ -2894,7 +3079,12 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "behavior": {}
+    "behavior": {
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
+      }
+    }
   },
   "Impactor Swarm": {
     "cost": 11,
@@ -2919,7 +3109,12 @@
       "earth"
     ],
     "type": "EVENT",
-    "behavior": {}
+    "behavior": {
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
+      }
+    }
   },
   "Jovian Lanterns": {
     "cost": 20,
@@ -2944,7 +3139,8 @@
     "resourceType": "floater",
     "requirements": {
       "count": 3
-    }
+    },
+    "behavior": {}
   },
   "Luna Governor": {
     "cost": 4,
@@ -2992,7 +3188,8 @@
     "tags": [
       "earth"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Martian Zoo": {
     "cost": 12,
@@ -3005,7 +3202,8 @@
     "resourceType": "animal",
     "requirements": {
       "cities": 2
-    }
+    },
+    "behavior": {}
   },
   "Mining Colony": {
     "cost": 20,
@@ -3016,6 +3214,10 @@
     "behavior": {
       "production": {
         "titanium": 1
+      },
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
       }
     }
   },
@@ -3024,7 +3226,8 @@
     "tags": [
       "space"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Molecular Printing": {
     "cost": 11,
@@ -3056,7 +3259,8 @@
     "vp": 2,
     "requirements": {
       "colonies": 1
-    }
+    },
+    "behavior": {}
   },
   "Polyphemos": {
     "behavior": {
@@ -3068,10 +3272,13 @@
       }
     }
   },
-  "Poseidon": {},
+  "Poseidon": {
+    "behavior": {}
+  },
   "Productive Outpost": {
     "cost": 0,
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Quantum Communications": {
     "cost": 8,
@@ -3079,7 +3286,8 @@
     "vp": 1,
     "requirements": {
       "count": 4
-    }
+    },
+    "behavior": {}
   },
   "Red Spot Observatory": {
     "cost": 17,
@@ -3110,7 +3318,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "camp"
+    "resourceType": "camp",
+    "behavior": {}
   },
   "Research Colony": {
     "cost": 20,
@@ -3120,7 +3329,15 @@
     ],
     "type": "AUTOMATED",
     "behavior": {
-      "drawCard": 2
+      "drawCard": 2,
+      "colony": {
+        "allowDuplicates": true
+      },
+      "colonies": {
+        "buildColony": {
+          "allowDuplicates": true
+        }
+      }
     }
   },
   "Rim Freighters": {
@@ -3129,7 +3346,12 @@
       "space"
     ],
     "type": "ACTIVE",
-    "behavior": {}
+    "behavior": {
+      "tradeDiscount": 1,
+      "colonies": {
+        "tradeDiscount": 1
+      }
+    }
   },
   "Sky Docks": {
     "cost": 18,
@@ -3139,12 +3361,16 @@
     ],
     "type": "ACTIVE",
     "behavior": {
-      "tradeFleet": 1
+      "tradeFleet": 1,
+      "colonies": {
+        "addTradeFleet": 1
+      }
     },
     "vp": 2,
     "requirements": {
       "count": 2
-    }
+    },
+    "cardDiscount": 1
   },
   "Solar Probe": {
     "cost": 9,
@@ -3181,7 +3407,10 @@
         "megacredits": 4
       },
       "city": 1,
-      "tradeFleet": 1
+      "tradeFleet": 1,
+      "colonies": {
+        "addTradeFleet": 1
+      }
     },
     "requirements": {
       "colonies": 1
@@ -3193,7 +3422,18 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "behavior": {},
+    "behavior": {
+      "tradeFleet": 1,
+      "colony": {
+        "allowDuplicates": true
+      },
+      "colonies": {
+        "addTradeFleet": 1,
+        "buildColony": {
+          "allowDuplicates": true
+        }
+      }
+    },
     "requirements": {
       "colonies": 1
     }
@@ -3215,7 +3455,8 @@
       "jovian"
     ],
     "action": {},
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Sub-zero Salt Fish": {
     "cost": 5,
@@ -3242,7 +3483,8 @@
     ],
     "type": "ACTIVE",
     "vp": 2,
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Titan Floating Launch-pad": {
     "cost": 18,
@@ -3262,12 +3504,18 @@
     ],
     "type": "ACTIVE",
     "vp": 1,
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Trade Envoys": {
     "cost": 6,
     "type": "ACTIVE",
-    "behavior": {}
+    "behavior": {
+      "tradeOffset": 1,
+      "colonies": {
+        "tradeOffset": 1
+      }
+    }
   },
   "Trading Colony": {
     "cost": 18,
@@ -3275,7 +3523,14 @@
       "space"
     ],
     "type": "ACTIVE",
-    "behavior": {}
+    "behavior": {
+      "tradeOffset": 1,
+      "colony": {},
+      "colonies": {
+        "tradeOffset": 1,
+        "buildColony": {}
+      }
+    }
   },
   "Urban Decomposers": {
     "cost": 6,
@@ -3287,7 +3542,8 @@
       "production": {
         "plants": 1
       }
-    }
+    },
+    "requirements": []
   },
   "Warp Drive": {
     "cost": 14,
@@ -3298,12 +3554,18 @@
     "vp": 2,
     "requirements": {
       "count": 5
-    }
+    },
+    "cardDiscount": {
+      "amount": 4,
+      "tag": "space"
+    },
+    "behavior": {}
   },
   "Aerospace Mission": {
     "tags": [
       "space"
-    ]
+    ],
+    "behavior": {}
   },
   "Agricola Inc": {
     "tags": [
@@ -3320,12 +3582,14 @@
   "Athena": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "By-Election": {
     "tags": [
       "wild"
-    ]
+    ],
+    "behavior": {}
   },
   "Curiosity II": {
     "tags": [
@@ -3341,16 +3605,21 @@
   "Eris": {
     "tags": [
       "building"
-    ]
+    ],
+    "behavior": {}
   },
-  "Executive Order": {},
+  "Executive Order": {
+    "behavior": {}
+  },
   "Incite": {
     "tags": [
       "science"
     ],
     "behavior": {}
   },
-  "Junk Ventures": {},
+  "Junk Ventures": {
+    "behavior": {}
+  },
   "Midas": {
     "behavior": {}
   },
@@ -3393,12 +3662,14 @@
   "Trade Advance": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "United Nations Mission One": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "Valuable Gases": {
     "tags": [
@@ -3416,7 +3687,9 @@
       "drawCard": 10
     }
   },
-  "CrediCor": {},
+  "CrediCor": {
+    "behavior": {}
+  },
   "EcoLine": {
     "tags": [
       "plant"
@@ -3453,7 +3726,8 @@
   "Inventrix": {
     "tags": [
       "science"
-    ]
+    ],
+    "behavior": {}
   },
   "Mining Guild": {
     "tags": [
@@ -3492,12 +3766,18 @@
   "Teractor": {
     "tags": [
       "earth"
-    ]
+    ],
+    "cardDiscount": {
+      "amount": 3,
+      "tag": "earth"
+    },
+    "behavior": {}
   },
   "Tharsis Republic": {
     "tags": [
       "building"
-    ]
+    ],
+    "behavior": {}
   },
   "Thorgate": {
     "tags": [
@@ -3507,12 +3787,17 @@
       "production": {
         "energy": 1
       }
+    },
+    "cardDiscount": {
+      "amount": 3,
+      "tag": "power"
     }
   },
   "United Nations Mars Initiative": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "AI Controlled Mine Network": {
     "cost": 6,
@@ -3540,10 +3825,6 @@
       }
     }
   },
-  "An Offer You Can\\": {
-    "cost": 5,
-    "type": "EVENT"
-  },
   "Ancient Shipyards": {
     "cost": 6,
     "tags": [
@@ -3552,7 +3833,13 @@
     ],
     "type": "ACTIVE",
     "vpPerResource": 1,
-    "resourceType": "resource_cube"
+    "resourceType": "resource_cube",
+    "behavior": {}
+  },
+  "An Offer You Can\\": {
+    "cost": 5,
+    "type": "EVENT",
+    "behavior": {}
   },
   "Archimedes Hydroponics Station": {
     "cost": 12,
@@ -3585,7 +3872,10 @@
       "moon"
     ],
     "behavior": {
-      "tradeFleet": 1
+      "tradeFleet": 1,
+      "colonies": {
+        "addTradeFleet": 1
+      }
     }
   },
   "Colonist Shuttles": {
@@ -3633,7 +3923,8 @@
     "resourceType": "science",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Core Mine": {
     "tags": [
@@ -3653,7 +3944,8 @@
     "type": "EVENT",
     "requirements": {
       "miningRate": 4
-    }
+    },
+    "behavior": {}
   },
   "Crescent Research Association": {
     "tags": [
@@ -3663,7 +3955,8 @@
     "vpPerTag": {
       "tag": "moon",
       "per": 3
-    }
+    },
+    "behavior": {}
   },
   "Darkside Incubation Plant": {
     "cost": 11,
@@ -3673,7 +3966,8 @@
     ],
     "type": "ACTIVE",
     "vpPerResource": 1,
-    "resourceType": "microbe"
+    "resourceType": "microbe",
+    "behavior": {}
   },
   "Darkside Meteor Bombardment": {
     "cost": 20,
@@ -3694,14 +3988,16 @@
       "moon",
       "space"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Darkside Observatory": {
     "cost": 12,
     "tags": [
       "science"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Darkside Smugglers\\": {
     "cost": 17,
@@ -3729,7 +4025,8 @@
       "moon",
       "earth"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "First Lunar Settlement": {
     "tags": [
@@ -3765,6 +4062,20 @@
     "type": "AUTOMATED",
     "behavior": {}
   },
+  "Habitat 14": {
+    "cost": 5,
+    "tags": [
+      "city",
+      "moon"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "energy": -1,
+        "megacredits": -1
+      }
+    }
+  },
   "HE3 Fusion Plant": {
     "cost": 12,
     "tags": [
@@ -3792,7 +4103,8 @@
       "moon"
     ],
     "type": "EVENT",
-    "behavior": {}
+    "behavior": {},
+    "requirements": []
   },
   "HE3 Refinery": {
     "cost": 8,
@@ -3800,21 +4112,8 @@
       "moon"
     ],
     "type": "ACTIVE",
-    "action": {}
-  },
-  "Habitat 14": {
-    "cost": 5,
-    "tags": [
-      "city",
-      "moon"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "energy": -1,
-        "megacredits": -1
-      }
-    }
+    "action": {},
+    "behavior": {}
   },
   "Heavy Duty Rovers": {
     "cost": 12,
@@ -3847,7 +4146,8 @@
       "production": {
         "megacredits": 2
       }
-    }
+    },
+    "requirements": []
   },
   "Hypersensitive Silicon Chip Factory": {
     "cost": 11,
@@ -3878,7 +4178,8 @@
       "moon"
     ],
     "vpPerResource": 1,
-    "resourceType": "animal"
+    "resourceType": "animal",
+    "behavior": {}
   },
   "Iron Extraction Center": {
     "cost": 10,
@@ -3894,14 +4195,22 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "behavior": {}
+    "behavior": {
+      "tradeFleet": 1,
+      "colony": {},
+      "colonies": {
+        "addTradeFleet": 1,
+        "buildColony": {}
+      }
+    }
   },
   "L.T.F. Privileges": {
     "cost": 21,
     "tags": [
       "moon"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Luna Archives": {
     "cost": 13,
@@ -3911,7 +4220,8 @@
     ],
     "type": "ACTIVE",
     "action": {},
-    "resourceType": "science"
+    "resourceType": "science",
+    "behavior": {}
   },
   "Luna Conference": {
     "cost": 5,
@@ -3930,7 +4240,8 @@
       "city",
       "moon"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Luna First Incorporated": {
     "tags": [
@@ -3981,7 +4292,8 @@
     "action": {},
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Luna Project Office": {
     "cost": 4,
@@ -3991,7 +4303,16 @@
     "type": "AUTOMATED",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
+  },
+  "Lunar Dust Processing Plant": {
+    "cost": 6,
+    "tags": [
+      "building"
+    ],
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Luna Resort": {
     "cost": 11,
@@ -4007,6 +4328,96 @@
     },
     "requirements": {
       "habitatTiles": 2
+    }
+  },
+  "Lunar Industry Complex": {
+    "cost": 28,
+    "tags": [
+      "power",
+      "building"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "steel": 1,
+        "titanium": 1,
+        "energy": 2,
+        "heat": 1
+      }
+    }
+  },
+  "Lunar Mine Urbanization": {
+    "cost": 8,
+    "tags": [
+      "moon",
+      "building"
+    ],
+    "type": "EVENT",
+    "behavior": {
+      "production": {
+        "megacredits": 1
+      }
+    },
+    "requirements": {
+      "miningTiles": 1
+    }
+  },
+  "Lunar Observation Post": {
+    "cost": 7,
+    "tags": [
+      "science",
+      "science"
+    ],
+    "type": "ACTIVE",
+    "action": {},
+    "vpPerResource": 1,
+    "resourceType": "data",
+    "behavior": {}
+  },
+  "Lunar Planning Office": {
+    "tags": [
+      "moon",
+      "building"
+    ],
+    "behavior": {
+      "stock": {
+        "steel": 6
+      }
+    }
+  },
+  "Lunar Security Stations": {
+    "cost": 9,
+    "tags": [
+      "moon"
+    ],
+    "type": "ACTIVE",
+    "behavior": {},
+    "requirements": {
+      "roadTiles": 3
+    }
+  },
+  "Lunar Steel": {
+    "cost": 5,
+    "tags": [
+      "moon"
+    ],
+    "type": "ACTIVE",
+    "behavior": {}
+  },
+  "Lunar Trade Fleet": {
+    "cost": 8,
+    "tags": [
+      "moon",
+      "space"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "production": {
+        "megacredits": 1
+      }
+    },
+    "requirements": {
+      "count": 2
     }
   },
   "Luna Senate": {
@@ -4074,103 +4485,6 @@
       "logisticRate": 5
     }
   },
-  "Lunar Dust Processing Plant": {
-    "cost": 6,
-    "tags": [
-      "building"
-    ],
-    "type": "ACTIVE",
-    "behavior": {}
-  },
-  "Lunar Industry Complex": {
-    "cost": 28,
-    "tags": [
-      "power",
-      "building"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "steel": 1,
-        "titanium": 1,
-        "energy": 2,
-        "heat": 1
-      }
-    }
-  },
-  "Lunar Mine Urbanization": {
-    "cost": 8,
-    "tags": [
-      "moon",
-      "building"
-    ],
-    "type": "EVENT",
-    "behavior": {
-      "production": {
-        "megacredits": 1
-      }
-    },
-    "requirements": {
-      "miningTiles": 1
-    }
-  },
-  "Lunar Observation Post": {
-    "cost": 7,
-    "tags": [
-      "science",
-      "science"
-    ],
-    "type": "ACTIVE",
-    "action": {},
-    "vpPerResource": 1,
-    "resourceType": "data"
-  },
-  "Lunar Planning Office": {
-    "tags": [
-      "moon",
-      "building"
-    ],
-    "behavior": {
-      "stock": {
-        "steel": 6
-      }
-    }
-  },
-  "Lunar Security Stations": {
-    "cost": 9,
-    "tags": [
-      "moon"
-    ],
-    "type": "ACTIVE",
-    "behavior": {},
-    "requirements": {
-      "roadTiles": 3
-    }
-  },
-  "Lunar Steel": {
-    "cost": 5,
-    "tags": [
-      "moon"
-    ],
-    "type": "ACTIVE",
-    "behavior": {}
-  },
-  "Lunar Trade Fleet": {
-    "cost": 8,
-    "tags": [
-      "moon",
-      "space"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "production": {
-        "megacredits": 1
-      }
-    },
-    "requirements": {
-      "count": 2
-    }
-  },
   "Mare Imbrium Mine": {
     "cost": 19,
     "tags": [
@@ -4231,7 +4545,8 @@
       "moon",
       "mars"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Microsingularity Plant": {
     "cost": 10,
@@ -4251,7 +4566,8 @@
   "Mining Complex": {
     "tags": [
       "moon"
-    ]
+    ],
+    "behavior": {}
   },
   "Mining Robots Manuf. Center": {
     "cost": 12,
@@ -4276,11 +4592,30 @@
       }
     }
   },
+  "Mooncrate Block Factory": {
+    "cost": 8,
+    "tags": [
+      "building"
+    ],
+    "type": "ACTIVE",
+    "requirements": {
+      "miningTiles": 1
+    },
+    "behavior": {}
+  },
+  "Mooncrate Convoys To Mars": {
+    "cost": 13,
+    "type": "EVENT",
+    "behavior": {},
+    "requirements": {}
+  },
   "Lunar Habitat (var. 1)": {
-    "cost": 23
+    "cost": 23,
+    "behavior": {}
   },
   "Lunar Habitat (var. 2)": {
-    "cost": 26
+    "cost": 26,
+    "behavior": {}
   },
   "Moon Tether": {
     "cost": 18,
@@ -4292,23 +4627,9 @@
     "vp": 1,
     "requirements": {
       "count": 6
-    }
-  },
-  "Mooncrate Block Factory": {
-    "cost": 8,
-    "tags": [
-      "building"
-    ],
-    "type": "ACTIVE",
-    "requirements": {
-      "miningTiles": 1
-    }
-  },
-  "Mooncrate Convoys To Mars": {
-    "cost": 13,
-    "type": "EVENT",
-    "behavior": {},
-    "requirements": {}
+    },
+    "cardDiscount": 2,
+    "behavior": {}
   },
   "Nanotech Industries": {
     "tags": [
@@ -4316,7 +4637,8 @@
       "moon"
     ],
     "vpPerResource": 1,
-    "resourceType": "science"
+    "resourceType": "science",
+    "behavior": {}
   },
   "New Colony Planning Initiatives": {
     "cost": 6,
@@ -4366,7 +4688,14 @@
     "type": "ACTIVE",
     "action": {},
     "vpPerResource": 1,
-    "resourceType": "science"
+    "resourceType": "science",
+    "requirements": [
+      {
+        "tag": "science",
+        "count": 2
+      }
+    ],
+    "behavior": {}
   },
   "Processor Factory": {
     "cost": 8,
@@ -4381,7 +4710,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Revolting Colonists": {
     "cost": 3,
@@ -4391,7 +4721,8 @@
     "type": "EVENT",
     "requirements": {
       "habitatRate": 4
-    }
+    },
+    "behavior": {}
   },
   "Road Piracy": {
     "cost": 10,
@@ -4401,7 +4732,8 @@
     "type": "EVENT",
     "requirements": {
       "logisticRate": 3
-    }
+    },
+    "behavior": {}
   },
   "Rover Drivers Union": {
     "cost": 16,
@@ -4427,7 +4759,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "microbe"
+    "resourceType": "microbe",
+    "behavior": {}
   },
   "Sinus Irdium Road Network": {
     "cost": 15,
@@ -4466,7 +4799,8 @@
       "production": {
         "energy": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Sphere Habitats": {
     "cost": 14,
@@ -4484,7 +4818,10 @@
     ],
     "type": "AUTOMATED",
     "behavior": {
-      "tradeFleet": 2
+      "tradeFleet": 2,
+      "colonies": {
+        "addTradeFleet": 2
+      }
     }
   },
   "Subterranean Habitats": {
@@ -4500,19 +4837,22 @@
     "tags": [
       "space"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Tempest Consultancy": {
     "tags": [
       "moon"
-    ]
+    ],
+    "behavior": {}
   },
   "The Archaic Foundation Institute": {
     "tags": [
       "moon",
       "moon"
     ],
-    "resourceType": "resource_cube"
+    "resourceType": "resource_cube",
+    "behavior": {}
   },
   "The Darkside of The Moon Syndicate": {
     "tags": [
@@ -4612,13 +4952,15 @@
       "space"
     ],
     "type": "EVENT",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Adhai High Orbit Constructions": {
     "tags": [
       "space"
     ],
-    "resourceType": "orbital"
+    "resourceType": "orbital",
+    "behavior": {}
   },
   "Advanced Power Grid": {
     "cost": 18,
@@ -4639,12 +4981,14 @@
     "type": "ACTIVE",
     "requirements": {
       "temperature": -18
-    }
+    },
+    "behavior": {}
   },
   "Ambient": {
     "tags": [
       "venus"
-    ]
+    ],
+    "behavior": {}
   },
   "Anthozoa": {
     "cost": 9,
@@ -4658,7 +5002,8 @@
     "resourceType": "animal",
     "requirements": {
       "oceans": 3
-    }
+    },
+    "behavior": {}
   },
   "Asteroid Resources": {
     "cost": 17,
@@ -4694,7 +5039,8 @@
     ],
     "action": {},
     "vpPerResource": 1,
-    "resourceType": "microbe"
+    "resourceType": "microbe",
+    "behavior": {}
   },
   "Botanical Experience": {
     "cost": 14,
@@ -4707,7 +5053,8 @@
     "resourceType": "data",
     "requirements": {
       "greeneries": 1
-    }
+    },
+    "behavior": {}
   },
   "Breeding Farms": {
     "cost": 16,
@@ -4726,18 +5073,8 @@
       "spend": {
         "plants": 1
       }
-    }
-  },
-  "CO² Reducers": {
-    "tags": [
-      "microbe",
-      "venus"
-    ],
-    "behavior": {
-      "production": {
-        "megacredits": 3
-      }
-    }
+    },
+    "requirements": []
   },
   "Cassini Station": {
     "cost": 23,
@@ -4774,7 +5111,8 @@
       "mars"
     ],
     "type": "EVENT",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Chimera": {
     "tags": [
@@ -4788,12 +5126,24 @@
       }
     }
   },
+  "CO² Reducers": {
+    "tags": [
+      "microbe",
+      "venus"
+    ],
+    "behavior": {
+      "production": {
+        "megacredits": 3
+      }
+    }
+  },
   "Collegium Copernicus": {
     "tags": [
       "science",
       "earth"
     ],
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Communication Center": {
     "cost": 8,
@@ -4833,7 +5183,8 @@
     "type": "EVENT",
     "requirements": {
       "colonies": 1
-    }
+    },
+    "behavior": {}
   },
   "Crashlanding": {
     "cost": 20,
@@ -4851,7 +5202,8 @@
       "power"
     ],
     "type": "ACTIVE",
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Cultivation of Venus": {
     "cost": 18,
@@ -4871,7 +5223,8 @@
     "vpPerTag": {
       "tag": "venus",
       "per": 2
-    }
+    },
+    "behavior": {}
   },
   "Cyanobacteria": {
     "cost": 12,
@@ -5018,7 +5371,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Economic Help": {
     "cost": 9,
@@ -5057,7 +5411,8 @@
     "type": "AUTOMATED",
     "requirements": {
       "count": 1
-    }
+    },
+    "behavior": {}
   },
   "Floater-Urbanism": {
     "cost": 7,
@@ -5069,12 +5424,14 @@
     "resourceType": "venusian_habitat",
     "requirements": {
       "count": 4
-    }
+    },
+    "behavior": {}
   },
   "Gagarin Mobile Base": {
     "tags": [
       "science"
-    ]
+    ],
+    "behavior": {}
   },
   "Geological Expedition": {
     "cost": 18,
@@ -5083,12 +5440,14 @@
       "science"
     ],
     "type": "ACTIVE",
-    "vp": 2
+    "vp": 2,
+    "behavior": {}
   },
   "Habitat Marte": {
     "tags": [
       "mars"
-    ]
+    ],
+    "behavior": {}
   },
   "High Temp. Superconductors": {
     "cost": 10,
@@ -5102,7 +5461,11 @@
         "energy": 2
       }
     },
-    "requirements": {}
+    "requirements": {},
+    "cardDiscount": {
+      "amount": 3,
+      "tag": "power"
+    }
   },
   "Huygens Observatory": {
     "cost": 27,
@@ -5158,11 +5521,13 @@
   },
   "Kickstarter": {
     "cost": 12,
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Last Resort Ingenuity": {
     "cost": 4,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Lobby Halls": {
     "cost": 11,
@@ -5208,15 +5573,18 @@
   "Mars Direct": {
     "tags": [
       "mars"
-    ]
+    ],
+    "behavior": {}
   },
   "Mars Frontier Alliance": {
-    "tags": []
+    "tags": [],
+    "behavior": {}
   },
   "Mars Maths": {
     "tags": [
       "science"
-    ]
+    ],
+    "behavior": {}
   },
   "Martian Culture": {
     "cost": 11,
@@ -5230,7 +5598,8 @@
     "resourceType": "data",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Martian Dust Processing Plant": {
     "cost": 15,
@@ -5300,7 +5669,8 @@
       "mars",
       "microbe"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Mind Set Mars": {
     "behavior": {
@@ -5323,7 +5693,8 @@
         "plants": 1
       },
       "tr": 1
-    }
+    },
+    "requirements": []
   },
   "New Venice": {
     "cost": 21,
@@ -5353,9 +5724,12 @@
     "type": "ACTIVE",
     "requirements": {
       "count": 4
-    }
+    },
+    "behavior": {}
   },
-  "Odyssey": {},
+  "Odyssey": {
+    "behavior": {}
+  },
   "Orbital Laboratories": {
     "cost": 18,
     "tags": [
@@ -5379,7 +5753,9 @@
       "space",
       "science"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "requirements": [],
+    "behavior": {}
   },
   "Ozone Generators": {
     "cost": 14,
@@ -5396,7 +5772,8 @@
     },
     "requirements": {
       "oxygen": 6
-    }
+    },
+    "behavior": {}
   },
   "Personal Agenda": {
     "behavior": {
@@ -5408,7 +5785,8 @@
   "Polaris": {
     "tags": [
       "space"
-    ]
+    ],
+    "behavior": {}
   },
   "Pollinators": {
     "cost": 19,
@@ -5456,19 +5834,26 @@
     "type": "ACTIVE",
     "requirements": {
       "count": 1
-    }
+    },
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "city"
+    },
+    "behavior": {}
   },
   "Private Security": {
     "cost": 8,
     "tags": [
       "earth"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Public Sponsored Grant": {
     "cost": 6,
     "type": "EVENT",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Rare-Earth Elements": {
     "cost": 5,
@@ -5476,7 +5861,8 @@
       "earth",
       "mars"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Red City": {
     "cost": 21,
@@ -5512,7 +5898,8 @@
     "tags": [
       "mars"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Rich Deposits": {
     "cost": 12,
@@ -5541,7 +5928,8 @@
       "mars",
       "venus"
     ],
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Secret Labs": {
     "cost": 21,
@@ -5551,7 +5939,9 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "vp": 1
+    "vp": 1,
+    "requirements": [],
+    "behavior": {}
   },
   "Small Comet": {
     "cost": 32,
@@ -5575,7 +5965,8 @@
     "tags": [
       "building"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Social Events": {
     "cost": 18,
@@ -5583,7 +5974,8 @@
       "earth",
       "mars"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Soil Detoxification": {
     "cost": 10,
@@ -5599,8 +5991,17 @@
     },
     "requirements": {}
   },
-  "SolBank": {
-    "resourceType": "data"
+  "Solarpedia": {
+    "cost": 12,
+    "tags": [
+      "space"
+    ],
+    "type": "ACTIVE",
+    "behavior": {},
+    "action": {},
+    "vpPerResource": 1,
+    "resourceType": "data",
+    "requirements": []
   },
   "Solar Storm": {
     "cost": 12,
@@ -5617,16 +6018,9 @@
       }
     }
   },
-  "Solarpedia": {
-    "cost": 12,
-    "tags": [
-      "space"
-    ],
-    "type": "ACTIVE",
-    "behavior": {},
-    "action": {},
-    "vpPerResource": 1,
-    "resourceType": "data"
+  "SolBank": {
+    "resourceType": "data",
+    "behavior": {}
   },
   "Soylent Seedling Systems": {
     "tags": [
@@ -5675,13 +6069,15 @@
       "building",
       "mars"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Steelaris": {
     "tags": [
       "building",
       "city"
-    ]
+    ],
+    "behavior": {}
   },
   "Survey Mission": {
     "tags": [
@@ -5700,7 +6096,8 @@
       "mars",
       "space"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Terraforming Robots": {
     "cost": 10,
@@ -5712,7 +6109,8 @@
     "resourceType": "specialized_robot",
     "requirements": {
       "count": 4
-    }
+    },
+    "behavior": {}
   },
   "The New Space Race": {
     "tags": [
@@ -5738,13 +6136,15 @@
         "megacredits": 2
       }
     },
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Valuable Gases:Pathfinders": {
     "tags": [
       "jovian",
       "venus"
-    ]
+    ],
+    "behavior": {}
   },
   "Venera Base": {
     "cost": 21,
@@ -5781,7 +6181,8 @@
     "tags": [
       "mars",
       "space"
-    ]
+    ],
+    "behavior": {}
   },
   "Wetlands": {
     "cost": 20,
@@ -5793,7 +6194,8 @@
     "vp": 1,
     "requirements": {
       "oceans": 2
-    }
+    },
+    "behavior": {}
   },
   "Acquired Space Agency": {
     "behavior": {
@@ -5818,7 +6220,8 @@
   "Aquifer Turbines": {
     "tags": [
       "power"
-    ]
+    ],
+    "behavior": {}
   },
   "Biofuels": {
     "tags": [
@@ -5857,12 +6260,14 @@
     }
   },
   "Buffer Gas": {
-    "cost": 16
+    "cost": 16,
+    "behavior": {}
   },
   "Business Empire": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "Cheung Shing MARS": {
     "tags": [
@@ -5872,6 +6277,10 @@
       "production": {
         "megacredits": 3
       }
+    },
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "building"
     }
   },
   "Dome Farming": {
@@ -5905,7 +6314,9 @@
       "city": 1
     }
   },
-  "Eccentric Sponsor": {},
+  "Eccentric Sponsor": {
+    "behavior": {}
+  },
   "Ecology Experts": {
     "tags": [
       "plant",
@@ -5928,7 +6339,8 @@
   "Galilean Mining": {
     "tags": [
       "jovian"
-    ]
+    ],
+    "behavior": {}
   },
   "Great Aquifer": {
     "behavior": {}
@@ -6144,14 +6556,16 @@
     "resourceType": "microbe",
     "requirements": {
       "temperature": -20
-    }
+    },
+    "behavior": {}
   },
   "Research Coordination": {
     "cost": 4,
     "tags": [
       "wild"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Research Network": {
     "tags": [
@@ -6164,17 +6578,8 @@
       "drawCard": 3
     }
   },
-  "Robinson Industries": {},
-  "SF Memorial": {
-    "cost": 7,
-    "tags": [
-      "building"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "drawCard": 1
-    },
-    "vp": 1
+  "Robinson Industries": {
+    "behavior": {}
   },
   "Self-Sufficient Settlement": {
     "tags": [
@@ -6187,6 +6592,17 @@
       },
       "city": 1
     }
+  },
+  "SF Memorial": {
+    "cost": 7,
+    "tags": [
+      "building"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "drawCard": 1
+    },
+    "vp": 1
   },
   "Smelting Plant": {
     "tags": [
@@ -6261,12 +6677,18 @@
   "Valley Trust": {
     "tags": [
       "earth"
-    ]
+    ],
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "science"
+    },
+    "behavior": {}
   },
   "Vitor": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "Applied Science": {
     "tags": [
@@ -6322,7 +6744,8 @@
       "addResources": 1
     },
     "vpPerResource": 1,
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Colonial Envoys": {
     "cost": 4,
@@ -6355,6 +6778,10 @@
     "behavior": {
       "stock": {
         "energy": 3
+      },
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
       }
     }
   },
@@ -6393,7 +6820,8 @@
     "tags": [
       "space"
     ],
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Focused Organization": {
     "behavior": {
@@ -6438,7 +6866,8 @@
   "Industrial Complex": {
     "tags": [
       "building"
-    ]
+    ],
+    "behavior": {}
   },
   "Ishtar Expedition": {
     "cost": 6,
@@ -6469,7 +6898,12 @@
       "space"
     ],
     "type": "ACTIVE",
-    "behavior": {},
+    "behavior": {
+      "tradeOffset": 2,
+      "colonies": {
+        "tradeOffset": 2
+      }
+    },
     "vp": 2
   },
   "Main Belt Asteroids": {
@@ -6478,7 +6912,8 @@
     ],
     "action": {},
     "vpPerResource": 1,
-    "resourceType": "asteroid"
+    "resourceType": "asteroid",
+    "behavior": {}
   },
   "Microgravity Nutrition": {
     "cost": 11,
@@ -6487,7 +6922,8 @@
       "plant"
     ],
     "type": "AUTOMATED",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Nirgal Enterprises": {
     "tags": [
@@ -6521,6 +6957,10 @@
     "behavior": {
       "production": {
         "titanium": 1
+      },
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
       }
     }
   },
@@ -6553,7 +6993,8 @@
     "tags": [
       "city",
       "plant"
-    ]
+    ],
+    "behavior": {}
   },
   "Recession": {
     "behavior": {
@@ -6625,14 +7066,16 @@
       "plant"
     ],
     "type": "EVENT",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Spire": {
     "tags": [
       "city",
       "earth"
     ],
-    "resourceType": "science"
+    "resourceType": "science",
+    "behavior": {}
   },
   "Sponsoring Nation": {
     "cost": 21,
@@ -6682,7 +7125,8 @@
   "Terraforming Deal": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "Unexpected Application": {
     "cost": 4,
@@ -6734,7 +7178,8 @@
       "venus",
       "space"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Venus Shuttles": {
     "cost": 9,
@@ -6751,7 +7196,16 @@
       "space"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "requirements": [
+      {
+        "tag": "venus",
+        "count": 2
+      }
+    ],
+    "behavior": {
+      "tradeMC": 3
+    }
   },
   "WG Project": {
     "cost": 9,
@@ -6759,7 +7213,8 @@
       "earth"
     ],
     "type": "AUTOMATED",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "World Government Advisor": {
     "tags": [
@@ -6791,7 +7246,8 @@
     "tags": [
       "earth"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Albedo Plants": {
     "tags": [
@@ -6828,7 +7284,8 @@
     ],
     "type": "AUTOMATED",
     "behavior": {},
-    "vp": 1
+    "vp": 1,
+    "requirements": []
   },
   "Arcadian Communities": {
     "behavior": {
@@ -6869,7 +7326,8 @@
       }
     },
     "vpPerResource": 1,
-    "resourceType": "asteroid"
+    "resourceType": "asteroid",
+    "behavior": {}
   },
   "Asteroid Rights": {
     "cost": 10,
@@ -6888,7 +7346,8 @@
     "tags": [
       "science"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Astrodrill": {
     "tags": [
@@ -6915,7 +7374,8 @@
     "tags": [
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Carbon Nanosystems": {
     "cost": 14,
@@ -6925,7 +7385,8 @@
     ],
     "type": "ACTIVE",
     "vp": 1,
-    "resourceType": "graphene"
+    "resourceType": "graphene",
+    "behavior": {}
   },
   "Casinos": {
     "cost": 5,
@@ -6965,7 +7426,8 @@
       "space"
     ],
     "type": "ACTIVE",
-    "resourceType": "asteroid"
+    "resourceType": "asteroid",
+    "behavior": {}
   },
   "Corporate Archives": {
     "tags": [
@@ -6981,7 +7443,8 @@
     "cost": 4,
     "type": "EVENT",
     "vp": 1,
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Cutting Edge Technology": {
     "cost": 12,
@@ -6989,7 +7452,8 @@
       "science"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Cyberia Systems": {
     "cost": 16,
@@ -7010,7 +7474,8 @@
       "spend": {
         "heat": 3
       }
-    }
+    },
+    "behavior": {}
   },
   "Directed Impactors": {
     "cost": 8,
@@ -7018,7 +7483,8 @@
       "space"
     ],
     "type": "ACTIVE",
-    "resourceType": "asteroid"
+    "resourceType": "asteroid",
+    "behavior": {}
   },
   "Diversity Support": {
     "cost": 1,
@@ -7031,7 +7497,9 @@
       "resourceTypes": 9
     }
   },
-  "Double Down": {},
+  "Double Down": {
+    "behavior": {}
+  },
   "Dusk Laser Mining": {
     "cost": 8,
     "tags": [
@@ -7056,7 +7524,8 @@
     "tags": [
       "power"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Factorum": {
     "tags": [
@@ -7093,7 +7562,8 @@
     "tags": [
       "science"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Giant Solar Collector": {
     "tags": [
@@ -7150,7 +7620,8 @@
       "building"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Homeostasis Bureau": {
     "cost": 16,
@@ -7184,7 +7655,8 @@
       "space"
     ],
     "type": "ACTIVE",
-    "resourceType": "asteroid"
+    "resourceType": "asteroid",
+    "behavior": {}
   },
   "Imported Nutrients": {
     "cost": 14,
@@ -7205,7 +7677,8 @@
       "space"
     ],
     "type": "AUTOMATED",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Jovian Embassy": {
     "cost": 14,
@@ -7250,7 +7723,8 @@
     "tags": [
       "earth"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Magnetic Shield": {
     "cost": 24,
@@ -7267,7 +7741,8 @@
   },
   "Mars Nomads": {
     "cost": 13,
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Martian Lumber Corp": {
     "cost": 6,
@@ -7290,7 +7765,8 @@
     "tags": [
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Meltworks": {
     "cost": 4,
@@ -7305,7 +7781,8 @@
       "spend": {
         "heat": 5
       }
-    }
+    },
+    "behavior": {}
   },
   "Mercurian Alloys": {
     "cost": 3,
@@ -7318,7 +7795,9 @@
       "count": 2
     }
   },
-  "Merger": {},
+  "Merger": {
+    "behavior": {}
+  },
   "Mohole Lake": {
     "cost": 31,
     "tags": [
@@ -7348,7 +7827,8 @@
     ],
     "type": "ACTIVE",
     "vpPerResource": 1,
-    "resourceType": "hydroelectric_resource"
+    "resourceType": "hydroelectric_resource",
+    "behavior": {}
   },
   "New Holland": {
     "cost": 20,
@@ -7396,7 +7876,8 @@
         "megacredits": 2
       }
     },
-    "vp": 1
+    "vp": 1,
+    "requirements": []
   },
   "Penguins": {
     "cost": 7,
@@ -7411,7 +7892,8 @@
     "resourceType": "animal",
     "requirements": {
       "oceans": 8
-    }
+    },
+    "behavior": {}
   },
   "Pharmacy Union": {
     "behavior": {},
@@ -7420,12 +7902,14 @@
   "Philares": {
     "tags": [
       "building"
-    ]
+    ],
+    "behavior": {}
   },
   "PolderTECH Dutch": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "Potatoes": {
     "cost": 2,
@@ -7441,7 +7925,8 @@
   },
   "Project Inspection": {
     "cost": 0,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Protected Growth": {
     "cost": 2,
@@ -7473,7 +7958,8 @@
   "Public Plans": {
     "cost": 7,
     "type": "EVENT",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Recyclon": {
     "tags": [
@@ -7492,7 +7978,8 @@
     "type": "ACTIVE",
     "requirements": {
       "oxygen": 4
-    }
+    },
+    "behavior": {}
   },
   "Rego Plastics": {
     "cost": 10,
@@ -7531,7 +8018,8 @@
     "type": "ACTIVE",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Small Asteroid": {
     "cost": 10,
@@ -7568,7 +8056,8 @@
       "microbe",
       "plant"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Solar Logistics": {
     "cost": 20,
@@ -7582,16 +8071,17 @@
         "titanium": 2
       }
     },
-    "vp": 1
+    "vp": 1,
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "earth"
+    }
   },
   "Splice": {
     "tags": [
       "microbe"
-    ]
-  },
-  "St. Joseph of Cupertino Mission": {
-    "cost": 7,
-    "type": "ACTIVE"
+    ],
+    "behavior": {}
   },
   "Stanford Torus": {
     "cost": 12,
@@ -7620,6 +8110,11 @@
       "oceans": 3
     }
   },
+  "St. Joseph of Cupertino Mission": {
+    "cost": 7,
+    "type": "ACTIVE",
+    "behavior": {}
+  },
   "Strategic Base Planning": {
     "tags": [
       "city",
@@ -7627,7 +8122,11 @@
       "space"
     ],
     "behavior": {
-      "city": 1
+      "city": 1,
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
+      }
     }
   },
   "Sub-Crust Measurements": {
@@ -7644,7 +8143,8 @@
     "vp": 2,
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Supercapacitors": {
     "cost": 4,
@@ -7717,7 +8217,8 @@
     "action": {
       "addResources": 1
     },
-    "resourceType": "animal"
+    "resourceType": "animal",
+    "behavior": {}
   },
   "Weather Balloons": {
     "cost": 11,
@@ -7744,7 +8245,8 @@
     "type": "EVENT",
     "requirements": {
       "chairman": 1
-    }
+    },
+    "behavior": {}
   },
   "Clone Troopers (II)": {
     "cost": 12,
@@ -7756,7 +8258,8 @@
     "resourceType": "clone_trooper",
     "requirements": {
       "oceans": 6
-    }
+    },
+    "behavior": {}
   },
   "Cloud City (V)": {
     "cost": 5,
@@ -7825,14 +8328,16 @@
       "power",
       "plant"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Trade Embargo (I)": {
     "cost": 4,
     "tags": [
       "space"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Aerial Lenses": {
     "cost": 2,
@@ -7848,7 +8353,8 @@
   "Banned Delegate": {
     "cost": 0,
     "type": "EVENT",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Cultural Metropolis": {
     "cost": 20,
@@ -7892,12 +8398,14 @@
       "science"
     ],
     "type": "ACTIVE",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Lakefront Resorts": {
     "tags": [
       "building"
-    ]
+    ],
+    "behavior": {}
   },
   "Martian Media Center": {
     "cost": 7,
@@ -7914,17 +8422,6 @@
       "spend": {
         "megacredits": 3
       }
-    },
-    "requirements": {}
-  },
-  "PR Office": {
-    "cost": 7,
-    "tags": [
-      "earth"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "tr": 1
     },
     "requirements": {}
   },
@@ -7957,16 +8454,29 @@
     "vpPerResource": 1,
     "resourceType": "preservation"
   },
+  "PR Office": {
+    "cost": 7,
+    "tags": [
+      "earth"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "tr": 1
+    },
+    "requirements": {}
+  },
   "Public Celebrations": {
     "cost": 8,
     "tags": [],
     "type": "EVENT",
     "vp": 2,
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Recruitment": {
     "cost": 2,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Red Tourism Wave": {
     "cost": 3,
@@ -7974,12 +8484,14 @@
       "earth"
     ],
     "type": "EVENT",
-    "requirements": {}
+    "requirements": {},
+    "behavior": {}
   },
   "Septem Tribus": {
     "tags": [
       "wild"
-    ]
+    ],
+    "behavior": {}
   },
   "Sponsored Mohole": {
     "cost": 5,
@@ -8028,7 +8540,8 @@
     "type": "EVENT",
     "requirements": {
       "partyLeader": 1
-    }
+    },
+    "behavior": {}
   },
   "Wildlife Dome": {
     "cost": 15,
@@ -8078,12 +8591,14 @@
     "vp": 2,
     "requirements": {
       "corruption": 0
-    }
+    },
+    "behavior": {}
   },
   "Anubis Securities": {
     "tags": [
       "earth"
-    ]
+    ],
+    "behavior": {}
   },
   "Arborist Collective": {
     "tags": [
@@ -8115,7 +8630,8 @@
     "tags": [
       "building"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Battery Factory": {
     "cost": 8,
@@ -8128,7 +8644,8 @@
       "spend": {
         "energy": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Battery Shipment": {
     "tags": [
@@ -8204,7 +8721,8 @@
   "Central Reservoir": {
     "tags": [
       "building"
-    ]
+    ],
+    "behavior": {}
   },
   "Chemical Factory": {
     "cost": 18,
@@ -8226,7 +8744,8 @@
       "earth"
     ],
     "type": "EVENT",
-    "vp": 3
+    "vp": 3,
+    "behavior": {}
   },
   "Cloud Vortex Outpost": {
     "tags": [
@@ -8248,7 +8767,8 @@
     "type": "EVENT",
     "requirements": {
       "corruption": 1
-    }
+    },
+    "behavior": {}
   },
   "Corporate Theft": {
     "cost": 10,
@@ -8258,7 +8778,8 @@
     "type": "ACTIVE",
     "requirements": {
       "corruption": 2
-    }
+    },
+    "behavior": {}
   },
   "Crater Survey": {
     "cost": 5,
@@ -8291,14 +8812,16 @@
       "city",
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Deepmining": {
     "cost": 11,
     "tags": [
       "building"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Deepnuking": {
     "cost": 6,
@@ -8337,7 +8860,8 @@
     "tags": [
       "earth"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Earthquake Machine": {
     "cost": 10,
@@ -8368,7 +8892,8 @@
     "tags": [
       "building"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Expedition Vehicles": {
     "cost": 10,
@@ -8376,7 +8901,8 @@
       "science"
     ],
     "type": "ACTIVE",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Exploitation Of Venus": {
     "cost": 6,
@@ -8392,14 +8918,16 @@
       "global": {
         "venus": 1
       }
-    }
+    },
+    "behavior": {}
   },
   "Export Convoy": {
     "cost": 6,
     "tags": [
       "space"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Fabricated Scandal": {
     "cost": 14,
@@ -8430,7 +8958,12 @@
       "earth",
       "space"
     ],
-    "behavior": {}
+    "behavior": {
+      "colony": {},
+      "colonies": {
+        "buildColony": {}
+      }
+    }
   },
   "Friends in High Places": {
     "cost": 10,
@@ -8439,7 +8972,14 @@
       "earth"
     ],
     "type": "ACTIVE",
-    "behavior": {}
+    "behavior": {},
+    "requirements": [
+      {
+        "tag": "earth",
+        "count": 2
+      }
+    ],
+    "cardDiscount": 1
   },
   "Gaia City": {
     "cost": 20,
@@ -8465,7 +9005,10 @@
       "stock": {
         "titanium": 3
       },
-      "tradeFleet": 1
+      "tradeFleet": 1,
+      "colonies": {
+        "addTradeFleet": 1
+      }
     }
   },
   "Gas Trust": {
@@ -8485,7 +9028,8 @@
       "science"
     ],
     "type": "ACTIVE",
-    "action": {}
+    "action": {},
+    "behavior": {}
   },
   "Geoscan Satellite": {
     "cost": 8,
@@ -8493,7 +9037,8 @@
       "science",
       "space"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Geothermal Network": {
     "cost": 14,
@@ -8516,7 +9061,8 @@
     "tags": [
       "earth"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Grey Market Exploitation": {
     "cost": 4,
@@ -8531,7 +9077,8 @@
     },
     "requirements": {
       "corruption": 2
-    }
+    },
+    "behavior": {}
   },
   "Guerilla Ecologists": {
     "cost": 9,
@@ -8541,7 +9088,8 @@
     "type": "AUTOMATED",
     "requirements": {
       "corruption": 1
-    }
+    },
+    "behavior": {}
   },
   "Hackers:u": {
     "cost": 3,
@@ -8572,6 +9120,9 @@
     ],
     "behavior": {
       "tradeFleet": 1,
+      "colonies": {
+        "addTradeFleet": 1
+      },
       "addResources": 2
     },
     "resourceType": "supply_chain"
@@ -8594,7 +9145,8 @@
     "tags": [
       "crime"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Hyperspace Drive Prototype": {
     "cost": 11,
@@ -8605,7 +9157,8 @@
     "type": "AUTOMATED",
     "requirements": {
       "count": 3
-    }
+    },
+    "behavior": {}
   },
   "Imported Heavy Machinery": {
     "cost": 9,
@@ -8618,7 +9171,8 @@
   },
   "Induced Tremor": {
     "cost": 5,
-    "type": "EVENT"
+    "type": "EVENT",
+    "behavior": {}
   },
   "Infrastructure Overload": {
     "cost": 7,
@@ -8721,14 +9275,16 @@
     "type": "ACTIVE",
     "requirements": {
       "corruption": 2
-    }
+    },
+    "behavior": {}
   },
   "Landfill": {
     "cost": 2,
     "tags": [
       "building"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Lobbying Network": {
     "cost": 5,
@@ -8758,7 +9314,8 @@
     "resourceType": "ware",
     "requirements": {
       "cities": 1
-    }
+    },
+    "behavior": {}
   },
   "Media Frenzy": {
     "cost": 6,
@@ -8776,7 +9333,8 @@
     "type": "EVENT",
     "requirements": {
       "corruption": 1
-    }
+    },
+    "behavior": {}
   },
   "Micro-Geodesics": {
     "cost": 8,
@@ -8802,7 +9360,8 @@
         "energy": 2
       }
     },
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Microprobing Technology": {
     "cost": 8,
@@ -8829,7 +9388,8 @@
         "resourcesHere": 4
       }
     },
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Monopoly": {
     "cost": 8,
@@ -8839,7 +9399,8 @@
     "type": "ACTIVE",
     "requirements": {
       "corruption": 2
-    }
+    },
+    "behavior": {}
   },
   "Nanofoundry": {
     "cost": 18,
@@ -8943,7 +9504,8 @@
     "type": "EVENT",
     "requirements": {
       "corruption": 1
-    }
+    },
+    "behavior": {}
   },
   "Personal Spacecruiser": {
     "cost": 12,
@@ -9030,7 +9592,8 @@
   "Prospecting": {
     "tags": [
       "space"
-    ]
+    ],
+    "behavior": {}
   },
   "Public Spaceline": {
     "cost": 18,
@@ -9062,7 +9625,8 @@
     "type": "AUTOMATED",
     "requirements": {
       "corruption": 1
-    }
+    },
+    "behavior": {}
   },
   "Reckless Detonation": {
     "cost": 1,
@@ -9083,7 +9647,8 @@
     ],
     "type": "ACTIVE",
     "vpPerResource": 1,
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Robot Moles": {
     "cost": 8,
@@ -9114,7 +9679,8 @@
     "resourceType": "science",
     "requirements": {
       "temperature": -18
-    }
+    },
+    "behavior": {}
   },
   "Secret Research": {
     "tags": [
@@ -9153,7 +9719,8 @@
     "resourceType": "fighter",
     "requirements": {
       "corruption": 3
-    }
+    },
+    "behavior": {}
   },
   "Space Wargames": {
     "cost": 25,
@@ -9193,7 +9760,8 @@
     "tags": [
       "science"
     ],
-    "type": "ACTIVE"
+    "type": "ACTIVE",
+    "behavior": {}
   },
   "Star Vegas": {
     "cost": 32,
@@ -9219,7 +9787,8 @@
         "resourcesHere": 2
       }
     },
-    "resourceType": "data"
+    "resourceType": "data",
+    "behavior": {}
   },
   "Sting Operation": {
     "cost": 14,
@@ -9236,14 +9805,17 @@
     "tags": [
       "crime"
     ],
-    "type": "EVENT"
+    "type": "EVENT",
+    "requirements": [],
+    "behavior": {}
   },
   "Subterranean Sea": {
     "cost": 10,
     "tags": [
       "building"
     ],
-    "type": "AUTOMATED"
+    "type": "AUTOMATED",
+    "behavior": {}
   },
   "Thiolava Vents": {
     "cost": 13,
@@ -9276,7 +9848,8 @@
         "resourcesHere": 1
       }
     },
-    "resourceType": "tool"
+    "resourceType": "tool",
+    "behavior": {}
   },
   "Tunnel Boring Machine": {
     "cost": 10,
@@ -9288,7 +9861,8 @@
       "spend": {
         "energy": 3
       }
-    }
+    },
+    "behavior": {}
   },
   "Tunneling Loophole": {
     "cost": 8,
@@ -9372,7 +9946,8 @@
     "tags": [
       "city",
       "building"
-    ]
+    ],
+    "behavior": {}
   },
   "Underground Shelters": {
     "cost": 14,
@@ -9420,7 +9995,8 @@
     "type": "ACTIVE",
     "requirements": {
       "count": 1
-    }
+    },
+    "behavior": {}
   },
   "Volunteer Mining Initiative": {
     "cost": 12,
@@ -9438,7 +10014,8 @@
     "resourceType": "animal",
     "requirements": {
       "oceans": 6
-    }
+    },
+    "behavior": {}
   },
   "Aerial Mappers": {
     "cost": 11,
@@ -9453,7 +10030,8 @@
       }
     },
     "vp": 1,
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Aerosport Tournament": {
     "cost": 7,
@@ -9477,7 +10055,8 @@
     }
   },
   "Air Scrapping (Var)": {
-    "cost": 15
+    "cost": 15,
+    "behavior": {}
   },
   "Aphrodite": {
     "tags": [
@@ -9524,7 +10103,8 @@
     ],
     "action": {},
     "vpPerResource": 1,
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Comet for Venus": {
     "cost": 11,
@@ -9586,7 +10166,8 @@
         "energy": 1
       }
     },
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Dirigibles": {
     "cost": 11,
@@ -9595,7 +10176,8 @@
     ],
     "type": "ACTIVE",
     "action": {},
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Extractor Balloons": {
     "cost": 21,
@@ -9632,7 +10214,8 @@
     "resourceType": "microbe",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Floating Habs": {
     "cost": 5,
@@ -9649,7 +10232,8 @@
     "resourceType": "floater",
     "requirements": {
       "count": 2
-    }
+    },
+    "behavior": {}
   },
   "Forced Precipitation": {
     "cost": 8,
@@ -9657,7 +10241,8 @@
       "venus"
     ],
     "type": "ACTIVE",
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Freyja Biodomes": {
     "cost": 14,
@@ -9739,7 +10324,8 @@
       "jovian"
     ],
     "type": "AUTOMATED",
-    "vp": 2
+    "vp": 2,
+    "behavior": {}
   },
   "Ishtar Mining": {
     "cost": 5,
@@ -9762,7 +10348,8 @@
       "venus"
     ],
     "type": "ACTIVE",
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Local Shading": {
     "cost": 4,
@@ -9779,7 +10366,8 @@
         "megacredits": 1
       }
     },
-    "resourceType": "floater"
+    "resourceType": "floater",
+    "behavior": {}
   },
   "Luna Metropolis": {
     "cost": 21,
@@ -9797,7 +10385,9 @@
   "Luxury Foods": {
     "cost": 8,
     "type": "AUTOMATED",
-    "vp": 2
+    "vp": 2,
+    "requirements": [],
+    "behavior": {}
   },
   "Manutech": {
     "tags": [
@@ -9838,12 +10428,14 @@
       "production": {
         "steel": 2
       }
-    }
+    },
+    "requirements": []
   },
   "Morning Star Inc.": {
     "tags": [
       "venus"
-    ]
+    ],
+    "behavior": {}
   },
   "Neutralizer Factory": {
     "cost": 7,
@@ -9868,7 +10460,8 @@
     "type": "AUTOMATED",
     "behavior": {
       "tr": 2
-    }
+    },
+    "requirements": []
   },
   "Orbital Reflectors": {
     "cost": 26,
@@ -9895,7 +10488,8 @@
     "resourceType": "asteroid",
     "requirements": {
       "venus": 14
-    }
+    },
+    "behavior": {}
   },
   "Sister Planet Support": {
     "cost": 7,
@@ -9908,7 +10502,8 @@
       "production": {
         "megacredits": 3
       }
-    }
+    },
+    "requirements": []
   },
   "Solarnet": {
     "cost": 7,
@@ -9916,7 +10511,8 @@
     "behavior": {
       "drawCard": 2
     },
-    "vp": 1
+    "vp": 1,
+    "requirements": []
   },
   "Spin-Inducing Asteroid": {
     "cost": 16,
@@ -9940,7 +10536,8 @@
       "science"
     ],
     "type": "AUTOMATED",
-    "vp": 1
+    "vp": 1,
+    "behavior": {}
   },
   "Stratopolis": {
     "cost": 22,
@@ -9976,7 +10573,8 @@
     "resourceType": "animal",
     "requirements": {
       "venus": 12
-    }
+    },
+    "behavior": {}
   },
   "Sulphur-Eating Bacteria": {
     "cost": 6,
@@ -9988,7 +10586,8 @@
     "resourceType": "microbe",
     "requirements": {
       "venus": 6
-    }
+    },
+    "behavior": {}
   },
   "Sulphur Exports": {
     "cost": 21,
@@ -10036,7 +10635,8 @@
     "resourceType": "microbe",
     "requirements": {
       "venus": 6
-    }
+    },
+    "behavior": {}
   },
   "Venus Governor": {
     "cost": 4,
@@ -10052,6 +10652,55 @@
     },
     "requirements": {
       "count": 2
+    }
+  },
+  "Venusian Animals": {
+    "cost": 15,
+    "tags": [
+      "venus",
+      "animal",
+      "science"
+    ],
+    "type": "ACTIVE",
+    "vpPerResource": 1,
+    "resourceType": "animal",
+    "requirements": {
+      "venus": 18
+    },
+    "behavior": {}
+  },
+  "Venusian Insects": {
+    "cost": 5,
+    "tags": [
+      "venus",
+      "microbe"
+    ],
+    "type": "ACTIVE",
+    "action": {
+      "addResources": 1
+    },
+    "vpPerResource": 1,
+    "resourceType": "microbe",
+    "requirements": {
+      "venus": 12
+    },
+    "behavior": {}
+  },
+  "Venusian Plants": {
+    "cost": 13,
+    "tags": [
+      "venus",
+      "plant"
+    ],
+    "type": "AUTOMATED",
+    "behavior": {
+      "global": {
+        "venus": 1
+      }
+    },
+    "vp": 1,
+    "requirements": {
+      "venus": 16
     }
   },
   "Venus Magnetizer": {
@@ -10070,7 +10719,8 @@
     },
     "requirements": {
       "venus": 10
-    }
+    },
+    "behavior": {}
   },
   "Venus Soils": {
     "cost": 20,
@@ -10095,59 +10745,18 @@
       "space"
     ],
     "type": "ACTIVE",
-    "vp": 1
-  },
-  "Venusian Animals": {
-    "cost": 15,
-    "tags": [
-      "venus",
-      "animal",
-      "science"
-    ],
-    "type": "ACTIVE",
-    "vpPerResource": 1,
-    "resourceType": "animal",
-    "requirements": {
-      "venus": 18
-    }
-  },
-  "Venusian Insects": {
-    "cost": 5,
-    "tags": [
-      "venus",
-      "microbe"
-    ],
-    "type": "ACTIVE",
-    "action": {
-      "addResources": 1
-    },
-    "vpPerResource": 1,
-    "resourceType": "microbe",
-    "requirements": {
-      "venus": 12
-    }
-  },
-  "Venusian Plants": {
-    "cost": 13,
-    "tags": [
-      "venus",
-      "plant"
-    ],
-    "type": "AUTOMATED",
-    "behavior": {
-      "global": {
-        "venus": 1
-      }
-    },
     "vp": 1,
-    "requirements": {
-      "venus": 16
-    }
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "venus"
+    },
+    "behavior": {}
   },
   "Viron": {
     "tags": [
       "microbe"
-    ]
+    ],
+    "behavior": {}
   },
   "Water to Venus": {
     "cost": 9,

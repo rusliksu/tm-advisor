@@ -4,7 +4,7 @@
   'use strict';
 
   var PAY_ZERO = {
-    heat: 0, megaCredits: 0, steel: 0, titanium: 0, plants: 0,
+    heat: 0, megacredits: 0, steel: 0, titanium: 0, plants: 0,
     microbes: 0, floaters: 0, lunaArchivesScience: 0, spireScience: 0,
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
@@ -71,7 +71,7 @@
       remaining = Math.max(0, remaining - use * alt.val);
     }
 
-    pay.megaCredits = Math.max(0, Math.min(remaining, tp.megaCredits || tp.megacredits || 0));
+    pay.megacredits = Math.max(0, Math.min(remaining, tp.megaCredits || tp.megacredits || 0));
     return pay;
   }
 
@@ -350,6 +350,50 @@
     };
   }
 
+  function estimateGensLeftFromState(state, options) {
+    var opts = options || {};
+    var breakdown = buildGlobalProgressBreakdown(state);
+    var g = (state && state.game) || {};
+    var gen = typeof opts.gen === 'number' ? opts.gen : (g.generation || 1);
+    var playerCount = typeof opts.playerCount === 'number'
+      ? opts.playerCount
+      : ((state && state.players) ? (state.players.length || 3) : 3);
+    var isWgt = !!(g.gameOptions && g.gameOptions.solarPhaseOption);
+    var coreSteps = breakdown.tempSteps + breakdown.oxySteps + breakdown.oceanSteps;
+
+    if (coreSteps <= 0) return 1;
+
+    var baseSteps;
+    if (playerCount <= 2) baseSteps = isWgt ? 4 : 3;
+    else if (playerCount >= 4) baseSteps = isWgt ? 8 : 6;
+    else baseSteps = isWgt ? 6 : 4;
+
+    var stepsPerGen = baseSteps;
+    if (gen <= 3) {
+      stepsPerGen = Math.max(3, baseSteps - 2);
+    } else if (gen >= 7) {
+      stepsPerGen = baseSteps + (playerCount >= 3 ? 2 : 1);
+    }
+
+    var lateCloseout = gen >= 7 && coreSteps <= 18;
+    if (breakdown.venus < 30 && isWgt) {
+      if (lateCloseout) {
+        stepsPerGen += 1;
+      } else if (gen < 7) {
+        stepsPerGen = Math.max(3, stepsPerGen - 1);
+      }
+    }
+
+    var rawGens = coreSteps / Math.max(1, stepsPerGen);
+    var gensLeft = lateCloseout ? Math.round(rawGens) : Math.ceil(rawGens);
+
+    if (gen >= 8 && playerCount >= 3 && coreSteps <= 18) {
+      gensLeft = Math.min(gensLeft, 2);
+    }
+
+    return Math.max(1, gensLeft);
+  }
+
   function buildEndgameTiming(state, options) {
     var opts = options || {};
     var remainingStepsFn = opts.remainingSteps;
@@ -378,6 +422,7 @@
 
   function estimateScoreCardTimingInterpolated(options) {
     var opts = options || {};
+    var state = opts.state;
     var steps = typeof opts.steps === 'number' ? opts.steps : 0;
     var gen = typeof opts.gen === 'number' ? opts.gen : 5;
     var totalSteps = typeof opts.totalSteps === 'number' ? opts.totalSteps : 42;
@@ -388,7 +433,8 @@
     var genBased = Math.max(1, avgGameLen - gen + 1);
     var stepsBased = Math.max(1, Math.round(steps / (totalSteps / avgGameLen)));
     var completionPct = steps > 0 ? Math.max(0, 1 - steps / totalSteps) : 1;
-    var gensLeft = Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
+    var boardBased = state ? estimateGensLeftFromState(state, { gen: gen, playerCount: playerCount }) : 0;
+    var gensLeft = boardBased || Math.max(1, Math.round(genBased * completionPct + stepsBased * (1 - completionPct)));
     var ratePerGen = steps > 0 ? steps / Math.max(1, gensLeft) : totalSteps / avgGameLen;
     return {
       totalSteps: totalSteps,
@@ -396,6 +442,7 @@
       genBased: genBased,
       stepsBased: stepsBased,
       completionPct: completionPct,
+      boardBased: boardBased,
       gensLeft: gensLeft,
       ratePerGen: ratePerGen,
     };
@@ -1207,6 +1254,7 @@
     estimateTriggersPerGen: estimateTriggersPerGen,
     pAtLeastOne: pAtLeastOne,
     buildGlobalProgressBreakdown: buildGlobalProgressBreakdown,
+    estimateGensLeftFromState: estimateGensLeftFromState,
     buildEndgameTiming: buildEndgameTiming,
     estimateScoreCardTimingInterpolated: estimateScoreCardTimingInterpolated,
     estimateScoreCardTimingAccelerating: estimateScoreCardTimingAccelerating,

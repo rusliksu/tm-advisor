@@ -43,9 +43,12 @@
   }
 
   function getOpeningHandBias(input) {
+    var cardName = input && input.cardName;
     var data = input && input.data;
     var ctx = input && input.ctx;
     var getPlayerVueData = input && input.getPlayerVueData;
+    var getCardTypeByName = input && input.getCardTypeByName;
+    if (cardName && typeof getCardTypeByName === 'function' && getCardTypeByName(cardName) === 'prelude') return 0;
     if (!data || typeof data.o !== 'number') return 0;
     return isOpeningHandContext({ ctx: ctx, getPlayerVueData: getPlayerVueData }) ? normalizeOpeningHandBias(data.o) : 0;
   }
@@ -217,6 +220,11 @@
     return !!(stepM && parseInt(stepM[1], 10) >= 3);
   }
 
+  function isSoftNearRequirementReasonText(text) {
+    if (!text) return false;
+    return /^Нужно 1 .+ сейчас [\-−]\d+/.test(text);
+  }
+
   function getInitialDraftRatingScore(input) {
     var name = input && input.name;
     var fallback = input && input.fallback;
@@ -225,13 +233,18 @@
     var ratingsRaw = input && input.ratingsRaw;
     var baseCardName = input && input.baseCardName;
     var normalizeOpeningHandBiasFn = input && input.normalizeOpeningHandBias;
+    var getCardTypeByName = input && input.getCardTypeByName;
 
     var toBaseCardName = typeof baseCardName === 'function' ? baseCardName : function(n) { return n; };
     var resolved = typeof resolveCorpName === 'function' ? (resolveCorpName(name) || name) : name;
     var raw = (ratings && (ratings[resolved] || ratings[toBaseCardName(resolved)]))
       || (ratingsRaw && (ratingsRaw[resolved] || ratingsRaw[toBaseCardName(resolved)]));
     if (raw && typeof raw.s === 'number') {
-      return raw.s + (typeof normalizeOpeningHandBiasFn === 'function' ? normalizeOpeningHandBiasFn(raw.o) : normalizeOpeningHandBias(raw.o));
+      var openingBias = 0;
+      if (!(name && typeof getCardTypeByName === 'function' && getCardTypeByName(name) === 'prelude')) {
+        openingBias = typeof normalizeOpeningHandBiasFn === 'function' ? normalizeOpeningHandBiasFn(raw.o) : normalizeOpeningHandBias(raw.o);
+      }
+      return raw.s + openingBias;
     }
     return fallback == null ? 55 : fallback;
   }
@@ -838,15 +851,21 @@
     }
 
     var reqHardBlockDraft = result.reasons.some(function(r) { return isHardRequirementReasonText(r); });
-    if (reqHardBlockDraft) adj -= (gensLeft <= 2 ? 6 : 3);
+    var reqSoftNearDraft = result.reasons.some(function(r) { return isSoftNearRequirementReasonText(r); });
+    if (reqHardBlockDraft) adj -= reqSoftNearDraft ? (gensLeft <= 2 ? 2 : 1) : (gensLeft <= 2 ? 6 : 3);
 
     result.total += adj;
     if (result.uncappedTotal != null) result.uncappedTotal += adj;
-    if (adj <= -4) result.reasons.push('Skip (' + (cardEV < 0 ? 'EV ' + Math.round(cardEV) : 'слабая') + ')');
+    var preferReqLaterLabel = reqHardBlockDraft && reqSoftNearDraft && (result.total >= 55 || (result.uncappedTotal != null ? result.uncappedTotal : result.total) >= 55);
+    if (adj <= -4) {
+      if (preferReqLaterLabel) result.reasons.push('Позже (req)');
+      else result.reasons.push('Skip (' + (cardEV < 0 ? 'EV ' + Math.round(cardEV) : 'слабая') + ')');
+    }
     else if (adj >= 4 && !reqHardBlockDraft) result.reasons.push('Buy! (' + (cardEV > 0 ? 'EV +' + Math.round(cardEV) : 'сильная') + ')');
-    else if (adj <= -2) result.reasons.push('Skip');
+    else if (adj <= -2) result.reasons.push(preferReqLaterLabel ? 'Позже (req)' : 'Skip');
     else if (adj >= 2 && !reqHardBlockDraft) result.reasons.push('Buy');
     else if (adj >= 2 && reqHardBlockDraft) result.reasons.push('Позже (req)');
+    else if (preferReqLaterLabel) result.reasons.push('Позже (req)');
   }
 
   function scoreDraftCard(input) {
@@ -913,7 +932,7 @@
     }
 
     var baseScore = data.s;
-    var openingBias = typeof getOpeningHandBias === 'function' ? getOpeningHandBias(data, ctx) : 0;
+    var openingBias = typeof getOpeningHandBias === 'function' ? getOpeningHandBias(cardName, data, ctx) : 0;
     if (openingBias) {
       baseScore += openingBias;
       reasons.push('старт ' + (openingBias > 0 ? '+' : '') + openingBias);

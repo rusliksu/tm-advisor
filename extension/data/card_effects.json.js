@@ -1,939 +1,4516 @@
 const TM_CARD_EFFECTS = {
- "Sponsors": {"c":6,"mp":2},
- "Business Empire": {"c":6,"mp":6,"ep":-1},
- "Acquired Company": {"c":10,"mp":3},
- "Insulation": {"c":2,"mp":1,"hp":-1},
- "Cartel": {"c":8,"mp":2},
- "Earth Office": {"c":1,"mp":0},
- "Media Group": {"c":6,"mp":3},
- "Hackers": {"c":3,"mp":2,"pOpp":2},
- "Energy Tapping": {"c":3,"mp":1,"pOpp":1},
- "Trees": {"c":13,"pp":3,"pl":1,"vp":1,"minG":2},
- "Grass": {"c":11,"pp":1,"pl":3},
- "Bushes": {"c":10,"pp":2,"pl":2,"minG":2},
- "Kelp Farming": {"c":17,"mp":2,"pp":3,"pl":2,"vp":1,"minG":4},
- "Farming": {"c":16,"mp":2,"pp":2,"vp":2,"minG":4},
- "Nitrophilic Moss": {"c":8,"pp":2},
- "Mangrove": {"c":12,"grn":1,"vp":1,"minG":4},
- "Algae": {"c":10,"pp":2,"pl":1,"minG":4},
- "Arctic Algae": {"c":12,"pp":0,"pl":1},
- "Noctis Farming": {"c":10,"mp":1,"pl":2,"vp":1,"minG":2},
- "Lichen": {"c":7,"pp":2,"minG":2},
- "Moss": {"c":4,"pp":1,"minG":2},
- "Protected Habitats": {"c":5},
- "Mining Rights": {"c":9,"sp":1},
- "Mining Area": {"c":4,"sp":1},
- "Mining Guild": {"c":0,"sp":1},
- "Mining Expedition": {"c":12,"sp":2,"rmPl":2},
- "Ore Processor": {"c":13,"tp":0},
- "Titanium Mine": {"c":7,"tp":1},
- "Great Escarpment Consortium": {"c":6,"sp":1,"pOpp":1},
- "Mineral Deposit": {"c":5,"st":5},
- "Strip Mine": {"c":25,"sp":2,"tp":1,"ep":-2,"o2":2},
- "Industrial Microbes": {"c":12,"sp":1,"ep":1},
- "Fuel Factory": {"c":6,"mp":1,"tp":1,"ep":-1},
- "Equatorial Magnetizer": {"c":11,"tr":1,"ep":-1},
- "Space Mirrors": {"c":3,"ep":1},
- "Power Plant": {"c":4,"ep":1},
- "Steelworks": {"c":15,"actMC":4},
- "Heat Trappers": {"c":6,"hp":0,"ep":1,"pOpp":2},
- "GHG Factories": {"c":11,"hp":4,"ep":-1},
- "Soletta": {"c":35,"hp":7},
- "Caretaker Contract": {"c":3,"actMC":3.5,"minG":4},
- "Food Factory": {"c":12,"mp":4,"pp":-1,"vp":1},
- "House Printing": {"c":10,"sp":1,"vp":1},
- "Supermarkets": {"c":11,"mp":2,"vp":1},
- "Biomass Combustors": {"c":4,"ep":2,"pOpp":1},
- "Medical Lab": {"c":13,"mp":0,"vp":1},
- "Rover Construction": {"c":12,"mp":0,"vp":1},
- "Local Heat Trapping": {"c":1,"pl":4},
- "Greenhouses": {"c":6,"pp":1},
- "Asteroid": {"c":14,"tmp":1,"ti":2,"rmPl":3},
- "Comet": {"c":21,"tmp":1,"oc":1,"rmPl":3},
- "Big Asteroid": {"c":27,"tmp":2,"ti":4,"rmPl":4},
- "Giant Ice Asteroid": {"c":36,"tmp":2,"oc":2,"rmPl":6},
- "Ice Asteroid": {"c":23,"oc":2},
- "Lava Flows": {"c":18,"tmp":2},
- "Deimos Down": {"c":31,"tmp":3,"st":4,"rmPl":8},
- "Towing A Comet": {"c":23,"oc":1,"o2":1,"pl":2},
- "Imported Hydrogen": {"c":16,"oc":1,"pl":3,"places":["animal","microbe"]},
- "Imported Nitrogen": {"c":23,"tr":1,"pl":4,"places":["animal","microbe"]},
- "Imported GHG": {"c":7,"hp":3},
- "Flooding": {"c":7,"oc":1,"vp":-1},
- "Subterranean Reservoir": {"c":11,"oc":1},
- "Ice Cap Melting": {"c":5,"oc":1,"minG":5},
- "Aquifer Pumping": {"c":18,"actOc":1},
- "Asteroid Mining": {"c":30,"tp":2},
- "Water Import From Europa": {"c":25,"actOc":0.7},
- "Nitrogen-Rich Asteroid": {"c":31,"tr":2,"tmp":1,"pp":1},
- "Small Asteroid": {"c":10,"tmp":1,"rmPl":2},
- "Dust Seals": {"c":3,"vp":1},
- "Research": {"c":11,"cd":2,"vp":1},
- "Invention Contest": {"c":2,"cd":0},
- "Technology Demonstration": {"c":7,"cd":0},
- "Deep Well Heating": {"c":13,"tmp":1,"ep":1},
- "Release of Inert Gases": {"c":14,"tr":2},
- "Terraforming Ganymede": {"c":33,"tr":1,"vp":2},
- "Nuclear Power": {"c":10,"mp":-2,"ep":3},
- "Solar Wind Power": {"c":11,"ep":1,"ti":2},
- "Wave Power": {"c":8,"ep":1},
- "Windmills": {"c":6,"ep":1,"minG":3},
- "Power Infrastructure": {"c":4},
- "Geothermal Power": {"c":11,"ep":2},
- "Large Convoy": {"c":36,"oc":1,"cd":2,"vp":2,"places":"animal"},
- "Interstellar Colony Ship": {"c":24,"vp":4,"minG":3},
- "Open City": {"c":23,"mp":4,"pp":1,"city":1,"ep":-1},
- "Corporate Stronghold": {"c":11,"mp":3,"city":1,"ep":-1},
- "Immigrant City": {"c":13,"mp":-2,"city":1,"ep":-1},
- "Capital": {"c":26,"mp":5,"city":1,"ep":-2,"minG":4},
- "Noctis City": {"c":18,"mp":3,"city":1,"ep":-1},
- "Underground City": {"c":18,"sp":2,"city":1,"ep":-2},
- "Urbanized Area": {"c":10,"mp":2,"city":1,"ep":-1},
- "Domed Crater": {"c":24,"mp":3,"ep":-1,"city":1,"pl":3,"minG":2},
- "Self-Sufficient Settlement": {"c":15,"mp":2,"city":1},
- "Lava Tube Settlement": {"c":15,"mp":2,"city":1},
- "Space Port": {"c":22,"mp":4,"tp":1,"city":1,"ep":-1},
- "Rad-Chem Factory": {"c":8,"tr":2,"ep":-1},
- "Cupola City": {"c":16,"mp":3,"city":1,"ep":-1},
- "Protected Valley": {"c":23,"mp":2,"grn":1},
- "Ecological Zone": {"c":12,"vpAcc":0.5,"vpPer":2,"res":"animal"},
- "Birds": {"c":10,"pOpp":2,"vpAcc":1,"minG":5,"res":"animal"},
- "Fish": {"c":9,"pOpp":1,"vpAcc":1,"minG":5,"res":"animal"},
- "Livestock": {"c":13,"pp":-1,"vpAcc":1,"minG":5,"res":"animal"},
- "Predators": {"c":14,"vpAcc":0.7,"minG":6,"res":"animal","eats":"animal"},
- "Small Animals": {"c":6,"vpAcc":1,"vpPer":2,"minG":5,"res":"animal"},
- "Decomposers": {"c":5,"vpAcc":1,"vpPer":3,"res":"microbe"},
- "Ants": {"c":9,"vpAcc":0.7,"vpPer":2,"res":"microbe","eats":"microbe"},
- "Herbivores": {"c":12,"pOpp":1,"vpAcc":0.4,"vpPer":2,"minG":5,"res":"animal"},
- "Pets": {"c":10,"vpAcc":0.5,"res":"animal"},
- "Security Fleet": {"c":12,"vpAcc":0.5,"res":"fighter"},
- "Symbiotic Fungus": {"c":4,"res":"microbe","places":"microbe"},
- "Extreme-Cold Fungus": {"c":13,"res":"microbe","places":"microbe"},
- "Regolith Eaters": {"c":13,"actTR":0.33,"res":"microbe"},
- "GHG Producing Bacteria": {"c":8,"actTR":0.33,"res":"microbe"},
- "Nitrite Reducing Bacteria": {"c":11,"tr":1,"actTR":0.33,"res":"microbe"},
- "Electro Catapult": {"c":14,"sp":-1,"actMC":5,"vp":1},
- "AI Central": {"c":21,"ep":-1,"actCD":2},
- "Olympus Conference": {"c":10,"actCD":0.5},
- "Mars University": {"c":8,"actCD":0.3},
- "Inventors' Guild": {"c":9,"actCD":0.3},
- "Business Network": {"c":4,"actCD":0.3},
- "Restricted Area": {"c":11,"actMC":1},
- "Search For Life": {"c":3,"vp":3,"res":"science"},
- "Viral Enhancers": {"c":9,"places":"animal"},
- "Advanced Ecosystems": {"c":11,"vp":3},
- "Optimal Aerobraking": {"c":7},
- "Dirigibles": {"c":11,"actMC":1.5,"res":"floater","tg":"venus"},
- "Stratospheric Birds": {"c":12,"vpAcc":1,"minG":3,"res":"animal"},
- "Aerial Mappers": {"c":11,"actCD":0.5,"res":"floater","tg":"venus"},
- "Venus Governor": {"c":4,"mp":2},
- "Atmospheric Enhancers": {"c":0},
- "Gyropolis": {"c":20,"mp":0,"ep":-2,"city":1},
- "Luna Metropolis": {"c":21,"mp":0,"city":1,"vp":2},
- "Maxwell Base": {"c":18,"city":1,"ep":-1,"minG":3},
- "Stratopolis": {"c":22,"city":1,"actCD":0.5,"res":"floater","places":"floater","placesTag":"venus","tg":"venus"},
- "Dawn City": {"c":15,"mp":3,"city":1,"ep":-1},
- "Community Services": {"c":13,"mp":1},
- "Red Ships": {"c":2,"actMC":4},
- "Virus": {"c":1,"rmPl":5},
- "Worms": {"c":8,"pp":0},
- "Immigration Shuttles": {"c":31,"vp":3},
- "Space Station": {"c":10,"vp":1},
- "Cutting Edge Technology": {"c":11,"vp":1},
- "Diversity Support": {"c":1,"tr":1},
- "Land Claim": {"c":1},
- "Water Splitting Plant": {"c":12,"actTR":0.5},
- "Ironworks": {"c":11,"actMC":3.5},
- "Tropical Resort": {"c":13,"mp":3,"hp":-2,"vp":2,"minG":5},
- "Soil Factory": {"c":9,"ep":-1,"pp":1,"vp":1},
- "Magnetic Field Generators": {"c":20,"pp":4,"ep":-4,"tr":3},
- "Magnetic Field Dome": {"c":5,"pp":1,"ep":-2,"tr":2},
- "Building Industries": {"c":6,"sp":2,"ep":-1},
- "Warp Drive": {"c":14,"vp":2},
- "Mass Converter": {"c":8,"ep":6},
- "Satellites": {"c":10,"mp":1},
- "Ice Moon Colony": {"c":23,"mp":0},
- "Pioneer Settlement": {"c":13,"mp":-2},
- "Earth Catapult": {"c":23,"vp":2},
- "Gene Repair": {"c":12,"mp":2,"vp":2},
- "Special Design": {"c":4},
- "Standard Technology": {"c":6,"vp":1},
- "Asteroid Mining Consortium": {"c":13,"tp":1,"pOpp":1},
- "Colonizer Training Camp": {"c":8,"vp":2},
- "Luna Governor": {"c":4,"mp":3},
- "Lake Marineris": {"c":18,"oc":2,"vp":2,"minG":3},
- "Permafrost Extraction": {"c":8,"oc":1},
- "Artificial Lake": {"c":15,"oc":1,"vp":1},
- "Mohole Area": {"c":20,"hp":4},
- "Mohole Excavation": {"c":3},
- "Industrial Center": {"c":4,"sp":1},
- "Natural Preserve": {"c":9,"mp":1,"vp":1,"minG":1},
- "Nuclear Zone": {"c":10,"tmp":2,"vp":-2},
- "Rotator Impacts": {"c":6,"actTR":0.17,"vp":0,"res":"floater","tg":"venus"},
- "Titan Air-scrapping": {"c":21,"vp":2},
-"Venus Soils": {"c":20,"vn":1,"pp":1,"places":"microbe","placesN":2},
- "Venus Magnetizer": {"c":7,"actMC":6,"ep":-1},
- "Spin-Inducing Asteroid": {"c":16,"vn":2},
- "Sulphur-Eating Bacteria": {"c":6,"actMC":3,"res":"microbe"},
- "Thermophiles": {"c":9,"actTR":0.33,"res":"microbe"},
- "Venusian Insects": {"c":5,"vpAcc":0.3,"vpPer":2,"minG":3,"res":"animal"},
- "Venusian Animals": {"c":15,"vpAcc":1,"vpPer":2,"minG":4,"res":"animal"},
- "Corroder Suits": {"c":8,"tr":1},
- "Atmoscoop": {"c":22,"tmp":1,"vn":1,"choice":"tmp,vn"},
- "Hydrogen to Venus": {"c":11,"vn":1},
- "Giant Solar Shade": {"c":27,"vn":3},
- "Sulphur Exports": {"c":21,"vn":1,"mp":3},
- "Luxury Foods": {"c":8,"vp":2},
- "Cultural Metropolis": {"c":20,"mp":2,"city":1,"ep":-2},
- "Sponsored Academies": {"c":9,"cd":3},
- "Martian Survey": {"c":9,"cd":2,"vp":1},
- "Solar Probe": {"c":9,"cd":0},
- "CEO's Favorite Project": {"c":1},
- "Orbital Cleanup": {"c":14,"vp":2},
- "Media Archives": {"c":8,"cd":1},
- "Forced Precipitation": {"c":8,"actMC":0.4,"res":"floater","tg":"venus"},
- "Wetlands": {"c":20,"o2":1,"grn":1},
- "Small Open Pit Mine": {"c":10,"sp":2,"ep":-1},
- "Space Relay": {"c":13,"actCD":1},
- "Specialized Settlement": {"c":20,"mp":3,"city":1,"ep":-1},
- "Terraforming Control Station": {"c":18,"tr":2},
- "Think Tank": {"c":12,"cd":1},
- "Venera Base": {"c":21,"city":1,"mp":3},
- "Social Events": {"c":18,"tr":1},
- "Soil Detoxification": {"c":10,"pp":1},
- "Space Debris Cleaning Operation": {"c":7,"ti":2},
- "Public Celebrations": {"c":8,"cd":2},
- "Small Comet": {"c":32,"tmp":1,"o2":1,"oc":1,"ti":1,"rmPl":2},
- "Biolab": {"c":10,"pp":1,"cd":1},
- "Mining Colony": {"c":20,"tp":1},
- "Space Port Colony": {"c":27,"mp":0},
- "Martian Zoo": {"c":12,"vpAcc":0.3,"vp":1,"res":"animal"},
- "Cryo-Sleep": {"c":10,"vp":1},
- "Spin-off Department": {"c":10},
- "Productive Outpost": {"c":0},
- "Research Colony": {"c":20,"cd":2},
- "Interplanetary Trade": {"c":27,"vp":1},
- "Refugee Camps": {"c":10,"vpAcc":1,"actMC":-1},
- "Trade Envoys": {"c":6},
- "Point Luna": {"c":0,"tp":1},
- "Manutech": {"c":0,"sp":1},
- "Tharsis Republic": {"c":0,"city":1,"mp":1},
- "Poseidon": {"c":0,"mp":1},
- "Philares": {"c":0,"grn":1},
- "Helion": {"c":0,"hp":3},
- "Cheung Shing MARS": {"c":0,"mp":3},
- "Saturn Systems": {"c":0,"tp":1},
- "EcoTec": {"c":0,"pp":1},
- "Mons Insurance": {"c":0,"mp":4},
- "Arklight": {"c":0,"mp":2},
- "Pristar": {"c":0,"tr":-2},
- "Factorum": {"c":0,"sp":1},
- "Utopia Invest": {"c":0,"sp":1,"tp":1},
- "Aphrodite": {"c":0,"pp":1},
- "Kuiper Cooperative": {"c":0,"tp":1},
- "Recyclon": {"c":0,"sp":1,"res":"microbe"},
- "Polyphemos": {"c":0,"mp":5,"ti":5},
- "Terralabs Research": {"c":0,"tr":-1},
- "Thorgate": {"c":0,"ep":1},
- "Mars Maths": {"c":0,"mp":1},
- "PolderTECH Dutch": {"c":0,"oc":1,"grn":1},
- "Nirgal Enterprises": {"c":0,"sp":1,"en":1,"pl":1},
- "Sagitta Frontier Services": {"c":0,"mp":2,"en":1},
- "Tycho Magnetics": {"c":0,"ep":1},
- "Gagarin Mobile Base": {"c":0,"city":1},
- "Adhai High Orbit Constructions": {"c":0,"mp":1},
- "Project Eden": {"c":0,"oc":1,"city":1,"grn":1},
- "EcoLine": {"c":0,"pp":2,"pl":3},
- "Lakefront Resorts": {"c":0,"mp":1},
- "PhoboLog": {"c":0,"tp":1,"ti":5},
- "Inventrix": {"c":0,"cd":3},
- "Robinson Industries": {"c":0,"mp":1},
- "Stormcraft Incorporated": {"c":0,"hp":1,"places":"floater"},
- "Celestic": {"c":0,"cd":2,"places":"floater"},
- "Aridor": {"c":0,"mp":1},
- "CrediCor": {"c":0,"mp":2},
- "Vitor": {"c":0,"mp":2},
- "Deimos Down:promo": {"c":31,"tmp":3,"st":4,"rmPl":6},
- "High Circles": {"c":0,"tr":1},
- "Great Aquifer": {"c":0,"oc":2},
- "Huge Asteroid": {"c":0,"tmp":3},
- "UNMI Contractor": {"c":0,"tr":3,"mp":3},
- "Experimental Forest": {"c":0,"grn":1,"cd":2},
- "Planetary Alliance": {"c":0,"tr":2},
- "Allied Bank": {"c":0,"mp":4},
- "Metal-Rich Asteroid": {"c":0,"tmp":1,"st":4,"ti":4},
- "Metals Company": {"c":0,"mp":1,"sp":1,"tp":1},
- "Acquired Space Agency": {"c":0,"ti":6,"cd":1},
- "Polar Industries": {"c":0,"hp":2,"oc":1},
- "Strategic Base Planning": {"c":0,"city":1},
- "Albedo Plants": {"c":0,"pp":1},
- "Corporate Archives": {"c":0,"mc":13,"cd":2},
- "Research Network": {"c":0,"mp":1,"cd":3},
- "Space Lanes": {"c":0,"ti":3,"mc":9},
- "Aquifer Turbines": {"c":0,"oc":1,"ep":2,"mc":-3},
- "Smelting Plant": {"c":0,"o2":2,"st":5},
- "Supply Drop": {"c":0,"ti":3,"st":8,"pl":3},
- "Ecology Experts": {"c":0,"pp":1},
- "New Partner": {"c":0,"mp":1},
- "World Government Advisor": {"c":0,"tr":2},
- "Corridors of Power": {"c":0,"tr":1,"mc":4},
- "Rise To Power": {"c":0,"mp":3},
- "Supplier": {"c":0,"ep":2,"st":4},
- "Focused Organization": {"c":0,"cd":1},
- "Power Generation": {"c":0,"ep":3},
- "Dome Farming": {"c":0,"mp":2,"pp":1},
- "Mining Operations": {"c":0,"sp":2,"st":4},
- "Donation": {"c":0,"mc":21},
- "Venus L1 Shade": {"c":0,"vn":3},
- "Eccentric Sponsor": {"c":0,"mc":25},
- "Old Mining Colony": {"c":0,"tp":1},
- "Recession": {"c":0,"mc":10},
- "Main Belt Asteroids": {"c":0,"tp":1,"st":3,"mc":-5},
- "Orbital Construction Yard": {"c":0,"tp":1,"cd":1},
- "Anti-desertification Techniques": {"c":0,"pp":1,"sp":1,"mc":3},
- "Martian Industries": {"c":0,"ep":1,"st":4},
- "Mohole": {"c":0,"hp":3,"he":3},
- "Early Settlement": {"c":0,"pp":1,"city":1},
- "Colony Trade Hub": {"c":0,"ep":1},
- "Giant Solar Collector": {"c":0,"ep":2,"vn":1},
- "Preservation Program": {"c":0,"tr":5,"mp":5},
- "Nobel Prize": {"c":0,"mc":5,"vp":2,"cd":2},
- "Loan": {"c":0,"mc":30,"mp":-2},
- "Io Research Outpost": {"c":0,"tp":1,"cd":1},
- "Galilean Mining": {"c":0,"tp":2},
- "Biofuels": {"c":0,"ep":1,"pl":1},
- "Biosphere Support": {"c":0,"pp":2,"mp":-1},
- "Nitrogen Shipment": {"c":0,"pp":1,"tr":1,"mc":5},
- "Society Support": {"c":0,"pp":1,"ep":1},
- "Co-leadership": {"c":0,"cd":2},
- "CO² Reducers": {"c":0,"mp":3,"cd":2},
- "Deep Space Operations": {"c":0,"ti":4,"cd":2},
- "Design Company": {"c":0,"sp":1,"cd":3},
- "Experienced Martians": {"c":0,"mp":2,"cd":2},
- "Hydrogen Bombardment": {"c":0,"vn":1,"tp":1},
- "Personal Agenda": {"c":0,"mp":3,"cd":3},
- "Research Grant": {"c":0,"ep":1,"cd":3},
- "Survey Mission": {"c":0,"st":5},
- "The New Space Race": {"c":0,"mc":12},
- "Valuable Gases": {"c":0,"mc":10},
- "Venus First": {"c":0,"vn":2,"cd":2},
- "Early Colonization": {"c":0,"pp":1,"city":1},
- "Soil Bacteria": {"c":0,"pp":1},
- "Terraforming Deal": {"c":0,"tr":1},
- "Venus Contract": {"c":0,"tr":1,"cd":1},
- "Board of Directors": {"c":0,"cd":3},
- "Applied Science": {"c":0,"cd":1},
- "Conscription": {"c":5,"mc":16},
- "Indentured Workers": {"c":0,"mc":8},
- "Psychrophiles": {"c":2,"actMC":2,"res":"microbe"},
- "Trading Colony": {"c":18,"mp":2},
- "Meat Industry": {"c":5,"mp":2},
- "Robotic Workforce": {"c":9,"mp":0},
- "Interplanetary Colony Ship": {"c":12,"vp":4,"minG":3},
- "Advanced Alloys": {"c":9},
- "GMO Contract": {"c":3,"cd":1},
- "Mercurian Alloys": {"c":3},
- "Rim Freighters": {"c":4},
- "Industrial Complex": {"c":10,"sp":1},
- "Self-replicating Robots": {"c":7},
- "Directed Heat Usage": {"c":1,"actMC":4},
- "Hospitals": {"c":8,"vp":1},
- "Floating Trade Hub": {"c":10,"mp":0},
- "Advertising": {"c":3,"mp":1},
- "Floater Technology": {"c":7,"places":"floater"},
- "Floater Prototypes": {"c":2,"places":"floater"},
- "Jovian Envoys": {"c":3,"tr":1},
- "Project Inspection": {"c":0,"cd":3},
- "Soil Studies": {"c":4,"grn":1},
- "Neptunian Power Consultants": {"c":10,"actMC":3},
- "Protected Growth": {"c":2,"pp":1},
- "Envoys From Venus": {"c":4,"tr":0},
- "Hired Raiders": {"c":1,"mc":3},
- "Adapted Lichen": {"c":9,"pp":1},
- "Designed Microorganisms": {"c":16,"pp":2,"minG":1},
- "Carbonate Processing": {"c":6,"hp":3,"ep":-1},
- "Cloud Seeding": {"c":11,"pp":2,"mp":-1,"pOpp":1},
- "Micro-Mills": {"c":3,"hp":1},
- "Tundra Farming": {"c":16,"mp":2,"pp":1,"pl":1,"vp":2,"minG":4},
- "Energy Saving": {"c":15,"ep":0},
- "Power Grid": {"c":18,"ep":0},
- "Callisto Penal Mines": {"c":24,"mp":3,"vp":2},
- "Sabotage": {"c":1},
- "Rad-Suits": {"c":6,"mp":1,"vp":1,"minG":2},
- "Tardigrades": {"c":4,"vpAcc":1,"vpPer":4,"res":"microbe"},
- "Black Polar Dust": {"c":15,"oc":1,"hp":3,"mp":-2},
- "Solar Power": {"c":11,"ep":1,"vp":1},
- "Adaptation Technology": {"c":12,"vp":1},
-"Aerobraked Ammonia Asteroid": {"c":26,"hp":3,"pp":1,"places":"microbe","placesN":2},
- "Venus Waystation": {"c":9,"vp":1},
-"Venusian Plants": {"c":13,"vn":1,"vp":1,"minG":5,"places":["animal","microbe"],"placesTag":"venus"},
- "Neutralizer Factory": {"c":7,"vn":1,"minG":3},
- "Ishtar Mining": {"c":5,"tp":1,"minG":3},
- "Extractor Balloons": {"c":21,"actTR":0.5,"res":"floater","tg":"venus"},
- "Jet Stream Microscrappers": {"c":12,"actTR":0.5,"res":"floater","tg":"venus"},
- "Orbital Reflectors": {"c":26,"vn":2,"hp":2},
- "Aerosport Tournament": {"c":7,"mc":0,"vp":1,"minG":4},
- "Atmo Collectors": {"c":15,"actMC":3,"res":"floater","tg":"venus"},
- "Sub-zero Salt Fish": {"c":5,"pOpp":1,"vpAcc":1,"vpPer":2,"minG":4,"res":"animal"},
- "Impactor Swarm": {"c":11,"he":12,"rmPl":2,"minG":3},
- "Floater Leasing": {"c":3,"mp":0},
- "Air Raid": {"c":0,"mc":5},
- "Snow Algae": {"c":12,"pp":1,"hp":1,"minG":2},
- "Outdoor Sports": {"c":8,"mp":2,"vp":1,"minG":2},
- "Teslaract": {"c":14,"tr":1},
- "Icy Impactors": {"c":15,"actTR":0.5,"res":"floater"},
- "Asteroid Hollowing": {"c":16,"vpAcc":1,"vpPer":2,"res":"fighter"},
- "St. Joseph of Cupertino Mission": {"c":7,"vpAcc":1,"res":"fighter"},
- "Parliament Hall": {"c":8,"mp":0,"vp":1},
- "Vote Of No Confidence": {"c":5,"tr":1},
- "Aerial Lenses": {"c":2,"hp":2,"rmPl":2,"vp":-1},
- "GHG Shipment": {"c":3,"hp":1},
- "Commercial District": {"c":16,"mp":4,"ep":-1,"vp":0},
- "Solar Storm": {"c":12,"hp":1,"tmp":1,"rmPl":2},
- "Designed Organisms": {"c":13,"pp":2,"pl":3,"minG":5},
- "Martian Nature Wonders": {"c":13,"vp":2},
- "Declaration of Independence": {"c":20,"vp":4,"minG":5},
- "Floater-Urbanism": {"c":7,"vpAcc":1,"minG":4,"res":"floater","tg":"venus"},
- "Terraforming Robots": {"c":10,"vpAcc":1,"minG":4},
- "Sky Docks": {"c":18,"vp":2},
- "Solar Logistics": {"c":20,"ti":2,"vp":1},
- "Research Outpost": {"c":18,"city":1},
- "Insects": {"c":9,"pp":0,"minG":3},
- "L1 Trade Terminal": {"c":25,"vp":2},
- "Anti-Gravity Technology": {"c":14,"vp":3,"minG":5},
- "Dusk Laser Mining": {"c":8,"ep":-1,"tp":1,"ti":4},
- "Dyson Screens": {"c":28,"ep":2,"hp":2,"tmp":1,"cd":1,"city":1,"vp":1},
- "Lunar Embassy": {"c":28,"mp":3,"pp":0,"cd":1,"city":1,"vp":2},
- "Space Hotels": {"c":12,"mp":4},
- "Venus Orbital Survey": {"c":18,"actCD":0.3},
- "Mars Nomads": {"c":13,"actMC":3},
- "Red Spot Observatory": {"c":17,"cd":2,"vp":2,"actCD":0.5},
- "Sub-Crust Measurements": {"c":20,"vp":2,"actCD":1},
- "Penguins": {"c":7,"vpAcc":1,"minG":5,"res":"animal"},
- "Ganymede Colony": {"c":20,"city":1,"vp":0},
- "Quantum Communications": {"c":8,"mp":0,"vp":1},
- "Atalanta Planitia Lab": {"c":10,"cd":2,"vp":2},
- "Field-Capped City": {"c":29,"mp":2,"ep":-1,"city":1,"pl":3},
- "Homeostasis Bureau": {"c":16,"hp":2},
- "Lunar Exports": {"c":19,"mp":5},
- "Topsoil Contract": {"c":8,"pl":3},
- "Sponsoring Nation": {"c":21,"tr":3},
- "Energy Market": {"c":3,"actMC":3},
- "Frontier Town": {"c":11,"ep":-1,"city":1},
- "Martian Media Center": {"c":7,"mp":0},
- "Terraforming Contract": {"c":8,"mp":4,"minG":4},
- "Asteroid Rights": {"c":10,"ti":2},
-"Ecology Research": {"c":21,"pp":1,"vp":1,"places":["animal","microbe"]},
- "Harvest": {"c":4,"cd":1,"pl":4},
-"Imported Nutrients": {"c":14,"pl":4,"places":"microbe","placesN":4},
- "Kaguya Tech": {"c":10,"mp":2,"cd":1},
- "Lunar Mining": {"c":11,"tp":0},
- "Carbon Nanosystems": {"c":14,"vp":1},
- "Martian Rails": {"c":13,"actMC":3},
- "Business Contacts": {"c":7,"cd":2},
- "Development Center": {"c":11,"actCD":1},
- "Heavy Taxation": {"c":3,"mp":2,"vp":-1},
- "Ishtar Expedition": {"c":6,"ti":3,"cd":2},
- "Jovian Embassy": {"c":14,"tr":1,"vp":1},
- "Mining Quota": {"c":5,"sp":2,"minG":3},
- "Sister Planet Support": {"c":7,"mp":3},
- "Space Elevator": {"c":27,"tp":1,"vp":2,"actMC":3},
- "Wildlife Dome": {"c":15,"grn":1},
- "Public Plans": {"c":7,"vp":1},
- "Ceres Spaceport": {"c":36,"mp":2,"tp":0,"oc":1,"cd":1,"city":1,"vp":1},
- "Cyanobacteria": {"c":12,"o2":1},
- "Geological Expedition": {"c":18,"vp":2},
- "Asteroid Resources": {"c":17,"sp":1,"tp":1,"vp":1},
- "Flat Mars Theory": {"c":8,"mp":0},
- "Martian Dust Processing Plant": {"c":15,"sp":2,"ep":-1,"hp":1},
- "Martian Repository": {"c":12,"actCD":0.5},
- "Pollinators": {"c":19,"pp":0,"vp":1},
- "Prefabrication of Human Habitats": {"c":8,"city":1,"mp":1},
- "Huygens Observatory": {"c":27,"tr":1,"vp":1},
- "New Venice": {"c":21,"mp":2,"ep":-1,"city":1,"minG":2},
- "Advanced Power Grid": {"c":18,"ep":2,"mp":0},
- "Communication Center": {"c":8,"actCD":0.5},
- "Expedition to the Surface - Venus": {"c":16,"cd":2,"vn":1},
- "Cyberia Systems": {"c":16,"ep":2,"mp":0},
-"Freyja Biodomes": {"c":14,"mp":2,"ep":-1,"vp":2,"minG":3,"places":["animal","microbe"],"placesTag":"venus","placesN":2},
- "Io Mining Industries": {"c":41,"tp":2,"mp":2,"vp":0},
- "Jovian Lanterns": {"c":20,"tr":1,"vpAcc":1,"vpPer":2,"res":"floater","tg":"jovian"},
- "Lagrange Observatory": {"c":9,"cd":1,"vp":1},
- "Mine": {"c":4,"sp":1},
- "Potatoes": {"c":2,"mp":2},
- "Quantum Extractor": {"c":13,"ep":4},
- "Saturn Surfing": {"c":13,"vp":1,"actMC":4},
- "Zeppelins": {"c":13,"mp":0,"vp":1,"minG":3},
- "Investment Loan": {"c":3,"mp":-1,"mc":10},
- "Titan Shuttles": {"c":23,"vp":1},
- "Bactoviral Research": {"c":10,"cd":1,"res":"microbe","places":"microbe"},
- "Convoy From Europa": {"c":15,"oc":1,"cd":1},
- "Galilean Waystation": {"c":15,"vp":1},
- "Methane From Titan": {"c":28,"hp":2,"pp":2,"vp":2,"minG":2},
- "Peroxide Power": {"c":7,"mp":-1,"ep":2},
- "Solar Reflectors": {"c":23,"hp":5},
- "Titan Floating Launch-pad": {"c":18,"vp":1,"res":"floater","places":"floater","placesTag":"jovian","tg":"jovian"},
- "Corona Extractor": {"c":10,"ep":4},
- "Floyd Continuum": {"c":4,"cd":1},
- "Miranda Resort": {"c":12,"mp":0,"vp":1},
- "Plantation": {"c":15,"grn":1,"minG":4},
- "Bribed Committee": {"c":7,"tr":2,"vp":-2},
- "Earth Elevator": {"c":43,"tp":3,"vp":4},
- "Extremophiles": {"c":3,"vpAcc":1,"vpPer":3,"res":"microbe"},
- "Great Dam": {"c":12,"ep":2,"vp":1,"minG":4},
- "Heather": {"c":6,"pp":1,"pl":1},
- "Jupiter Floating Station": {"c":9,"vp":1,"actMC":4,"res":"floater","tg":"jovian"},
- "Soil Enrichment": {"c":6,"pl":5},
- "Supported Research": {"c":3,"cd":2},
- "Toll Station": {"c":12,"mp":0},
- "Crash Site Cleanup": {"c":4,"vp":1,"ti":1},
- "Eos Chasma National Park": {"c":16,"pp":2,"pl":3,"vp":1,"minG":2},
- "Fusion Power": {"c":14,"ep":3},
- "Io Sulphur Research": {"c":17,"vp":2,"cd":1},
- "Molecular Printing": {"c":11,"mp":0},
- "Public Baths": {"c":6,"mc":6,"vp":1},
-"Urban Decomposers": {"c":6,"pp":1,"places":"microbe","placesN":2},
- "Vesta Shipyard": {"c":15,"tp":1},
- "Venus Shuttles": {"c":9,"actTR":0.5,"places":"floater","placesTag":"venus"},
- "Summit Logistics": {"c":10,"cd":2},
- "Vermin": {"c":8,"vpAcc":1,"res":"animal"},
- "16 Psyche": {"c":31,"tp":2,"ti":3,"vp":2},
- "Breathing Filters": {"c":11,"vp":2,"minG":5},
- "Diaspora Movement": {"c":7,"vp":1},
- "Floating Habs": {"c":5,"vpAcc":1,"vpPer":2,"res":"floater","tg":"venus"},
- "Lightning Harvest": {"c":8,"mp":1,"ep":1,"vp":1},
- "Lunar Beam": {"c":13,"mp":-2,"ep":4},
- "Magnetic Shield": {"c":24,"tr":4,"ep":-2},
- "Rego Plastics": {"c":10,"vp":1},
- "Shuttles": {"c":10,"mp":2,"ep":-1,"vp":1},
- "Solarnet": {"c":7,"cd":2,"vp":1},
- "Venus Trade Hub": {"c":12,"mp":0,"vp":1},
- "Casinos": {"c":5,"ep":-1,"mp":3,"vp":1},
- "Floating Refinery": {"c":7,"actMC":2},
- "Weather Balloons": {"c":11,"cd":1},
- "Beam From A Thorium Asteroid": {"c":32,"hp":3,"ep":3},
- "Deuterium Export": {"c":11,"actTR":0.33,"res":"floater","tg":"venus"},
- "GHG Import From Venus": {"c":23,"hp":3,"vn":1},
- "Hi-Tech Lab": {"c":17,"cd":0,"vp":1},
- "Import of Advanced GHG": {"c":9,"hp":2},
- "Minority Refuge": {"c":5,"mp":-2,"city":1},
- "Mohole Lake": {"c":31,"tmp":1,"oc":1,"pl":3},
- "Omnicourt": {"c":11,"tr":2},
- "Political Alliance": {"c":4,"tr":1},
- "Power Supply Consortium": {"c":5,"ep":1,"pOpp":1},
- "Sponsored Mohole": {"c":5,"hp":2},
- "Venus Allies": {"c":30,"vn":2,"vp":2},
- "Aqueduct Systems": {"c":9,"cd":3,"vp":1},
- "Bio Printing Facility": {"c":7,"actMC":2,"places":["animal","microbe"]},
- "Fueled Generators": {"c":1,"mp":-1,"ep":1},
- "New Holland": {"c":20,"mp":3,"city":1},
- "Nitrogen from Titan": {"c":25,"tr":2,"pl":4},
- "PR Office": {"c":7,"tr":1,"vp":-1},
- "Trans-Neptune Probe": {"c":6,"vp":1},
- "Martian Lumber Corp": {"c":6,"pp":1},
- "Airliners": {"c":11,"mp":2,"vp":1},
- "ArchaeBacteria": {"c":6,"pp":1},
- "Artificial Photosynthesis": {"c":12,"ep":2},
- "Giant Space Mirror": {"c":17,"ep":3},
- "SF Memorial": {"c":7,"cd":1,"vp":1},
- "Cloud Tourism": {"c":11,"mp":0},
- "Phobos Space Haven": {"c":25,"mp":3,"city":1},
- "Physics Complex": {"c":12,"actTR":0.5,"res":"science"},
- "Robot Pollinators": {"c":9,"pp":1,"pl":0},
- "Special Permit": {"c":5,"rmPl":4},
- "Supercapacitors": {"c":4,"mp":1},
- "Water to Venus": {"c":9,"vn":1},
-"Air-Scrapping Expedition": {"c":13,"vn":1,"places":"floater","placesTag":"venus","placesN":3},
- "City Parks": {"c":7,"vp":2,"pl":2},
- "Comet Aiming": {"c":17,"actTR":0.5,"res":"floater"},
- "Comet for Venus": {"c":11,"vn":1},
- "Directed Impactors": {"c":8,"actTR":0.17,"res":"floater"},
- "Local Shading": {"c":4,"actTR":0.33,"res":"floater","tg":"venus"},
- "Stanford Torus": {"c":12,"vp":2,"city":1},
- "Tectonic Stress Power": {"c":18,"ep":3,"vp":1},
- "Unexpected Application": {"c":4,"vn":1},
- "Asteroid Deflection System": {"c":13,"ep":-1,"actTR":0.33,"res":"asteroid"},
- "Early Expedition": {"c":15,"ep":-1,"mp":3,"city":1},
- "Breeding Farms": {"c":16,"tmp":1},
- "Controlled Bloom": {"c":13,"pp":1,"pl":0,"places":"animal"},
- "Cultivation of Venus": {"c":18,"actTR":1,"vp":0},
- "Dust Storm": {"c":17,"tmp":2},
- "Economic Espionage": {"c":8,"actMC":3},
- "Economic Help": {"c":9,"mp":2},
- "High Temp. Superconductors": {"c":10,"ep":2},
- "Hydrogen Processing Plant": {"c":9,"hp":0},
- "Interplanetary Transport": {"c":15,"cd":1,"vp":1},
- "Anthozoa": {"c":9,"vpAcc":1,"vpPer":2,"minG":4,"res":"animal"},
- "Botanical Experience": {"c":14,"pp":0,"vp":1},
- "Cassini Station": {"c":23,"cd":1,"vp":1},
- "Charity Donation": {"c":7,"cd":1,"vp":1},
- "Lobby Halls": {"c":11,"mp":2},
- "Martian Culture": {"c":11,"vpAcc":1,"vpPer":2},
- "Martian Monuments": {"c":10,"mp":0,"vp":1},
- "Luxury Estate": {"c":12,"mp":0,"vp":0},
- "Museum of Early Colonisation": {"c":20,"cd":2,"vp":2},
- "Orbital Laboratories": {"c":18,"cd":1,"vp":2},
- "Ozone Generators": {"c":14,"actTR":1,"vp":1},
- "Public Sponsored Grant": {"c":6,"cd":2},
- "Red City": {"c":21,"mp":2,"ep":-1,"city":1,"vp":0},
- "Return to Abandoned Technology": {"c":4,"cd":2},
- "Rich Deposits": {"c":12,"sp":3},
- "Secret Labs": {"c":21,"oc":1,"vp":1},
- "Solarpedia": {"c":12,"cd":0},
- "Van Allen": {"c":0,"mc":3},
- "Polaris": {"c":0,"mp":1},
- "Naomi": {"c":0,"ep":2,"mc":3},
- "Asimov": {"c":0,"vp":2},
- "Oscar": {"c":0},
- "SolBank": {"c":0,"mc":1},
- "Teractor": {"c":0},
- "Habitat Marte": {"c":0},
- "Odyssey": {"c":0},
- "Collegium Copernicus": {"c":0},
- "Ringcom": {"c":0},
- "Valley Trust": {"c":0},
- "Interplanetary Cinematics": {"c":0,"st":20},
- "Spire": {"c":0,"cd":1},
- "Steelaris": {"c":0,"st":1},
- "Aurorai": {"c":0,"mc":1},
- "Morning Star Inc.": {"c":0,"cd":3},
- "Mars Direct": {"c":0},
- "Chimera": {"c":0},
- "Mind Set Mars": {"c":0},
- "Robin Haulings": {"c":0},
- "Palladin Shipping": {"c":0,"ti":5},
- "Arcadian Communities": {"c":0,"st":10},
- "Septem Tribus": {"c":0},
- "Martian Insurance Group": {"c":0},
- "Soylent Seedling Systems": {"c":0,"pp":1},
- "Bio-Sol": {"c":0},
- "Nobel Labs": {"c":8,"action":true},
- "Pharmacy Union": {"c":0,"tr":-4},
- "Huan": {"c":0},
- "Karen": {"c":0},
- "Greta": {"c":0,"mc":4},
- "Xavier": {"c":0},
- "Faraday": {"c":0,"mc":3},
- "Gordon": {"c":0,"mc":2},
- "Stefan": {"c":0,"actMC":3},
- "Floyd": {"c":0,"mc":10},
- "Duncan": {"c":0,"vp":6},
- "Musk": {"c":0,"ti":5},
- "Ulrich": {"c":0,"mc":4},
- "Lowell": {"c":0},
- "Maria": {"c":0},
- "Tate": {"c":0,"cd":1},
- "Ingrid": {"c":0,"mc":2},
- "Jansson": {"c":0,"mc":2},
- "Petra": {"c":0},
- "Ryu": {"c":0},
- "Yvonne": {"c":0,"mp":1},
- "Clarke": {"c":0,"pp":1,"hp":1,"pl":5,"ht":5},
- "Xu": {"c":0,"mc":2},
- "Ender": {"c":0,"cd":3},
- "Will": {"c":0},
- "Vital Colony": {"c":0},
- "Double Down": {"c":0},
- "Merger": {"c":0,"mc":-42},
- "WG Project": {"c":0},
- "Crew Training": {"c":0},
- "Zan": {"c":0},
- "Astra Mechanica": {"c":7,"cd":2},
- "Event Analysts": {"c":5},
- "Research Coordination": {"c":4},
- "Colonial Representation": {"c":10,"mp":3},
- "Hermetic Order of Mars": {"c":10,"mp":2},
- "Stratospheric Expedition": {"c":12,"cd":2,"vp":1},
- "Static Harvesting": {"c":5,"ep":1,"mp":0},
- "Ceres Tech Market": {"c":12,"actCD":0.5},
- "Microbiology Patents": {"c":6},
- "Coordinated Raid": {"c":5,"mc":4},
- "Viron": {"c":9,"actMC":3},
- "Last Resort Ingenuity": {"c":4},
- "Red Appeasement": {"c":3,"tr":-1,"vp":4},
- "Rare-Earth Elements": {"c":5,"vp":1},
- "Recruitment": {"c":2},
- "Microgravity Nutrition": {"c":11,"vpAcc":0.5,"vpPer":2},
- "Magnetic Field Generators:promo": {"c":22,"pp":4,"ep":-4,"tr":3},
- "Market Manipulation": {"c":1},
- "Great Dam:promo": {"c":15,"ep":2,"vp":1},
- "Kickstarter": {"c":12},
- "Ambient": {"c":0},
- "Crashlanding": {"c":20},
- "Oumuamua Type Object Survey": {"c":20},
- "Law Suit": {"c":2,"mc":3},
- "Red Tourism Wave": {"c":3,"mc":0},
- "Agro-Drones": {"c":14,"pp":1,"sp":1},
- "Data Leak": {"c":5},
- "Private Security": {"c":8},
- "Cryptocurrency": {"c":6,"actMC":1},
- "Archimedes Hydroponics Station": {"c":14,"actMC":1},
- "Luna Trade Federation": {"c":15,"mp":2},
- "Nanotech Industries": {"c":14,"vpAcc":1},
- "Project Workshop": {"c":15,"actMC":3,"actTR":0.33},
- "Trade Advance": {"c":2,"mc":5},
- "Bioengineering Enclosure": {"res":"animal","c":7},
- "Bio-Fertilizer Facility": {"pp":1,"c":12},
- "Marketing Experts": {"mp":1,"c":5},
- "Metallic Asteroid": {"ti":1,"tmp":1,"rmPl":4,"c":13},
- "Ocean City": {"ep":-1,"mp":3,"city":1,"c":18},
- "Ocean Farm": {"pp":1,"hp":1,"c":15},
- "Ocean Sanctuary": {"res":"animal","vpAcc":1,"c":9},
- "Underground Detonations": {"act_hp":2,"c":6},
- "Agricola Inc": {"mp":1,"pp":1,"hp":1},
- "Curiosity II": {"sp":2},
- "Playwrights": {"ep":1},
- "Algae Bioreactors": {"pp":-1,"o2":1,"c":9},
- "Ancient Shipyards": {"vpAcc":1,"c":6},
- "Aristarchus Road Network": {"mp":2,"c":15},
- "Basic Infrastructure": {"c":0},
- "Copernicus Solar Arrays": {"ep":1,"he":2,"c":8},
- "Copernicus Tower": {"c":36,"actTR":0.5,"res":"science"},
- "Core Mine": {"c":0,"tp":1},
- "Crescent Research Association": {"vpTag":{"tag":"moon","per":3}},
- "Darkside Incubation Plant": {"vpAcc":1,"c":11},
- "Darkside Meteor Bombardment": {"st":2,"ti":2,"c":20},
- "Deep Lunar Mining": {"tp":2,"c":18},
- "First Lunar Settlement": {"c":0,"mp":1},
- "Geodesic Tents": {"ep":-1,"pp":1,"c":13},
- "Habitat 14": {"ep":-1,"mp":-1,"c":5},
- "Heliostat Mirror Array": {"ep":2,"he":1,"c":10},
- "Hostile Takeover": {"mp":2,"c":26},
- "Hypersensitive Silicon Chip Factory": {"mp":4,"c":11},
- "Intragen Sanctuary Headquarters": {"vpAcc":1},
- "Luna First Incorporated": {"st":2,"ti":2},
- "Luna Hyperloop Corporation": {"st":4},
- "Luna Mining Hub": {"sp":1,"tp":1,"c":23},
- "Luna Resort": {"ep":-1,"mp":3,"c":11},
- "Luna Senate": {"vpTag":{"tag":"moon","per":1},"c":32},
- "Luna Train Station": {"mp":4,"c":24},
- "Lunar Industry Complex": {"sp":1,"tp":1,"ep":2,"hp":1,"c":28},
- "Lunar Mine Urbanization": {"mp":1,"c":8},
- "Lunar Observation Post": {"vpAcc":1,"c":7},
- "Lunar Planning Office": {"c":0,"st":6,"cd":2},
- "Lunar Trade Fleet": {"mp":1,"c":8},
- "Mare Imbrium Mine": {"sp":1,"tp":1,"c":19},
- "Mare Nectaris Mine": {"sp":1,"c":14},
- "Mare Nubium Mine": {"tp":1,"c":17},
- "Mare Serenitatis Mine": {"sp":1,"tp":1,"c":21},
- "Microsingularity Plant": {"ep":2,"c":10},
- "Momentum Virium Habitat": {"hp":2,"mp":3,"c":23},
- "Moon Tether": {"vp":1,"c":18},
- "Orbital Power Grid": {"vp":1,"c":19},
- "Pride of the Earth Arkship": {"vpAcc":1,"c":22},
- "Processor Factory": {"vpAcc":1,"c":8},
- "Rust Eating Bacteria": {"res":"microbe","vpAcc":1,"c":7},
- "Sinus Irdium Road Network": {"ep":-1,"mp":3,"c":15},
- "Solar Panel Foundry": {"c":11},
- "Staging Station \"Behemoth\"": {},
- "The Darkside of The Moon Syndicate": {"res":"syndicate_fleet"},
- "The Grand Luna Capital Group": {"ti":1},
- "The Womb": {"ep":-2,"mp":4,"c":16},
- "Tycho Road Network": {"mp":1,"c":15},
- "Power Plant:Pathfinders": {"hp":2,"ep":1,"c":13},
- "Research Grant:Pathfinders": {"ep":1,"mc":14},
- "Suitable Infrastructure": {"st":5},
- "Astrodrill": {"res":"asteroid"},
- "Clone Troopers (II)": {"vpAcc":1,"c":12},
- "Cloud City (V)": {"vn":1,"c":5},
- "Forest Moon (VI)": {"pOpp":2,"vp":1,"c":15},
- "Rey ... Skywalker?! (IX)": {"mp":4,"c":8},
- "Tool with the First Order (VIII)": {"tr":1,"c":5},
- "Acidizing": {"c":10,"vn":1},
- "Aeron Genomics": {"st":5,"res":"animal","vpAcc":1},
- "Anti-trust Crackdown": {"c":18,"vp":2},
- "Arborist Collective": {"pp":2,"pl":2,"act_pp":1},
- "Battery Shipment": {"ep":2,"en":12},
- "Biobatteries": {"c":7,"ep":1},
- "Casino": {"c":15,"mp":4},
- "Cave City": {"c":16,"sp":1,"city":1},
- "Class-action Lawsuit": {"vp":3},
- "Cloud Vortex Outpost": {"vn":2,"res":"floater"},
- "Cut-throat Budgeting": {"c":2,"mp":1,"sp":1,"ep":1,"vp":-1},
- "Deepwater Dome": {"pp":1},
- "Demetron Labs": {"res":"data"},
- "Earthquake Machine": {"c":10,"pOpp":1},
- "Expedition Vehicles": {"c":10,"vp":1},
- "Exploitation Of Venus": {"c":6,"actVn":1},
- "Gaia City": {"c":20,"ep":-1,"pp":2,"city":1},
- "Ganymede Trading Company": {"ti":3},
- "Geothermal Network": {"c":14,"hp":3,"vp":1},
- "Hadesphere": {"st":5},
- "Hecate Speditions": {"res":"supply_chain"},
- "Henkei Genetics": {"vpAcc":1},
- "Infrastructure Overload": {"c":7,"pOpp":2,"vp":-1},
- "Inherited Fortune": {"c":0,"mp":1,"mc":10},
- "Investigative Journalism": {"c":3,"mp":-1,"vpAcc":1,"res":"journalism"},
- "Investor Plaza": {"c":0,"city":1},
- "Keplertec": {"tp":1,"ti":3},
- "Kingdom of Tauraro": {"mp":6,"city":1},
- "Man-made Volcano": {"c":26,"ep":2,"hp":4},
- "Micro-Geodesics": {"c":8,"res":"microbe"},
- "Microgravimetry": {"c":5,"vp":1},
- "Microprobing Technology": {"c":8,"pl":3},
- "Mining Market Insider": {"c":5,"actCD":1},
- "Nanofoundry": {"c":18,"ep":-5,"cd":2,"vp":2},
- "Neutrinograph": {"c":14,"vp":2},
- "Nightclubs": {"c":10,"mp":2},
- "Off-World Tax Haven": {"c":8,"mp":5,"vp":-1},
- "Orbital Laser Drill": {"c":15,"vp":1},
- "Planetary Rights Buyout": {"tr":7,"c":28},
- "Private Military Contractor": {"res":"fighter","c":14},
- "Private Resorts": {"c":9,"hp":-1,"mp":3},
- "Public Spaceline": {"c":18,"mp":2},
- "Research & Development Hub": {"vpAcc":1,"c":14},
- "Robot Moles": {"c":8,"st":2},
- "Secret Research": {"cd":3},
- "Server Sabotage": {"cd":1,"c":9},
- "Space Wargames": {"res":"fighter","vpTag":{"tag":"jovian","per":1},"c":25},
- "Sting Operation": {"cd":2},
- "Thiolava Vents": {"hp":2,"res":"microbe","vpAcc":1,"c":13},
- "Tunneling Operation": {"c":0,"sp":2},
- "Underground Amusement Park": {"c":5,"mp":1,"vp":1},
- "Underground Habitat": {"pp":1,"c":12},
- "Underground Railway": {"c":18,"ep":-1,"tr":1},
- "Voltagon": {"ep":1,"actO2":1},
- "Whales": {"vpAcc":1,"c":10},
- "Beginner Corporation": {"c":0},
- "United Nations Mars Initiative": {"c":0},
- "Meltworks": {"c":4,"actMC":3},
- "Splice": {"c":0},
- "Banned Delegate": {"c":0},
- "Valuable Gases:Pathfinders": {"c":0},
- "Sphere Habitats": {"c":14},
- "Colonist Shuttles": {"c":12},
- "Mining Robots Manuf. Center": {"c":12},
- "Iron Extraction Center": {"c":10,"sp":1},
- "Titanium Extraction Center": {"c":14,"tp":1},
- "Luna Staging Station": {"c":12},
- "New Colony Planning Initiatives": {"c":6},
- "AI Controlled Mine Network": {"c":6},
- "Heavy Duty Rovers": {"c":12},
- "Water Treatment Complex": {"c":12},
- "HE3 Fusion Plant": {"c":12,"ep":1},
- "HE3 Lobbyists": {"c":7,"mp":2},
- "Off-World City Living": {"c":35,"mp":2,"city":1},
- "Darkside Mining Syndicate": {"c":18,"tp":2},
- "Rover Drivers Union": {"c":16,"mp":3},
- "L.T.F. Headquarters": {"c":31},
- "Undermoon Drug Lords Network": {"c":2,"mp":1,"vp":-1},
- "Grand Luna Academy": {"c":13,"cd":2},
- "Luna Ecumenopolis": {"c":35,"tr":2,"city":2},
- "Thorium Rush": {"c":39},
- "Luna Trade Station": {"c":10,"actMC":2},
- "Lunar Dust Processing Plant": {"c":6},
- "Luna Project Office": {"c":4},
- "Steel Market Monopolists": {"c":15,"actMC":3},
- "Titanium Market Monopolists": {"c":21,"actMC":4},
- "Subterranean Habitats": {"c":12},
- "Improved Moon Concrete": {"c":12},
- "Mooncrate Block Factory": {"c":8},
- "Lunar Security Stations": {"c":9},
- "HE3 Refinery": {"c":8,"actMC":3},
- "Luna Archives": {"c":13,"res":"science"},
- "Luna Political Institute": {"c":6},
- "Darkside Observatory": {"c":12,"actCD":0.3},
- "L.T.F. Privileges": {"c":21},
- "Lunar Steel": {"c":5},
- "Earth Embassy": {"c":16},
- "Underground Detonators": {"c":9,"st":1,"ti":1},
- "Revolting Colonists": {"c":3},
- "Cosmic Radiation": {"c":3},
- "Road Piracy": {"c":10},
- "HE3 Production Quotas": {"c":10},
- "Luna Conference": {"c":5,"mc":4},
- "We Grow As One": {"c":8},
- "Mooncrate Convoys To Mars": {"c":13},
- "Preliminary Darkside": {"c":13,"ti":3},
- "Syndicate Pirate Raids": {"c":8},
- "Small Duty Rovers": {"c":9,"mc":3},
- "Martian Embassy": {"c":11},
- "Mining Complex": {"c":0,"mc":-7},
- "Geoscan Satellite": {"c":8},
- "Old World Mafia": {"c":11},
- "Subterranean Sea": {"c":10,"oc":1},
- "Forest Tunnels": {"c":7,"pl":2},
- "Tunneling Subcontractor": {"c":9},
- "Deepmining": {"c":11,"sp":1},
- "Behemoth Excavator": {"c":13},
- "Lobbying Network": {"c":5},
- "Landfill": {"c":2,"mp":3,"vp":-2},
- "Imported Heavy Machinery": {"c":9},
- "Underground Smuggling Ring": {"c":7},
- "Friends in High Places": {"c":10},
- "Star Vegas": {"c":32,"mp":3,"city":1},
- "Hyperspace Drive Prototype": {"c":11,"ti":1},
- "Artesian Aquifer": {"c":16,"oc":1},
- "Underground Research Center": {"c":12,"cd":1},
- "Racketeering": {"c":5,"mp":2,"vp":-1},
- "Gas Trust": {"c":12,"he":6},
- "Geologist Team": {"c":6},
- "Tunnel Boring Machine": {"c":10},
- "Labor Trafficking": {"c":6,"vp":-2},
- "Search for Life Underground": {"c":6,"vp":0},
- "Grey Market Exploitation": {"c":4},
- "Excavator Leasing": {"c":8},
- "Stem Field Subsidies": {"c":10},
- "Titan Manufacturing Colony": {"c":18},
- "Space Privateers": {"c":10,"vp":-2},
- "Personal Spacecruiser": {"c":12,"actMC":2},
- "Chemical Factory": {"c":18,"actMC":3},
- "Corporate Theft": {"c":10,"vp":-1},
- "Monopoly": {"c":8,"vp":-2},
- "Underground Shelters": {"c":14},
- "Battery Factory": {"c":8,"actMC":2},
- "Voltaic Metallurgy": {"c":8},
- "Deep Foundations": {"c":4},
- "Martian Express": {"c":5,"actMC":2,"vp":1},
- "Detective TV Series": {"c":5},
- "Deepnuking": {"c":6,"rmPl":3,"vp":-1},
- "Reckless Detonation": {"c":1},
- "Subnautic Pirates": {"c":1,"mc":7},
- "Fabricated Scandal": {"c":14},
- "Global Audit": {"c":2,"tr":1},
- "Patent Manipulation": {"c":7,"vp":-2},
- "Tunneling Loophole": {"c":8,"vp":-1},
- "Narrative Spin": {"c":5,"vp":-1},
- "Corporate Blackmail": {"c":5,"mc":5,"vp":-1},
- "Scapegoat": {"c":5},
- "Staged Protests": {"c":6},
- "Plant Tax": {"c":7,"rmPl":2},
- "Crater Survey": {"c":5},
- "Induced Tremor": {"c":5},
- "Volunteer Mining Initiative": {"c":12},
- "Price Wars": {"c":1,"vp":-1},
- "Canyon Survey": {"c":4},
- "Mercenary Squad": {"c":1},
- "Media Frenzy": {"c":6,"cd":2},
- "Guerilla Ecologists": {"c":9,"grn":1},
- "Export Convoy": {"c":6,"mc":20,"vp":-1},
- "Family Connections": {"c":12},
- "Soil Export": {"c":3,"vp":-1},
- "Hired Raiders:u": {"c":1,"mc":5},
- "Hackers:u": {"c":3,"mp":2,"pOpp":2,"vp":-1},
- "Free Trade Port": {"c":0},
- "Geological Expertise": {"c":0,"cd":2},
- "Underground Settlement": {"c":0,"city":1},
- "Central Reservoir": {"c":0,"oc":1},
- "Prospecting": {"c":0,"mc":-4},
- "Election Sponsorship": {"c":0},
- "Butterfly Effect": {"c":8,"tr":1},
- "Capital:ares": {"c":26,"ep":-2,"mp":5,"city":1},
- "Commercial District:ares": {"c":16,"ep":-1,"mp":4,"city":1},
- "Deimos Down:ares": {"c":31,"tmp":3},
- "Desperate Measures": {"c":1,"o2":1},
- "Ecological Survey": {"c":9},
- "Ecological Zone:ares": {"c":11,"vpAcc":1,"vpPer":2},
- "Geological Survey": {"c":8},
- "Industrial Center:ares": {"c":4,"actMC":7},
- "Great Dam:ares": {"c":15,"ep":2,"vp":1},
- "Lava Flows:ares": {"c":18,"tmp":2},
- "Magnetic Field Generators:ares": {"c":22,"ep":-4,"pp":2,"tr":3},
- "Mining Area:ares": {"c":4},
- "Mining Rights:ares": {"c":9},
- "Mohole Area:ares": {"c":20,"hp":4},
- "Natural Preserve:ares": {"c":9,"vp":1},
- "Nuclear Zone:ares": {"c":11,"tmp":2,"vp":-2},
- "Restricted Area:ares": {"c":11,"actCD":1},
- "Solar Farm": {"c":12,"ep":1}
+ "Sponsors": {
+  "c": 6,
+  "mp": 2
+ },
+ "Business Empire": {
+  "c": 6,
+  "mp": 6,
+  "ep": -1
+ },
+ "Acquired Company": {
+  "c": 10,
+  "mp": 3
+ },
+ "Insulation": {
+  "c": 2,
+  "mp": 1,
+  "hp": -1
+ },
+ "Cartel": {
+  "c": 8,
+  "mp": 2
+ },
+ "Earth Office": {
+  "c": 1,
+  "mp": 0,
+  "disc": {
+   "amount": 3,
+   "tag": "earth"
+  }
+ },
+ "Media Group": {
+  "c": 6,
+  "mp": 3
+ },
+ "Hackers": {
+  "c": 3,
+  "mp": 2,
+  "pOpp": 2,
+  "ep": -1
+ },
+ "Energy Tapping": {
+  "c": 3,
+  "mp": 1,
+  "pOpp": 1
+ },
+ "Trees": {
+  "c": 13,
+  "pp": 3,
+  "pl": 1,
+  "vp": 1,
+  "minG": 2
+ },
+ "Grass": {
+  "c": 11,
+  "pp": 1,
+  "pl": 3
+ },
+ "Bushes": {
+  "c": 10,
+  "pp": 2,
+  "pl": 2,
+  "minG": 2
+ },
+ "Kelp Farming": {
+  "c": 17,
+  "mp": 2,
+  "pp": 3,
+  "pl": 2,
+  "vp": 1,
+  "minG": 4
+ },
+ "Farming": {
+  "c": 16,
+  "mp": 2,
+  "pp": 2,
+  "vp": 2,
+  "minG": 4,
+  "pl": 2
+ },
+ "Nitrophilic Moss": {
+  "c": 8,
+  "pp": 2
+ },
+ "Mangrove": {
+  "c": 12,
+  "grn": 1,
+  "vp": 1,
+  "minG": 4
+ },
+ "Algae": {
+  "c": 10,
+  "pp": 2,
+  "pl": 1,
+  "minG": 4
+ },
+ "Arctic Algae": {
+  "c": 12,
+  "pp": 0,
+  "pl": 1
+ },
+ "Noctis Farming": {
+  "c": 10,
+  "mp": 1,
+  "pl": 2,
+  "vp": 1,
+  "minG": 2
+ },
+ "Lichen": {
+  "c": 7,
+  "pp": 1,
+  "minG": 2
+ },
+ "Moss": {
+  "c": 4,
+  "pp": 1,
+  "minG": 2
+ },
+ "Protected Habitats": {
+  "c": 5
+ },
+ "Mining Rights": {
+  "c": 9,
+  "sp": 1
+ },
+ "Mining Area": {
+  "c": 4,
+  "sp": 1
+ },
+ "Mining Guild": {
+  "c": 0,
+  "sp": 1,
+  "st": 5
+ },
+ "Mining Expedition": {
+  "c": 12,
+  "sp": 2,
+  "rmPl": 2,
+  "st": 2,
+  "o2": 1
+ },
+ "Ore Processor": {
+  "c": 13,
+  "tp": 0,
+  "actO2": 1
+ },
+ "Titanium Mine": {
+  "c": 7,
+  "tp": 1
+ },
+ "Great Escarpment Consortium": {
+  "c": 6,
+  "sp": 1,
+  "pOpp": 1
+ },
+ "Mineral Deposit": {
+  "c": 5,
+  "st": 5
+ },
+ "Strip Mine": {
+  "c": 25,
+  "sp": 2,
+  "tp": 1,
+  "ep": -2,
+  "o2": 2
+ },
+ "Industrial Microbes": {
+  "c": 12,
+  "sp": 1,
+  "ep": 1
+ },
+ "Fuel Factory": {
+  "c": 6,
+  "mp": 1,
+  "tp": 1,
+  "ep": -1
+ },
+ "Equatorial Magnetizer": {
+  "c": 11,
+  "tr": 1,
+  "ep": -1,
+  "actTR": 1,
+  "act_ep": -1
+ },
+ "Space Mirrors": {
+  "c": 3,
+  "ep": 1,
+  "act_ep": 1
+ },
+ "Power Plant": {
+  "c": 4,
+  "ep": 1
+ },
+ "Steelworks": {
+  "c": 15,
+  "actMC": 4,
+  "actO2": 1
+ },
+ "Heat Trappers": {
+  "c": 6,
+  "hp": 0,
+  "ep": 1,
+  "pOpp": 2
+ },
+ "GHG Factories": {
+  "c": 11,
+  "hp": 4,
+  "ep": -1
+ },
+ "Soletta": {
+  "c": 35,
+  "hp": 7
+ },
+ "Caretaker Contract": {
+  "c": 3,
+  "actMC": 3.5,
+  "minG": 4,
+  "actTR": 1
+ },
+ "Food Factory": {
+  "c": 12,
+  "mp": 4,
+  "pp": -1,
+  "vp": 1
+ },
+ "House Printing": {
+  "c": 10,
+  "sp": 1,
+  "vp": 1
+ },
+ "Supermarkets": {
+  "c": 11,
+  "mp": 2,
+  "vp": 1
+ },
+ "Biomass Combustors": {
+  "c": 4,
+  "ep": 2,
+  "pOpp": 1
+ },
+ "Medical Lab": {
+  "c": 13,
+  "mp": 0,
+  "vp": 1
+ },
+ "Rover Construction": {
+  "c": 12,
+  "mp": 0,
+  "vp": 1
+ },
+ "Local Heat Trapping": {
+  "c": 1,
+  "pl": 4
+ },
+ "Greenhouses": {
+  "c": 6,
+  "pp": 1
+ },
+ "Asteroid": {
+  "c": 14,
+  "tmp": 1,
+  "ti": 2,
+  "rmPl": 3
+ },
+ "Comet": {
+  "c": 21,
+  "tmp": 1,
+  "oc": 1,
+  "rmPl": 3
+ },
+ "Big Asteroid": {
+  "c": 27,
+  "tmp": 2,
+  "ti": 4,
+  "rmPl": 4
+ },
+ "Giant Ice Asteroid": {
+  "c": 36,
+  "tmp": 2,
+  "oc": 2,
+  "rmPl": 6
+ },
+ "Ice Asteroid": {
+  "c": 23,
+  "oc": 2
+ },
+ "Lava Flows": {
+  "c": 18,
+  "tmp": 2
+ },
+ "Deimos Down": {
+  "c": 31,
+  "tmp": 3,
+  "st": 4,
+  "rmPl": 8
+ },
+ "Towing A Comet": {
+  "c": 23,
+  "oc": 1,
+  "o2": 1,
+  "pl": 2
+ },
+ "Imported Hydrogen": {
+  "c": 16,
+  "oc": 1,
+  "pl": 3,
+  "places": [
+   "animal",
+   "microbe"
+  ]
+ },
+ "Imported Nitrogen": {
+  "c": 23,
+  "tr": 1,
+  "pl": 4,
+  "places": [
+   "animal",
+   "microbe"
+  ]
+ },
+ "Imported GHG": {
+  "c": 7,
+  "hp": 1,
+  "he": 3
+ },
+ "Flooding": {
+  "c": 7,
+  "oc": 1,
+  "vp": -1
+ },
+ "Subterranean Reservoir": {
+  "c": 11,
+  "oc": 1
+ },
+ "Ice Cap Melting": {
+  "c": 5,
+  "oc": 1,
+  "minG": 5
+ },
+ "Aquifer Pumping": {
+  "c": 18,
+  "actOc": 1
+ },
+ "Asteroid Mining": {
+  "c": 30,
+  "tp": 2,
+  "vp": 2
+ },
+ "Water Import From Europa": {
+  "c": 25,
+  "actOc": 0.7,
+  "vpTag": {
+   "tag": "jovian",
+   "per": 1
+  }
+ },
+ "Nitrogen-Rich Asteroid": {
+  "c": 31,
+  "tr": 2,
+  "tmp": 1,
+  "pp": 1
+ },
+ "Small Asteroid": {
+  "c": 10,
+  "tmp": 1,
+  "rmPl": 2
+ },
+ "Dust Seals": {
+  "c": 3,
+  "vp": 1
+ },
+ "Research": {
+  "c": 11,
+  "cd": 2,
+  "vp": 1
+ },
+ "Invention Contest": {
+  "c": 2,
+  "cd": 0
+ },
+ "Technology Demonstration": {
+  "c": 7,
+  "cd": 2
+ },
+ "Deep Well Heating": {
+  "c": 13,
+  "tmp": 1,
+  "ep": 1
+ },
+ "Release of Inert Gases": {
+  "c": 14,
+  "tr": 2
+ },
+ "Terraforming Ganymede": {
+  "c": 33,
+  "tr": 1,
+  "vp": 2
+ },
+ "Nuclear Power": {
+  "c": 10,
+  "mp": -2,
+  "ep": 3
+ },
+ "Solar Wind Power": {
+  "c": 11,
+  "ep": 1,
+  "ti": 2
+ },
+ "Wave Power": {
+  "c": 8,
+  "ep": 1,
+  "vp": 1
+ },
+ "Windmills": {
+  "c": 6,
+  "ep": 1,
+  "minG": 3,
+  "vp": 1
+ },
+ "Power Infrastructure": {
+  "c": 4
+ },
+ "Geothermal Power": {
+  "c": 11,
+  "ep": 2
+ },
+ "Large Convoy": {
+  "c": 36,
+  "oc": 1,
+  "cd": 2,
+  "vp": 2,
+  "places": "animal"
+ },
+ "Interstellar Colony Ship": {
+  "c": 24,
+  "vp": 4,
+  "minG": 3
+ },
+ "Open City": {
+  "c": 23,
+  "mp": 4,
+  "pp": 1,
+  "city": 1,
+  "ep": -1,
+  "pl": 2,
+  "vp": 1
+ },
+ "Corporate Stronghold": {
+  "c": 11,
+  "mp": 3,
+  "city": 1,
+  "ep": -1
+ },
+ "Immigrant City": {
+  "c": 13,
+  "mp": -2,
+  "city": 1,
+  "ep": -1
+ },
+ "Capital": {
+  "c": 26,
+  "mp": 5,
+  "city": 1,
+  "ep": -2,
+  "minG": 4
+ },
+ "Noctis City": {
+  "c": 18,
+  "mp": 3,
+  "city": 1,
+  "ep": -1
+ },
+ "Underground City": {
+  "c": 18,
+  "sp": 2,
+  "city": 1,
+  "ep": -2
+ },
+ "Urbanized Area": {
+  "c": 10,
+  "mp": 2,
+  "city": 1,
+  "ep": -1
+ },
+ "Domed Crater": {
+  "c": 24,
+  "mp": 3,
+  "ep": -1,
+  "city": 1,
+  "pl": 3,
+  "minG": 2,
+  "vp": 1
+ },
+ "Self-Sufficient Settlement": {
+  "c": 15,
+  "mp": 2,
+  "city": 1
+ },
+ "Lava Tube Settlement": {
+  "c": 15,
+  "mp": 2,
+  "city": 1,
+  "ep": -1
+ },
+ "Space Port": {
+  "c": 22,
+  "mp": 4,
+  "tp": 1,
+  "city": 1,
+  "ep": -1,
+  "tradeFleet": 1
+ },
+ "Rad-Chem Factory": {
+  "c": 8,
+  "tr": 2,
+  "ep": -1
+ },
+ "Cupola City": {
+  "c": 16,
+  "mp": 3,
+  "city": 1,
+  "ep": -1
+ },
+ "Protected Valley": {
+  "c": 23,
+  "mp": 2,
+  "grn": 1
+ },
+ "Ecological Zone": {
+  "c": 12,
+  "vpAcc": 0.5,
+  "vpPer": 2,
+  "res": "animal"
+ },
+ "Birds": {
+  "c": 10,
+  "pOpp": 2,
+  "vpAcc": 1,
+  "minG": 5,
+  "res": "animal"
+ },
+ "Fish": {
+  "c": 9,
+  "pOpp": 1,
+  "vpAcc": 1,
+  "minG": 5,
+  "res": "animal"
+ },
+ "Livestock": {
+  "c": 13,
+  "pp": -1,
+  "vpAcc": 1,
+  "minG": 5,
+  "res": "animal",
+  "mp": 2
+ },
+ "Predators": {
+  "c": 14,
+  "vpAcc": 1,
+  "minG": 6,
+  "res": "animal",
+  "eats": "animal"
+ },
+ "Small Animals": {
+  "c": 6,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "minG": 5,
+  "res": "animal",
+  "pOpp": 1
+ },
+ "Decomposers": {
+  "c": 5,
+  "vpAcc": 1,
+  "vpPer": 3,
+  "res": "microbe"
+ },
+ "Ants": {
+  "c": 9,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "res": "microbe",
+  "eats": "microbe"
+ },
+ "Herbivores": {
+  "c": 12,
+  "pOpp": 1,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "minG": 5,
+  "res": "animal"
+ },
+ "Pets": {
+  "c": 10,
+  "vpAcc": 1,
+  "res": "animal"
+ },
+ "Security Fleet": {
+  "c": 12,
+  "vpAcc": 1,
+  "res": "fighter"
+ },
+ "Symbiotic Fungus": {
+  "c": 4,
+  "res": "microbe",
+  "places": "microbe"
+ },
+ "Extreme-Cold Fungus": {
+  "c": 13,
+  "res": "microbe",
+  "places": "microbe"
+ },
+ "Regolith Eaters": {
+  "c": 13,
+  "actTR": 0.33,
+  "res": "microbe",
+  "actO2": 1
+ },
+ "GHG Producing Bacteria": {
+  "c": 8,
+  "actTR": 0.33,
+  "res": "microbe",
+  "actTmp": 1
+ },
+ "Nitrite Reducing Bacteria": {
+  "c": 11,
+  "tr": 1,
+  "actTR": 1,
+  "res": "microbe"
+ },
+ "Electro Catapult": {
+  "c": 14,
+  "sp": -1,
+  "actMC": 7,
+  "vp": 1,
+  "ep": -1
+ },
+ "AI Central": {
+  "c": 21,
+  "ep": -1,
+  "actCD": 2,
+  "vp": 1
+ },
+ "Olympus Conference": {
+  "c": 10,
+  "actCD": 0.5,
+  "vp": 1
+ },
+ "Mars University": {
+  "c": 8,
+  "actCD": 0.3,
+  "vp": 1
+ },
+ "Inventors' Guild": {
+  "c": 9,
+  "actCD": 0.3
+ },
+ "Business Network": {
+  "c": 4,
+  "actCD": 0.3,
+  "mp": -1
+ },
+ "Restricted Area": {
+  "c": 11,
+  "actMC": 1
+ },
+ "Search For Life": {
+  "c": 3,
+  "vp": 3,
+  "res": "science"
+ },
+ "Viral Enhancers": {
+  "c": 9,
+  "places": "animal"
+ },
+ "Advanced Ecosystems": {
+  "c": 11,
+  "vp": 3
+ },
+ "Optimal Aerobraking": {
+  "c": 7
+ },
+ "Dirigibles": {
+  "c": 11,
+  "actMC": 1.5,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Stratospheric Birds": {
+  "c": 12,
+  "vpAcc": 1,
+  "minG": 3,
+  "res": "animal"
+ },
+ "Aerial Mappers": {
+  "c": 11,
+  "actCD": 1,
+  "res": "floater",
+  "tg": "venus",
+  "vp": 1
+ },
+ "Venus Governor": {
+  "c": 4,
+  "mp": 2
+ },
+ "Atmospheric Enhancers": {
+  "c": 0,
+  "tmp": 2
+ },
+ "Gyropolis": {
+  "c": 20,
+  "mp": 0,
+  "ep": -2,
+  "city": 1
+ },
+ "Luna Metropolis": {
+  "c": 21,
+  "mp": 0,
+  "city": 1,
+  "vp": 2
+ },
+ "Maxwell Base": {
+  "c": 18,
+  "city": 1,
+  "ep": -1,
+  "minG": 3,
+  "vp": 3
+ },
+ "Stratopolis": {
+  "c": 22,
+  "city": 1,
+  "actCD": 0.5,
+  "res": "floater",
+  "places": "floater",
+  "placesTag": "venus",
+  "tg": "venus",
+  "mp": 2,
+  "vpAcc": 1
+ },
+ "Dawn City": {
+  "c": 15,
+  "mp": 3,
+  "city": 1,
+  "ep": -1,
+  "tp": 1,
+  "vp": 3
+ },
+ "Community Services": {
+  "c": 13,
+  "mp": 1,
+  "vp": 1
+ },
+ "Red Ships": {
+  "c": 2,
+  "actMC": 4
+ },
+ "Virus": {
+  "c": 1,
+  "rmPl": 5
+ },
+ "Worms": {
+  "c": 8,
+  "pp": 0
+ },
+ "Immigration Shuttles": {
+  "c": 31,
+  "vp": 3,
+  "mp": 5
+ },
+ "Space Station": {
+  "c": 10,
+  "vp": 1,
+  "disc": {
+   "amount": 2,
+   "tag": "space"
+  }
+ },
+ "Cutting Edge Technology": {
+  "c": 11,
+  "vp": 1
+ },
+ "Diversity Support": {
+  "c": 1,
+  "tr": 1
+ },
+ "Land Claim": {
+  "c": 1
+ },
+ "Water Splitting Plant": {
+  "c": 12,
+  "actTR": 0.5,
+  "actO2": 1
+ },
+ "Ironworks": {
+  "c": 11,
+  "actMC": 3.5,
+  "actO2": 1
+ },
+ "Tropical Resort": {
+  "c": 13,
+  "mp": 3,
+  "hp": -2,
+  "vp": 2,
+  "minG": 5
+ },
+ "Soil Factory": {
+  "c": 9,
+  "ep": -1,
+  "pp": 1,
+  "vp": 1
+ },
+ "Magnetic Field Generators": {
+  "c": 20,
+  "pp": 2,
+  "ep": -4,
+  "tr": 3
+ },
+ "Magnetic Field Dome": {
+  "c": 5,
+  "pp": 1,
+  "ep": -2,
+  "tr": 1
+ },
+ "Building Industries": {
+  "c": 6,
+  "sp": 2,
+  "ep": -1
+ },
+ "Warp Drive": {
+  "c": 14,
+  "vp": 2,
+  "disc": {
+   "amount": 4,
+   "tag": "space"
+  }
+ },
+ "Mass Converter": {
+  "c": 8,
+  "ep": 6,
+  "disc": {
+   "amount": 2,
+   "tag": "space"
+  }
+ },
+ "Satellites": {
+  "c": 10,
+  "mp": 1
+ },
+ "Ice Moon Colony": {
+  "c": 23,
+  "mp": 0,
+  "colony": {}
+ },
+ "Pioneer Settlement": {
+  "c": 13,
+  "mp": -2,
+  "vp": 2
+ },
+ "Earth Catapult": {
+  "c": 23,
+  "vp": 2,
+  "disc": 2
+ },
+ "Gene Repair": {
+  "c": 12,
+  "mp": 2,
+  "vp": 2
+ },
+ "Special Design": {
+  "c": 4
+ },
+ "Standard Technology": {
+  "c": 6,
+  "vp": 1
+ },
+ "Asteroid Mining Consortium": {
+  "c": 13,
+  "tp": 1,
+  "pOpp": 1,
+  "vp": 1
+ },
+ "Colonizer Training Camp": {
+  "c": 8,
+  "vp": 2
+ },
+ "Luna Governor": {
+  "c": 4,
+  "mp": 2
+ },
+ "Lake Marineris": {
+  "c": 18,
+  "oc": 2,
+  "vp": 2,
+  "minG": 3
+ },
+ "Permafrost Extraction": {
+  "c": 8,
+  "oc": 1
+ },
+ "Artificial Lake": {
+  "c": 15,
+  "oc": 1,
+  "vp": 1
+ },
+ "Mohole Area": {
+  "c": 20,
+  "hp": 4
+ },
+ "Mohole Excavation": {
+  "c": 3,
+  "sp": 1,
+  "hp": 2,
+  "he": 2
+ },
+ "Industrial Center": {
+  "c": 4,
+  "sp": 1
+ },
+ "Natural Preserve": {
+  "c": 9,
+  "mp": 1,
+  "vp": 1,
+  "minG": 1
+ },
+ "Nuclear Zone": {
+  "c": 10,
+  "tmp": 2,
+  "vp": -2
+ },
+ "Rotator Impacts": {
+  "c": 6,
+  "actTR": 0.17,
+  "vp": 0,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Titan Air-scrapping": {
+  "c": 21,
+  "vp": 2
+ },
+ "Venus Soils": {
+  "c": 20,
+  "vn": 1,
+  "pp": 1,
+  "places": "microbe",
+  "placesN": 2
+ },
+ "Venus Magnetizer": {
+  "c": 7,
+  "actMC": 6,
+  "ep": -1,
+  "actVn": 1,
+  "act_ep": -1
+ },
+ "Spin-Inducing Asteroid": {
+  "c": 16,
+  "vn": 2
+ },
+ "Sulphur-Eating Bacteria": {
+  "c": 6,
+  "actMC": 3,
+  "res": "microbe"
+ },
+ "Thermophiles": {
+  "c": 9,
+  "actTR": 0.33,
+  "res": "microbe",
+  "actVn": 1
+ },
+ "Venusian Insects": {
+  "c": 5,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "minG": 3,
+  "res": "microbe"
+ },
+ "Venusian Animals": {
+  "c": 15,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "minG": 4,
+  "res": "animal"
+ },
+ "Corroder Suits": {
+  "c": 8,
+  "tr": 1,
+  "mp": 2
+ },
+ "Atmoscoop": {
+  "c": 22,
+  "tmp": 1,
+  "vn": 1,
+  "choice": "tmp,vn",
+  "vp": 1
+ },
+ "Hydrogen to Venus": {
+  "c": 11,
+  "vn": 1
+ },
+ "Giant Solar Shade": {
+  "c": 27,
+  "vn": 3
+ },
+ "Sulphur Exports": {
+  "c": 21,
+  "vn": 1,
+  "mp": 3
+ },
+ "Luxury Foods": {
+  "c": 8,
+  "vp": 2
+ },
+ "Cultural Metropolis": {
+  "c": 20,
+  "mp": 3,
+  "city": 1,
+  "ep": -1
+ },
+ "Sponsored Academies": {
+  "c": 9,
+  "cd": 3,
+  "vp": 1
+ },
+ "Martian Survey": {
+  "c": 9,
+  "cd": 2,
+  "vp": 1
+ },
+ "Solar Probe": {
+  "c": 9,
+  "cd": 0,
+  "vp": 1
+ },
+ "CEO's Favorite Project": {
+  "c": 1
+ },
+ "Orbital Cleanup": {
+  "c": 14,
+  "vp": 2,
+  "mp": -2
+ },
+ "Media Archives": {
+  "c": 8,
+  "cd": 1
+ },
+ "Forced Precipitation": {
+  "c": 8,
+  "actMC": 0.4,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Wetlands": {
+  "c": 20,
+  "o2": 1,
+  "grn": 1,
+  "vp": 1
+ },
+ "Small Open Pit Mine": {
+  "c": 10,
+  "sp": 2,
+  "ep": -1
+ },
+ "Space Relay": {
+  "c": 13,
+  "actCD": 1,
+  "mp": 1
+ },
+ "Specialized Settlement": {
+  "c": 20,
+  "mp": 3,
+  "city": 1,
+  "ep": -1
+ },
+ "Terraforming Control Station": {
+  "c": 18,
+  "tr": 2
+ },
+ "Think Tank": {
+  "c": 12,
+  "cd": 1
+ },
+ "Venera Base": {
+  "c": 21,
+  "city": 1,
+  "mp": 3,
+  "vpTag": {
+   "tag": "venus",
+   "per": 2
+  }
+ },
+ "Social Events": {
+  "c": 18,
+  "tr": 1
+ },
+ "Soil Detoxification": {
+  "c": 10,
+  "pp": 1
+ },
+ "Space Debris Cleaning Operation": {
+  "c": 7,
+  "ti": 3,
+  "cd": 1
+ },
+ "Public Celebrations": {
+  "c": 8,
+  "cd": 2,
+  "vp": 2
+ },
+ "Small Comet": {
+  "c": 32,
+  "tmp": 1,
+  "o2": 1,
+  "oc": 1,
+  "ti": 1,
+  "rmPl": 2
+ },
+ "Biolab": {
+  "c": 10,
+  "pp": 1,
+  "cd": 3
+ },
+ "Mining Colony": {
+  "c": 20,
+  "tp": 1,
+  "colony": {}
+ },
+ "Space Port Colony": {
+  "c": 27,
+  "mp": 0,
+  "colony": {
+   "allowDuplicates": true
+  },
+  "tradeFleet": 1
+ },
+ "Martian Zoo": {
+  "c": 12,
+  "vpAcc": 0.3,
+  "vp": 1,
+  "res": "animal"
+ },
+ "Cryo-Sleep": {
+  "c": 10,
+  "vp": 1,
+  "tradeDiscount": 1
+ },
+ "Spin-off Department": {
+  "c": 10,
+  "mp": 2
+ },
+ "Productive Outpost": {
+  "c": 0
+ },
+ "Research Colony": {
+  "c": 20,
+  "cd": 2,
+  "colony": {
+   "allowDuplicates": true
+  }
+ },
+ "Interplanetary Trade": {
+  "c": 27,
+  "vp": 1
+ },
+ "Refugee Camps": {
+  "c": 10,
+  "vpAcc": 1,
+  "actMC": -1,
+  "res": "camp",
+  "act_mp": -1
+ },
+ "Trade Envoys": {
+  "c": 6,
+  "tradeOffset": 1
+ },
+ "Point Luna": {
+  "c": 0,
+  "tp": 1
+ },
+ "Manutech": {
+  "c": 0,
+  "sp": 1
+ },
+ "Tharsis Republic": {
+  "c": 0,
+  "city": 1,
+  "mp": 1
+ },
+ "Poseidon": {
+  "c": 0,
+  "mp": 1
+ },
+ "Philares": {
+  "c": 0,
+  "grn": 1
+ },
+ "Helion": {
+  "c": 0,
+  "hp": 3
+ },
+ "Cheung Shing MARS": {
+  "c": 0,
+  "mp": 3,
+  "disc": {
+   "amount": 2,
+   "tag": "building"
+  }
+ },
+ "Saturn Systems": {
+  "c": 0,
+  "tp": 1
+ },
+ "EcoTec": {
+  "c": 0,
+  "pp": 1
+ },
+ "Mons Insurance": {
+  "c": 0,
+  "mp": 4
+ },
+ "Arklight": {
+  "c": 0,
+  "mp": 2,
+  "vpAcc": 1
+ },
+ "Pristar": {
+  "c": 0,
+  "tr": -2,
+  "vpAcc": 1
+ },
+ "Factorum": {
+  "c": 0,
+  "sp": 1
+ },
+ "Utopia Invest": {
+  "c": 0,
+  "sp": 1,
+  "tp": 1
+ },
+ "Aphrodite": {
+  "c": 0,
+  "pp": 1
+ },
+ "Kuiper Cooperative": {
+  "c": 0,
+  "tp": 1
+ },
+ "Recyclon": {
+  "c": 0,
+  "sp": 1,
+  "res": "microbe"
+ },
+ "Polyphemos": {
+  "c": 0,
+  "mp": 5,
+  "ti": 5
+ },
+ "Terralabs Research": {
+  "c": 0,
+  "tr": -1
+ },
+ "Thorgate": {
+  "c": 0,
+  "ep": 1,
+  "disc": {
+   "amount": 3,
+   "tag": "power"
+  }
+ },
+ "Mars Maths": {
+  "c": 0,
+  "mp": 1
+ },
+ "PolderTECH Dutch": {
+  "c": 0,
+  "oc": 1,
+  "grn": 1
+ },
+ "Nirgal Enterprises": {
+  "c": 0,
+  "sp": 1,
+  "en": 1,
+  "pl": 1,
+  "ep": 1,
+  "pp": 1
+ },
+ "Sagitta Frontier Services": {
+  "c": 0,
+  "mp": 2,
+  "en": 1,
+  "ep": 1
+ },
+ "Tycho Magnetics": {
+  "c": 0,
+  "ep": 1
+ },
+ "Gagarin Mobile Base": {
+  "c": 0,
+  "city": 1
+ },
+ "Adhai High Orbit Constructions": {
+  "c": 0,
+  "mp": 1
+ },
+ "Project Eden": {
+  "c": 0,
+  "oc": 1,
+  "city": 1,
+  "grn": 1
+ },
+ "EcoLine": {
+  "c": 0,
+  "pp": 2,
+  "pl": 3
+ },
+ "Lakefront Resorts": {
+  "c": 0,
+  "mp": 1
+ },
+ "PhoboLog": {
+  "c": 0,
+  "tp": 1,
+  "ti": 10
+ },
+ "Inventrix": {
+  "c": 0,
+  "cd": 3
+ },
+ "Robinson Industries": {
+  "c": 0,
+  "mp": 1
+ },
+ "Stormcraft Incorporated": {
+  "c": 0,
+  "hp": 1,
+  "places": "floater"
+ },
+ "Celestic": {
+  "c": 0,
+  "cd": 2,
+  "places": "floater",
+  "vpAcc": 1
+ },
+ "Aridor": {
+  "c": 0,
+  "mp": 1
+ },
+ "CrediCor": {
+  "c": 0,
+  "mp": 2
+ },
+ "Vitor": {
+  "c": 0,
+  "mp": 2
+ },
+ "Deimos Down:promo": {
+  "c": 31,
+  "tmp": 3,
+  "st": 4,
+  "rmPl": 6
+ },
+ "High Circles": {
+  "c": 0,
+  "tr": 1
+ },
+ "Great Aquifer": {
+  "c": 0,
+  "oc": 2
+ },
+ "Huge Asteroid": {
+  "c": 0,
+  "tmp": 3
+ },
+ "UNMI Contractor": {
+  "c": 0,
+  "tr": 3,
+  "mp": 3,
+  "cd": 1
+ },
+ "Experimental Forest": {
+  "c": 0,
+  "grn": 1,
+  "cd": 2
+ },
+ "Planetary Alliance": {
+  "c": 0,
+  "tr": 2
+ },
+ "Allied Bank": {
+  "c": 0,
+  "mp": 4,
+  "mc": 3
+ },
+ "Metal-Rich Asteroid": {
+  "c": 0,
+  "tmp": 1,
+  "st": 4,
+  "ti": 4
+ },
+ "Metals Company": {
+  "c": 0,
+  "mp": 1,
+  "sp": 1,
+  "tp": 1
+ },
+ "Acquired Space Agency": {
+  "c": 0,
+  "ti": 6,
+  "cd": 1
+ },
+ "Polar Industries": {
+  "c": 0,
+  "hp": 2,
+  "oc": 1
+ },
+ "Strategic Base Planning": {
+  "c": 0,
+  "city": 1,
+  "colony": {}
+ },
+ "Albedo Plants": {
+  "c": 0,
+  "pp": 1,
+  "pl": 1
+ },
+ "Corporate Archives": {
+  "c": 0,
+  "mc": 13,
+  "cd": 2
+ },
+ "Research Network": {
+  "c": 0,
+  "mp": 1,
+  "cd": 3
+ },
+ "Space Lanes": {
+  "c": 0,
+  "ti": 3,
+  "mc": 9
+ },
+ "Aquifer Turbines": {
+  "c": 0,
+  "oc": 1,
+  "ep": 2,
+  "mc": -3
+ },
+ "Smelting Plant": {
+  "c": 0,
+  "o2": 2,
+  "st": 5
+ },
+ "Supply Drop": {
+  "c": 0,
+  "ti": 3,
+  "st": 8,
+  "pl": 3
+ },
+ "Ecology Experts": {
+  "c": 0,
+  "pp": 1
+ },
+ "New Partner": {
+  "c": 0,
+  "mp": 1
+ },
+ "World Government Advisor": {
+  "c": 0,
+  "tr": 2,
+  "cd": 1
+ },
+ "Corridors of Power": {
+  "c": 0,
+  "tr": 1,
+  "mc": 4
+ },
+ "Rise To Power": {
+  "c": 0,
+  "mp": 3
+ },
+ "Supplier": {
+  "c": 0,
+  "ep": 2,
+  "st": 4
+ },
+ "Focused Organization": {
+  "c": 0,
+  "cd": 1
+ },
+ "Power Generation": {
+  "c": 0,
+  "ep": 3
+ },
+ "Dome Farming": {
+  "c": 0,
+  "mp": 2,
+  "pp": 1
+ },
+ "Mining Operations": {
+  "c": 0,
+  "sp": 2,
+  "st": 4
+ },
+ "Donation": {
+  "c": 0,
+  "mc": 21
+ },
+ "Venus L1 Shade": {
+  "c": 0,
+  "vn": 3
+ },
+ "Eccentric Sponsor": {
+  "c": 0,
+  "mc": 25
+ },
+ "Old Mining Colony": {
+  "c": 0,
+  "tp": 1,
+  "colony": {}
+ },
+ "Recession": {
+  "c": 0,
+  "mc": 10
+ },
+ "Main Belt Asteroids": {
+  "c": 0,
+  "tp": 1,
+  "st": 3,
+  "mc": -5,
+  "vpAcc": 1
+ },
+ "Orbital Construction Yard": {
+  "c": 0,
+  "tp": 1,
+  "cd": 1,
+  "ti": 4
+ },
+ "Anti-desertification Techniques": {
+  "c": 0,
+  "pp": 1,
+  "sp": 1,
+  "mc": 3
+ },
+ "Martian Industries": {
+  "c": 0,
+  "ep": 1,
+  "st": 4,
+  "sp": 1,
+  "mc": 6
+ },
+ "Mohole": {
+  "c": 0,
+  "hp": 3,
+  "he": 3
+ },
+ "Early Settlement": {
+  "c": 0,
+  "pp": 1,
+  "city": 1
+ },
+ "Colony Trade Hub": {
+  "c": 0,
+  "ep": 1,
+  "ti": 2
+ },
+ "Giant Solar Collector": {
+  "c": 0,
+  "ep": 2,
+  "vn": 1
+ },
+ "Preservation Program": {
+  "c": 0,
+  "tr": 5,
+  "mp": 5
+ },
+ "Nobel Prize": {
+  "c": 0,
+  "mc": 5,
+  "vp": 2,
+  "cd": 2
+ },
+ "Loan": {
+  "c": 0,
+  "mc": 30,
+  "mp": -2
+ },
+ "Io Research Outpost": {
+  "c": 0,
+  "tp": 1,
+  "cd": 1
+ },
+ "Galilean Mining": {
+  "c": 0,
+  "tp": 2
+ },
+ "Biofuels": {
+  "c": 0,
+  "ep": 1,
+  "pl": 2,
+  "pp": 1
+ },
+ "Biosphere Support": {
+  "c": 0,
+  "pp": 2,
+  "mp": -1
+ },
+ "Nitrogen Shipment": {
+  "c": 0,
+  "pp": 1,
+  "tr": 1,
+  "mc": 5
+ },
+ "Society Support": {
+  "c": 0,
+  "pp": 1,
+  "ep": 1,
+  "hp": 1,
+  "mp": -1
+ },
+ "Co-leadership": {
+  "c": 0,
+  "cd": 2
+ },
+ "CO² Reducers": {
+  "c": 0,
+  "mp": 3,
+  "cd": 2
+ },
+ "Deep Space Operations": {
+  "c": 0,
+  "ti": 4,
+  "cd": 2
+ },
+ "Design Company": {
+  "c": 0,
+  "sp": 1,
+  "cd": 3
+ },
+ "Experienced Martians": {
+  "c": 0,
+  "mp": 2,
+  "cd": 2
+ },
+ "Hydrogen Bombardment": {
+  "c": 0,
+  "vn": 1,
+  "tp": 1,
+  "mc": 6
+ },
+ "Personal Agenda": {
+  "c": 0,
+  "mp": 3,
+  "cd": 3
+ },
+ "Research Grant": {
+  "c": 0,
+  "ep": 1,
+  "cd": 3,
+  "mc": 8
+ },
+ "Survey Mission": {
+  "c": 0,
+  "st": 5
+ },
+ "The New Space Race": {
+  "c": 0,
+  "mc": 12
+ },
+ "Valuable Gases": {
+  "c": 0,
+  "mc": 6
+ },
+ "Venus First": {
+  "c": 0,
+  "vn": 2,
+  "cd": 2
+ },
+ "Early Colonization": {
+  "c": 0,
+  "pp": 1,
+  "city": 1,
+  "en": 3,
+  "colony": {}
+ },
+ "Soil Bacteria": {
+  "c": 0,
+  "pp": 1,
+  "pl": 3
+ },
+ "Terraforming Deal": {
+  "c": 0,
+  "tr": 1
+ },
+ "Venus Contract": {
+  "c": 0,
+  "tr": 1,
+  "cd": 1
+ },
+ "Board of Directors": {
+  "c": 0,
+  "cd": 3,
+  "res": "director"
+ },
+ "Applied Science": {
+  "c": 0,
+  "cd": 1,
+  "res": "science"
+ },
+ "Conscription": {
+  "c": 5,
+  "mc": 16
+ },
+ "Indentured Workers": {
+  "c": 0,
+  "mc": 8
+ },
+ "Psychrophiles": {
+  "c": 2,
+  "actMC": 2,
+  "res": "microbe"
+ },
+ "Trading Colony": {
+  "c": 18,
+  "mp": 2,
+  "colony": {},
+  "tradeOffset": 1
+ },
+ "Meat Industry": {
+  "c": 5,
+  "mp": 2
+ },
+ "Robotic Workforce": {
+  "c": 9,
+  "mp": 0
+ },
+ "Interplanetary Colony Ship": {
+  "c": 12,
+  "vp": 4,
+  "minG": 3,
+  "colony": {}
+ },
+ "Advanced Alloys": {
+  "c": 9
+ },
+ "GMO Contract": {
+  "c": 3,
+  "cd": 1
+ },
+ "Mercurian Alloys": {
+  "c": 3
+ },
+ "Rim Freighters": {
+  "c": 4,
+  "tradeDiscount": 1
+ },
+ "Industrial Complex": {
+  "c": 10,
+  "sp": 1
+ },
+ "Self-replicating Robots": {
+  "c": 7
+ },
+ "Directed Heat Usage": {
+  "c": 1,
+  "actMC": 4
+ },
+ "Hospitals": {
+  "c": 8,
+  "vp": 1,
+  "ep": -1
+ },
+ "Floating Trade Hub": {
+  "c": 10,
+  "mp": 0
+ },
+ "Advertising": {
+  "c": 3,
+  "mp": 1
+ },
+ "Floater Technology": {
+  "c": 7,
+  "places": "floater"
+ },
+ "Floater Prototypes": {
+  "c": 2,
+  "places": "floater"
+ },
+ "Jovian Envoys": {
+  "c": 3,
+  "tr": 1
+ },
+ "Project Inspection": {
+  "c": 0,
+  "cd": 3
+ },
+ "Soil Studies": {
+  "c": 4,
+  "grn": 1
+ },
+ "Neptunian Power Consultants": {
+  "c": 10,
+  "actMC": 3,
+  "vpAcc": 1
+ },
+ "Protected Growth": {
+  "c": 2,
+  "pp": 1
+ },
+ "Envoys From Venus": {
+  "c": 4,
+  "tr": 0
+ },
+ "Hired Raiders": {
+  "c": 1,
+  "mc": 3
+ },
+ "Adapted Lichen": {
+  "c": 9,
+  "pp": 1
+ },
+ "Designed Microorganisms": {
+  "c": 16,
+  "pp": 2,
+  "minG": 1
+ },
+ "Carbonate Processing": {
+  "c": 6,
+  "hp": 3,
+  "ep": -1
+ },
+ "Cloud Seeding": {
+  "c": 11,
+  "pp": 2,
+  "mp": -1,
+  "pOpp": 1
+ },
+ "Micro-Mills": {
+  "c": 3,
+  "hp": 1
+ },
+ "Tundra Farming": {
+  "c": 16,
+  "mp": 2,
+  "pp": 1,
+  "pl": 1,
+  "vp": 2,
+  "minG": 4
+ },
+ "Energy Saving": {
+  "c": 15,
+  "ep": 0
+ },
+ "Power Grid": {
+  "c": 18,
+  "ep": 0
+ },
+ "Callisto Penal Mines": {
+  "c": 24,
+  "mp": 3,
+  "vp": 2
+ },
+ "Sabotage": {
+  "c": 1
+ },
+ "Rad-Suits": {
+  "c": 6,
+  "mp": 1,
+  "vp": 1,
+  "minG": 2
+ },
+ "Tardigrades": {
+  "c": 4,
+  "vpAcc": 1,
+  "vpPer": 4,
+  "res": "microbe"
+ },
+ "Black Polar Dust": {
+  "c": 15,
+  "oc": 1,
+  "hp": 3,
+  "mp": -2
+ },
+ "Solar Power": {
+  "c": 11,
+  "ep": 1,
+  "vp": 1
+ },
+ "Adaptation Technology": {
+  "c": 12,
+  "vp": 1
+ },
+ "Aerobraked Ammonia Asteroid": {
+  "c": 26,
+  "hp": 3,
+  "pp": 1,
+  "places": "microbe",
+  "placesN": 2
+ },
+ "Venus Waystation": {
+  "c": 9,
+  "vp": 1,
+  "disc": {
+   "amount": 2,
+   "tag": "venus"
+  }
+ },
+ "Venusian Plants": {
+  "c": 13,
+  "vn": 1,
+  "vp": 1,
+  "minG": 5,
+  "places": [
+   "animal",
+   "microbe"
+  ],
+  "placesTag": "venus"
+ },
+ "Neutralizer Factory": {
+  "c": 7,
+  "vn": 1,
+  "minG": 3
+ },
+ "Ishtar Mining": {
+  "c": 5,
+  "tp": 1,
+  "minG": 3
+ },
+ "Extractor Balloons": {
+  "c": 21,
+  "actTR": 0.5,
+  "res": "floater",
+  "tg": "venus",
+  "vn": 1,
+  "actVn": 1
+ },
+ "Jet Stream Microscrappers": {
+  "c": 12,
+  "actTR": 0.5,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Orbital Reflectors": {
+  "c": 26,
+  "vn": 2,
+  "hp": 2
+ },
+ "Aerosport Tournament": {
+  "c": 7,
+  "mc": 0,
+  "vp": 1,
+  "minG": 4
+ },
+ "Atmo Collectors": {
+  "c": 15,
+  "actMC": 3,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Sub-zero Salt Fish": {
+  "c": 5,
+  "pOpp": 1,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "minG": 4,
+  "res": "animal"
+ },
+ "Impactor Swarm": {
+  "c": 11,
+  "he": 12,
+  "rmPl": 2,
+  "minG": 3
+ },
+ "Floater Leasing": {
+  "c": 3,
+  "mp": 0
+ },
+ "Air Raid": {
+  "c": 0,
+  "mc": 5
+ },
+ "Snow Algae": {
+  "c": 12,
+  "pp": 1,
+  "hp": 1,
+  "minG": 2
+ },
+ "Outdoor Sports": {
+  "c": 8,
+  "mp": 2,
+  "vp": 1,
+  "minG": 2
+ },
+ "Teslaract": {
+  "c": 14,
+  "tr": 1
+ },
+ "Icy Impactors": {
+  "c": 15,
+  "actTR": 0.5,
+  "res": "floater"
+ },
+ "Asteroid Hollowing": {
+  "c": 16,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "res": "asteroid",
+  "act_mp": 1
+ },
+ "St. Joseph of Cupertino Mission": {
+  "c": 7,
+  "vpAcc": 1,
+  "res": "fighter"
+ },
+ "Parliament Hall": {
+  "c": 8,
+  "mp": 0,
+  "vp": 1
+ },
+ "Vote Of No Confidence": {
+  "c": 5,
+  "tr": 1
+ },
+ "Aerial Lenses": {
+  "c": 2,
+  "hp": 2,
+  "rmPl": 2,
+  "vp": -1
+ },
+ "GHG Shipment": {
+  "c": 3,
+  "hp": 1
+ },
+ "Commercial District": {
+  "c": 16,
+  "mp": 4,
+  "ep": -1,
+  "vp": 0
+ },
+ "Solar Storm": {
+  "c": 12,
+  "hp": 1,
+  "tmp": 1,
+  "rmPl": 2
+ },
+ "Designed Organisms": {
+  "c": 13,
+  "pp": 2,
+  "pl": 3,
+  "minG": 5
+ },
+ "Martian Nature Wonders": {
+  "c": 13,
+  "vp": 2
+ },
+ "Declaration of Independence": {
+  "c": 20,
+  "vp": 4,
+  "minG": 5
+ },
+ "Floater-Urbanism": {
+  "c": 7,
+  "vpAcc": 1,
+  "minG": 4,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Terraforming Robots": {
+  "c": 10,
+  "vpAcc": 1,
+  "minG": 4
+ },
+ "Sky Docks": {
+  "c": 18,
+  "vp": 2,
+  "tradeFleet": 1,
+  "disc": 1
+ },
+ "Solar Logistics": {
+  "c": 20,
+  "ti": 2,
+  "vp": 1,
+  "disc": {
+   "amount": 2,
+   "tag": "earth"
+  }
+ },
+ "Research Outpost": {
+  "c": 18,
+  "city": 1,
+  "disc": 1
+ },
+ "Insects": {
+  "c": 9,
+  "pp": 0,
+  "minG": 3
+ },
+ "L1 Trade Terminal": {
+  "c": 25,
+  "vp": 2,
+  "tradeOffset": 2
+ },
+ "Anti-Gravity Technology": {
+  "c": 14,
+  "vp": 3,
+  "minG": 5,
+  "disc": 2
+ },
+ "Dusk Laser Mining": {
+  "c": 8,
+  "ep": -1,
+  "tp": 1,
+  "ti": 4
+ },
+ "Dyson Screens": {
+  "c": 28,
+  "ep": 2,
+  "hp": 2,
+  "tmp": 1,
+  "cd": 1,
+  "city": 1,
+  "vp": 1,
+  "act_ep": 1,
+  "act_hp": 1
+ },
+ "Lunar Embassy": {
+  "c": 28,
+  "mp": 3,
+  "pp": 0,
+  "cd": 1,
+  "city": 1,
+  "vp": 2
+ },
+ "Space Hotels": {
+  "c": 12,
+  "mp": 4
+ },
+ "Venus Orbital Survey": {
+  "c": 18,
+  "actCD": 0.3
+ },
+ "Mars Nomads": {
+  "c": 13,
+  "actMC": 3
+ },
+ "Red Spot Observatory": {
+  "c": 17,
+  "cd": 2,
+  "vp": 2,
+  "actCD": 0.5
+ },
+ "Sub-Crust Measurements": {
+  "c": 20,
+  "vp": 2,
+  "actCD": 1
+ },
+ "Penguins": {
+  "c": 7,
+  "vpAcc": 1,
+  "minG": 5,
+  "res": "animal"
+ },
+ "Ganymede Colony": {
+  "c": 20,
+  "city": 1,
+  "vp": 0,
+  "vpTag": {
+   "tag": "jovian",
+   "per": 1
+  }
+ },
+ "Quantum Communications": {
+  "c": 8,
+  "mp": 0,
+  "vp": 1
+ },
+ "Atalanta Planitia Lab": {
+  "c": 10,
+  "cd": 2,
+  "vp": 2
+ },
+ "Field-Capped City": {
+  "c": 29,
+  "mp": 2,
+  "ep": 1,
+  "city": 1,
+  "pl": 3
+ },
+ "Homeostasis Bureau": {
+  "c": 16,
+  "hp": 2
+ },
+ "Lunar Exports": {
+  "c": 19,
+  "mp": 5
+ },
+ "Topsoil Contract": {
+  "c": 8,
+  "pl": 3
+ },
+ "Sponsoring Nation": {
+  "c": 21,
+  "tr": 3
+ },
+ "Energy Market": {
+  "c": 3,
+  "actMC": 3
+ },
+ "Frontier Town": {
+  "c": 11,
+  "ep": -1,
+  "city": 1
+ },
+ "Martian Media Center": {
+  "c": 7,
+  "mp": 2
+ },
+ "Terraforming Contract": {
+  "c": 8,
+  "mp": 4,
+  "minG": 4
+ },
+ "Asteroid Rights": {
+  "c": 10,
+  "ti": 2,
+  "res": "asteroid"
+ },
+ "Ecology Research": {
+  "c": 21,
+  "pp": 1,
+  "vp": 1,
+  "places": [
+   "animal",
+   "microbe"
+  ]
+ },
+ "Harvest": {
+  "c": 4,
+  "cd": 1,
+  "pl": 4,
+  "mc": 12
+ },
+ "Imported Nutrients": {
+  "c": 14,
+  "pl": 4,
+  "places": "microbe",
+  "placesN": 4
+ },
+ "Kaguya Tech": {
+  "c": 10,
+  "mp": 2,
+  "cd": 1
+ },
+ "Lunar Mining": {
+  "c": 11,
+  "tp": 0
+ },
+ "Carbon Nanosystems": {
+  "c": 14,
+  "vp": 1
+ },
+ "Martian Rails": {
+  "c": 13,
+  "actMC": 3
+ },
+ "Business Contacts": {
+  "c": 7,
+  "cd": 2
+ },
+ "Development Center": {
+  "c": 11,
+  "actCD": 1
+ },
+ "Heavy Taxation": {
+  "c": 3,
+  "mp": 2,
+  "vp": -1,
+  "mc": 4
+ },
+ "Ishtar Expedition": {
+  "c": 6,
+  "ti": 3,
+  "cd": 2
+ },
+ "Jovian Embassy": {
+  "c": 14,
+  "tr": 1,
+  "vp": 1
+ },
+ "Mining Quota": {
+  "c": 5,
+  "sp": 2,
+  "minG": 3
+ },
+ "Sister Planet Support": {
+  "c": 7,
+  "mp": 3
+ },
+ "Space Elevator": {
+  "c": 27,
+  "tp": 1,
+  "vp": 2,
+  "actMC": 5
+ },
+ "Wildlife Dome": {
+  "c": 15,
+  "grn": 1
+ },
+ "Public Plans": {
+  "c": 7,
+  "vp": 1
+ },
+ "Ceres Spaceport": {
+  "c": 36,
+  "mp": 2,
+  "tp": 0,
+  "oc": 1,
+  "cd": 1,
+  "city": 1,
+  "vp": 1
+ },
+ "Cyanobacteria": {
+  "c": 12,
+  "o2": 1
+ },
+ "Geological Expedition": {
+  "c": 18,
+  "vp": 2
+ },
+ "Asteroid Resources": {
+  "c": 17,
+  "sp": 1,
+  "tp": 1,
+  "vp": 1,
+  "st": 2,
+  "ti": 1
+ },
+ "Flat Mars Theory": {
+  "c": 8,
+  "mp": 0
+ },
+ "Martian Dust Processing Plant": {
+  "c": 15,
+  "sp": 2,
+  "ep": -1,
+  "hp": 1,
+  "tr": 1
+ },
+ "Martian Repository": {
+  "c": 12,
+  "actCD": 0.5,
+  "ep": -1,
+  "vpAcc": 1
+ },
+ "Pollinators": {
+  "c": 19,
+  "pp": 1,
+  "vp": 1,
+  "mp": 2,
+  "res": "animal",
+  "vpAcc": 1
+ },
+ "Prefabrication of Human Habitats": {
+  "c": 8,
+  "city": 1,
+  "mp": 1,
+  "disc": {
+   "amount": 2,
+   "tag": "city"
+  }
+ },
+ "Huygens Observatory": {
+  "c": 27,
+  "tr": 1,
+  "vp": 1
+ },
+ "New Venice": {
+  "c": 21,
+  "mp": 2,
+  "ep": 1,
+  "city": 1,
+  "minG": 2
+ },
+ "Advanced Power Grid": {
+  "c": 18,
+  "ep": 2,
+  "mp": 0
+ },
+ "Communication Center": {
+  "c": 8,
+  "actCD": 0.5,
+  "ep": -1,
+  "res": "data"
+ },
+ "Expedition to the Surface - Venus": {
+  "c": 16,
+  "cd": 2,
+  "vn": 1
+ },
+ "Cyberia Systems": {
+  "c": 16,
+  "ep": 2,
+  "mp": 0,
+  "sp": 1
+ },
+ "Freyja Biodomes": {
+  "c": 14,
+  "mp": 2,
+  "ep": -1,
+  "vp": 2,
+  "minG": 3,
+  "places": [
+   "animal",
+   "microbe"
+  ],
+  "placesTag": "venus",
+  "placesN": 2
+ },
+ "Io Mining Industries": {
+  "c": 41,
+  "tp": 2,
+  "mp": 2,
+  "vp": 0,
+  "vpTag": {
+   "tag": "jovian",
+   "per": 1
+  }
+ },
+ "Jovian Lanterns": {
+  "c": 20,
+  "tr": 1,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "res": "floater",
+  "tg": "jovian"
+ },
+ "Lagrange Observatory": {
+  "c": 9,
+  "cd": 1,
+  "vp": 1
+ },
+ "Mine": {
+  "c": 4,
+  "sp": 1
+ },
+ "Potatoes": {
+  "c": 2,
+  "mp": 2
+ },
+ "Quantum Extractor": {
+  "c": 13,
+  "ep": 4,
+  "disc": {
+   "amount": 2,
+   "tag": "space"
+  }
+ },
+ "Saturn Surfing": {
+  "c": 13,
+  "vp": 1,
+  "actMC": 4
+ },
+ "Zeppelins": {
+  "c": 13,
+  "mp": 0,
+  "vp": 1,
+  "minG": 3
+ },
+ "Investment Loan": {
+  "c": 3,
+  "mp": -1,
+  "mc": 10
+ },
+ "Titan Shuttles": {
+  "c": 23,
+  "vp": 1
+ },
+ "Bactoviral Research": {
+  "c": 10,
+  "cd": 1,
+  "res": "microbe",
+  "places": "microbe"
+ },
+ "Convoy From Europa": {
+  "c": 15,
+  "oc": 1,
+  "cd": 1
+ },
+ "Galilean Waystation": {
+  "c": 15,
+  "vp": 1
+ },
+ "Methane From Titan": {
+  "c": 28,
+  "hp": 2,
+  "pp": 2,
+  "vp": 2,
+  "minG": 2
+ },
+ "Peroxide Power": {
+  "c": 7,
+  "mp": -1,
+  "ep": 2
+ },
+ "Solar Reflectors": {
+  "c": 23,
+  "hp": 5
+ },
+ "Titan Floating Launch-pad": {
+  "c": 18,
+  "vp": 1,
+  "res": "floater",
+  "places": "floater",
+  "placesTag": "jovian",
+  "tg": "jovian"
+ },
+ "Corona Extractor": {
+  "c": 10,
+  "ep": 4
+ },
+ "Floyd Continuum": {
+  "c": 4,
+  "cd": 1
+ },
+ "Miranda Resort": {
+  "c": 12,
+  "mp": 0,
+  "vp": 1
+ },
+ "Plantation": {
+  "c": 15,
+  "grn": 1,
+  "minG": 4
+ },
+ "Bribed Committee": {
+  "c": 7,
+  "tr": 2,
+  "vp": -2
+ },
+ "Earth Elevator": {
+  "c": 43,
+  "tp": 3,
+  "vp": 4
+ },
+ "Extremophiles": {
+  "c": 3,
+  "vpAcc": 1,
+  "vpPer": 3,
+  "res": "microbe"
+ },
+ "Great Dam": {
+  "c": 12,
+  "ep": 2,
+  "vp": 1,
+  "minG": 4
+ },
+ "Heather": {
+  "c": 6,
+  "pp": 1,
+  "pl": 1
+ },
+ "Jupiter Floating Station": {
+  "c": 9,
+  "vp": 1,
+  "actMC": 4,
+  "res": "floater",
+  "tg": "jovian"
+ },
+ "Soil Enrichment": {
+  "c": 6,
+  "pl": 5
+ },
+ "Supported Research": {
+  "c": 3,
+  "cd": 2
+ },
+ "Toll Station": {
+  "c": 12,
+  "mp": 0
+ },
+ "Crash Site Cleanup": {
+  "c": 4,
+  "vp": 1,
+  "ti": 1
+ },
+ "Eos Chasma National Park": {
+  "c": 16,
+  "pp": 2,
+  "pl": 3,
+  "vp": 1,
+  "minG": 2,
+  "mp": 2
+ },
+ "Fusion Power": {
+  "c": 14,
+  "ep": 3
+ },
+ "Io Sulphur Research": {
+  "c": 17,
+  "vp": 2,
+  "cd": 1
+ },
+ "Molecular Printing": {
+  "c": 11,
+  "mp": 0,
+  "vp": 1
+ },
+ "Public Baths": {
+  "c": 6,
+  "mc": 6,
+  "vp": 1
+ },
+ "Urban Decomposers": {
+  "c": 6,
+  "pp": 1,
+  "places": "microbe",
+  "placesN": 2
+ },
+ "Vesta Shipyard": {
+  "c": 15,
+  "tp": 1,
+  "vp": 1
+ },
+ "Venus Shuttles": {
+  "c": 9,
+  "actTR": 0.5,
+  "places": "floater",
+  "placesTag": "venus"
+ },
+ "Summit Logistics": {
+  "c": 10,
+  "cd": 2
+ },
+ "Vermin": {
+  "c": 8,
+  "vpAcc": 1,
+  "res": "animal"
+ },
+ "16 Psyche": {
+  "c": 31,
+  "tp": 2,
+  "ti": 3,
+  "vp": 2
+ },
+ "Breathing Filters": {
+  "c": 11,
+  "vp": 2,
+  "minG": 5
+ },
+ "Diaspora Movement": {
+  "c": 7,
+  "vp": 1
+ },
+ "Floating Habs": {
+  "c": 5,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "res": "floater",
+  "tg": "venus"
+ },
+ "Lightning Harvest": {
+  "c": 8,
+  "mp": 1,
+  "ep": 1,
+  "vp": 1
+ },
+ "Lunar Beam": {
+  "c": 13,
+  "mp": -2,
+  "ep": 2,
+  "hp": 2
+ },
+ "Magnetic Shield": {
+  "c": 24,
+  "tr": 4,
+  "ep": -2
+ },
+ "Rego Plastics": {
+  "c": 10,
+  "vp": 1
+ },
+ "Shuttles": {
+  "c": 10,
+  "mp": 2,
+  "ep": -1,
+  "vp": 1,
+  "disc": {
+   "amount": 2,
+   "tag": "space"
+  }
+ },
+ "Solarnet": {
+  "c": 7,
+  "cd": 2,
+  "vp": 1
+ },
+ "Venus Trade Hub": {
+  "c": 12,
+  "mp": 0,
+  "vp": 1,
+  "tradeMC": 3
+ },
+ "Casinos": {
+  "c": 5,
+  "ep": -1,
+  "mp": 4,
+  "vp": 1
+ },
+ "Floating Refinery": {
+  "c": 7,
+  "actMC": 2
+ },
+ "Weather Balloons": {
+  "c": 11,
+  "cd": 1,
+  "res": "floater"
+ },
+ "Beam From A Thorium Asteroid": {
+  "c": 32,
+  "hp": 3,
+  "ep": 3,
+  "vp": 1
+ },
+ "Deuterium Export": {
+  "c": 11,
+  "actTR": 0.33,
+  "res": "floater",
+  "tg": "venus",
+  "act_ep": 1
+ },
+ "GHG Import From Venus": {
+  "c": 23,
+  "hp": 3,
+  "vn": 1
+ },
+ "Hi-Tech Lab": {
+  "c": 17,
+  "cd": 0,
+  "vp": 1
+ },
+ "Import of Advanced GHG": {
+  "c": 9,
+  "hp": 2
+ },
+ "Minority Refuge": {
+  "c": 5,
+  "mp": -2,
+  "city": 1
+ },
+ "Mohole Lake": {
+  "c": 31,
+  "tmp": 1,
+  "oc": 1,
+  "pl": 3
+ },
+ "Omnicourt": {
+  "c": 11,
+  "tr": 2
+ },
+ "Political Alliance": {
+  "c": 4,
+  "tr": 1
+ },
+ "Power Supply Consortium": {
+  "c": 5,
+  "ep": 1,
+  "pOpp": 1
+ },
+ "Sponsored Mohole": {
+  "c": 5,
+  "hp": 2
+ },
+ "Venus Allies": {
+  "c": 30,
+  "vn": 2,
+  "vp": 2
+ },
+ "Aqueduct Systems": {
+  "c": 9,
+  "cd": 3,
+  "vp": 1
+ },
+ "Bio Printing Facility": {
+  "c": 7,
+  "actMC": 2,
+  "places": [
+   "animal",
+   "microbe"
+  ]
+ },
+ "Fueled Generators": {
+  "c": 1,
+  "mp": -1,
+  "ep": 1
+ },
+ "New Holland": {
+  "c": 20,
+  "mp": 3,
+  "city": 1
+ },
+ "Nitrogen from Titan": {
+  "c": 25,
+  "tr": 2,
+  "pl": 4,
+  "vp": 1
+ },
+ "PR Office": {
+  "c": 7,
+  "tr": 1,
+  "vp": -1
+ },
+ "Trans-Neptune Probe": {
+  "c": 6,
+  "vp": 1
+ },
+ "Martian Lumber Corp": {
+  "c": 6,
+  "pp": 1
+ },
+ "Airliners": {
+  "c": 11,
+  "mp": 2,
+  "vp": 1
+ },
+ "ArchaeBacteria": {
+  "c": 6,
+  "pp": 1
+ },
+ "Artificial Photosynthesis": {
+  "c": 12,
+  "ep": 2
+ },
+ "Giant Space Mirror": {
+  "c": 17,
+  "ep": 3
+ },
+ "SF Memorial": {
+  "c": 7,
+  "cd": 1,
+  "vp": 1
+ },
+ "Cloud Tourism": {
+  "c": 11,
+  "mp": 0,
+  "res": "floater",
+  "vpAcc": 1
+ },
+ "Phobos Space Haven": {
+  "c": 25,
+  "mp": 3,
+  "city": 1,
+  "tp": 1,
+  "vp": 3
+ },
+ "Physics Complex": {
+  "c": 12,
+  "actTR": 0.5,
+  "res": "science",
+  "vpAcc": 1
+ },
+ "Robot Pollinators": {
+  "c": 9,
+  "pp": 1,
+  "pl": 0
+ },
+ "Special Permit": {
+  "c": 5,
+  "rmPl": 4
+ },
+ "Supercapacitors": {
+  "c": 4,
+  "mp": 1
+ },
+ "Water to Venus": {
+  "c": 9,
+  "vn": 1
+ },
+ "Air-Scrapping Expedition": {
+  "c": 13,
+  "vn": 1,
+  "places": "floater",
+  "placesTag": "venus",
+  "placesN": 3
+ },
+ "City Parks": {
+  "c": 7,
+  "vp": 2,
+  "pl": 2
+ },
+ "Comet Aiming": {
+  "c": 17,
+  "actTR": 0.5,
+  "res": "floater"
+ },
+ "Comet for Venus": {
+  "c": 11,
+  "vn": 1
+ },
+ "Directed Impactors": {
+  "c": 8,
+  "actTR": 0.17,
+  "res": "floater"
+ },
+ "Local Shading": {
+  "c": 4,
+  "actTR": 0.33,
+  "res": "floater",
+  "tg": "venus",
+  "act_mp": 1
+ },
+ "Stanford Torus": {
+  "c": 12,
+  "vp": 2,
+  "city": 1
+ },
+ "Tectonic Stress Power": {
+  "c": 18,
+  "ep": 3,
+  "vp": 1
+ },
+ "Unexpected Application": {
+  "c": 4,
+  "vn": 1
+ },
+ "Asteroid Deflection System": {
+  "c": 13,
+  "ep": -1,
+  "actTR": 0.33,
+  "res": "asteroid",
+  "vpAcc": 1
+ },
+ "Early Expedition": {
+  "c": 15,
+  "ep": -1,
+  "mp": 3,
+  "city": 1
+ },
+ "Breeding Farms": {
+  "c": 16,
+  "tmp": 1
+ },
+ "Controlled Bloom": {
+  "c": 13,
+  "pp": 1,
+  "pl": 3,
+  "places": "animal",
+  "vp": 1
+ },
+ "Cultivation of Venus": {
+  "c": 18,
+  "actTR": 1,
+  "vp": 0,
+  "vpTag": {
+   "tag": "venus",
+   "per": 2
+  },
+  "actVn": 1
+ },
+ "Dust Storm": {
+  "c": 17,
+  "tmp": 2
+ },
+ "Economic Espionage": {
+  "c": 8,
+  "actMC": 3,
+  "vpAcc": 1
+ },
+ "Economic Help": {
+  "c": 9,
+  "mp": 1
+ },
+ "High Temp. Superconductors": {
+  "c": 10,
+  "ep": 2,
+  "disc": {
+   "amount": 3,
+   "tag": "power"
+  }
+ },
+ "Hydrogen Processing Plant": {
+  "c": 9,
+  "hp": 0
+ },
+ "Interplanetary Transport": {
+  "c": 15,
+  "cd": 1,
+  "vp": 1
+ },
+ "Anthozoa": {
+  "c": 9,
+  "vpAcc": 1,
+  "vpPer": 2,
+  "minG": 4,
+  "res": "animal"
+ },
+ "Botanical Experience": {
+  "c": 14,
+  "pp": 0,
+  "vp": 1
+ },
+ "Cassini Station": {
+  "c": 23,
+  "cd": 1,
+  "vp": 1
+ },
+ "Charity Donation": {
+  "c": 7,
+  "cd": 1,
+  "vp": 1
+ },
+ "Lobby Halls": {
+  "c": 11,
+  "mp": 2
+ },
+ "Martian Culture": {
+  "c": 11,
+  "vpAcc": 1,
+  "vpPer": 2
+ },
+ "Martian Monuments": {
+  "c": 10,
+  "mp": 0,
+  "vp": 1
+ },
+ "Luxury Estate": {
+  "c": 12,
+  "mp": 0,
+  "vp": 0
+ },
+ "Museum of Early Colonisation": {
+  "c": 20,
+  "cd": 2,
+  "vp": 2,
+  "ep": -1,
+  "sp": 1,
+  "tp": 1,
+  "pp": 1,
+  "tr": 1
+ },
+ "Orbital Laboratories": {
+  "c": 18,
+  "cd": 1,
+  "vp": 2,
+  "pp": 2,
+  "pl": 1
+ },
+ "Ozone Generators": {
+  "c": 14,
+  "actTR": 1,
+  "vp": 1
+ },
+ "Public Sponsored Grant": {
+  "c": 6,
+  "cd": 2
+ },
+ "Red City": {
+  "c": 21,
+  "mp": 2,
+  "ep": -1,
+  "city": 1,
+  "vp": 0
+ },
+ "Return to Abandoned Technology": {
+  "c": 4,
+  "cd": 2
+ },
+ "Rich Deposits": {
+  "c": 12,
+  "sp": 3
+ },
+ "Secret Labs": {
+  "c": 21,
+  "oc": 1,
+  "vp": 1
+ },
+ "Solarpedia": {
+  "c": 12,
+  "cd": 0,
+  "vpAcc": 1
+ },
+ "Van Allen": {
+  "c": 0,
+  "mc": 3
+ },
+ "Polaris": {
+  "c": 0,
+  "mp": 1
+ },
+ "Naomi": {
+  "c": 0,
+  "ep": 2,
+  "mc": 3
+ },
+ "Asimov": {
+  "c": 0,
+  "vp": 2
+ },
+ "Oscar": {
+  "c": 0
+ },
+ "SolBank": {
+  "c": 0,
+  "mc": 1
+ },
+ "Teractor": {
+  "c": 0,
+  "disc": {
+   "amount": 3,
+   "tag": "earth"
+  }
+ },
+ "Habitat Marte": {
+  "c": 0
+ },
+ "Odyssey": {
+  "c": 0
+ },
+ "Collegium Copernicus": {
+  "c": 0
+ },
+ "Ringcom": {
+  "c": 0,
+  "mp": 3
+ },
+ "Valley Trust": {
+  "c": 0,
+  "disc": {
+   "amount": 2,
+   "tag": "science"
+  }
+ },
+ "Interplanetary Cinematics": {
+  "c": 0,
+  "st": 20
+ },
+ "Spire": {
+  "c": 0,
+  "cd": 1
+ },
+ "Steelaris": {
+  "c": 0,
+  "st": 1
+ },
+ "Aurorai": {
+  "c": 0,
+  "mc": 1,
+  "res": "data"
+ },
+ "Morning Star Inc.": {
+  "c": 0,
+  "cd": 3
+ },
+ "Mars Direct": {
+  "c": 0
+ },
+ "Chimera": {
+  "c": 0,
+  "st": 1,
+  "ti": 1
+ },
+ "Mind Set Mars": {
+  "c": 0,
+  "res": "agenda"
+ },
+ "Robin Haulings": {
+  "c": 0
+ },
+ "Palladin Shipping": {
+  "c": 0,
+  "ti": 5
+ },
+ "Arcadian Communities": {
+  "c": 0,
+  "st": 10
+ },
+ "Septem Tribus": {
+  "c": 0
+ },
+ "Martian Insurance Group": {
+  "c": 0,
+  "mp": 1
+ },
+ "Soylent Seedling Systems": {
+  "c": 0,
+  "pp": 1,
+  "res": "seed"
+ },
+ "Bio-Sol": {
+  "c": 0,
+  "vpAcc": 1
+ },
+ "Nobel Labs": {
+  "c": 8,
+  "action": true
+ },
+ "Pharmacy Union": {
+  "c": 0,
+  "tr": -4
+ },
+ "Huan": {
+  "c": 0
+ },
+ "Karen": {
+  "c": 0
+ },
+ "Greta": {
+  "c": 0,
+  "mc": 4
+ },
+ "Xavier": {
+  "c": 0
+ },
+ "Faraday": {
+  "c": 0,
+  "mc": 3
+ },
+ "Gordon": {
+  "c": 0,
+  "mc": 2
+ },
+ "Stefan": {
+  "c": 0,
+  "actMC": 3
+ },
+ "Floyd": {
+  "c": 0,
+  "mc": 10
+ },
+ "Duncan": {
+  "c": 0,
+  "vp": 6
+ },
+ "Musk": {
+  "c": 0,
+  "ti": 5
+ },
+ "Ulrich": {
+  "c": 0,
+  "mc": 4
+ },
+ "Lowell": {
+  "c": 0
+ },
+ "Maria": {
+  "c": 0
+ },
+ "Tate": {
+  "c": 0,
+  "cd": 1
+ },
+ "Ingrid": {
+  "c": 0,
+  "mc": 2
+ },
+ "Jansson": {
+  "c": 0,
+  "mc": 2
+ },
+ "Petra": {
+  "c": 0
+ },
+ "Ryu": {
+  "c": 0
+ },
+ "Yvonne": {
+  "c": 0,
+  "mp": 1
+ },
+ "Clarke": {
+  "c": 0,
+  "pp": 1,
+  "hp": 1,
+  "pl": 5,
+  "ht": 5
+ },
+ "Xu": {
+  "c": 0,
+  "mc": 2
+ },
+ "Ender": {
+  "c": 0,
+  "cd": 3
+ },
+ "Will": {
+  "c": 0
+ },
+ "Vital Colony": {
+  "c": 0
+ },
+ "Double Down": {
+  "c": 0
+ },
+ "Merger": {
+  "c": 0,
+  "mc": -42
+ },
+ "WG Project": {
+  "c": 0
+ },
+ "Crew Training": {
+  "c": 0,
+  "tr": 2
+ },
+ "Zan": {
+  "c": 0
+ },
+ "Astra Mechanica": {
+  "c": 7,
+  "cd": 2
+ },
+ "Event Analysts": {
+  "c": 5
+ },
+ "Research Coordination": {
+  "c": 4
+ },
+ "Colonial Representation": {
+  "c": 10,
+  "mp": 3
+ },
+ "Hermetic Order of Mars": {
+  "c": 10,
+  "mp": 2
+ },
+ "Stratospheric Expedition": {
+  "c": 12,
+  "cd": 2,
+  "vp": 1
+ },
+ "Static Harvesting": {
+  "c": 5,
+  "ep": 1,
+  "mp": 0
+ },
+ "Ceres Tech Market": {
+  "c": 12,
+  "actCD": 0.5,
+  "vp": 1
+ },
+ "Microbiology Patents": {
+  "c": 6
+ },
+ "Coordinated Raid": {
+  "c": 5,
+  "mc": 4
+ },
+ "Viron": {
+  "c": 9,
+  "actMC": 3
+ },
+ "Last Resort Ingenuity": {
+  "c": 4
+ },
+ "Red Appeasement": {
+  "c": 3,
+  "tr": -1,
+  "vp": 4,
+  "mp": 2
+ },
+ "Rare-Earth Elements": {
+  "c": 5,
+  "vp": 1
+ },
+ "Recruitment": {
+  "c": 2
+ },
+ "Microgravity Nutrition": {
+  "c": 11,
+  "vpAcc": 0.5,
+  "vpPer": 2,
+  "vp": 1
+ },
+ "Magnetic Field Generators:promo": {
+  "c": 22,
+  "pp": 4,
+  "ep": -4,
+  "tr": 3
+ },
+ "Market Manipulation": {
+  "c": 1
+ },
+ "Great Dam:promo": {
+  "c": 15,
+  "ep": 2,
+  "vp": 1
+ },
+ "Kickstarter": {
+  "c": 12
+ },
+ "Ambient": {
+  "c": 0
+ },
+ "Crashlanding": {
+  "c": 20
+ },
+ "Oumuamua Type Object Survey": {
+  "c": 20
+ },
+ "Law Suit": {
+  "c": 2,
+  "mc": 3
+ },
+ "Red Tourism Wave": {
+  "c": 3,
+  "mc": 0
+ },
+ "Agro-Drones": {
+  "c": 14,
+  "pp": 1,
+  "sp": 1
+ },
+ "Data Leak": {
+  "c": 5
+ },
+ "Private Security": {
+  "c": 8
+ },
+ "Cryptocurrency": {
+  "c": 6,
+  "actMC": 1
+ },
+ "Archimedes Hydroponics Station": {
+  "c": 14,
+  "actMC": 1,
+  "ep": -1,
+  "mp": -1,
+  "pp": 2
+ },
+ "Luna Trade Federation": {
+  "c": 15,
+  "mp": 2,
+  "ti": 10
+ },
+ "Nanotech Industries": {
+  "c": 14,
+  "vpAcc": 1
+ },
+ "Project Workshop": {
+  "c": 15,
+  "actMC": 3,
+  "actTR": 0.33,
+  "st": 1,
+  "ti": 1
+ },
+ "Trade Advance": {
+  "c": 2,
+  "mc": 5
+ },
+ "Bioengineering Enclosure": {
+  "res": "animal",
+  "c": 7
+ },
+ "Bio-Fertilizer Facility": {
+  "pp": 1,
+  "c": 12
+ },
+ "Marketing Experts": {
+  "mp": 1,
+  "c": 5
+ },
+ "Metallic Asteroid": {
+  "ti": 1,
+  "tmp": 1,
+  "rmPl": 4,
+  "c": 13
+ },
+ "Ocean City": {
+  "ep": -1,
+  "mp": 3,
+  "city": 1,
+  "c": 18
+ },
+ "Ocean Farm": {
+  "pp": 1,
+  "hp": 1,
+  "c": 15
+ },
+ "Ocean Sanctuary": {
+  "res": "animal",
+  "vpAcc": 1,
+  "c": 9
+ },
+ "Underground Detonations": {
+  "act_hp": 2,
+  "c": 6
+ },
+ "Agricola Inc": {
+  "mp": 1,
+  "pp": 1,
+  "hp": 1
+ },
+ "Curiosity II": {
+  "sp": 2
+ },
+ "Playwrights": {
+  "ep": 1
+ },
+ "Algae Bioreactors": {
+  "pp": -1,
+  "o2": 1,
+  "c": 9
+ },
+ "Ancient Shipyards": {
+  "vpAcc": 1,
+  "c": 6
+ },
+ "Aristarchus Road Network": {
+  "mp": 2,
+  "c": 15
+ },
+ "Basic Infrastructure": {
+  "c": 0,
+  "tradeFleet": 1
+ },
+ "Copernicus Solar Arrays": {
+  "ep": 1,
+  "he": 2,
+  "c": 8
+ },
+ "Copernicus Tower": {
+  "c": 36,
+  "actTR": 1,
+  "res": "science",
+  "vpTag": {
+   "tag": "moon",
+   "per": 1
+  }
+ },
+ "Core Mine": {
+  "c": 0,
+  "tp": 1
+ },
+ "Crescent Research Association": {
+  "vpTag": {
+   "tag": "moon",
+   "per": 3
+  }
+ },
+ "Darkside Incubation Plant": {
+  "vpAcc": 1,
+  "c": 11
+ },
+ "Darkside Meteor Bombardment": {
+  "st": 2,
+  "ti": 2,
+  "c": 20
+ },
+ "Deep Lunar Mining": {
+  "tp": 2,
+  "c": 18
+ },
+ "First Lunar Settlement": {
+  "c": 0,
+  "mp": 1
+ },
+ "Geodesic Tents": {
+  "ep": -1,
+  "pp": 1,
+  "c": 13
+ },
+ "Habitat 14": {
+  "ep": -1,
+  "mp": -1,
+  "c": 5
+ },
+ "Heliostat Mirror Array": {
+  "ep": 2,
+  "he": 1,
+  "c": 10
+ },
+ "Hostile Takeover": {
+  "mp": 2,
+  "c": 26
+ },
+ "Hypersensitive Silicon Chip Factory": {
+  "mp": 4,
+  "c": 11
+ },
+ "Intragen Sanctuary Headquarters": {
+  "vpAcc": 1
+ },
+ "Luna First Incorporated": {
+  "st": 2,
+  "ti": 2
+ },
+ "Luna Hyperloop Corporation": {
+  "st": 4
+ },
+ "Luna Mining Hub": {
+  "sp": 1,
+  "tp": 1,
+  "c": 23
+ },
+ "Luna Resort": {
+  "ep": -1,
+  "mp": 3,
+  "c": 11
+ },
+ "Luna Senate": {
+  "vpTag": {
+   "tag": "moon",
+   "per": 1
+  },
+  "c": 32
+ },
+ "Luna Train Station": {
+  "mp": 4,
+  "c": 24
+ },
+ "Lunar Industry Complex": {
+  "sp": 1,
+  "tp": 1,
+  "ep": 2,
+  "hp": 1,
+  "c": 28
+ },
+ "Lunar Mine Urbanization": {
+  "mp": 1,
+  "c": 8
+ },
+ "Lunar Observation Post": {
+  "vpAcc": 1,
+  "c": 7
+ },
+ "Lunar Planning Office": {
+  "c": 0,
+  "st": 6,
+  "cd": 2
+ },
+ "Lunar Trade Fleet": {
+  "mp": 1,
+  "c": 8
+ },
+ "Mare Imbrium Mine": {
+  "sp": 1,
+  "tp": 1,
+  "c": 19
+ },
+ "Mare Nectaris Mine": {
+  "sp": 1,
+  "c": 14
+ },
+ "Mare Nubium Mine": {
+  "tp": 1,
+  "c": 17
+ },
+ "Mare Serenitatis Mine": {
+  "sp": 1,
+  "tp": 1,
+  "c": 21
+ },
+ "Microsingularity Plant": {
+  "ep": 2,
+  "c": 10
+ },
+ "Momentum Virium Habitat": {
+  "hp": 2,
+  "mp": 3,
+  "c": 23
+ },
+ "Moon Tether": {
+  "vp": 1,
+  "c": 18,
+  "disc": 2
+ },
+ "Orbital Power Grid": {
+  "vp": 1,
+  "c": 19
+ },
+ "Pride of the Earth Arkship": {
+  "vpAcc": 1,
+  "c": 22
+ },
+ "Processor Factory": {
+  "vpAcc": 1,
+  "c": 8
+ },
+ "Rust Eating Bacteria": {
+  "res": "microbe",
+  "vpAcc": 1,
+  "c": 7
+ },
+ "Sinus Irdium Road Network": {
+  "ep": -1,
+  "mp": 3,
+  "c": 15
+ },
+ "Solar Panel Foundry": {
+  "c": 11,
+  "act_ep": 1
+ },
+ "Staging Station \"Behemoth\"": {
+  "tradeFleet": 2
+ },
+ "The Darkside of The Moon Syndicate": {
+  "res": "syndicate_fleet"
+ },
+ "The Grand Luna Capital Group": {
+  "ti": 1
+ },
+ "The Womb": {
+  "ep": -2,
+  "mp": 4,
+  "c": 16
+ },
+ "Tycho Road Network": {
+  "mp": 1,
+  "c": 15
+ },
+ "Power Plant:Pathfinders": {
+  "hp": 2,
+  "ep": 1,
+  "c": 13
+ },
+ "Research Grant:Pathfinders": {
+  "ep": 1,
+  "mc": 14
+ },
+ "Suitable Infrastructure": {
+  "st": 5
+ },
+ "Astrodrill": {
+  "res": "asteroid"
+ },
+ "Clone Troopers (II)": {
+  "vpAcc": 1,
+  "c": 12
+ },
+ "Cloud City (V)": {
+  "vn": 1,
+  "c": 5
+ },
+ "Forest Moon (VI)": {
+  "pOpp": 2,
+  "vp": 1,
+  "c": 15
+ },
+ "Rey ... Skywalker?! (IX)": {
+  "mp": 4,
+  "c": 8
+ },
+ "Tool with the First Order (VIII)": {
+  "tr": 1,
+  "c": 5
+ },
+ "Acidizing": {
+  "c": 10,
+  "vn": 1
+ },
+ "Aeron Genomics": {
+  "st": 5,
+  "res": "animal",
+  "vpAcc": 1
+ },
+ "Anti-trust Crackdown": {
+  "c": 18,
+  "vp": 2
+ },
+ "Arborist Collective": {
+  "pp": 2,
+  "pl": 2,
+  "act_pp": 1
+ },
+ "Battery Shipment": {
+  "ep": 2,
+  "en": 12
+ },
+ "Biobatteries": {
+  "c": 7,
+  "ep": 1
+ },
+ "Casino": {
+  "c": 15,
+  "mp": 4
+ },
+ "Cave City": {
+  "c": 16,
+  "sp": 1,
+  "city": 1
+ },
+ "Class-action Lawsuit": {
+  "vp": 3
+ },
+ "Cloud Vortex Outpost": {
+  "vn": 2,
+  "res": "floater"
+ },
+ "Cut-throat Budgeting": {
+  "c": 2,
+  "mp": 1,
+  "sp": 1,
+  "ep": 1,
+  "vp": -1
+ },
+ "Deepwater Dome": {
+  "pp": 1
+ },
+ "Demetron Labs": {
+  "res": "data"
+ },
+ "Earthquake Machine": {
+  "c": 10,
+  "pOpp": 1
+ },
+ "Expedition Vehicles": {
+  "c": 10,
+  "vp": 1
+ },
+ "Exploitation Of Venus": {
+  "c": 6,
+  "actVn": 1
+ },
+ "Gaia City": {
+  "c": 20,
+  "ep": -1,
+  "pp": 2,
+  "city": 1
+ },
+ "Ganymede Trading Company": {
+  "ti": 3,
+  "tradeFleet": 1
+ },
+ "Geothermal Network": {
+  "c": 14,
+  "hp": 3,
+  "vp": 1
+ },
+ "Hadesphere": {
+  "st": 5
+ },
+ "Hecate Speditions": {
+  "res": "supply_chain",
+  "tradeFleet": 1
+ },
+ "Henkei Genetics": {
+  "vpAcc": 1
+ },
+ "Infrastructure Overload": {
+  "c": 7,
+  "pOpp": 2,
+  "vp": -1
+ },
+ "Inherited Fortune": {
+  "c": 0,
+  "mp": 1,
+  "mc": 10
+ },
+ "Investigative Journalism": {
+  "c": 3,
+  "mp": -1,
+  "vpAcc": 1,
+  "res": "journalism"
+ },
+ "Investor Plaza": {
+  "c": 0,
+  "city": 1
+ },
+ "Keplertec": {
+  "tp": 1,
+  "ti": 3
+ },
+ "Kingdom of Tauraro": {
+  "mp": 6,
+  "city": 1
+ },
+ "Man-made Volcano": {
+  "c": 26,
+  "ep": 2,
+  "hp": 4
+ },
+ "Micro-Geodesics": {
+  "c": 8,
+  "res": "microbe"
+ },
+ "Microgravimetry": {
+  "c": 5,
+  "vp": 1
+ },
+ "Microprobing Technology": {
+  "c": 8,
+  "pl": 3
+ },
+ "Mining Market Insider": {
+  "c": 5,
+  "actCD": 1
+ },
+ "Nanofoundry": {
+  "c": 18,
+  "ep": -5,
+  "cd": 2,
+  "vp": 2
+ },
+ "Neutrinograph": {
+  "c": 14,
+  "vp": 2
+ },
+ "Nightclubs": {
+  "c": 10,
+  "mp": 2
+ },
+ "Off-World Tax Haven": {
+  "c": 8,
+  "mp": 5,
+  "vp": -1
+ },
+ "Orbital Laser Drill": {
+  "c": 15,
+  "vp": 1
+ },
+ "Planetary Rights Buyout": {
+  "tr": 7,
+  "c": 28
+ },
+ "Private Military Contractor": {
+  "res": "fighter",
+  "c": 14
+ },
+ "Private Resorts": {
+  "c": 9,
+  "hp": -1,
+  "mp": 3
+ },
+ "Public Spaceline": {
+  "c": 18,
+  "mp": 2
+ },
+ "Research & Development Hub": {
+  "vpAcc": 1,
+  "c": 14
+ },
+ "Robot Moles": {
+  "c": 8,
+  "st": 2
+ },
+ "Secret Research": {
+  "cd": 3
+ },
+ "Server Sabotage": {
+  "cd": 1,
+  "c": 9
+ },
+ "Space Wargames": {
+  "res": "fighter",
+  "vpTag": {
+   "tag": "jovian",
+   "per": 1
+  },
+  "c": 25
+ },
+ "Sting Operation": {
+  "cd": 2
+ },
+ "Thiolava Vents": {
+  "hp": 2,
+  "res": "microbe",
+  "vpAcc": 1,
+  "c": 13
+ },
+ "Tunneling Operation": {
+  "c": 0,
+  "sp": 2
+ },
+ "Underground Amusement Park": {
+  "c": 5,
+  "mp": 1,
+  "vp": 1
+ },
+ "Underground Habitat": {
+  "pp": 1,
+  "c": 12
+ },
+ "Underground Railway": {
+  "c": 18,
+  "ep": -1,
+  "tr": 1
+ },
+ "Voltagon": {
+  "ep": 1,
+  "actO2": 1
+ },
+ "Whales": {
+  "vpAcc": 1,
+  "c": 10
+ },
+ "Beginner Corporation": {
+  "c": 0,
+  "cd": 10
+ },
+ "United Nations Mars Initiative": {
+  "c": 0
+ },
+ "Meltworks": {
+  "c": 4,
+  "actMC": 3
+ },
+ "Splice": {
+  "c": 0
+ },
+ "Banned Delegate": {
+  "c": 0
+ },
+ "Valuable Gases:Pathfinders": {
+  "c": 0
+ },
+ "Sphere Habitats": {
+  "c": 14
+ },
+ "Colonist Shuttles": {
+  "c": 12
+ },
+ "Mining Robots Manuf. Center": {
+  "c": 12
+ },
+ "Iron Extraction Center": {
+  "c": 10,
+  "sp": 1
+ },
+ "Titanium Extraction Center": {
+  "c": 14,
+  "tp": 1
+ },
+ "Luna Staging Station": {
+  "c": 12
+ },
+ "New Colony Planning Initiatives": {
+  "c": 6
+ },
+ "AI Controlled Mine Network": {
+  "c": 6
+ },
+ "Heavy Duty Rovers": {
+  "c": 12
+ },
+ "Water Treatment Complex": {
+  "c": 12
+ },
+ "HE3 Fusion Plant": {
+  "c": 12,
+  "ep": 1
+ },
+ "HE3 Lobbyists": {
+  "c": 7,
+  "mp": 2
+ },
+ "Off-World City Living": {
+  "c": 35,
+  "mp": 2,
+  "city": 1
+ },
+ "Darkside Mining Syndicate": {
+  "c": 18,
+  "tp": 2
+ },
+ "Rover Drivers Union": {
+  "c": 16,
+  "mp": 3
+ },
+ "L.T.F. Headquarters": {
+  "c": 31,
+  "colony": {},
+  "tradeFleet": 1
+ },
+ "Undermoon Drug Lords Network": {
+  "c": 2,
+  "mp": 1,
+  "vp": -1
+ },
+ "Grand Luna Academy": {
+  "c": 13,
+  "cd": 2
+ },
+ "Luna Ecumenopolis": {
+  "c": 35,
+  "tr": 2,
+  "city": 2
+ },
+ "Thorium Rush": {
+  "c": 39
+ },
+ "Luna Trade Station": {
+  "c": 10,
+  "actMC": 2
+ },
+ "Lunar Dust Processing Plant": {
+  "c": 6
+ },
+ "Luna Project Office": {
+  "c": 4
+ },
+ "Steel Market Monopolists": {
+  "c": 15,
+  "actMC": 3
+ },
+ "Titanium Market Monopolists": {
+  "c": 21,
+  "actMC": 4
+ },
+ "Subterranean Habitats": {
+  "c": 12
+ },
+ "Improved Moon Concrete": {
+  "c": 12
+ },
+ "Mooncrate Block Factory": {
+  "c": 8
+ },
+ "Lunar Security Stations": {
+  "c": 9
+ },
+ "HE3 Refinery": {
+  "c": 8,
+  "actMC": 3
+ },
+ "Luna Archives": {
+  "c": 13,
+  "res": "science"
+ },
+ "Luna Political Institute": {
+  "c": 6
+ },
+ "Darkside Observatory": {
+  "c": 12,
+  "actCD": 0.3
+ },
+ "L.T.F. Privileges": {
+  "c": 21
+ },
+ "Lunar Steel": {
+  "c": 5
+ },
+ "Earth Embassy": {
+  "c": 16
+ },
+ "Underground Detonators": {
+  "c": 9,
+  "st": 1,
+  "ti": 1
+ },
+ "Revolting Colonists": {
+  "c": 3
+ },
+ "Cosmic Radiation": {
+  "c": 3
+ },
+ "Road Piracy": {
+  "c": 10
+ },
+ "HE3 Production Quotas": {
+  "c": 10
+ },
+ "Luna Conference": {
+  "c": 5,
+  "mc": 4
+ },
+ "We Grow As One": {
+  "c": 8
+ },
+ "Mooncrate Convoys To Mars": {
+  "c": 13
+ },
+ "Preliminary Darkside": {
+  "c": 13,
+  "ti": 3
+ },
+ "Syndicate Pirate Raids": {
+  "c": 8
+ },
+ "Small Duty Rovers": {
+  "c": 9,
+  "mc": 3
+ },
+ "Martian Embassy": {
+  "c": 11
+ },
+ "Mining Complex": {
+  "c": 0,
+  "mc": -7
+ },
+ "Geoscan Satellite": {
+  "c": 8
+ },
+ "Old World Mafia": {
+  "c": 11
+ },
+ "Subterranean Sea": {
+  "c": 10,
+  "oc": 1
+ },
+ "Forest Tunnels": {
+  "c": 7,
+  "pl": 2
+ },
+ "Tunneling Subcontractor": {
+  "c": 9
+ },
+ "Deepmining": {
+  "c": 11,
+  "sp": 1
+ },
+ "Behemoth Excavator": {
+  "c": 13
+ },
+ "Lobbying Network": {
+  "c": 5
+ },
+ "Landfill": {
+  "c": 2,
+  "mp": 3,
+  "vp": -2
+ },
+ "Imported Heavy Machinery": {
+  "c": 9
+ },
+ "Underground Smuggling Ring": {
+  "c": 7
+ },
+ "Friends in High Places": {
+  "c": 10,
+  "disc": 1
+ },
+ "Star Vegas": {
+  "c": 32,
+  "mp": 3,
+  "city": 1
+ },
+ "Hyperspace Drive Prototype": {
+  "c": 11,
+  "ti": 1
+ },
+ "Artesian Aquifer": {
+  "c": 16,
+  "oc": 1
+ },
+ "Underground Research Center": {
+  "c": 12,
+  "cd": 1
+ },
+ "Racketeering": {
+  "c": 5,
+  "mp": 2,
+  "vp": -1
+ },
+ "Gas Trust": {
+  "c": 12,
+  "he": 6
+ },
+ "Geologist Team": {
+  "c": 6
+ },
+ "Tunnel Boring Machine": {
+  "c": 10
+ },
+ "Labor Trafficking": {
+  "c": 6,
+  "vp": -2
+ },
+ "Search for Life Underground": {
+  "c": 6,
+  "vp": 0
+ },
+ "Grey Market Exploitation": {
+  "c": 4
+ },
+ "Excavator Leasing": {
+  "c": 8
+ },
+ "Stem Field Subsidies": {
+  "c": 10
+ },
+ "Titan Manufacturing Colony": {
+  "c": 18
+ },
+ "Space Privateers": {
+  "c": 10,
+  "vp": -2
+ },
+ "Personal Spacecruiser": {
+  "c": 12,
+  "actMC": 2
+ },
+ "Chemical Factory": {
+  "c": 18,
+  "actMC": 3
+ },
+ "Corporate Theft": {
+  "c": 10,
+  "vp": -1
+ },
+ "Monopoly": {
+  "c": 8,
+  "vp": -2
+ },
+ "Underground Shelters": {
+  "c": 14
+ },
+ "Battery Factory": {
+  "c": 8,
+  "actMC": 2
+ },
+ "Voltaic Metallurgy": {
+  "c": 8
+ },
+ "Deep Foundations": {
+  "c": 4
+ },
+ "Martian Express": {
+  "c": 5,
+  "actMC": 2,
+  "vp": 1
+ },
+ "Detective TV Series": {
+  "c": 5
+ },
+ "Deepnuking": {
+  "c": 6,
+  "rmPl": 3,
+  "vp": -1
+ },
+ "Reckless Detonation": {
+  "c": 1
+ },
+ "Subnautic Pirates": {
+  "c": 1,
+  "mc": 7
+ },
+ "Fabricated Scandal": {
+  "c": 14
+ },
+ "Global Audit": {
+  "c": 2,
+  "tr": 1
+ },
+ "Patent Manipulation": {
+  "c": 7,
+  "vp": -2
+ },
+ "Tunneling Loophole": {
+  "c": 8,
+  "vp": -1
+ },
+ "Narrative Spin": {
+  "c": 5,
+  "vp": -1
+ },
+ "Corporate Blackmail": {
+  "c": 5,
+  "mc": 5,
+  "vp": -1
+ },
+ "Scapegoat": {
+  "c": 5
+ },
+ "Staged Protests": {
+  "c": 6
+ },
+ "Plant Tax": {
+  "c": 7,
+  "rmPl": 2
+ },
+ "Crater Survey": {
+  "c": 5
+ },
+ "Induced Tremor": {
+  "c": 5
+ },
+ "Volunteer Mining Initiative": {
+  "c": 12
+ },
+ "Price Wars": {
+  "c": 1,
+  "vp": -1
+ },
+ "Canyon Survey": {
+  "c": 4
+ },
+ "Mercenary Squad": {
+  "c": 1
+ },
+ "Media Frenzy": {
+  "c": 6,
+  "cd": 2
+ },
+ "Guerilla Ecologists": {
+  "c": 9,
+  "grn": 1
+ },
+ "Export Convoy": {
+  "c": 6,
+  "mc": 20,
+  "vp": -1
+ },
+ "Family Connections": {
+  "c": 12
+ },
+ "Soil Export": {
+  "c": 3,
+  "vp": -1
+ },
+ "Hired Raiders:u": {
+  "c": 1,
+  "mc": 5
+ },
+ "Hackers:u": {
+  "c": 3,
+  "mp": 2,
+  "pOpp": 2,
+  "vp": -1
+ },
+ "Free Trade Port": {
+  "c": 0,
+  "colony": {}
+ },
+ "Geological Expertise": {
+  "c": 0,
+  "cd": 2
+ },
+ "Underground Settlement": {
+  "c": 0,
+  "city": 1
+ },
+ "Central Reservoir": {
+  "c": 0,
+  "oc": 1
+ },
+ "Prospecting": {
+  "c": 0,
+  "mc": -4
+ },
+ "Election Sponsorship": {
+  "c": 0
+ },
+ "Butterfly Effect": {
+  "c": 8,
+  "tr": 1
+ },
+ "Capital:ares": {
+  "c": 26,
+  "ep": -2,
+  "mp": 5,
+  "city": 1
+ },
+ "Commercial District:ares": {
+  "c": 16,
+  "ep": -1,
+  "mp": 4,
+  "city": 1
+ },
+ "Deimos Down:ares": {
+  "c": 31,
+  "tmp": 3
+ },
+ "Desperate Measures": {
+  "c": 1,
+  "o2": 1
+ },
+ "Ecological Survey": {
+  "c": 9
+ },
+ "Ecological Zone:ares": {
+  "c": 11,
+  "vpAcc": 1,
+  "vpPer": 2
+ },
+ "Geological Survey": {
+  "c": 8
+ },
+ "Industrial Center:ares": {
+  "c": 4,
+  "actMC": 7
+ },
+ "Great Dam:ares": {
+  "c": 15,
+  "ep": 2,
+  "vp": 1
+ },
+ "Lava Flows:ares": {
+  "c": 18,
+  "tmp": 2
+ },
+ "Magnetic Field Generators:ares": {
+  "c": 22,
+  "ep": -4,
+  "pp": 2,
+  "tr": 3
+ },
+ "Mining Area:ares": {
+  "c": 4
+ },
+ "Mining Rights:ares": {
+  "c": 9
+ },
+ "Mohole Area:ares": {
+  "c": 20,
+  "hp": 4
+ },
+ "Natural Preserve:ares": {
+  "c": 9,
+  "vp": 1
+ },
+ "Nuclear Zone:ares": {
+  "c": 11,
+  "tmp": 2,
+  "vp": -2
+ },
+ "Restricted Area:ares": {
+  "c": 11,
+  "actCD": 1
+ },
+ "Solar Farm": {
+  "c": 12,
+  "ep": 1
+ },
+ "Head Start": {
+  "st": 2
+ },
+ "Private Investigator": {
+  "tr": 1
+ }
 };

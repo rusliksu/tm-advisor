@@ -31,6 +31,22 @@ function findTsFiles(dir) {
   return results;
 }
 
+function collectRenderText(src, callName) {
+  var texts = [];
+  var patterns = [
+    new RegExp("b\\." + callName + "\\(\\s*'([\\s\\S]*?)'", 'g'),
+    new RegExp('b\\.' + callName + '\\(\\s*"([\\s\\S]*?)"', 'g'),
+  ];
+  for (var pattern of patterns) {
+    var match;
+    while ((match = pattern.exec(src)) !== null) {
+      var text = match[1].trim();
+      if (text) texts.push(text);
+    }
+  }
+  return texts;
+}
+
 var files = findTsFiles(TM_SRC);
 console.log('Found ' + files.length + ' .ts card files');
 
@@ -65,9 +81,16 @@ for (var file of files) {
     }
   }
 
-  if (!descMatch) { noDesc++; continue; }
+  var parts = [];
+  if (descMatch) parts.push(descMatch[1].trim());
+  var renderTexts = collectRenderText(src, 'effect').concat(collectRenderText(src, 'plainText'));
+  for (var renderText of renderTexts) {
+    if (!parts.some(function(existing) { return existing === renderText; })) parts.push(renderText);
+  }
 
-  output[displayName] = descMatch[1].trim();
+  if (parts.length === 0) { noDesc++; continue; }
+
+  output[displayName] = parts.join(' ');
   count++;
 }
 

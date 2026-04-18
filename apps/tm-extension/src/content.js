@@ -208,6 +208,76 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (typeof TM_CARD_TAGS === 'undefined') return [];
     return _lookupCardData(TM_CARD_TAGS, name) || [];
   }
+  function getCardTextForSynergy(name) {
+    var parts = [];
+    var rating = _getRatingByCardName(name);
+    if (rating) {
+      if (rating.e) parts.push(String(rating.e).toLowerCase());
+      if (rating.w) parts.push(String(rating.w).toLowerCase());
+    }
+    if (typeof TM_CARD_DESCRIPTIONS !== 'undefined') {
+      var desc = _lookupCardData(TM_CARD_DESCRIPTIONS, name);
+      if (typeof desc === 'string' && desc) parts.push(desc.toLowerCase());
+    }
+    return parts.join(' ');
+  }
+  function getColonyBehaviorByName(name) {
+    if (typeof TM_CARD_DATA === 'undefined') return null;
+    var data = _lookupCardData(TM_CARD_DATA, name);
+    var behavior = data && data.behavior ? data.behavior : null;
+    if (!behavior) return null;
+    if (behavior.colonies) return behavior.colonies;
+    var legacy = {};
+    if (behavior.colony) legacy.buildColony = behavior.colony;
+    if (typeof behavior.tradeFleet === 'number') legacy.addTradeFleet = behavior.tradeFleet;
+    return Object.keys(legacy).length > 0 ? legacy : null;
+  }
+  function cardBuildsColonyByName(name) {
+    var colonies = getColonyBehaviorByName(name);
+    return !!(colonies && colonies.buildColony);
+  }
+  function cardHasTradeEngineByName(name) {
+    var colonies = getColonyBehaviorByName(name);
+    return !!(colonies && (
+      (colonies.addTradeFleet || 0) > 0 ||
+      typeof colonies.tradeDiscount === 'number' ||
+      typeof colonies.tradeOffset === 'number' ||
+      typeof colonies.tradeMC === 'number'
+    ));
+  }
+  function cardIsColonyRelatedByName(name) {
+    if (!name) return false;
+    if (cardBuildsColonyByName(name) || cardHasTradeEngineByName(name)) return true;
+    var text = getCardTextForSynergy(name);
+    return text.includes('place a colony') ||
+      text.includes('colony in play') ||
+      text.includes('colony bonus') ||
+      text.includes('your colonies') ||
+      text.includes('when you trade') ||
+      text.includes('trade bonus') ||
+      text.includes('trade income') ||
+      text.includes('trade fleet') ||
+      text.includes('colony tile track') ||
+      text.includes('колон') ||
+      text.includes('торгов') ||
+      text.includes('флот');
+  }
+  function cardIsColonyBenefitByName(name) {
+    if (!name) return false;
+    if (cardHasTradeEngineByName(name)) return true;
+    var text = getCardTextForSynergy(name);
+    return text.includes('colony in play') ||
+      text.includes('colony bonus') ||
+      text.includes('your colonies') ||
+      text.includes('when you trade') ||
+      text.includes('trade bonus') ||
+      text.includes('trade income') ||
+      text.includes('trade fleet') ||
+      text.includes('colony tile track') ||
+      text.includes('колон') ||
+      text.includes('торгов') ||
+      text.includes('флот');
+  }
   function getCardTypeByName(name) {
     if (!name) return '';
     var rating = _getRatingByCardName(name);
@@ -949,6 +1019,33 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (!fx) return false;
     var placeTypes = fx.places ? (Array.isArray(fx.places) ? fx.places : [fx.places]) : [];
     return fx.res === 'floater' || placeTypes.indexOf('floater') !== -1;
+  }
+
+  function isPlantEngineCardByFx(cardName, eLower) {
+    var fx = getFx(cardName);
+    if (fx) {
+      var placeTypes = fx.places ? (Array.isArray(fx.places) ? fx.places : [fx.places]) : [];
+      return !!(fx.pp || fx.pl || fx.grn || placeTypes.indexOf('plant') !== -1);
+    }
+    return !!(eLower && (
+      eLower.includes('greenery') ||
+      eLower.includes('озелен') ||
+      eLower.includes('plant production') ||
+      eLower.includes('раст')
+    ));
+  }
+
+  function isMeltworksLastGenCashout(cardName, myHand, ctx) {
+    if (cardName !== 'Meltworks' || !ctx || ctx.gensLeft > 1 || !ctx.globalParams || ctx.globalParams.temp < SC.tempMax) return false;
+    if (ctx.tableauNames && (ctx.tableauNames.has('Electro Catapult') || ctx.tableauNames.has('Space Elevator'))) return true;
+    if (!Array.isArray(myHand) || myHand.length === 0) return false;
+    for (var i = 0; i < myHand.length; i++) {
+      var otherName = myHand[i];
+      if (!otherName || otherName === cardName) continue;
+      var otherTags = getCardTagsForName(otherName);
+      if (otherTags && otherTags.indexOf('building') !== -1) return true;
+    }
+    return false;
   }
 
   function hasSelfFloaterSource(cardName) {
@@ -2220,12 +2317,15 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
+    var psychrophilesClosed = !!(cardName === 'Psychrophiles' && ctx && ctx.globalParams && ctx.globalParams.temp > -20);
+    var extremeColdFungusClosed = !!(cardName === 'Extreme-Cold Fungus' && ctx && ctx.globalParams && ctx.globalParams.temp > -10);
+    var microbeWindowClosed = psychrophilesClosed || extremeColdFungusClosed;
 
     // 38. Resource conversion synergy — cards that enable or improve conversions
     if (ctx && data.e) {
       // Plants→greenery: if player has high plant production but O₂ not maxed
       if (ctx.prod.plants >= 4 && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
-        if (eLower.includes('plant') || eLower.includes('раст') || eLower.includes('greener') || eLower.includes('озелен')) {
+        if (isPlantEngineCardByFx(cardName, eLower)) {
           bonus += SC.plantEngineConvBonus;
           pushStructuredReason(reasons, reasonRows, 'Plant engine +' + SC.plantEngineConvBonus, SC.plantEngineConvBonus);
         }
@@ -2239,7 +2339,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
       // Microbe→TR: cards that place microbes when player has converters
       if (ctx.microbeAccumRate > 0) {
-        if (eLower.includes('microbe') || eLower.includes('микроб')) {
+        if ((eLower.includes('microbe') || eLower.includes('микроб')) && !microbeWindowClosed) {
           bonus += SC.microbeEngineBonus;
           pushStructuredReason(reasons, reasonRows, 'Микроб engine +' + SC.microbeEngineBonus, SC.microbeEngineBonus);
         }
@@ -2260,7 +2360,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         bonus += SC.resNetBonus;
         pushStructuredReason(reasons, reasonRows, 'Жив. сеть (' + ctx.animalTargetCount + ')', SC.resNetBonus);
       }
-      if (MICROBE_TARGETS.has(cardName) && ctx.microbeTargetCount >= SC.resNetThreshold) {
+      if (MICROBE_TARGETS.has(cardName) && ctx.microbeTargetCount >= SC.resNetThreshold && !microbeWindowClosed) {
         bonus += SC.resNetBonus;
         pushStructuredReason(reasons, reasonRows, 'Микроб. сеть (' + ctx.microbeTargetCount + ')', SC.resNetBonus);
       }
@@ -2493,9 +2593,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // 31. Card draw engine timing — draw cards valuable early, dead late
-    if (data.e) {
+    if (data.e && !isPreludeOrCorpLike) {
       var isDrawCard = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
-      if (isDrawCard) {
+      var isNonProjectDraw = eLower.includes('prelude') || eLower.includes('прелюд') || eLower.includes('corporation') || eLower.includes('корпорац') || eLower.includes('ceo');
+      if (isDrawCard && !isNonProjectDraw) {
         if (ctx.gensLeft >= 5) {
           bonus += SC.drawEarlyBonus;
           reasons.push('Рисовка рано +' + SC.drawEarlyBonus);
@@ -2516,12 +2617,19 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // 31b. MC-only effects in last gen — MC without VP conversion = wasted
     if (ctx.gensLeft <= 1 && data.e) {
       var fx31b = getFx(cardName);
+      var meltworksHand31b = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
+      var meltworksCashout31b = isMeltworksLastGenCashout(cardName, meltworksHand31b, ctx);
       if (fx31b) {
         var isMCOnly = (fx31b.actMC > 0 || fx31b.mp > 0) && !fx31b.vp && !fx31b.vpAcc && !fx31b.tr && !fx31b.tmp && !fx31b.o2 && !fx31b.oc && !fx31b.vn && !fx31b.grn && !fx31b.city;
-        if (isMCOnly && !eLower.includes('vp') && !eLower.includes('вп')) {
+        if (isMCOnly && !meltworksCashout31b && !eLower.includes('vp') && !eLower.includes('вп')) {
           bonus -= 5;
           reasons.push('MC бесполезны last gen −5');
         }
+      }
+      if (meltworksCashout31b) {
+        var meltworksBonus = Math.max(2, Math.min(6, Math.round(3 * (ctx.steelVal || SC.defaultSteelVal) - 4)));
+        bonus += meltworksBonus;
+        reasons.push('Heat→steel cashout +' + meltworksBonus);
       }
     }
 
@@ -2915,7 +3023,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           bonus += msBonus;
           var maEntries = TAG_TO_MA[tag] || [];
           var msName = maEntries.find(function(m) { return m.type === 'milestone'; });
-          pushStructuredReason(reasons, reasonRows, (msName ? msName.name : 'Веха') + ' ещё ' + need, msBonus);
+          pushStructuredReason(reasons, reasonRows, 'до ' + (msName ? msName.name : 'вехи') + ' ещё ' + need, msBonus);
           break;
         }
       }
@@ -2935,7 +3043,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (helps) {
           var msBonus2 = ms.need === 1 ? SC.milestoneNeed1 : ms.need === 2 ? SC.milestoneNeed2 : SC.milestoneNeed3;
           bonus += msBonus2;
-          pushStructuredReason(reasons, reasonRows, ms.name + ' −' + ms.need, msBonus2);
+          pushStructuredReason(reasons, reasonRows, 'до ' + ms.name + ' ещё ' + ms.need, msBonus2);
           break;
         }
       }
@@ -3173,7 +3281,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // 14. Plant engine — high plant prod + O2 awareness
     if (ctx.prod.plants >= 2 && data.e) {
-      if (eLower.includes('plant') || eLower.includes('greenery') || eLower.includes('раст') || eLower.includes('озелен')) {
+      if (isPlantEngineCardByFx(cardName, eLower)) {
         var o2Maxed = ctx.globalParams && ctx.globalParams.oxy >= SC.oxyMax;
         var greenPerGen = Math.floor(ctx.prod.plants / SC.plantsPerGreenery);
         var plBonus;
@@ -3227,6 +3335,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var reasons = [];
     var reasonRows = [];
     var skipCrudeTiming = false;
+    var meltworksCashout = isMeltworksLastGenCashout(cardName, opts && opts.myHand, ctx);
 
     // Preludes and corps all play at gen 1 simultaneously — timing is constant, skip it
     if (opts && opts.isPreludeOrCorp) {
@@ -3266,6 +3375,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           }
           var delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
           var adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
+          if (meltworksCashout && adj < -4) adj = -4;
           if (Math.abs(adj) >= 1) {
             bonus += adj;
             pushStructuredReason(reasons, reasonRows, (isPureProduction ? 'Прод. тайминг ' : 'Тайминг ') + (adj > 0 ? '+' : '') + adj, adj);
@@ -3424,13 +3534,23 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   // (embedded in scoreTurmoilSynergy return, added after event awareness)
 
   // Returns { bonus: number, reasons: string[] }
-  function scoreColonySynergy(eLower, data, ctx) {
+  function scoreColonySynergy(cardName, eLower, data, ctx) {
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
     if (!data.e) return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
+    var playableNow = isCardPlayableNowByStaticRequirements(cardName, ctx);
+    var colonyBehavior = getColonyBehaviorByName(cardName);
+    var hasBuildColony = !!(colonyBehavior && colonyBehavior.buildColony);
+    var hasTradeEngine = !!(colonyBehavior && (
+      (colonyBehavior.addTradeFleet || 0) > 0 ||
+      typeof colonyBehavior.tradeDiscount === 'number' ||
+      typeof colonyBehavior.tradeOffset === 'number' ||
+      typeof colonyBehavior.tradeMC === 'number'
+    ));
 
-    var isColonyCard = eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
+    var isColonyCard = !!colonyBehavior ||
+      eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
 
     if (isColonyCard) {
       // Colony synergy: colonies owned + track position bonus. Scale by gensLeft.
@@ -3445,20 +3565,21 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         pushStructuredReason(reasons, reasonRows, colParts.join(', ') + ' → +' + colonyBonus, colonyBonus);
       }
 
-      if (eLower.includes('fleet') || eLower.includes('флот') || eLower.includes('trade fleet')) {
+      if (hasTradeEngine || eLower.includes('fleet') || eLower.includes('флот') || eLower.includes('trade fleet')) {
         // Fleet value depends on colonies owned — extra fleet with 0 colonies is useless
         if (ctx.coloniesOwned >= 2) {
           var fleetVal = Math.min(SC.fleetCap, (ctx.coloniesOwned - 1) * SC.fleetPerColony + SC.fleetBase);
           bonus += fleetVal;
-          pushStructuredReason(reasons, reasonRows, 'Флот +' + fleetVal + ' (' + ctx.coloniesOwned + ' кол.)', fleetVal);
+          var fleetCount = colonyBehavior && colonyBehavior.addTradeFleet ? colonyBehavior.addTradeFleet : 1;
+          pushStructuredReason(reasons, reasonRows, '+' + fleetCount + ' Trade Fleet +' + fleetVal + ' (' + ctx.coloniesOwned + ' кол.)', fleetVal);
         } else if (ctx.coloniesOwned === 0) {
           bonus -= 2;
-          pushStructuredReason(reasons, reasonRows, 'Флот −2 (0 кол.)', -2);
+          pushStructuredReason(reasons, reasonRows, 'Trade Fleet −2 (0 кол.)', -2);
         }
         // 1 colony: fleet is marginal, no bonus/penalty
       }
 
-      if ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon')) {
+      if (hasBuildColony || ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon'))) {
         if (ctx.coloniesOwned < SC.colonySlotMax) {
           var colonyPlacementBonus = SC.colonyPlacement;
           // Recommend best colony to build on
@@ -3542,11 +3663,53 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
-    if (eLower.includes('trade income') || eLower.includes('trade bonus') || eLower.includes('when you trade') || eLower.includes('торговый бонус')) {
-      if (ctx.coloniesOwned > 0) {
+    if (hasTradeEngine || eLower.includes('trade income') || eLower.includes('trade bonus') || eLower.includes('when you trade') || eLower.includes('торговый бонус')) {
+      var tradesLeftNow = Math.max(0, ctx.tradesLeft || 0);
+      if (tradesLeftNow > 0 && playableNow) {
+        var immediateTradeBoost = 0;
+        var specificTradeReason = false;
+        if (colonyBehavior && typeof colonyBehavior.tradeMC === 'number' && colonyBehavior.tradeMC > 0) {
+          var tradeMcPerTrade = Math.max(1, Math.round(colonyBehavior.tradeMC * 0.67));
+          var tradeMcBonus = Math.min(4, tradesLeftNow * tradeMcPerTrade);
+          if (tradeMcBonus > 0) {
+            immediateTradeBoost += tradeMcBonus;
+            specificTradeReason = true;
+            pushStructuredReason(reasons, reasonRows, 'trade: +' + colonyBehavior.tradeMC + ' MC ×' + tradesLeftNow + ' +' + tradeMcBonus, tradeMcBonus);
+          }
+        }
+        if (colonyBehavior && typeof colonyBehavior.tradeDiscount === 'number' && colonyBehavior.tradeDiscount > 0) {
+          var tradeDiscountBonus = Math.min(SC.tradeBonusCap, tradesLeftNow * colonyBehavior.tradeDiscount);
+          if (tradeDiscountBonus > 0) {
+            immediateTradeBoost += tradeDiscountBonus;
+            specificTradeReason = true;
+            pushStructuredReason(reasons, reasonRows, 'trade: скидка −' + colonyBehavior.tradeDiscount + ' ×' + tradesLeftNow + ' +' + tradeDiscountBonus, tradeDiscountBonus);
+          }
+        }
+        if (colonyBehavior && typeof colonyBehavior.tradeOffset === 'number' && colonyBehavior.tradeOffset > 0) {
+          var tradeOffsetBonus = Math.min(4, tradesLeftNow * colonyBehavior.tradeOffset);
+          if (tradeOffsetBonus > 0) {
+            immediateTradeBoost += tradeOffsetBonus;
+            specificTradeReason = true;
+            pushStructuredReason(reasons, reasonRows, 'trade: трек +' + colonyBehavior.tradeOffset + ' ×' + tradesLeftNow + ' +' + tradeOffsetBonus, tradeOffsetBonus);
+          }
+        }
+        if (!specificTradeReason) {
+          immediateTradeBoost = (cardName === 'Venus Trade Hub' || cardName === 'L1 Trade Terminal')
+            ? Math.min(4, tradesLeftNow * 2)
+            : Math.min(SC.tradeBonusCap, tradesLeftNow);
+        }
+        if (immediateTradeBoost > 0) {
+          bonus += immediateTradeBoost;
+          if (!specificTradeReason) pushStructuredReason(reasons, reasonRows, tradesLeftNow + ' trade сейчас +' + immediateTradeBoost, immediateTradeBoost);
+        }
+      } else if (ctx.coloniesOwned > 0) {
         var tradeBoost = Math.min(SC.tradeBonusCap, ctx.coloniesOwned * SC.tradeBonusPerColony);
         bonus += tradeBoost;
-        pushStructuredReason(reasons, reasonRows, 'Trade-бонус +' + tradeBoost, tradeBoost);
+        var tradeReason = 'Trade-бонус +' + tradeBoost;
+        if (colonyBehavior && typeof colonyBehavior.tradeMC === 'number' && colonyBehavior.tradeMC > 0) tradeReason = 'trade: +' + colonyBehavior.tradeMC + ' MC позже +' + tradeBoost;
+        else if (colonyBehavior && typeof colonyBehavior.tradeOffset === 'number' && colonyBehavior.tradeOffset > 0) tradeReason = 'trade: трек +' + colonyBehavior.tradeOffset + ' позже +' + tradeBoost;
+        else if (colonyBehavior && typeof colonyBehavior.tradeDiscount === 'number' && colonyBehavior.tradeDiscount > 0) tradeReason = 'trade: скидка −' + colonyBehavior.tradeDiscount + ' позже +' + tradeBoost;
+        pushStructuredReason(reasons, reasonRows, tradeReason, tradeBoost);
       }
     }
 
@@ -3703,12 +3866,54 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       return profile;
     }
 
+    if (cardName === 'Fish') {
+      var fishGap = Math.max(0, 2 - temp);
+      if (fishGap >= 24) {
+        profile.penalty = -10;
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0.15;
+      } else if (fishGap >= 18) {
+        profile.penalty = -8;
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0.25;
+      } else if (fishGap >= 12) {
+        profile.penalty = -6;
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0.4;
+      } else if (fishGap >= 8) {
+        profile.penalty = -3;
+        profile.selfResourceFactor = 0.65;
+      }
+      if (profile.penalty < 0) profile.reason = 'Fish ждут temp −' + Math.abs(profile.penalty);
+      return profile;
+    }
+
     if (cardName === 'Insects') {
       var insectsGap = Math.max(0, 6 - oxy);
       if (insectsGap >= 6) profile.penalty = -5;
       else if (insectsGap >= 5) profile.penalty = -4;
       else if (insectsGap >= 4) profile.penalty = -3;
       if (profile.penalty < 0) profile.reason = 'Insects ждут O₂ −' + Math.abs(profile.penalty);
+      return profile;
+    }
+
+    if (cardName === 'Psychrophiles') {
+      var psychrophilesClosedSteps = Math.max(0, Math.ceil((temp - (-20)) / 2));
+      if (psychrophilesClosedSteps >= 1) {
+        profile.penalty = -(12 + Math.min(8, psychrophilesClosedSteps * 2));
+        profile.reason = 'Psychrophiles: окно закрыто −' + Math.abs(profile.penalty);
+        profile.suppressAccumulatorBonus = true;
+        profile.selfResourceFactor = 0;
+        return profile;
+      }
+      var psychrophilesStepsUntilClosed = Math.floor(((-20 - temp) / 2)) + 1;
+      if (psychrophilesStepsUntilClosed <= 1) {
+        profile.penalty = -4;
+        profile.reason = 'Psychrophiles: окно почти закрыто −' + Math.abs(profile.penalty);
+      } else if (psychrophilesStepsUntilClosed === 2) {
+        profile.penalty = -2;
+        profile.reason = 'Psychrophiles: мало окна −' + Math.abs(profile.penalty);
+      }
       return profile;
     }
 
@@ -3868,6 +4073,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return !!(stepM && parseInt(stepM[1], 10) >= 3);
   }
 
+  function isSoftNearRequirementReasonText(text) {
+    if (!text) return false;
+    return /^Нужно 1 .+ сейчас [\-−]\d+/.test(text);
+  }
+
   function parseBoardRequirements(reqText) {
     var text = (reqText || '').toLowerCase();
     if (!text) return [];
@@ -3924,6 +4134,44 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       totalMissing: totalMissing,
       metNow: unmet.length === 0
     };
+  }
+
+  function isCardPlayableNowByStaticRequirements(cardName, ctx) {
+    if (!cardName || !ctx) return true;
+
+    var globalReqs = (typeof TM_CARD_GLOBAL_REQS !== 'undefined')
+      ? (_lookupCardData ? _lookupCardData(TM_CARD_GLOBAL_REQS, cardName) : TM_CARD_GLOBAL_REQS[cardName])
+      : null;
+    var tagReqs = (typeof TM_CARD_TAG_REQS !== 'undefined')
+      ? (_lookupCardData ? _lookupCardData(TM_CARD_TAG_REQS, cardName) : TM_CARD_TAG_REQS[cardName])
+      : null;
+    var gp = ctx.globalParams || {};
+    var reqFlexCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
+    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
+    var paramMap = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
+
+    if (globalReqs) {
+      for (var reqParam in paramMap) {
+        var reqObj = globalReqs[reqParam];
+        if (!reqObj) continue;
+        var curVal = gp[paramMap[reqParam]] || 0;
+        var step = reqParam === 'temperature' ? 2 : (reqParam === 'venus' ? 2 : 1);
+        var flexSteps = reqFlex.any + (reqParam === 'venus' ? reqFlex.venus : 0);
+
+        if (reqObj.min != null && curVal < (reqObj.min - flexSteps * step)) return false;
+        if (reqObj.max != null && curVal > (reqObj.max + flexSteps * step)) return false;
+      }
+    }
+
+    if (tagReqs) {
+      var myTags = ctx.tags || {};
+      for (var reqTag in tagReqs) {
+        if (typeof tagReqs[reqTag] === 'object') continue;
+        if ((myTags[reqTag] || 0) < tagReqs[reqTag]) return false;
+      }
+    }
+
+    return true;
   }
 
   // Requirement feasibility penalty + MET bonus
@@ -4023,7 +4271,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           if (curVal > effectiveMax) {
             metNow = false;
             bonus -= SC.reqInfeasible;
-            reasons.push('Окно закрыто!');
+            pushStructuredReason(reasons, reasonRows, 'Окно закрыто!', -SC.reqInfeasible);
           } else {
             var stepsToMax = Math.floor((effectiveMax - curVal) / step);
             if (stepsToMax <= 2 && stepsToMax >= 0) {
@@ -4077,7 +4325,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         hardness = Math.max(hardness, tagReqs[reqTag]);
         var haveNow = myTags[reqTag] || 0;
         var haveSoon = haveNow + (handTags0[reqTag] || 0);
+        var nowMiss = Math.max(0, tagReqs[reqTag] - haveNow);
         if (haveNow < tagReqs[reqTag]) metNow = false;
+        if (nowMiss > 0 && haveSoon >= tagReqs[reqTag]) {
+          var softNowPenalty = ctx.gensLeft <= 1 ? -20 : -Math.min(6, nowMiss * 3 + 1);
+          bonus += softNowPenalty;
+          reasons.push('Нужно ' + nowMiss + ' ' + getRequirementTagReasonLabel(reqTag) + ' сейчас ' + softNowPenalty);
+        }
         if (haveSoon < tagReqs[reqTag]) {
           miss += (tagReqs[reqTag] - haveSoon);
           missList.push(reqTag);
@@ -4850,9 +5104,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
   function isPreludeOrCorpCard(cardEl) {
     if (!cardEl) return false;
+    var detectedName = getCardName(cardEl);
     return !!(
       cardEl.closest('.wf-component--select-prelude') ||
       cardEl.classList.contains('prelude-card') ||
+      isPreludeOrCorpName(detectedName) ||
       !!cardEl.querySelector('.card-title.is-corporation, .card-corporation-logo, .corporation-label') ||
       !!cardEl.closest('.select-corporation') ||
       !!cardEl.closest('[class*="corporation"]')
@@ -5738,6 +5994,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         injectPlayPriorityBadges: injectPlayPriorityBadges,
         trackDraftHistory: trackDraftHistory,
         rateStandardProjects: rateStandardProjects,
+        enhanceGameLog: enhanceGameLog,
         highlightPlayable: highlightPlayable,
         tmLog: tmLog,
         setLastProcessAllMs: function(v) { _lastProcessAllMs = v; }
@@ -5791,7 +6048,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       trackDraftHistory();
       // Standard project ratings (throttled internally)
       rateStandardProjects();
-      // Game log ownership lives in the fork, not the extension.
+      enhanceGameLog();
       // Playable card highlight (throttled to 2s internally)
       highlightPlayable();
     } finally {
@@ -5810,7 +6067,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   // ── Enhanced Game Log ──
 
   function enhanceGameLog() {
-    return;
+    if (!TM_CONTENT_LOG_UI || !TM_CONTENT_LOG_UI.decorateLogCardScores) return;
+    TM_CONTENT_LOG_UI.decorateLogCardScores({
+      enabled: enabled,
+      documentObj: document,
+      ratings: typeof TM_RATINGS !== 'undefined' ? TM_RATINGS : null
+    });
   }
 
   function refreshStoredDraftLog() {
@@ -5905,7 +6167,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       return;
     }
     // Remove injected elements
-    document.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score').forEach((el) => el.remove());
     // Strip combo classes
     document.querySelectorAll('.tm-combo-highlight, .tm-combo-godmode, .tm-combo-great, .tm-combo-good, .tm-combo-decent, .tm-combo-niche').forEach((el) => {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche');
@@ -6544,7 +6806,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         }
         return icBoost;
       }
-      case 'Arklight': return (eLower.includes('animal') || eLower.includes('plant') || eLower.includes('жив')) ? 2 : 0;
+      case 'Arklight': return (cardTags.has('animal') || cardTags.has('plant')) ? 2 : 0;
       case 'Poseidon': return (eLower.includes('colon') || eLower.includes('колон')) ? 3 : 0;
       case 'Polyphemos': return (eLower.includes('draw') || eLower.includes('card')) ? -2 : 0;
       case 'Lakefront Resorts': {
@@ -6557,7 +6819,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (opts.cardName === 'Decomposers' || opts.cardName === 'Urban Decomposers') return 1;
         return 2;
       case 'Celestic': return (eLower.includes('floater') || eLower.includes('флоат')) ? 2 : 0;
-      case 'Robinson Industries': return (eLower.includes('prod') || eLower.includes('прод')) ? 1 : 0;
+      case 'Robinson Industries': return 0;
       case 'Viron': return opts.cardType === 'blue' ? 2 : 0;
       case 'Recyclon': return cardTags.has('building') ? 1 : 0;
       case 'Stormcraft Incorporated': return (eLower.includes('floater') || eLower.includes('флоат')) ? 2 : 0;
@@ -6804,10 +7066,16 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var fx48 = TM_CARD_EFFECTS[cardName];
     if (!fx48) return { bonus: bonus, reasons: reasons };
 
-    function canReach(placerFx, targetFx) {
+    function canReach(placerFx, targetFx, targetName) {
       if (!placerFx.placesTag) return true;
       var tg = targetFx.tg;
-      var tags = Array.isArray(tg) ? tg : (tg ? [tg] : []);
+      var tags = Array.isArray(tg) ? tg.slice() : (tg ? [tg] : []);
+      if (targetName) {
+        var targetCardTags = getCardTagsForName(targetName);
+        for (var tgi48 = 0; tgi48 < targetCardTags.length; tgi48++) {
+          if (tags.indexOf(targetCardTags[tgi48]) === -1) tags.push(targetCardTags[tgi48]);
+        }
+      }
       return tags.indexOf(placerFx.placesTag) !== -1;
     }
     function getPlaceCount(fx) {
@@ -6824,7 +7092,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var targetCount = 0;
         for (var m = 0; m < allMyCards.length; m++) {
           var mfx = TM_CARD_EFFECTS[allMyCards[m]];
-          if (mfx && mfx.res === placeTypes[pt] && canReach(fx48, mfx)) targetCount++;
+          if (mfx && mfx.res === placeTypes[pt] && canReach(fx48, mfx, allMyCards[m])) targetCount++;
         }
         if (targetCount > 0) {
           var placeCountMul48 = Math.min(1.8, 1 + (placeCount48 - 1) * 0.25);
@@ -6838,7 +7106,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var hasTarget = false;
         for (var m48e = 0; m48e < allMyCards.length; m48e++) {
           var mfx48e = TM_CARD_EFFECTS[allMyCards[m48e]];
-          if (mfx48e && mfx48e.res === placeTypes[pt48e] && canReach(fx48, mfx48e)) { hasTarget = true; break; }
+          if (mfx48e && mfx48e.res === placeTypes[pt48e] && canReach(fx48, mfx48e, allMyCards[m48e])) { hasTarget = true; break; }
         }
         if (!hasTarget) {
           synRulesBonus -= SC.noTargetPenalty;
@@ -6854,7 +7122,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var mfx = TM_CARD_EFFECTS[allMyCards[m]];
         if (mfx && mfx.places) {
           var mpt = Array.isArray(mfx.places) ? mfx.places : [mfx.places];
-          if (mpt.indexOf(fx48.res) !== -1 && canReach(mfx, fx48)) placerCount++;
+          if (mpt.indexOf(fx48.res) !== -1 && canReach(mfx, fx48, cardName)) placerCount++;
         }
       }
       if (placerCount > 0) {
@@ -6904,9 +7172,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   // Prelude-specific scoring
   function _scorePrelude(cardName, data, cardEl, myCorp, ctx, SC) {
     var bonus = 0, reasons = [];
+    var detectedName = cardEl ? getCardName(cardEl) : null;
     var isPrelude = cardEl && (
       cardEl.closest('.wf-component--select-prelude') ||
-      cardEl.classList.contains('prelude-card')
+      cardEl.classList.contains('prelude-card') ||
+      getCardTypeByName(detectedName) === 'prelude'
     );
     if (!isPrelude || !ctx) return { bonus: bonus, reasons: reasons };
 
@@ -6943,6 +7213,38 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var ratingBonus = combo.r === 'godmode' ? SC.preludeCorpGodmode : combo.r === 'great' ? SC.preludeCorpGreat : combo.r === 'good' ? SC.preludeCorpGood : SC.preludeCorpDecent;
         bonus += ratingBonus; reasons.push('Комбо с ' + myCorp + ' +' + ratingBonus);
         break;
+      }
+    }
+    if (cardName === 'Established Methods') {
+      var premiumColonies = new Set(['Luna', 'Pluto', 'Titan', 'Ganymede', 'Europa', 'Ceres']);
+      var visibleColonies = typeof getVisibleColonyNames === 'function' ? getVisibleColonyNames() : [];
+      var colonyHits = 0;
+      for (var vci = 0; vci < visibleColonies.length; vci++) {
+        if (premiumColonies.has(visibleColonies[vci])) colonyHits++;
+      }
+      if (colonyHits >= 2) {
+        bonus += 3;
+        reasons.push('premium colonies +3');
+      } else if (colonyHits === 1) {
+        bonus += 1;
+        reasons.push('premium colony +1');
+      }
+      if (myCorp === 'Poseidon') {
+        bonus += 2;
+        reasons.push('Poseidon colony SP +2');
+      }
+      if (myCorp === 'Thorgate') {
+        bonus += 2;
+        reasons.push('Thorgate power SP +2');
+      }
+      if (myCorp === 'CrediCor') {
+        bonus += 2;
+        reasons.push('CrediCor city/greenery SP +2');
+      }
+      var visibleCeos = typeof getVisibleCeoNames === 'function' ? getVisibleCeoNames() : [];
+      if (visibleCeos.indexOf('Sagitta Frontier Services') >= 0) {
+        bonus += 1;
+        reasons.push('Sagitta +1');
       }
     }
     // Prelude-prelude synergy
@@ -7739,11 +8041,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // ── 10. COLONY DENSITY: colony build cards + trade/colony benefit cards ──
-    var colonyBuilders = TM_COLONY_BUILDERS;
-    var colonyBenefits = TM_COLONY_BENEFITS;
-    if (colonyBuilders.indexOf(cardName) >= 0) {
-      var colBenefits = myHand.filter(function(n) { return n !== cardName && colonyBenefits.indexOf(n) >= 0; }).length;
-      var otherBuilders = myHand.filter(function(n) { return n !== cardName && colonyBuilders.indexOf(n) >= 0; }).length;
+    if (cardIsColonyRelatedByName(cardName)) {
+      var colBenefits = myHand.filter(function(n) { return n !== cardName && cardIsColonyBenefitByName(n); }).length;
+      var otherBuilders = myHand.filter(function(n) { return n !== cardName && cardIsColonyRelatedByName(n); }).length;
       if (colBenefits > 0) { bonus += colBenefits * 1.5; descs.push(colBenefits + ' colony benefit'); }
       if (otherBuilders >= 2) { bonus += 2; descs.push('colony chain'); }
     }
@@ -7867,7 +8167,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
     // Microbe generators + microbe VP targets in hand
-    if (MICROBE_GENERATORS[cardName]) {
+    if (MICROBE_GENERATORS[cardName] && !(cardName === 'Extreme-Cold Fungus' && ctx && ctx.globalParams && ctx.globalParams.temp > -10)) {
       var mTargets = myHand.filter(function(n) { return n !== cardName && MICROBE_VP_ALL[n] && MICROBE_VP_ALL[n] > 0; });
       if (mTargets.length > 0) {
         bonus += mTargets.length * MICROBE_GENERATORS[cardName] * 1.5;
@@ -8337,34 +8637,29 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // ── 39. COLONY TRADE ENGINE: trade fleet cards + colony placement = compound income ──
-    var colonyBuilders = ['Space Port', 'Space Port Colony', 'Titan Shuttles', 'Trade Envoys',
-      'Rim Freighters', 'Mining Colony', 'Research Colony', 'Martian Zoo',
-      'Community Services', 'Productive Outpost', 'Pioneer Settlement'];
-    var tradeFleetCards = ['Trade Envoys', 'Rim Freighters', 'Titan Shuttles',
-      'Galilean Waystation', 'Quantum Communications'];
-    var isColBuilder = colonyBuilders.indexOf(cardName) >= 0;
-    var isFleetCard = tradeFleetCards.indexOf(cardName) >= 0;
+    var isColBuilder = cardBuildsColonyByName(cardName);
+    var isFleetCard = cardHasTradeEngineByName(cardName);
     if (isColBuilder || isFleetCard) {
       var colOthers = 0;
       var fleetOthers = 0;
       for (var _cli = 0; _cli < myHand.length; _cli++) {
         if (myHand[_cli] === cardName) continue;
-        if (colonyBuilders.indexOf(myHand[_cli]) >= 0) colOthers++;
-        if (tradeFleetCards.indexOf(myHand[_cli]) >= 0) fleetOthers++;
+        if (cardBuildsColonyByName(myHand[_cli])) colOthers++;
+        if (cardHasTradeEngineByName(myHand[_cli])) fleetOthers++;
       }
       var namedColonyPartner = '';
       var namedFleetPartner = '';
       for (var _clj = 0; _clj < myHand.length; _clj++) {
         if (myHand[_clj] === cardName) continue;
-        if (!namedColonyPartner && colonyBuilders.indexOf(myHand[_clj]) >= 0) namedColonyPartner = myHand[_clj];
-        if (!namedFleetPartner && tradeFleetCards.indexOf(myHand[_clj]) >= 0) namedFleetPartner = myHand[_clj];
+        if (!namedColonyPartner && cardBuildsColonyByName(myHand[_clj])) namedColonyPartner = myHand[_clj];
+        if (!namedFleetPartner && cardHasTradeEngineByName(myHand[_clj])) namedFleetPartner = myHand[_clj];
       }
       var colSynB = 0;
       // Colony builder + fleet card = trade more often with more colonies
       if (isColBuilder && fleetOthers >= 1) {
         colSynB += Math.min(fleetOthers * 1.0, 2);
         if (fleetOthers === 1 && namedFleetPartner) descs.push(describeTradeChain(namedFleetPartner));
-        else descs.push('trade fleet ×' + fleetOthers);
+        else descs.push('trade engine ×' + fleetOthers);
       }
       // Fleet card + colony builders = more colonies to trade at
       if (isFleetCard && colOthers >= 1) {
@@ -8779,7 +9074,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (siProdSteps <= 0) continue;
         prodBumpCount++;
         var siCost = siEff.c;
-        if (siCost == null && typeof getCardCost === 'function') siCost = getCardCost(siName);
+        if (siCost == null) {
+          var siRating = _getRatingByCardName(siName);
+          if (siRating && typeof siRating.c === 'number') siCost = siRating.c;
+        }
         if ((siCost || 99) <= 12) cheapProdBumpCount++;
       }
       if (prodBumpCount > 0) {
@@ -9532,6 +9830,36 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    if (!isEvent && cardTagsArr.indexOf('science') >= 0) {
+      var scienceReqTargets = 0;
+      var scienceReqWeight = 0;
+      var scienceTagCopies = countCardTagCopies(cardTagsArr, 'science');
+      var scienceHaveNow = ctxTagsHS.science || 0;
+      for (var _srt = 0; _srt < myHand.length; _srt++) {
+        if (myHand[_srt] === cardName) continue;
+        var scienceReq = _lookupCardData ? _lookupCardData(_tagReqs, myHand[_srt]) : _tagReqs[myHand[_srt]];
+        if (!scienceReq || typeof scienceReq.science !== 'number') continue;
+        if (scienceHaveNow >= scienceReq.science) continue;
+        var scienceAfter = scienceHaveNow + scienceTagCopies;
+        if (scienceAfter <= scienceHaveNow) continue;
+        var scienceAddedCounts = { science: scienceTagCopies };
+        if (!isTargetOtherwiseReady(myHand[_srt], null, scienceAddedCounts, 'science')) continue;
+        scienceReqTargets++;
+        scienceReqWeight += getUnlockScoreWeight(myHand[_srt]);
+      }
+      if (scienceReqTargets > 0) {
+        var cheapScienceTag = (cardEff.c || 0) <= 6;
+        var scienceReqBonus = Math.min(
+          scienceReqTargets * (cheapScienceTag ? 1.25 : 0.8) + scienceReqWeight * 0.35,
+          cheapScienceTag ? 4.5 : 3.0
+        );
+        if (scienceReqBonus > 0) {
+          bonus += scienceReqBonus;
+          descs.push((cheapScienceTag ? 'cheap science→req ×' : 'science→req ×') + scienceReqTargets);
+        }
+      }
+    }
+
     if (globalUnlockFallback > 0 && immediateGlobalUnlocks + nearGlobalUnlocks === 0) {
       bonus += Math.min(globalUnlockFallback * 0.25, 0.8);
       descs.push('req chain ×' + globalUnlockFallback);
@@ -10096,17 +10424,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // ── 91. COLONY FLEET DENSITY: 4+ colony cards amplify trade fleet value ──
     // With 4+ colonies in hand, each trade fleet card unlocks significantly more income per trade
-    var _colonyCardsAll91 = ['Space Port', 'Space Port Colony', 'Titan Shuttles', 'Trade Envoys',
-      'Rim Freighters', 'Mining Colony', 'Research Colony', 'Martian Zoo',
-      'Community Services', 'Productive Outpost', 'Pioneer Settlement'];
-    var _fleetCards91 = ['Trade Envoys', 'Rim Freighters', 'Titan Shuttles',
-      'Galilean Waystation', 'Quantum Communications'];
     var colCount91 = 0;
-    var isFleet91 = _fleetCards91.indexOf(cardName) >= 0;
-    var isCol91 = _colonyCardsAll91.indexOf(cardName) >= 0;
+    var isFleet91 = cardHasTradeEngineByName(cardName);
+    var isCol91 = cardIsColonyRelatedByName(cardName);
     if (isFleet91 || isCol91) {
       for (var _c91 = 0; _c91 < myHand.length; _c91++) {
-        if (_colonyCardsAll91.indexOf(myHand[_c91]) >= 0) colCount91++;
+        if (cardIsColonyRelatedByName(myHand[_c91])) colCount91++;
       }
       if (colCount91 >= 4) {
         var colDensity91 = Math.min((colCount91 - 3) * 0.6, 1.5);
@@ -10416,11 +10739,55 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
   }
 
+  function isSpentTableauSynergy(cardName, targetName) {
+    if (!cardName || !targetName) return false;
+    var cardTags = getCardTagsForName(cardName);
+    if (!cardTags || cardTags.length === 0) return false;
+    var hasWildcard = cardTags.indexOf('wild') >= 0;
+    var spentTagPayoffs = {
+      'Cartel': ['earth'],
+      'Miranda Resort': ['earth'],
+      'Luna Metropolis': ['earth'],
+      'Lunar Mining': ['earth'],
+      'Gyropolis': ['earth', 'venus'],
+      'Satellites': ['space'],
+      'Insects': ['plant'],
+      'Worms': ['microbe'],
+      'Power Grid': ['power'],
+      'Advanced Power Grid': ['power'],
+      'Medical Lab': ['building'],
+      'Parliament Hall': ['building'],
+      'Sulphur Exports': ['venus'],
+      'Martian Monuments': ['mars'],
+      'Racketeering': ['crime'],
+      'Terraforming Ganymede': ['jovian'],
+      'Social Events': ['mars']
+    };
+    var payoffTags = spentTagPayoffs[targetName];
+    if (payoffTags) {
+      for (var pti = 0; pti < payoffTags.length; pti++) {
+        if (hasWildcard || cardTags.indexOf(payoffTags[pti]) >= 0) return true;
+      }
+    }
+    if (typeof TM_CARD_TAG_REQS !== 'undefined') {
+      var tagReqs = _lookupCardData ? _lookupCardData(TM_CARD_TAG_REQS, targetName) : TM_CARD_TAG_REQS[targetName];
+      if (tagReqs) {
+        for (var reqTag in tagReqs) {
+          if (!Object.prototype.hasOwnProperty.call(tagReqs, reqTag)) continue;
+          if (typeof tagReqs[reqTag] !== 'number') continue;
+          if (hasWildcard || cardTags.indexOf(reqTag) >= 0) return true;
+        }
+      }
+    }
+    return false;
+  }
+
   // Synergy with tableau cards — forward (data.y) + reverse lookup
   function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents) {
     let synTotal = 0;
     let synCount = 0;
     let synDescs = [];
+    let directPartners = new Set();
     // Skip corps — already scored in corp synergy (5c), avoid double-count
     var _corpSet = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
     if (data.y) {
@@ -10429,9 +10796,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var sw = yWeight(entry) || SC.tableauSynergyPer;
         if (playedEvents.has(sn)) continue;
         if (_corpSet[sn]) continue; // corp already handled in 5c
+        if (isSpentTableauSynergy(cardName, sn)) continue;
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
           synTotal += sw;
+          directPartners.add(sn);
           var directReason = formatTableauSynergyReason(cardName, sn, sw, false);
           if (directReason) synDescs.push(directReason);
         }
@@ -10445,8 +10814,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (_corpSet[myCard]) continue; // corp already handled in 5c
       const myData = TM_RATINGS[myCard];
       if (!myData || !myData.y) continue;
+      if (directPartners.has(myCard)) continue;
       for (const re of myData.y) {
         if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
+          if (isSpentTableauSynergy(cardName, myCard)) break;
           var rw = Math.round(((yWeight(re) || SC.tableauSynergyPer) * reverseScale) * 10) / 10;
           synCount++;
           synTotal += rw;
@@ -10729,7 +11100,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // Base score: always COTD expert rating (EV shown alongside)
     var baseScore = data.s;
-    var openingBias = getOpeningHandBias(data, ctx);
+    var openingBias = getOpeningHandBias(cardName, data, ctx);
     if (openingBias) {
       baseScore += openingBias;
       reasons.push('старт ' + (openingBias > 0 ? '+' : '') + openingBias);
@@ -10808,7 +11179,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       bonus = applyResult(tagSyn, bonus, reasons, reasonRows);
 
       // 6. Colony synergy
-      var colSyn = scoreColonySynergy(eLower, data, ctx);
+      var colSyn = scoreColonySynergy(cardName, eLower, data, ctx);
       bonus = applyResult(colSyn, bonus, reasons, reasonRows);
 
       // 6b. Turmoil synergy
@@ -10818,7 +11189,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       // FTN timing delta + ocean-dependent action penalty
       // Detect prelude/corp — skip timing (all play at gen 1 simultaneously)
       var _isPreludeOrCorp = isPreludeOrCorpCard(cardEl);
-      var ftnResult = scoreFTNTiming(cardName, ctx, { isPreludeOrCorp: !!_isPreludeOrCorp });
+      var ftnResult = scoreFTNTiming(cardName, ctx, { isPreludeOrCorp: !!_isPreludeOrCorp, myHand: myHand });
       bonus = applyResult(ftnResult, bonus, reasons, reasonRows);
       var skipCrudeTiming = ftnResult.skipCrudeTiming;
 
@@ -10881,7 +11252,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
 
       // 35. Trade value by colony track positions
-      if (ctx.tradesLeft > 0 && data.e) {
+      if (ctx.tradesLeft > 0 && data.e && isCardPlayableNowByStaticRequirements(cardName, ctx)) {
 
         if (eLower.includes('trade') || eLower.includes('colony') || eLower.includes('торг') || eLower.includes('колон')) {
           if (pv && pv.game && pv.game.colonies) {
@@ -10989,7 +11360,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     reasonRows = cleanedReqPayload.reasonRows;
 
     // Hard cap: unplayable cards (permanently missed requirements) → max D-tier
-    var isUnplayable = reasons.some(function(r) { return r.indexOf('Невозможно сыграть') !== -1; });
+    var isUnplayable = reasons.some(function(r) {
+      return r.indexOf('Невозможно сыграть') !== -1 || r.indexOf('Окно закрыто') !== -1;
+    });
     // Cap total score at 100 — S-tier ceiling
     var uncappedTotal = baseScore + bonus;
     var finalScore = Math.min(100, uncappedTotal);
@@ -11167,13 +11540,15 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         ratings: typeof TM_RATINGS !== 'undefined' ? TM_RATINGS : null,
         ratingsRaw: _TM_RATINGS_RAW,
         baseCardName: _baseCardName,
-        normalizeOpeningHandBias: normalizeOpeningHandBias
+        normalizeOpeningHandBias: normalizeOpeningHandBias,
+        getCardTypeByName: getCardTypeByName
       });
     }
     var resolved = resolveCorpName(name) || name;
     var raw = TM_RATINGS[resolved] || TM_RATINGS[_baseCardName(resolved)] || _TM_RATINGS_RAW[resolved] || _TM_RATINGS_RAW[_baseCardName(resolved)];
     if (raw && typeof raw.s === 'number') {
-      return raw.s + normalizeOpeningHandBias(raw.o);
+      var openingBias = getCardTypeByName(resolved) === 'prelude' ? 0 : normalizeOpeningHandBias(raw.o);
+      return raw.s + openingBias;
     }
     return fallback == null ? 55 : fallback;
   }
@@ -11201,14 +11576,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return phase === 'initial_drafting' || phase === 'corporationsDrafting';
   }
 
-  function getOpeningHandBias(data, ctx) {
+  function getOpeningHandBias(cardNameOrData, dataOrCtx, maybeCtx) {
+    var cardName = null;
+    var data = cardNameOrData;
+    var ctx = dataOrCtx;
+    if (typeof cardNameOrData === 'string') {
+      cardName = cardNameOrData;
+      data = dataOrCtx;
+      ctx = maybeCtx;
+    }
     if (TM_CONTENT_PLAY_PRIORITY && TM_CONTENT_PLAY_PRIORITY.getOpeningHandBias) {
       return TM_CONTENT_PLAY_PRIORITY.getOpeningHandBias({
+        cardName: cardName,
         data: data,
         ctx: ctx,
-        getPlayerVueData: typeof getPlayerVueData === 'function' ? getPlayerVueData : null
+        getPlayerVueData: typeof getPlayerVueData === 'function' ? getPlayerVueData : null,
+        getCardTypeByName: getCardTypeByName
       });
     }
+    if (cardName && getCardTypeByName(cardName) === 'prelude') return 0;
     if (!data || typeof data.o !== 'number') return 0;
     return isOpeningHandContext(ctx) ? normalizeOpeningHandBias(data.o) : 0;
   }
@@ -11581,18 +11967,24 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     var reqHardBlockDraft = result.reasons.some(function(r) { return isHardRequirementReasonText(r); });
+    var reqSoftNearDraft = result.reasons.some(function(r) { return isSoftNearRequirementReasonText(r); });
     if (reqHardBlockDraft) {
-      adj -= (gensLeft <= 2 ? 6 : 3);
+      adj -= reqSoftNearDraft ? (gensLeft <= 2 ? 2 : 1) : (gensLeft <= 2 ? 6 : 3);
     }
 
     result.total += adj;
     if (result.uncappedTotal != null) result.uncappedTotal += adj;
     // Show clear recommendation with reason
-    if (adj <= -4) result.reasons.push('Skip (' + (cardEV < 0 ? 'EV ' + Math.round(cardEV) : 'слабая') + ')');
+    var preferReqLaterLabel = reqHardBlockDraft && reqSoftNearDraft && (result.total >= 55 || (result.uncappedTotal != null ? result.uncappedTotal : result.total) >= 55);
+    if (adj <= -4) {
+      if (preferReqLaterLabel) result.reasons.push('Позже (req)');
+      else result.reasons.push('Skip (' + (cardEV < 0 ? 'EV ' + Math.round(cardEV) : 'слабая') + ')');
+    }
     else if (adj >= 4 && !reqHardBlockDraft) result.reasons.push('Buy! (' + (cardEV > 0 ? 'EV +' + Math.round(cardEV) : 'сильная') + ')');
-    else if (adj <= -2) result.reasons.push('Skip');
+    else if (adj <= -2) result.reasons.push(preferReqLaterLabel ? 'Позже (req)' : 'Skip');
     else if (adj >= 2 && !reqHardBlockDraft) result.reasons.push('Buy');
     else if (adj >= 2 && reqHardBlockDraft) result.reasons.push('Позже (req)');
+    else if (preferReqLaterLabel) result.reasons.push('Позже (req)');
   }
 
   function resetDraftOverlays() {
@@ -13479,6 +13871,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
 
   function getCardCost(cardEl) {
+    if (!cardEl || typeof cardEl.querySelector !== 'function') return null;
     const costEl = cardEl.querySelector('.card-number');
     if (costEl) {
       const num = parseInt(costEl.textContent);
