@@ -1033,7 +1033,7 @@
       }
 
       if (typeof applyResult === 'function') bonus = applyResult(scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv), bonus, reasons);
-      if (typeof applyResult === 'function') bonus = applyResult(scoreColonySynergy(eLower, data, ctx), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreColonySynergy(cardName, eLower, data, ctx), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreTurmoilSynergy(eLower, data, cardTags, ctx), bonus, reasons);
 
       var isPreludeOrCorp = typeof isPreludeOrCorpCard === 'function' ? isPreludeOrCorpCard(cardEl) : false;

@@ -3538,7 +3538,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
-    if (!data.e) return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
+    var colonyText = ((eLower || '') + ' ' + getCardTextForSynergy(cardName)).toLowerCase();
     var playableNow = isCardPlayableNowByStaticRequirements(cardName, ctx);
     var colonyBehavior = getColonyBehaviorByName(cardName);
     var hasBuildColony = !!(colonyBehavior && colonyBehavior.buildColony);
@@ -3548,9 +3548,23 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       typeof colonyBehavior.tradeOffset === 'number' ||
       typeof colonyBehavior.tradeMC === 'number'
     ));
+    if (!hasBuildColony) {
+      hasBuildColony = colonyText.includes('place a colony') ||
+        colonyText.includes('build a colony') ||
+        colonyText.includes('добавь колонию') ||
+        colonyText.includes('поставь колонию') ||
+        colonyText.includes('построй колонию');
+    }
+    if (!hasTradeEngine) {
+      hasTradeEngine = colonyText.includes('when you trade') ||
+        colonyText.includes('trade income') ||
+        colonyText.includes('trade bonus') ||
+        colonyText.includes('trade fleet') ||
+        colonyText.includes('торгов');
+    }
 
     var isColonyCard = !!colonyBehavior ||
-      eLower.includes('colon') || eLower.includes('trade') || eLower.includes('колон') || eLower.includes('торгов') || eLower.includes('fleet') || eLower.includes('флот');
+      colonyText.includes('colon') || colonyText.includes('trade') || colonyText.includes('колон') || colonyText.includes('торгов') || colonyText.includes('fleet') || colonyText.includes('флот');
 
     if (isColonyCard) {
       // Colony synergy: colonies owned + track position bonus. Scale by gensLeft.
@@ -3579,7 +3593,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         // 1 colony: fleet is marginal, no bonus/penalty
       }
 
-      if (hasBuildColony || ((eLower.includes('place') || eLower.includes('build')) && eLower.includes('colon'))) {
+      if (hasBuildColony || ((colonyText.includes('place') || colonyText.includes('build')) && colonyText.includes('colon'))) {
         if (ctx.coloniesOwned < SC.colonySlotMax) {
           var colonyPlacementBonus = SC.colonyPlacement;
           // Recommend best colony to build on
@@ -3663,7 +3677,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
-    if (hasTradeEngine || eLower.includes('trade income') || eLower.includes('trade bonus') || eLower.includes('when you trade') || eLower.includes('торговый бонус')) {
+    if (hasTradeEngine || colonyText.includes('trade income') || colonyText.includes('trade bonus') || colonyText.includes('when you trade') || colonyText.includes('торговый бонус')) {
       var tradesLeftNow = Math.max(0, ctx.tradesLeft || 0);
       if (tradesLeftNow > 0 && playableNow) {
         var immediateTradeBoost = 0;

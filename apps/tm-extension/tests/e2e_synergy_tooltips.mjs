@@ -147,7 +147,7 @@ const SCENARIOS = {
   // Scenario 4: Fighter accumulators (no placer exists, competition)
   fighter: {
     desc: 'Fighter synergies (no placer, competition at 3+)',
-    tableau: ['Security Fleet', 'Asteroid Hollowing'],
+    tableau: ['Security Fleet', 'Private Military Contractor'],
     draft: ['St. Joseph of Cupertino Mission', 'Birds'],
     corp: 'Credicor',
     opponent: { tableau: [], corp: 'Ecoline' },
