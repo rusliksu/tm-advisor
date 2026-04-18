@@ -12,6 +12,60 @@ const path = require('path');
 const TM_ROOT = process.env.TM_ROOT || '/home/openclaw/terraforming-mars';
 const CARDS_DIR = path.join(TM_ROOT, 'src/server/cards');
 
+function extractBalancedBraces(text, openIndex) {
+  if (openIndex < 0 || text[openIndex] !== '{') return null;
+  let depth = 0;
+  for (let i = openIndex; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '{') depth++;
+    if (ch === '}') {
+      depth--;
+      if (depth === 0) return text.slice(openIndex + 1, i);
+    }
+  }
+  return null;
+}
+
+function extractObjectLiteral(text, key) {
+  const keyRegex = new RegExp(key + '\\s*:\\s*\\{');
+  const match = keyRegex.exec(text);
+  if (!match) return null;
+  const openIndex = text.indexOf('{', match.index);
+  return extractBalancedBraces(text, openIndex);
+}
+
+function parseCardDiscount(body) {
+  const inner = extractObjectLiteral(body, 'cardDiscount');
+  if (!inner) return null;
+  const amountMatch = inner.match(/amount:\s*(-?\d+)/);
+  if (!amountMatch) return null;
+  const amount = parseInt(amountMatch[1], 10);
+  const tagMatch = inner.match(/tag:\s*Tag\.(\w+)/);
+  if (tagMatch) {
+    return { amount: amount, tag: tagMatch[1].toLowerCase() };
+  }
+  return amount;
+}
+
+function applyTradeRenderEffects(source, result) {
+  const behavior = result.behavior || (result.behavior = {});
+
+  const tradeMcMatch = source.match(/trade\(\)\.startEffect\.megacredits\((-?\d+)/);
+  if (tradeMcMatch) behavior.tradeMC = parseInt(tradeMcMatch[1], 10);
+
+  const tradeDiscountMatch = source.match(/trade\(\)\.startEffect\.tradeDiscount\((\d+)/);
+  if (tradeDiscountMatch) behavior.tradeDiscount = parseInt(tradeDiscountMatch[1], 10);
+
+  const tradeOffsetMatch = source.match(/trade\(\)\.startEffect\.text\('([+-]?\d+)'/);
+  if (tradeOffsetMatch) behavior.tradeOffset = parseInt(tradeOffsetMatch[1], 10);
+
+  if (behavior.tradeDiscount != null || behavior.tradeOffset != null) {
+    const colonies = behavior.colonies || (behavior.colonies = {});
+    if (behavior.tradeDiscount != null) colonies.tradeDiscount = behavior.tradeDiscount;
+    if (behavior.tradeOffset != null) colonies.tradeOffset = behavior.tradeOffset;
+  }
+}
+
 // Find all .ts card files recursively
 function findCardFiles(dir) {
   const files = [];
@@ -91,10 +145,20 @@ function extractCard(source, filename) {
   if (resMatch) result.resourceType = resMatch[1].toLowerCase();
 
   // Requirements
-  const reqMatch = body.match(/requirements:\s*\{([\s\S]*?)\}/);
-  if (reqMatch) {
-    result.requirements = parseRequirements(reqMatch[1]);
+  const reqArrayMatch = body.match(/requirements:\s*\[([\s\S]*?)\]/);
+  if (reqArrayMatch) {
+    result.requirements = parseRequirementsArray(reqArrayMatch[1]);
+  } else {
+    const reqMatch = body.match(/requirements:\s*\{([\s\S]*?)\}/);
+    if (reqMatch) {
+      result.requirements = parseRequirements(reqMatch[1]);
+    }
   }
+
+  const cardDiscount = parseCardDiscount(body);
+  if (cardDiscount != null) result.cardDiscount = cardDiscount;
+
+  applyTradeRenderEffects(source, result);
 
   return result;
 }
@@ -161,8 +225,37 @@ function parseBehaviorBlock(block) {
   }
 
   // Colony
-  const colonyMatch = block.match(/colonies:\s*\{[^}]*addTradeFleet:\s*(\d+)/);
-  if (colonyMatch) beh.tradeFleet = parseInt(colonyMatch[1]);
+  const coloniesBlock = extractObjectLiteral(block, 'colonies');
+  if (coloniesBlock) {
+    const colonies = {};
+    const addTradeFleetMatch = coloniesBlock.match(/addTradeFleet:\s*(\d+)/);
+    if (addTradeFleetMatch) {
+      colonies.addTradeFleet = parseInt(addTradeFleetMatch[1], 10);
+      beh.tradeFleet = colonies.addTradeFleet;
+    }
+
+    const tradeDiscountMatch = coloniesBlock.match(/tradeDiscount:\s*(\d+)/);
+    if (tradeDiscountMatch) {
+      colonies.tradeDiscount = parseInt(tradeDiscountMatch[1], 10);
+      beh.tradeDiscount = colonies.tradeDiscount;
+    }
+
+    const tradeOffsetMatch = coloniesBlock.match(/tradeOffset:\s*(-?\d+)/);
+    if (tradeOffsetMatch) {
+      colonies.tradeOffset = parseInt(tradeOffsetMatch[1], 10);
+      beh.tradeOffset = colonies.tradeOffset;
+    }
+
+    const buildColonyBlock = extractObjectLiteral(coloniesBlock, 'buildColony');
+    if (buildColonyBlock !== null) {
+      const buildColony = {};
+      if (/allowDuplicates:\s*true/.test(buildColonyBlock)) buildColony.allowDuplicates = true;
+      colonies.buildColony = buildColony;
+      beh.colony = buildColony;
+    }
+
+    if (Object.keys(colonies).length > 0) beh.colonies = colonies;
+  }
 
   // Decrease production
   const decProdMatch = block.match(/decreaseAnyProduction:\s*\{[^}]*count:\s*(\d+)/);
@@ -234,6 +327,15 @@ function parseRequirements(block) {
   const reqs = {};
   for (const [, key, val] of block.matchAll(/(\w+):\s*(-?\d+)/g)) {
     reqs[key] = parseInt(val);
+  }
+  return reqs;
+}
+
+function parseRequirementsArray(block) {
+  const reqs = [];
+  const tagReq = block.match(/tag:\s*Tag\.(\w+)[\s\S]*?count:\s*(\d+)/);
+  if (tagReq) {
+    reqs.push({ tag: tagReq[1].toLowerCase(), count: parseInt(tagReq[2], 10) });
   }
   return reqs;
 }

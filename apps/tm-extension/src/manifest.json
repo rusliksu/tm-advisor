@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "TM Tier Overlay",
   "version": "5.2",
-  "description": "Tier ratings and game templates for Terraforming Mars",
+  "description": "Tier ratings and overlays for Terraforming Mars",
   "permissions": ["storage"],
   "host_permissions": [
     "https://tm.knightbyte.win/*",
@@ -19,13 +19,6 @@
       "js": ["vue-bridge.js"],
       "world": "MAIN",
       "run_at": "document_start"
-    },
-    {
-      "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.alrusdi.ru/*", "*://terraforming-mars.pe5ha.ru/*"],
-      "js": ["presets.js"],
-      "css": ["presets.css"],
-      "world": "MAIN",
-      "run_at": "document_idle"
     },
     {
       "matches": ["*://terraforming-mars.herokuapp.com/*", "*://tm.knightbyte.win/*", "*://tm.alrusdi.ru/*", "*://terraforming-mars.pe5ha.ru/*"],

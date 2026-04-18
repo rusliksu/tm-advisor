@@ -55,6 +55,10 @@ var TM_CARD_DATA = {
     "megacredits": 0
    }
   },
+  "cardDiscount": {
+   "amount": 3,
+   "tag": "earth"
+  },
   "tags": [
    "earth"
   ]
@@ -72,7 +76,8 @@ var TM_CARD_DATA = {
  "Hackers": {
   "behavior": {
    "production": {
-    "megacredits": 2
+    "megacredits": 2,
+    "energy": -1
    },
    "decreaseAnyProduction": {
     "count": 2
@@ -166,6 +171,9 @@ var TM_CARD_DATA = {
    "production": {
     "megacredits": 2,
     "plants": 2
+   },
+   "stock": {
+    "plants": 2
    }
   },
   "vp": {
@@ -225,7 +233,7 @@ var TM_CARD_DATA = {
   ]
  },
  "Noctis Farming": {
- "behavior": {
+  "behavior": {
    "production": {
     "megacredits": 1
    },
@@ -245,7 +253,7 @@ var TM_CARD_DATA = {
  "Lichen": {
   "behavior": {
    "production": {
-    "plants": 2
+    "plants": 1
    }
   },
   "tags": [
@@ -286,6 +294,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "steel": 1
+   },
+   "stock": {
+    "steel": 5
    }
   },
   "tags": [
@@ -297,6 +308,12 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "steel": 2
+   },
+   "stock": {
+    "steel": 2
+   },
+   "global": {
+    "oxygen": 1
    },
    "removeAnyPlants": 2
   },
@@ -390,6 +407,9 @@ var TM_CARD_DATA = {
    },
    "tr": 1
   },
+  "action": {
+   "tr": 1
+  },
   "tags": [
    "building"
   ]
@@ -468,6 +488,7 @@ var TM_CARD_DATA = {
  },
  "Caretaker Contract": {
   "action": {
+   "tr": 1,
    "stock": {
     "megacredits": 3.5
    }
@@ -592,8 +613,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 3
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Comet": {
@@ -605,8 +625,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 3
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Big Asteroid": {
@@ -620,8 +639,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 4
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Giant Ice Asteroid": {
@@ -633,8 +651,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 6
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Ice Asteroid": {
@@ -642,8 +659,7 @@ var TM_CARD_DATA = {
    "ocean": 2
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Lava Flows": {
@@ -664,8 +680,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 8
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Towing A Comet": {
@@ -679,8 +694,7 @@ var TM_CARD_DATA = {
    "ocean": 1
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Imported Hydrogen": {
@@ -692,8 +706,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Imported Nitrogen": {
@@ -705,20 +718,21 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Imported GHG": {
   "behavior": {
    "production": {
+    "heat": 1
+   },
+   "stock": {
     "heat": 3
    }
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Flooding": {
@@ -801,8 +815,7 @@ var TM_CARD_DATA = {
    "tr": 2
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Small Asteroid": {
@@ -813,8 +826,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 2
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Dust Seals": {
@@ -841,15 +853,19 @@ var TM_CARD_DATA = {
  },
  "Invention Contest": {
   "tags": [
-   "science",
-   "event"
+   "science"
   ]
  },
  "Technology Demonstration": {
+  "behavior": {
+   "stock": {
+    "cards": 2
+   },
+   "drawCard": 2
+  },
   "tags": [
    "science",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Deep Well Heating": {
@@ -975,8 +991,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Interstellar Colony Ship": {
@@ -986,8 +1001,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Open City": {
@@ -996,6 +1010,9 @@ var TM_CARD_DATA = {
     "megacredits": 4,
     "plants": 1,
     "energy": -1
+   },
+   "stock": {
+    "plants": 2
    },
    "city": 1
   },
@@ -1027,11 +1044,11 @@ var TM_CARD_DATA = {
  },
  "Immigrant City": {
   "behavior": {
-    "production": {
-      "megacredits": -2,
-      "energy": -1
-    },
-    "city": 1
+   "production": {
+    "megacredits": -2,
+    "energy": -1
+   },
+   "city": 1
   },
   "tags": [
    "city",
@@ -1125,7 +1142,8 @@ var TM_CARD_DATA = {
  "Lava Tube Settlement": {
   "behavior": {
    "production": {
-    "megacredits": 2
+    "megacredits": 2,
+    "energy": -1
    },
    "city": 1
   },
@@ -1141,7 +1159,11 @@ var TM_CARD_DATA = {
     "titanium": 1,
     "energy": -1
    },
-   "city": 1
+   "city": 1,
+   "tradeFleet": 1,
+   "colonies": {
+    "addTradeFleet": 1
+   }
   },
   "tags": [
    "city",
@@ -1237,6 +1259,7 @@ var TM_CARD_DATA = {
  "Livestock": {
   "behavior": {
    "production": {
+    "megacredits": 2,
     "plants": -1
    }
   },
@@ -1266,12 +1289,17 @@ var TM_CARD_DATA = {
   ]
  },
  "Small Animals": {
+  "behavior": {
+   "decreaseAnyProduction": {
+    "count": 1
+   }
+  },
   "action": {
    "addResources": 1
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
   "resourceType": "animal",
   "tags": [
@@ -1297,7 +1325,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 0.7
+   "per": 1
   },
   "resourceType": "microbe",
   "tags": [
@@ -1328,7 +1356,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
   "resourceType": "animal",
   "tags": [
@@ -1342,7 +1370,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 0.5
+   "per": 1
   },
   "resourceType": "fighter",
   "tags": [
@@ -1402,7 +1430,7 @@ var TM_CARD_DATA = {
    "tr": 1
   },
   "action": {
-   "tr": 0.33,
+   "tr": 1,
    "addResources": 1
   },
   "vp": {
@@ -1417,12 +1445,13 @@ var TM_CARD_DATA = {
  "Electro Catapult": {
   "behavior": {
    "production": {
-    "steel": -1
+    "steel": -1,
+    "energy": -1
    }
   },
   "action": {
    "stock": {
-    "megacredits": 5
+    "megacredits": 7
    }
   },
   "vp": {
@@ -1487,6 +1516,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Business Network": {
+  "behavior": {
+   "production": {
+    "megacredits": -1
+   }
+  },
   "action": {
    "drawCard": 0.3
   },
@@ -1550,7 +1584,7 @@ var TM_CARD_DATA = {
    "type": "per_resource",
    "per": 3
   },
-  "resourceType": "asteroid",
+  "resourceType": "floater",
   "tags": [
    "venus"
   ]
@@ -1571,7 +1605,7 @@ var TM_CARD_DATA = {
  },
  "Aerial Mappers": {
   "action": {
-   "drawCard": 0.5,
+   "drawCard": 1,
    "addResources": 1
   },
   "vp": {
@@ -1595,6 +1629,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Atmospheric Enhancers": {
+  "behavior": {
+   "global": {
+    "temperature": 2
+   }
+  },
   "tags": [
    "venus"
   ]
@@ -1647,6 +1686,9 @@ var TM_CARD_DATA = {
  },
  "Stratopolis": {
   "behavior": {
+   "production": {
+    "megacredits": 2
+   },
    "city": 1
   },
   "action": {
@@ -1654,8 +1696,8 @@ var TM_CARD_DATA = {
    "addResources": 1
   },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   },
   "resourceType": "floater",
   "tags": [
@@ -1667,6 +1709,7 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 3,
+    "titanium": 1,
     "energy": -1
    },
    "city": 1
@@ -1703,8 +1746,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 5
   },
   "tags": [
-   "microbe",
-   "event"
+   "microbe"
   ]
  },
  "Worms": {
@@ -1718,6 +1760,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Immigration Shuttles": {
+  "behavior": {
+   "production": {
+    "megacredits": 5
+   }
+  },
   "vp": {
    "type": "per_tag",
    "tag": "all_cities",
@@ -1732,6 +1779,10 @@ var TM_CARD_DATA = {
   "vp": {
    "type": "static",
    "vp": 1
+  },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "space"
   },
   "tags": [
    "space"
@@ -1750,6 +1801,11 @@ var TM_CARD_DATA = {
   "behavior": {
    "tr": 1
   },
+  "tags": [
+   "event"
+  ]
+ },
+ "Land Claim": {
   "tags": [
    "event"
   ]
@@ -1805,7 +1861,7 @@ var TM_CARD_DATA = {
  "Magnetic Field Generators": {
   "behavior": {
    "production": {
-    "plants": 4,
+    "plants": 2,
     "energy": -4
    },
    "tr": 3
@@ -1820,7 +1876,7 @@ var TM_CARD_DATA = {
     "plants": 1,
     "energy": -2
    },
-   "tr": 2
+   "tr": 1
   },
   "tags": [
    "building"
@@ -1842,6 +1898,10 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 2
   },
+  "cardDiscount": {
+   "amount": 4,
+   "tag": "space"
+  },
   "tags": [
    "science"
   ]
@@ -1851,6 +1911,10 @@ var TM_CARD_DATA = {
    "production": {
     "energy": 6
    }
+  },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "space"
   },
   "tags": [
    "science",
@@ -1876,6 +1940,10 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 0
+   },
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
    }
   },
   "tags": [
@@ -1901,6 +1969,9 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 2
   },
+  "cardDiscount": {
+   "amount": 2
+  },
   "tags": [
    "earth"
   ]
@@ -1921,8 +1992,7 @@ var TM_CARD_DATA = {
  },
  "Special Design": {
   "tags": [
-   "science",
-   "event"
+   "science"
   ]
  },
  "Standard Technology": {
@@ -1964,7 +2034,7 @@ var TM_CARD_DATA = {
  "Luna Governor": {
   "behavior": {
    "production": {
-    "megacredits": 3
+    "megacredits": 2
    }
   },
   "tags": [
@@ -2012,6 +2082,15 @@ var TM_CARD_DATA = {
   ]
  },
  "Mohole Excavation": {
+  "behavior": {
+   "production": {
+    "steel": 1,
+    "heat": 2
+   },
+   "stock": {
+    "heat": 2
+   }
+  },
   "tags": [
    "building"
   ]
@@ -2076,10 +2155,12 @@ var TM_CARD_DATA = {
  },
  "Venus Soils": {
   "behavior": {
-   "stock": {
-    "plants": 2
+   "production": {
+    "plants": 1
    },
-   "tr": 1
+   "global": {
+    "venus": 1
+   }
   },
   "tags": [
    "venus",
@@ -2108,8 +2189,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Sulphur-Eating Bacteria": {
@@ -2144,7 +2224,7 @@ var TM_CARD_DATA = {
    "type": "per_resource",
    "per": 2
   },
-  "resourceType": "animal",
+  "resourceType": "microbe",
   "tags": [
    "venus",
    "microbe"
@@ -2168,6 +2248,9 @@ var TM_CARD_DATA = {
  },
  "Corroder Suits": {
   "behavior": {
+   "production": {
+    "megacredits": 2
+   },
    "tr": 1
   },
   "tags": [
@@ -2197,8 +2280,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Giant Solar Shade": {
@@ -2235,8 +2317,8 @@ var TM_CARD_DATA = {
  "Cultural Metropolis": {
   "behavior": {
    "production": {
-    "megacredits": 2,
-    "energy": -2
+    "megacredits": 3,
+    "energy": -1
    },
    "city": 1
   },
@@ -2273,8 +2355,7 @@ var TM_CARD_DATA = {
    "vp": 1
   },
   "tags": [
-   "science",
-   "event"
+   "science"
   ]
  },
  "Solar Probe": {
@@ -2284,11 +2365,15 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "space",
-   "science",
-   "event"
+   "science"
   ]
  },
  "Orbital Cleanup": {
+  "behavior": {
+   "production": {
+    "megacredits": -2
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 2
@@ -2328,6 +2413,10 @@ var TM_CARD_DATA = {
    },
    "greenery": 1
   },
+  "vp": {
+   "type": "static",
+   "vp": 1
+  },
   "tags": [
    "plant",
    "mars"
@@ -2345,6 +2434,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Space Relay": {
+  "behavior": {
+   "production": {
+    "megacredits": 1
+   }
+  },
   "action": {
    "drawCard": 1
   },
@@ -2397,6 +2491,11 @@ var TM_CARD_DATA = {
    },
    "city": 1
   },
+  "vp": {
+   "type": "per_tag",
+   "tag": "venus",
+   "per": 2
+  },
   "tags": [
    "venus",
    "venus",
@@ -2427,8 +2526,10 @@ var TM_CARD_DATA = {
  "Space Debris Cleaning Operation": {
   "behavior": {
    "stock": {
-    "titanium": 2
-   }
+    "titanium": 3,
+    "cards": 1
+   },
+   "drawCard": 1
   },
   "tags": [
    "mars",
@@ -2475,9 +2576,9 @@ var TM_CARD_DATA = {
     "plants": 1
    },
    "stock": {
-    "cards": 1
+    "cards": 3
    },
-   "drawCard": 1
+   "drawCard": 3
   },
   "tags": [
    "science"
@@ -2487,6 +2588,10 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "titanium": 1
+   },
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
    }
   },
   "tags": [
@@ -2497,6 +2602,16 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 0
+   },
+   "colony": {
+    "allowDuplicates": true
+   },
+   "tradeFleet": 1,
+   "colonies": {
+    "buildColony": {
+     "allowDuplicates": true
+    },
+    "addTradeFleet": 1
    }
   },
   "vp": {
@@ -2522,6 +2637,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Cryo-Sleep": {
+  "behavior": {
+   "colonies": {
+    "tradeDiscount": 1
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -2531,6 +2651,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Spin-off Department": {
+  "behavior": {
+   "production": {
+    "megacredits": 2
+   }
+  },
   "tags": [
    "building"
   ]
@@ -2539,6 +2664,14 @@ var TM_CARD_DATA = {
   "behavior": {
    "stock": {
     "cards": 2
+   },
+   "colony": {
+    "allowDuplicates": true
+   },
+   "colonies": {
+    "buildColony": {
+     "allowDuplicates": true
+    }
    },
    "drawCard": 2
   },
@@ -2567,9 +2700,17 @@ var TM_CARD_DATA = {
    "type": "per_resource",
    "per": 1
   },
+  "resourceType": "camp",
   "tags": [
    "earth"
   ]
+ },
+ "Trade Envoys": {
+  "behavior": {
+   "colonies": {
+    "tradeOffset": 1
+   }
+  }
  },
  "Point Luna": {
   "behavior": {
@@ -2634,6 +2775,10 @@ var TM_CARD_DATA = {
     "megacredits": 3
    }
   },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "building"
+  },
   "tags": [
    "building"
   ]
@@ -2672,9 +2817,12 @@ var TM_CARD_DATA = {
     "megacredits": 2
    }
   },
+  "action": {
+   "addResources": 1
+  },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   },
   "tags": [
    "animal"
@@ -2684,9 +2832,12 @@ var TM_CARD_DATA = {
   "behavior": {
    "tr": -2
   },
+  "action": {
+   "addResources": 1
+  },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   }
  },
  "Factorum": {
@@ -2773,6 +2924,10 @@ var TM_CARD_DATA = {
     "energy": 1
    }
   },
+  "cardDiscount": {
+   "amount": 3,
+   "tag": "power"
+  },
   "tags": [
    "power"
   ]
@@ -2799,7 +2954,9 @@ var TM_CARD_DATA = {
  "Nirgal Enterprises": {
   "behavior": {
    "production": {
-    "steel": 1
+    "steel": 1,
+    "plants": 1,
+    "energy": 1
    },
    "stock": {
     "plants": 1,
@@ -2815,7 +2972,8 @@ var TM_CARD_DATA = {
  "Sagitta Frontier Services": {
   "behavior": {
    "production": {
-    "megacredits": 2
+    "megacredits": 2,
+    "energy": 1
    },
    "stock": {
     "energy": 1
@@ -2891,7 +3049,7 @@ var TM_CARD_DATA = {
     "titanium": 1
    },
    "stock": {
-    "titanium": 5
+    "titanium": 10
    }
   },
   "tags": [
@@ -2933,9 +3091,12 @@ var TM_CARD_DATA = {
    },
    "drawCard": 2
   },
+  "action": {
+   "addResources": 1
+  },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   },
   "tags": [
    "venus"
@@ -3004,7 +3165,11 @@ var TM_CARD_DATA = {
    "production": {
     "megacredits": 3
    },
-   "tr": 3
+   "stock": {
+    "cards": 1
+   },
+   "tr": 3,
+   "drawCard": 1
   },
   "tags": [
    "earth"
@@ -3036,6 +3201,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 4
+   },
+   "stock": {
+    "megacredits": 3
    }
   },
   "tags": [
@@ -3084,7 +3252,11 @@ var TM_CARD_DATA = {
  },
  "Strategic Base Planning": {
   "behavior": {
-   "city": 1
+   "city": 1,
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
+   }
   },
   "tags": [
    "city",
@@ -3095,6 +3267,9 @@ var TM_CARD_DATA = {
  "Albedo Plants": {
   "behavior": {
    "production": {
+    "plants": 1
+   },
+   "stock": {
     "plants": 1
    }
   },
@@ -3195,7 +3370,11 @@ var TM_CARD_DATA = {
  },
  "World Government Advisor": {
   "behavior": {
-   "tr": 2
+   "stock": {
+    "cards": 1
+   },
+   "tr": 2,
+   "drawCard": 1
   },
   "tags": [
    "earth"
@@ -3303,6 +3482,10 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "titanium": 1
+   },
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
    }
   },
   "tags": [
@@ -3326,9 +3509,12 @@ var TM_CARD_DATA = {
     "steel": 3
    }
   },
+  "action": {
+   "addResources": 1
+  },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   },
   "tags": [
    "space"
@@ -3340,6 +3526,7 @@ var TM_CARD_DATA = {
     "titanium": 1
    },
    "stock": {
+    "titanium": 4,
     "cards": 1
    },
    "drawCard": 1
@@ -3366,9 +3553,11 @@ var TM_CARD_DATA = {
  "Martian Industries": {
   "behavior": {
    "production": {
+    "steel": 1,
     "energy": 1
    },
    "stock": {
+    "megacredits": 6,
     "steel": 4
    }
   },
@@ -3405,6 +3594,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "energy": 1
+   },
+   "stock": {
+    "titanium": 2
    }
   },
   "tags": [
@@ -3487,10 +3679,11 @@ var TM_CARD_DATA = {
  "Biofuels": {
   "behavior": {
    "production": {
+    "plants": 1,
     "energy": 1
    },
    "stock": {
-    "plants": 1
+    "plants": 2
    }
   },
   "tags": [
@@ -3522,8 +3715,10 @@ var TM_CARD_DATA = {
  "Society Support": {
   "behavior": {
    "production": {
+    "megacredits": -1,
     "plants": 1,
-    "energy": 1
+    "energy": 1,
+    "heat": 1
    }
   }
  },
@@ -3593,6 +3788,9 @@ var TM_CARD_DATA = {
    "production": {
     "titanium": 1
    },
+   "stock": {
+    "megacredits": 6
+   },
    "global": {
     "venus": 1
    }
@@ -3622,6 +3820,7 @@ var TM_CARD_DATA = {
     "energy": 1
    },
    "stock": {
+    "megacredits": 8,
     "cards": 3
    },
    "drawCard": 3
@@ -3655,7 +3854,7 @@ var TM_CARD_DATA = {
  "Valuable Gases": {
   "behavior": {
    "stock": {
-    "megacredits": 10
+    "megacredits": 6
    }
   },
   "tags": [
@@ -3682,7 +3881,14 @@ var TM_CARD_DATA = {
    "production": {
     "plants": 1
    },
-   "city": 1
+   "stock": {
+    "energy": 3
+   },
+   "city": 1,
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
+   }
   },
   "tags": [
    "space"
@@ -3692,6 +3898,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "plants": 1
+   },
+   "stock": {
+    "plants": 3
    }
   },
   "tags": [
@@ -3725,6 +3934,10 @@ var TM_CARD_DATA = {
    },
    "drawCard": 3
   },
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "director",
   "tags": [
    "earth"
   ]
@@ -3736,6 +3949,10 @@ var TM_CARD_DATA = {
    },
    "drawCard": 1
   },
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "science",
   "tags": [
    "wild"
   ]
@@ -3751,8 +3968,7 @@ var TM_CARD_DATA = {
    "vp": -1
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Indentured Workers": {
@@ -3785,6 +4001,11 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 2
+   },
+   "colony": {},
+   "colonies": {
+    "buildColony": {},
+    "tradeOffset": 1
    }
   },
   "tags": [
@@ -3812,14 +4033,19 @@ var TM_CARD_DATA = {
   ]
  },
  "Interplanetary Colony Ship": {
+  "behavior": {
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 4
   },
   "tags": [
    "space",
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Advanced Alloys": {
@@ -3845,6 +4071,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Rim Freighters": {
+  "behavior": {
+   "colonies": {
+    "tradeDiscount": 1
+   }
+  },
   "tags": [
    "space"
   ]
@@ -3859,6 +4090,9 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
+ "Self-replicating Robots": {
+  "tags": []
+ },
  "Directed Heat Usage": {
   "action": {
    "stock": {
@@ -3867,10 +4101,13 @@ var TM_CARD_DATA = {
   }
  },
  "Hospitals": {
+  "behavior": {
+   "production": {
+    "energy": -1
+   }
+  },
   "vp": {
-   "type": "per_tag",
-   "tag": "building",
-   "per": 2,
+   "type": "static",
    "vp": 1
   },
   "tags": [
@@ -3904,8 +4141,7 @@ var TM_CARD_DATA = {
  },
  "Floater Prototypes": {
   "tags": [
-   "science",
-   "event"
+   "science"
   ]
  },
  "Jovian Envoys": {
@@ -3933,19 +4169,19 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "microbe",
-   "plant",
-   "event"
+   "plant"
   ]
  },
  "Neptunian Power Consultants": {
   "action": {
    "stock": {
     "megacredits": 3
-   }
+   },
+   "addResources": 1
   },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   },
   "tags": [
    "power"
@@ -3958,14 +4194,12 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "plant",
-   "event"
+   "plant"
   ]
  },
  "Envoys From Venus": {
   "tags": [
-   "venus",
-   "event"
+   "venus"
   ]
  },
  "Hired Raiders": {
@@ -4081,6 +4315,11 @@ var TM_CARD_DATA = {
    "space"
   ]
  },
+ "Sabotage": {
+  "tags": [
+   "event"
+  ]
+ },
  "Rad-Suits": {
   "behavior": {
    "production": {
@@ -4146,14 +4385,17 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Venus Waystation": {
   "vp": {
    "type": "static",
    "vp": 1
+  },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "venus"
   },
   "tags": [
    "venus",
@@ -4196,6 +4438,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Extractor Balloons": {
+  "behavior": {
+   "global": {
+    "venus": 1
+   }
+  },
   "action": {
    "tr": 0.5,
    "addResources": 1
@@ -4282,8 +4529,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 2
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Floater Leasing": {
@@ -4352,7 +4598,7 @@ var TM_CARD_DATA = {
    "type": "per_resource",
    "per": 1
   },
-  "resourceType": "fighter",
+  "resourceType": "asteroid",
   "tags": [
    "space"
   ]
@@ -4408,8 +4654,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Commercial District": {
@@ -4498,9 +4743,18 @@ var TM_CARD_DATA = {
   ]
  },
  "Sky Docks": {
+  "behavior": {
+   "tradeFleet": 1,
+   "colonies": {
+    "addTradeFleet": 1
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 2
+  },
+  "cardDiscount": {
+   "amount": 1
   },
   "tags": [
    "space",
@@ -4517,15 +4771,21 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 1
   },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "earth"
+  },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Research Outpost": {
   "behavior": {
    "city": 1
+  },
+  "cardDiscount": {
+   "amount": 1
   },
   "tags": [
    "science",
@@ -4544,6 +4804,11 @@ var TM_CARD_DATA = {
   ]
  },
  "L1 Trade Terminal": {
+  "behavior": {
+   "colonies": {
+    "tradeOffset": 2
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 2
@@ -4556,6 +4821,9 @@ var TM_CARD_DATA = {
   "vp": {
    "type": "static",
    "vp": 3
+  },
+  "cardDiscount": {
+   "amount": 2
   },
   "tags": [
    "science"
@@ -4743,7 +5011,7 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 2,
-    "energy": -1
+    "energy": 1
    },
    "stock": {
     "plants": 3
@@ -4821,7 +5089,7 @@ var TM_CARD_DATA = {
  "Martian Media Center": {
   "behavior": {
    "production": {
-    "megacredits": 0
+    "megacredits": 2
    }
   },
   "tags": [
@@ -4844,6 +5112,10 @@ var TM_CARD_DATA = {
     "titanium": 2
    }
   },
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "asteroid",
   "tags": [
    "earth",
    "space"
@@ -4852,7 +5124,7 @@ var TM_CARD_DATA = {
  "Ecology Research": {
   "behavior": {
    "production": {
-    "plants": 0
+    "plants": 1
    }
   },
   "vp": {
@@ -4869,14 +5141,14 @@ var TM_CARD_DATA = {
  "Harvest": {
   "behavior": {
    "stock": {
+    "megacredits": 12,
     "plants": 4,
     "cards": 1
    },
    "drawCard": 1
   },
   "tags": [
-   "plant",
-   "event"
+   "plant"
   ]
  },
  "Imported Nutrients": {
@@ -4887,8 +5159,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Kaguya Tech": {
@@ -4944,8 +5215,7 @@ var TM_CARD_DATA = {
    "drawCard": 2
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Development Center": {
@@ -4961,6 +5231,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 2
+   },
+   "stock": {
+    "megacredits": 4
    }
   },
   "vp": {
@@ -4980,8 +5253,7 @@ var TM_CARD_DATA = {
    "drawCard": 2
   },
   "tags": [
-   "venus",
-   "event"
+   "venus"
   ]
  },
  "Jovian Embassy": {
@@ -5026,7 +5298,7 @@ var TM_CARD_DATA = {
   },
   "action": {
    "stock": {
-    "megacredits": 3
+    "megacredits": 5
    }
   },
   "vp": {
@@ -5107,6 +5379,10 @@ var TM_CARD_DATA = {
    "production": {
     "steel": 1,
     "titanium": 1
+   },
+   "stock": {
+    "steel": 2,
+    "titanium": 1
    }
   },
   "vp": {
@@ -5134,7 +5410,8 @@ var TM_CARD_DATA = {
     "steel": 2,
     "energy": -1,
     "heat": 1
-   }
+   },
+   "tr": 1
   },
   "tags": [
    "mars",
@@ -5142,8 +5419,18 @@ var TM_CARD_DATA = {
   ]
  },
  "Martian Repository": {
+  "behavior": {
+   "production": {
+    "energy": -1
+   }
+  },
   "action": {
-   "drawCard": 0.5
+   "drawCard": 0.5,
+   "addResources": 1
+  },
+  "vp": {
+   "type": "per_resource",
+   "per": 1
   },
   "tags": [
    "mars",
@@ -5154,13 +5441,18 @@ var TM_CARD_DATA = {
  "Pollinators": {
   "behavior": {
    "production": {
-    "plants": 0
+    "megacredits": 2,
+    "plants": 1
    }
+  },
+  "action": {
+   "addResources": 1
   },
   "vp": {
    "type": "static",
    "vp": 1
   },
+  "resourceType": "animal",
   "tags": [
    "plant",
    "animal"
@@ -5172,6 +5464,10 @@ var TM_CARD_DATA = {
     "megacredits": 1
    },
    "city": 1
+  },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "city"
   },
   "tags": [
    "building",
@@ -5195,7 +5491,7 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 2,
-    "energy": -1
+    "energy": 1
    },
    "city": 1
   },
@@ -5220,9 +5516,16 @@ var TM_CARD_DATA = {
   ]
  },
  "Communication Center": {
-  "action": {
-   "drawCard": 0.5
+  "behavior": {
+   "production": {
+    "energy": -1
+   }
   },
+  "action": {
+   "drawCard": 0.5,
+   "addResources": 1
+  },
+  "resourceType": "data",
   "tags": [
    "science",
    "mars",
@@ -5249,6 +5552,7 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 0,
+    "steel": 1,
     "energy": 2
    }
   }
@@ -5256,7 +5560,8 @@ var TM_CARD_DATA = {
  "Freyja Biodomes": {
   "behavior": {
    "production": {
-    "plants": 2
+    "megacredits": 2,
+    "energy": -1
    }
   },
   "vp": {
@@ -5343,6 +5648,10 @@ var TM_CARD_DATA = {
     "energy": 4
    }
   },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "space"
+  },
   "tags": [
    "science",
    "power"
@@ -5384,8 +5693,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Titan Shuttles": {
@@ -5423,8 +5731,7 @@ var TM_CARD_DATA = {
    "drawCard": 1
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Galilean Waystation": {
@@ -5541,8 +5848,7 @@ var TM_CARD_DATA = {
    "vp": -2
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Earth Elevator": {
@@ -5626,8 +5932,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "microbe",
-   "plant",
-   "event"
+   "plant"
   ]
  },
  "Supported Research": {
@@ -5668,6 +5973,7 @@ var TM_CARD_DATA = {
  "Eos Chasma National Park": {
   "behavior": {
    "production": {
+    "megacredits": 2,
     "plants": 2
    },
    "stock": {
@@ -5865,7 +6171,8 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": -2,
-    "energy": 4
+    "energy": 2,
+    "heat": 2
    }
   },
   "tags": [
@@ -5904,6 +6211,10 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 1
   },
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "space"
+  },
   "tags": [
    "space"
   ]
@@ -5924,6 +6235,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 0
+   },
+   "colonies": {
+    "tradeMC": 3
    }
   },
   "vp": {
@@ -5938,7 +6252,7 @@ var TM_CARD_DATA = {
  "Casinos": {
   "behavior": {
    "production": {
-    "megacredits": 3,
+    "megacredits": 4,
     "energy": -1
    }
   },
@@ -5967,6 +6281,10 @@ var TM_CARD_DATA = {
    },
    "drawCard": 1
   },
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "floater",
   "tags": [
    "science"
   ]
@@ -6011,8 +6329,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "space",
-   "venus",
-   "event"
+   "venus"
   ]
  },
  "Hi-Tech Lab": {
@@ -6033,8 +6350,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "earth",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Minority Refuge": {
@@ -6277,10 +6593,14 @@ var TM_CARD_DATA = {
     "megacredits": 0
    }
   },
-  "vp": {
-   "type": "static",
-   "vp": 1
+  "action": {
+   "addResources": 1
   },
+  "vp": {
+   "type": "per_resource",
+   "per": 1
+  },
+  "resourceType": "floater",
   "tags": [
    "jovian",
    "venus"
@@ -6289,7 +6609,8 @@ var TM_CARD_DATA = {
  "Phobos Space Haven": {
   "behavior": {
    "production": {
-    "megacredits": 3
+    "megacredits": 3,
+    "titanium": 1
    },
    "city": 1
   },
@@ -6308,8 +6629,8 @@ var TM_CARD_DATA = {
    "addResources": 1
   },
   "vp": {
-   "type": "static",
-   "vp": 2
+   "type": "per_resource",
+   "per": 1
   },
   "resourceType": "science",
   "tags": [
@@ -6332,8 +6653,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 4
   },
   "tags": [
-   "plant",
-   "event"
+   "plant"
   ]
  },
  "Supercapacitors": {
@@ -6354,8 +6674,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Air-Scrapping Expedition": {
@@ -6365,8 +6684,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "venus",
-   "event"
+   "venus"
   ]
  },
  "City Parks": {
@@ -6400,8 +6718,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Directed Impactors": {
@@ -6459,8 +6776,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "venus",
-   "event"
+   "venus"
   ]
  },
  "Asteroid Deflection System": {
@@ -6474,10 +6790,10 @@ var TM_CARD_DATA = {
    "addResources": 1
   },
   "vp": {
-   "type": "static",
-   "vp": 1
+   "type": "per_resource",
+   "per": 1
   },
-  "resourceType": "floater",
+  "resourceType": "asteroid",
   "tags": [
    "space",
    "earth",
@@ -6516,8 +6832,12 @@ var TM_CARD_DATA = {
     "plants": 1
    },
    "stock": {
-    "plants": 0
+    "plants": 3
    }
+  },
+  "vp": {
+   "type": "static",
+   "vp": 1
   },
   "tags": [
    "microbe",
@@ -6528,6 +6848,11 @@ var TM_CARD_DATA = {
  "Cultivation of Venus": {
   "action": {
    "tr": 1
+  },
+  "vp": {
+   "type": "per_tag",
+   "tag": "venus",
+   "per": 2
   },
   "tags": [
    "plant",
@@ -6549,7 +6874,12 @@ var TM_CARD_DATA = {
   "action": {
    "stock": {
     "megacredits": 3
-   }
+   },
+   "addResources": 1
+  },
+  "vp": {
+   "type": "per_resource",
+   "per": 1
   },
   "tags": [
    "earth"
@@ -6558,7 +6888,7 @@ var TM_CARD_DATA = {
  "Economic Help": {
   "behavior": {
    "production": {
-    "megacredits": 2
+    "megacredits": 1
    }
   },
   "tags": [
@@ -6570,6 +6900,10 @@ var TM_CARD_DATA = {
    "production": {
     "energy": 2
    }
+  },
+  "cardDiscount": {
+   "amount": 3,
+   "tag": "power"
   },
   "tags": [
    "power",
@@ -6721,9 +7055,16 @@ var TM_CARD_DATA = {
  },
  "Museum of Early Colonisation": {
   "behavior": {
+   "production": {
+    "steel": 1,
+    "titanium": 1,
+    "plants": 1,
+    "energy": -1
+   },
    "stock": {
     "cards": 2
    },
+   "tr": 1,
    "drawCard": 2
   },
   "vp": {
@@ -6737,7 +7078,11 @@ var TM_CARD_DATA = {
  },
  "Orbital Laboratories": {
   "behavior": {
+   "production": {
+    "plants": 2
+   },
    "stock": {
+    "plants": 1,
     "cards": 1
    },
    "drawCard": 1
@@ -6823,6 +7168,13 @@ var TM_CARD_DATA = {
   ]
  },
  "Solarpedia": {
+  "action": {
+   "addResources": 1
+  },
+  "vp": {
+   "type": "per_resource",
+   "per": 1
+  },
   "tags": [
    "space"
   ]
@@ -6868,6 +7220,10 @@ var TM_CARD_DATA = {
   }
  },
  "Teractor": {
+  "cardDiscount": {
+   "amount": 3,
+   "tag": "earth"
+  },
   "tags": [
    "earth"
   ]
@@ -6877,6 +7233,11 @@ var TM_CARD_DATA = {
    "mars"
   ]
  },
+ "Odyssey": {
+  "tags": [
+   "event"
+  ]
+ },
  "Collegium Copernicus": {
   "tags": [
    "science",
@@ -6884,11 +7245,20 @@ var TM_CARD_DATA = {
   ]
  },
  "Ringcom": {
+  "behavior": {
+   "production": {
+    "megacredits": 3
+   }
+  },
   "tags": [
    "jovian"
   ]
  },
  "Valley Trust": {
+  "cardDiscount": {
+   "amount": 2,
+   "tag": "science"
+  },
   "tags": [
    "earth"
   ]
@@ -6912,8 +7282,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "city",
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Steelaris": {
@@ -6933,6 +7302,10 @@ var TM_CARD_DATA = {
     "megacredits": 1
    }
   },
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "data",
   "tags": [
    "mars"
   ]
@@ -6952,6 +7325,24 @@ var TM_CARD_DATA = {
   "tags": [
    "mars"
   ]
+ },
+ "Chimera": {
+  "behavior": {
+   "stock": {
+    "steel": 1,
+    "titanium": 1
+   }
+  },
+  "tags": [
+   "wild",
+   "wild"
+  ]
+ },
+ "Mind Set Mars": {
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "agenda"
  },
  "Robin Haulings": {
   "tags": [
@@ -6982,6 +7373,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Martian Insurance Group": {
+  "behavior": {
+   "production": {
+    "megacredits": 1
+   }
+  },
   "tags": [
    "mars",
    "event"
@@ -6993,12 +7389,23 @@ var TM_CARD_DATA = {
     "plants": 1
    }
   },
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "seed",
   "tags": [
    "science",
    "plant"
   ]
  },
  "Bio-Sol": {
+  "action": {
+   "addResources": 1
+  },
+  "vp": {
+   "type": "per_resource",
+   "per": 1
+  },
   "tags": [
    "microbe"
   ]
@@ -7071,6 +7478,11 @@ var TM_CARD_DATA = {
     "megacredits": 4
    }
   }
+ },
+ "Lowell": {
+  "tags": [
+   "wild"
+  ]
  },
  "Tate": {
   "behavior": {
@@ -7148,6 +7560,15 @@ var TM_CARD_DATA = {
    "earth"
   ]
  },
+ "Crew Training": {
+  "behavior": {
+   "tr": 2
+  },
+  "tags": [
+   "clone",
+   "clone"
+  ]
+ },
  "Astra Mechanica": {
   "behavior": {
    "stock": {
@@ -7156,8 +7577,7 @@ var TM_CARD_DATA = {
    "drawCard": 2
   },
   "tags": [
-   "science",
-   "event"
+   "science"
   ]
  },
  "Event Analysts": {
@@ -7197,8 +7617,7 @@ var TM_CARD_DATA = {
   },
   "tags": [
    "venus",
-   "space",
-   "event"
+   "space"
   ]
  },
  "Static Harvesting": {
@@ -7251,8 +7670,16 @@ var TM_CARD_DATA = {
    "microbe"
   ]
  },
+ "Last Resort Ingenuity": {
+  "tags": [
+   "event"
+  ]
+ },
  "Red Appeasement": {
   "behavior": {
+   "production": {
+    "megacredits": 2
+   },
    "tr": -1
   },
   "vp": {
@@ -7273,13 +7700,18 @@ var TM_CARD_DATA = {
    "mars"
   ]
  },
+ "Recruitment": {
+  "tags": [
+   "event"
+  ]
+ },
  "Microgravity Nutrition": {
   "action": {
    "addResources": 1
   },
   "vp": {
-   "type": "per_resource",
-   "per": 0.5
+   "type": "static",
+   "vp": 1
   },
   "tags": [
    "microbe",
@@ -7300,8 +7732,7 @@ var TM_CARD_DATA = {
  },
  "Market Manipulation": {
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Great Dam:promo": {
@@ -7319,9 +7750,19 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
+ "Kickstarter": {
+  "tags": [
+   "clone"
+  ]
+ },
  "Ambient": {
   "tags": [
    "venus"
+  ]
+ },
+ "Crashlanding": {
+  "tags": [
+   "event"
   ]
  },
  "Oumuamua Type Object Survey": {
@@ -7337,8 +7778,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Red Tourism Wave": {
@@ -7348,8 +7788,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Agro-Drones": {
@@ -7362,6 +7801,11 @@ var TM_CARD_DATA = {
   "tags": [
    "plant",
    "mars"
+  ]
+ },
+ "Data Leak": {
+  "tags": [
+   "event"
   ]
  },
  "Private Security": {
@@ -7380,6 +7824,13 @@ var TM_CARD_DATA = {
   ]
  },
  "Archimedes Hydroponics Station": {
+  "behavior": {
+   "production": {
+    "megacredits": -1,
+    "plants": 2,
+    "energy": -1
+   }
+  },
   "action": {
    "stock": {
     "megacredits": 1
@@ -7393,6 +7844,9 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 2
+   },
+   "stock": {
+    "titanium": 10
    }
   },
   "tags": [
@@ -7414,6 +7868,12 @@ var TM_CARD_DATA = {
   ]
  },
  "Project Workshop": {
+  "behavior": {
+   "stock": {
+    "steel": 1,
+    "titanium": 1
+   }
+  },
   "action": {
    "tr": 0.33,
    "stock": {
@@ -7475,8 +7935,7 @@ var TM_CARD_DATA = {
    "removeAnyPlants": 4
   },
   "tags": [
-   "space",
-   "event"
+   "space"
   ]
  },
  "Ocean City": {
@@ -7592,6 +8051,12 @@ var TM_CARD_DATA = {
   ]
  },
  "Basic Infrastructure": {
+  "behavior": {
+   "tradeFleet": 1,
+   "colonies": {
+    "addTradeFleet": 1
+   }
+  },
   "tags": [
    "moon"
   ]
@@ -7873,8 +8338,10 @@ var TM_CARD_DATA = {
  "Lunar Planning Office": {
   "behavior": {
    "stock": {
-    "steel": 6
-   }
+    "steel": 6,
+    "cards": 2
+   },
+   "drawCard": 2
   },
   "tags": [
    "moon",
@@ -7965,6 +8432,9 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 1
   },
+  "cardDiscount": {
+   "amount": 2
+  },
   "tags": [
    "moon",
    "space"
@@ -8039,6 +8509,12 @@ var TM_CARD_DATA = {
   ]
  },
  "Staging Station \"Behemoth\"": {
+  "behavior": {
+   "tradeFleet": 2,
+   "colonies": {
+    "addTradeFleet": 2
+   }
+  },
   "tags": [
    "space"
   ]
@@ -8221,8 +8697,7 @@ var TM_CARD_DATA = {
    "vp": 2
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Arborist Collective": {
@@ -8235,8 +8710,7 @@ var TM_CARD_DATA = {
    }
   },
   "tags": [
-   "plant",
-   "event"
+   "plant"
   ]
  },
  "Battery Shipment": {
@@ -8278,7 +8752,8 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "steel": 1
-   }
+   },
+   "city": 1
   },
   "tags": [
    "building",
@@ -8291,8 +8766,7 @@ var TM_CARD_DATA = {
    "vp": 3
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Cloud Vortex Outpost": {
@@ -8316,6 +8790,10 @@ var TM_CARD_DATA = {
     "steel": 1,
     "energy": 1
    }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
   },
   "tags": [
    "crime"
@@ -8371,7 +8849,8 @@ var TM_CARD_DATA = {
    "production": {
     "plants": 2,
     "energy": -1
-   }
+   },
+   "city": 1
   },
   "tags": [
    "plant",
@@ -8383,6 +8862,10 @@ var TM_CARD_DATA = {
   "behavior": {
    "stock": {
     "titanium": 3
+   },
+   "tradeFleet": 1,
+   "colonies": {
+    "addTradeFleet": 1
    }
   },
   "tags": [
@@ -8415,6 +8898,12 @@ var TM_CARD_DATA = {
   ]
  },
  "Hecate Speditions": {
+  "behavior": {
+   "tradeFleet": 1,
+   "colonies": {
+    "addTradeFleet": 1
+   }
+  },
   "action": {
    "addResources": 1
   },
@@ -8441,6 +8930,10 @@ var TM_CARD_DATA = {
    "decreaseAnyProduction": {
     "count": 2
    }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
   },
   "tags": [
    "power",
@@ -8473,6 +8966,7 @@ var TM_CARD_DATA = {
    "type": "per_resource",
    "per": 1
   },
+  "resourceType": "journalism",
   "tags": [
    "earth"
   ]
@@ -8506,6 +9000,10 @@ var TM_CARD_DATA = {
     "megacredits": 6
    },
    "city": 1
+  },
+  "vp": {
+   "type": "static",
+   "vp": -2
   },
   "tags": [
    "city"
@@ -8564,7 +9062,11 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "energy": -5
-   }
+   },
+   "stock": {
+    "cards": 2
+   },
+   "drawCard": 2
   },
   "vp": {
    "type": "static",
@@ -8601,6 +9103,10 @@ var TM_CARD_DATA = {
     "megacredits": 5
    }
   },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
   "tags": [
    "space",
    "crime"
@@ -8620,10 +9126,13 @@ var TM_CARD_DATA = {
   "behavior": {
    "tr": 7
   },
+  "vp": {
+   "type": "static",
+   "vp": -3
+  },
   "tags": [
    "crime",
-   "crime",
-   "event"
+   "crime"
   ]
  },
  "Private Military Contractor": {
@@ -8706,8 +9215,7 @@ var TM_CARD_DATA = {
    "drawCard": 1
   },
   "tags": [
-   "crime",
-   "event"
+   "crime"
   ]
  },
  "Space Wargames": {
@@ -8733,8 +9241,7 @@ var TM_CARD_DATA = {
    "drawCard": 2
   },
   "tags": [
-   "earth",
-   "event"
+   "earth"
   ]
  },
  "Thiolava Vents": {
@@ -8824,71 +9331,32 @@ var TM_CARD_DATA = {
    "animal"
   ]
  },
+ "Beginner Corporation": {
+  "behavior": {
+   "stock": {
+    "cards": 10
+   },
+   "drawCard": 10
+  }
+ },
  "United Nations Mars Initiative": {
   "tags": [
    "earth"
-  ],
-  "action": {}
+  ]
  },
  "Meltworks": {
-  "tags": [
-   "building"
-  ],
-  "action": {}
- },
- "Crashlanding": {
-  "tags": [
-   "event"
-  ]
- },
- "Kickstarter": {
-  "tags": [
-   "clone"
-  ]
- },
- "Data Leak": {
-  "tags": [
-   "event"
-  ]
- },
- "Aerospace Mission": {
-  "tags": [
-   "space"
-  ]
- },
- "Athena": {
-  "tags": [
-   "earth"
-  ]
- },
- "Eris": {
+  "action": {
+   "stock": {
+    "megacredits": 3
+   }
+  },
   "tags": [
    "building"
   ]
  },
- "Incite": {
+ "Splice": {
   "tags": [
-   "science"
-  ]
- },
- "Colonial Envoys": {
-  "tags": [
-   "event"
-  ]
- },
- "United Nations Mission One": {
-  "tags": [
-   "earth"
-  ]
- },
- "AI Controlled Mine Network": {
-  "tags": [
-   "science"
-  ]
- },
- "Artesian Aquifer": {
-  "tags": [
-   "building"
+   "microbe"
   ]
  },
  "Banned Delegate": {
@@ -8896,49 +9364,16 @@ var TM_CARD_DATA = {
    "event"
   ]
  },
- "Battery Factory": {
+ "Valuable Gases:Pathfinders": {
   "tags": [
-   "power",
-   "building"
+   "jovian",
+   "venus"
   ]
  },
- "Behemoth Excavator": {
-  "tags": [
-   "building"
-  ]
- },
- "Butterfly Effect": {
-  "tags": [
-   "event"
-  ]
- },
- "Canyon Survey": {
-  "tags": [
-   "science",
-   "event"
-  ]
- },
- "Capital:ares": {
+ "Sphere Habitats": {
   "tags": [
    "city",
-   "building"
-  ]
- },
- "Central Reservoir": {
-  "tags": [
-   "building"
-  ]
- },
- "Chemical Factory": {
-  "tags": [
-   "crime",
-   "building"
-  ]
- },
- "Chimera": {
-  "tags": [
-   "wild",
-   "wild"
+   "moon"
   ]
  },
  "Colonist Shuttles": {
@@ -8946,269 +9381,30 @@ var TM_CARD_DATA = {
    "space"
   ]
  },
- "Anubis Securities": {
-  "tags": [
-   "earth"
-  ]
- },
- "Behold The Emperor! (III)": {
-  "tags": [
-   "earth"
-  ]
- },
- "Corporate Blackmail": {
-  "tags": [
-   "crime",
-   "event"
-  ]
- },
- "Corporate Theft": {
-  "tags": [
-   "crime"
-  ]
- },
- "Cosmic Radiation": {
-  "tags": [
-   "moon",
-   "event"
-  ]
- },
- "Crater Survey": {
+ "Mining Robots Manuf. Center": {
   "tags": [
    "science",
-   "event"
-  ]
- },
- "Darkside Mining Syndicate": {
-  "tags": [
-   "moon",
-   "space"
-  ]
- },
- "Darkside Observatory": {
-  "tags": [
-   "science"
-  ]
- },
- "Deep Foundations": {
-  "tags": [
-   "city",
    "building"
-  ]
- },
- "Deepmining": {
-  "tags": [
-   "building"
-  ]
- },
- "Detective TV Series": {
-  "tags": [
-   "earth"
-  ]
- },
- "Earth Embassy": {
-  "tags": [
-   "moon",
-   "earth"
-  ]
- },
- "Ecological Survey": {
-  "tags": [
-   "science"
-  ]
- },
- "Election Sponsorship": {
-  "tags": [
-   "crime"
-  ]
- },
- "Excavator Leasing": {
-  "tags": [
-   "building"
-  ]
- },
- "Export Convoy": {
-  "tags": [
-   "space",
-   "event"
-  ]
- },
- "Fabricated Scandal": {
-  "tags": [
-   "crime",
-   "event"
-  ]
- },
- "Family Connections": {
-  "tags": [
-   "crime",
-   "event"
-  ]
- },
- "Forest Tunnels": {
-  "tags": [
-   "plant"
-  ]
- },
- "Free Trade Port": {
-  "tags": [
-   "earth",
-   "space"
-  ]
- },
- "Friends in High Places": {
-  "tags": [
-   "crime",
-   "earth"
-  ]
- },
- "Gas Trust": {
-  "tags": [
-   "crime"
-  ]
- },
- "Geological Survey": {
-  "tags": [
-   "science"
-  ]
- },
- "Geologist Team": {
-  "tags": [
-   "science"
-  ]
- },
- "Geoscan Satellite": {
-  "tags": [
-   "science",
-   "space"
-  ]
- },
- "Global Audit": {
-  "tags": [
-   "earth",
-   "event"
-  ]
- },
- "Grand Luna Academy": {
-  "tags": [
-   "moon"
-  ]
- },
- "Grey Market Exploitation": {
-  "tags": [
-   "crime"
-  ]
- },
- "Guerilla Ecologists": {
-  "tags": [
-   "plant"
-  ]
- },
- "HE3 Fusion Plant": {
-  "tags": [
-   "power",
-   "power",
-   "moon"
-  ]
- },
- "HE3 Lobbyists": {
-  "tags": [
-   "moon"
-  ]
- },
- "HE3 Production Quotas": {
-  "tags": [
-   "moon",
-   "event"
-  ]
- },
- "HE3 Refinery": {
-  "tags": [
-   "moon"
-  ]
- },
- "Hyperspace Drive Prototype": {
-  "tags": [
-   "science",
-   "space"
-  ]
- },
- "Imported Heavy Machinery": {
-  "tags": [
-   "earth",
-   "space"
-  ]
- },
- "Improved Moon Concrete": {
-  "tags": [
-   "moon"
   ]
  },
  "Iron Extraction Center": {
+  "behavior": {
+   "production": {
+    "steel": 1
+   }
+  },
   "tags": [
    "building"
   ]
  },
- "Jenson-Boyle & Co": {
-  "tags": [
-   "crime"
-  ]
- },
- "L.T.F. Headquarters": {
-  "tags": [
-   "space"
-  ]
- },
- "L.T.F. Privileges": {
-  "tags": [
-   "moon"
-  ]
- },
- "Labor Trafficking": {
-  "tags": [
-   "space",
-   "crime"
-  ]
- },
- "Landfill": {
+ "Titanium Extraction Center": {
+  "behavior": {
+   "production": {
+    "titanium": 1
+   }
+  },
   "tags": [
    "building"
-  ]
- },
- "Lobbying Network": {
-  "tags": [
-   "earth"
-  ]
- },
- "Luna Archives": {
-  "tags": [
-   "science",
-   "moon"
-  ]
- },
- "Luna Conference": {
-  "tags": [
-   "science",
-   "moon",
-   "event"
-  ]
- },
- "Luna Ecumenopolis": {
-  "tags": [
-   "city",
-   "city",
-   "moon"
-  ]
- },
- "Luna Political Institute": {
-  "tags": [
-   "moon",
-   "earth"
-  ]
- },
- "Luna Project Office": {
-  "tags": [
-   "science"
   ]
  },
  "Luna Staging Station": {
@@ -9217,7 +9413,138 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
+ "New Colony Planning Initiatives": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "AI Controlled Mine Network": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Water Treatment Complex": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "HE3 Fusion Plant": {
+  "behavior": {
+   "production": {
+    "energy": 1
+   }
+  },
+  "tags": [
+   "power",
+   "power",
+   "moon"
+  ]
+ },
+ "HE3 Lobbyists": {
+  "behavior": {
+   "production": {
+    "megacredits": 2
+   }
+  },
+  "tags": [
+   "moon"
+  ]
+ },
+ "Off-World City Living": {
+  "behavior": {
+   "production": {
+    "megacredits": 2
+   },
+   "city": 1
+  },
+  "tags": [
+   "city",
+   "space"
+  ]
+ },
+ "Darkside Mining Syndicate": {
+  "behavior": {
+   "production": {
+    "titanium": 2
+   }
+  },
+  "tags": [
+   "moon",
+   "space"
+  ]
+ },
+ "Rover Drivers Union": {
+  "behavior": {
+   "production": {
+    "megacredits": 3
+   }
+  },
+  "tags": [
+   "moon"
+  ]
+ },
+ "L.T.F. Headquarters": {
+  "behavior": {
+   "colony": {},
+   "tradeFleet": 1,
+   "colonies": {
+    "buildColony": {},
+    "addTradeFleet": 1
+   }
+  },
+  "tags": [
+   "space"
+  ]
+ },
+ "Undermoon Drug Lords Network": {
+  "behavior": {
+   "production": {
+    "megacredits": 1
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "moon"
+  ]
+ },
+ "Grand Luna Academy": {
+  "behavior": {
+   "stock": {
+    "cards": 2
+   },
+   "drawCard": 2
+  },
+  "tags": [
+   "moon"
+  ]
+ },
+ "Luna Ecumenopolis": {
+  "behavior": {
+   "tr": 2,
+   "city": 2
+  },
+  "tags": [
+   "city",
+   "city",
+   "moon"
+  ]
+ },
+ "Thorium Rush": {
+  "tags": [
+   "moon",
+   "building",
+   "event"
+  ]
+ },
  "Luna Trade Station": {
+  "action": {
+   "stock": {
+    "megacredits": 2
+   }
+  },
   "tags": [
    "moon",
    "moon",
@@ -9229,7 +9556,80 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
+ "Luna Project Office": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Steel Market Monopolists": {
+  "action": {
+   "stock": {
+    "megacredits": 3
+   }
+  }
+ },
+ "Titanium Market Monopolists": {
+  "action": {
+   "stock": {
+    "megacredits": 4
+   }
+  }
+ },
+ "Subterranean Habitats": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Improved Moon Concrete": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "Mooncrate Block Factory": {
+  "tags": [
+   "building"
+  ]
+ },
  "Lunar Security Stations": {
+  "tags": [
+   "moon"
+  ]
+ },
+ "HE3 Refinery": {
+  "action": {
+   "stock": {
+    "megacredits": 3
+   }
+  },
+  "tags": [
+   "moon"
+  ]
+ },
+ "Luna Archives": {
+  "action": {
+   "addResources": 1
+  },
+  "resourceType": "science",
+  "tags": [
+   "science",
+   "moon"
+  ]
+ },
+ "Luna Political Institute": {
+  "tags": [
+   "moon",
+   "earth"
+  ]
+ },
+ "Darkside Observatory": {
+  "action": {
+   "drawCard": 0.3
+  },
+  "tags": [
+   "science"
+  ]
+ },
+ "L.T.F. Privileges": {
   "tags": [
    "moon"
   ]
@@ -9239,118 +9639,30 @@ var TM_CARD_DATA = {
    "moon"
   ]
  },
- "Lunar Support": {
-  "tags": [
-   "moon"
-  ]
- },
- "Martian Transshipment": {
-  "tags": [
-   "space"
-  ]
- },
- "Medical Lab": {
-  "tags": [
-   "science",
-   "building"
-  ]
- },
- "Martian Embassy": {
+ "Earth Embassy": {
   "tags": [
    "moon",
-   "mars"
+   "earth"
   ]
  },
- "Media Frenzy": {
+ "Underground Detonators": {
+  "behavior": {
+   "stock": {
+    "steel": 1,
+    "titanium": 1
+   }
+  },
   "tags": [
-   "earth",
-   "event"
-  ]
- },
- "Mercenary Squad": {
-  "tags": [
-   "crime",
-   "event"
-  ]
- },
- "Mining Complex": {
-  "tags": [
-   "moon"
-  ]
- },
- "Mining Robots Manuf. Center": {
-  "tags": [
-   "science",
-   "building"
-  ]
- },
- "Monopoly": {
-  "tags": [
-   "crime"
-  ]
- },
- "Mooncrate Block Factory": {
-  "tags": [
-   "building"
-  ]
- },
- "Narrative Spin": {
-  "tags": [
-   "crime",
-   "event"
-  ]
- },
- "New Colony Planning Initiatives": {
-  "tags": [
-   "moon"
-  ]
- },
- "Off-World City Living": {
-  "tags": [
-   "city",
-   "space"
-  ]
- },
- "Old World Mafia": {
-  "tags": [
-   "earth",
-   "crime"
-  ]
- },
- "Patent Manipulation": {
-  "tags": [
-   "crime"
-  ]
- },
- "Personal Spacecruiser": {
-  "tags": [
-   "crime",
-   "space"
-  ]
- },
- "Preliminary Darkside": {
-  "tags": [
-   "moon",
-   "event"
-  ]
- },
- "Prospecting": {
-  "tags": [
-   "space"
-  ]
- },
- "Racketeering": {
-  "tags": [
-   "crime"
-  ]
- },
- "Reckless Detonation": {
-  "tags": [
-   "crime",
    "event"
   ]
  },
  "Revolting Colonists": {
+  "tags": [
+   "moon",
+   "event"
+  ]
+ },
+ "Cosmic Radiation": {
   "tags": [
    "moon",
    "event"
@@ -9362,89 +9674,44 @@ var TM_CARD_DATA = {
    "event"
   ]
  },
- "Rover Drivers Union": {
-  "tags": [
-   "moon"
-  ]
- },
- "Scapegoat": {
-  "tags": [
-   "crime",
-   "event"
-  ]
- },
- "Search for Life Underground": {
-  "tags": [
-   "science"
-  ]
- },
- "Small Duty Rovers": {
+ "HE3 Production Quotas": {
   "tags": [
    "moon",
-   "space"
-  ]
- },
- "Soil Export": {
-  "tags": [
-   "venus",
-   "space"
-  ]
- },
- "Solar Farm": {
-  "tags": [
-   "power",
-   "building"
-  ]
- },
- "Space Privateers": {
-  "tags": [
-   "crime",
-   "space"
-  ]
- },
- "Sphere Habitats": {
-  "tags": [
-   "city",
-   "moon"
-  ]
- },
- "Splice": {
-  "tags": [
-   "microbe"
-  ]
- },
- "Staged Protests": {
-  "tags": [
-   "crime",
    "event"
   ]
  },
- "Star Vegas": {
+ "Luna Conference": {
+  "behavior": {
+   "stock": {
+    "megacredits": 4
+   }
+  },
   "tags": [
-   "crime",
+   "science",
+   "moon",
+   "event"
+  ]
+ },
+ "We Grow As One": {
+  "tags": [
    "space",
-   "city"
-  ]
- },
- "Stem Field Subsidies": {
-  "tags": [
-   "science"
-  ]
- },
- "Subnautic Pirates": {
-  "tags": [
-   "crime",
    "event"
   ]
  },
- "Subterranean Habitats": {
+ "Mooncrate Convoys To Mars": {
   "tags": [
-   "moon"
+   "event"
   ]
  },
- "Subterranean Sea": {
+ "Preliminary Darkside": {
+  "behavior": {
+   "stock": {
+    "titanium": 3
+   }
+  },
   "tags": [
-   "building"
+   "moon",
+   "event"
   ]
  },
  "Syndicate Pirate Raids": {
@@ -9453,28 +9720,228 @@ var TM_CARD_DATA = {
    "event"
   ]
  },
- "Tempest Consultancy": {
+ "Small Duty Rovers": {
+  "behavior": {
+   "stock": {
+    "megacredits": 3
+   }
+  },
+  "tags": [
+   "moon",
+   "space"
+  ]
+ },
+ "Martian Embassy": {
+  "tags": [
+   "moon",
+   "mars"
+  ]
+ },
+ "Mining Complex": {
+  "behavior": {
+   "stock": {
+    "megacredits": -7
+   }
+  },
   "tags": [
    "moon"
   ]
  },
- "Takonda Castle (VII)": {
+ "Geoscan Satellite": {
   "tags": [
-   "power",
+   "science",
+   "space"
+  ]
+ },
+ "Old World Mafia": {
+  "tags": [
+   "earth",
+   "crime"
+  ]
+ },
+ "Subterranean Sea": {
+  "behavior": {
+   "ocean": 1
+  },
+  "tags": [
+   "building"
+  ]
+ },
+ "Forest Tunnels": {
+  "behavior": {
+   "stock": {
+    "plants": 2
+   }
+  },
+  "tags": [
    "plant"
   ]
  },
- "The Archaic Foundation Institute": {
+ "Tunneling Subcontractor": {
   "tags": [
-   "moon",
-   "moon"
+   "crime"
   ]
  },
- "Thorium Rush": {
+ "Deepmining": {
+  "behavior": {
+   "production": {
+    "steel": 1
+   }
+  },
   "tags": [
-   "moon",
-   "building",
-   "event"
+   "building"
+  ]
+ },
+ "Behemoth Excavator": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Lobbying Network": {
+  "tags": [
+   "earth"
+  ]
+ },
+ "Landfill": {
+  "behavior": {
+   "production": {
+    "megacredits": 3
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
+  "tags": [
+   "building"
+  ]
+ },
+ "Imported Heavy Machinery": {
+  "tags": [
+   "earth",
+   "space"
+  ]
+ },
+ "Underground Smuggling Ring": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Friends in High Places": {
+  "cardDiscount": {
+   "amount": 1
+  },
+  "tags": [
+   "crime",
+   "earth"
+  ]
+ },
+ "Star Vegas": {
+  "behavior": {
+   "production": {
+    "megacredits": 3
+   },
+   "city": 1
+  },
+  "tags": [
+   "crime",
+   "space",
+   "city"
+  ]
+ },
+ "Hyperspace Drive Prototype": {
+  "behavior": {
+   "stock": {
+    "titanium": 1
+   }
+  },
+  "tags": [
+   "science",
+   "space"
+  ]
+ },
+ "Artesian Aquifer": {
+  "behavior": {
+   "ocean": 1
+  },
+  "tags": [
+   "building"
+  ]
+ },
+ "Underground Research Center": {
+  "behavior": {
+   "stock": {
+    "cards": 1
+   },
+   "drawCard": 1
+  },
+  "tags": [
+   "wild",
+   "building"
+  ]
+ },
+ "Racketeering": {
+  "behavior": {
+   "production": {
+    "megacredits": 2
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "crime"
+  ]
+ },
+ "Gas Trust": {
+  "behavior": {
+   "stock": {
+    "heat": 6
+   }
+  },
+  "tags": [
+   "crime"
+  ]
+ },
+ "Geologist Team": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Tunnel Boring Machine": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Labor Trafficking": {
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
+  "tags": [
+   "space",
+   "crime"
+  ]
+ },
+ "Search for Life Underground": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Grey Market Exploitation": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Excavator Leasing": {
+  "tags": [
+   "building"
+  ]
+ },
+ "Stem Field Subsidies": {
+  "tags": [
+   "science"
   ]
  },
  "Titan Manufacturing Colony": {
@@ -9484,41 +9951,54 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
- "Titanium Extraction Center": {
+ "Space Privateers": {
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
   "tags": [
-   "building"
-  ]
- },
- "Tosche Station (IV)": {
-  "tags": [
-   "power",
-   "plant"
-  ]
- },
- "Trade Embargo (I)": {
-  "tags": [
+   "crime",
    "space"
   ]
  },
- "Tunnel Boring Machine": {
+ "Personal Spacecruiser": {
+  "action": {
+   "stock": {
+    "megacredits": 2
+   }
+  },
   "tags": [
+   "crime",
+   "space"
+  ]
+ },
+ "Chemical Factory": {
+  "action": {
+   "stock": {
+    "megacredits": 3
+   }
+  },
+  "tags": [
+   "crime",
    "building"
   ]
  },
- "Tunneling Subcontractor": {
+ "Corporate Theft": {
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
   "tags": [
    "crime"
   ]
  },
- "Underground Research Center": {
+ "Monopoly": {
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
   "tags": [
-   "building"
-  ]
- },
- "Underground Settlement": {
-  "tags": [
-   "city",
-   "building"
+   "crime"
   ]
  },
  "Underground Shelters": {
@@ -9526,14 +10006,15 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
- "Underground Smuggling Ring": {
+ "Battery Factory": {
+  "action": {
+   "stock": {
+    "megacredits": 2
+   }
+  },
   "tags": [
-   "crime"
-  ]
- },
- "Undermoon Drug Lords Network": {
-  "tags": [
-   "moon"
+   "power",
+   "building"
   ]
  },
  "Voltaic Metallurgy": {
@@ -9542,88 +10023,133 @@ var TM_CARD_DATA = {
    "power"
   ]
  },
- "Water Treatment Complex": {
+ "Deep Foundations": {
   "tags": [
-   "moon"
+   "city",
+   "building"
   ]
  },
- "We Grow As One": {
+ "Martian Express": {
+  "action": {
+   "stock": {
+    "megacredits": 2
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": 1
+  }
+ },
+ "Detective TV Series": {
   "tags": [
-   "space",
-   "event"
+   "earth"
   ]
  },
  "Deepnuking": {
+  "behavior": {
+   "removeAnyPlants": 3
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
   "tags": [
    "event"
   ]
  },
- "Desperate Measures": {
+ "Reckless Detonation": {
   "tags": [
-   "event"
+   "crime"
   ]
  },
- "Head Start": {
+ "Subnautic Pirates": {
+  "behavior": {
+   "stock": {
+    "megacredits": 7
+   }
+  },
   "tags": [
-   "event"
+   "crime"
   ]
  },
- "Induced Tremor": {
+ "Fabricated Scandal": {
   "tags": [
-   "event"
+   "crime"
   ]
  },
- "Land Claim": {
+ "Global Audit": {
+  "behavior": {
+   "tr": 1
+  },
   "tags": [
-   "event"
+   "earth"
   ]
  },
- "Last Resort Ingenuity": {
+ "Patent Manipulation": {
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
   "tags": [
-   "event"
-  ]
- },
- "Mooncrate Convoys To Mars": {
-  "tags": [
-   "event"
-  ]
- },
- "Odyssey": {
-  "tags": [
-   "event"
-  ]
- },
- "Plant Tax": {
-  "tags": [
-   "event"
-  ]
- },
- "Price Wars": {
-  "tags": [
-   "event"
-  ]
- },
- "Private Investigator": {
-  "tags": [
-   "event"
-  ]
- },
- "Recruitment": {
-  "tags": [
-   "event"
-  ]
- },
- "Sabotage": {
-  "tags": [
-   "event"
+   "crime"
   ]
  },
  "Tunneling Loophole": {
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
   "tags": [
    "event"
   ]
  },
- "Underground Detonators": {
+ "Narrative Spin": {
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "crime"
+  ]
+ },
+ "Corporate Blackmail": {
+  "behavior": {
+   "stock": {
+    "megacredits": 5
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "crime"
+  ]
+ },
+ "Scapegoat": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Staged Protests": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Plant Tax": {
+  "behavior": {
+   "removeAnyPlants": 2
+  },
+  "tags": [
+   "event"
+  ]
+ },
+ "Crater Survey": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Induced Tremor": {
   "tags": [
    "event"
   ]
@@ -9633,34 +10159,272 @@ var TM_CARD_DATA = {
    "event"
   ]
  },
+ "Price Wars": {
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "event"
+  ]
+ },
+ "Canyon Survey": {
+  "tags": [
+   "science"
+  ]
+ },
+ "Mercenary Squad": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Media Frenzy": {
+  "behavior": {
+   "stock": {
+    "cards": 2
+   },
+   "drawCard": 2
+  },
+  "tags": [
+   "earth"
+  ]
+ },
+ "Guerilla Ecologists": {
+  "behavior": {
+   "greenery": 1
+  },
+  "tags": [
+   "plant"
+  ]
+ },
+ "Export Convoy": {
+  "behavior": {
+   "stock": {
+    "megacredits": 20
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "space"
+  ]
+ },
+ "Family Connections": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Soil Export": {
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "venus",
+   "space"
+  ]
+ },
+ "Hired Raiders:u": {
+  "behavior": {
+   "stock": {
+    "megacredits": 5
+   }
+  },
+  "tags": [
+   "crime"
+  ]
+ },
+ "Hackers:u": {
+  "behavior": {
+   "production": {
+    "megacredits": 2
+   },
+   "decreaseAnyProduction": {
+    "count": 2
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -1
+  },
+  "tags": [
+   "crime"
+  ]
+ },
+ "Free Trade Port": {
+  "behavior": {
+   "colony": {},
+   "colonies": {
+    "buildColony": {}
+   }
+  },
+  "tags": [
+   "earth",
+   "space"
+  ]
+ },
+ "Geological Expertise": {
+  "behavior": {
+   "stock": {
+    "cards": 2
+   },
+   "drawCard": 2
+  }
+ },
+ "Underground Settlement": {
+  "behavior": {
+   "city": 1
+  },
+  "tags": [
+   "city",
+   "building"
+  ]
+ },
+ "Central Reservoir": {
+  "behavior": {
+   "ocean": 1
+  },
+  "tags": [
+   "building"
+  ]
+ },
+ "Prospecting": {
+  "behavior": {
+   "stock": {
+    "megacredits": -4
+   }
+  },
+  "tags": [
+   "space"
+  ]
+ },
+ "Election Sponsorship": {
+  "tags": [
+   "crime"
+  ]
+ },
+ "Butterfly Effect": {
+  "behavior": {
+   "tr": 1
+  },
+  "tags": [
+   "event"
+  ]
+ },
+ "Capital:ares": {
+  "behavior": {
+   "production": {
+    "megacredits": 5,
+    "energy": -2
+   },
+   "city": 1
+  },
+  "tags": [
+   "city",
+   "building"
+  ]
+ },
  "Commercial District:ares": {
+  "behavior": {
+   "production": {
+    "megacredits": 4,
+    "energy": -1
+   },
+   "city": 1
+  },
   "tags": [
    "building"
   ]
  },
  "Deimos Down:ares": {
+  "behavior": {
+   "global": {
+    "temperature": 3
+   }
+  },
   "tags": [
    "space"
   ]
  },
+ "Desperate Measures": {
+  "behavior": {
+   "global": {
+    "oxygen": 1
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
+  "tags": [
+   "event"
+  ]
+ },
+ "Ecological Survey": {
+  "tags": [
+   "science"
+  ]
+ },
  "Ecological Zone:ares": {
+  "action": {
+   "addResources": 1
+  },
+  "vp": {
+   "type": "per_resource",
+   "per": 1
+  },
   "tags": [
    "animal",
    "plant"
   ]
  },
+ "Geological Survey": {
+  "tags": [
+   "science"
+  ]
+ },
  "Industrial Center:ares": {
+  "action": {
+   "stock": {
+    "megacredits": 7
+   }
+  },
   "tags": [
    "building"
   ]
  },
  "Great Dam:ares": {
+  "behavior": {
+   "production": {
+    "energy": 2
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": 1
+  },
   "tags": [
    "power",
    "building"
   ]
  },
+ "Lava Flows:ares": {
+  "behavior": {
+   "global": {
+    "temperature": 2
+   }
+  }
+ },
  "Magnetic Field Generators:ares": {
+  "behavior": {
+   "production": {
+    "plants": 2,
+    "energy": -4
+   },
+   "tr": 3
+  },
   "tags": [
    "building"
   ]
@@ -9676,30 +10440,93 @@ var TM_CARD_DATA = {
   ]
  },
  "Mohole Area:ares": {
+  "behavior": {
+   "production": {
+    "heat": 4
+   }
+  },
   "tags": [
    "building"
   ]
  },
  "Natural Preserve:ares": {
+  "vp": {
+   "type": "static",
+   "vp": 1
+  },
   "tags": [
    "science",
    "building"
   ]
  },
  "Nuclear Zone:ares": {
+  "behavior": {
+   "global": {
+    "temperature": 2
+   }
+  },
+  "vp": {
+   "type": "static",
+   "vp": -2
+  },
   "tags": [
    "earth"
   ]
  },
  "Restricted Area:ares": {
+  "action": {
+   "drawCard": 1
+  },
   "tags": [
    "science"
   ]
  },
- "Darkside Smugglers' Union": {
+ "Solar Farm": {
+  "behavior": {
+   "production": {
+    "energy": 1
+   }
+  },
   "tags": [
-   "space"
+   "power",
+   "building"
   ]
+ },
+ "Head Start": {
+  "behavior": {
+   "stock": {
+    "steel": 2
+   }
+  },
+  "tags": [
+   "event"
+  ]
+ },
+ "Private Investigator": {
+  "behavior": {
+   "tr": 1
+  },
+  "tags": [
+   "event"
+  ]
+ },
+ "Standard Technology:u": {
+  "tags": [
+   "science"
+  ],
+  "action": {}
+ },
+ "Jenson-Boyle & Co": {
+  "tags": [
+   "crime"
+  ],
+  "action": {}
+ },
+ "Anubis Securities": {
+  "tags": [
+   "earth"
+  ],
+  "action": {}
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_DATA;

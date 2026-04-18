@@ -10,6 +10,7 @@
   var sharedEstimateTriggersPerGen = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateTriggersPerGen;
   var sharedPAtLeastOne = TM_BRAIN_CORE && TM_BRAIN_CORE.pAtLeastOne;
   var sharedBuildEndgameTiming = TM_BRAIN_CORE && TM_BRAIN_CORE.buildEndgameTiming;
+  var sharedEstimateGensLeftFromState = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateGensLeftFromState;
   var sharedAnalyzePass = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzePass;
   var sharedRankHandCards = TM_BRAIN_CORE && TM_BRAIN_CORE.rankHandCards;
   var sharedAnalyzeActions = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeActions;
@@ -469,6 +470,45 @@
       var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
       // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
       return coreSteps + Math.round(venusSteps * 0.5);
+    };
+
+  var estimateGensLeft = sharedEstimateGensLeftFromState
+    ? function(state) {
+      return sharedEstimateGensLeftFromState(state);
+    }
+    : function(state) {
+      var g = (state && state.game) || {};
+      var breakdown = {
+        tempSteps: Math.max(0, Math.round((8 - (typeof g.temperature === 'number' ? g.temperature : -30)) / 2)),
+        oxySteps: Math.max(0, 14 - (typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0)),
+        oceanSteps: Math.max(0, 9 - (typeof g.oceans === 'number' ? g.oceans : 0)),
+        venus: typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30,
+      };
+      var coreSteps = breakdown.tempSteps + breakdown.oxySteps + breakdown.oceanSteps;
+      var gen = g.generation || 1;
+      var playerCount = (state && state.players) ? (state.players.length || 3) : 3;
+      var isWgt = !!(g.gameOptions && g.gameOptions.solarPhaseOption);
+      if (coreSteps <= 0) return 1;
+
+      var baseSteps;
+      if (playerCount <= 2) baseSteps = isWgt ? 4 : 3;
+      else if (playerCount >= 4) baseSteps = isWgt ? 8 : 6;
+      else baseSteps = isWgt ? 6 : 4;
+
+      var stepsPerGen = baseSteps;
+      if (gen <= 3) stepsPerGen = Math.max(3, baseSteps - 2);
+      else if (gen >= 7) stepsPerGen = baseSteps + (playerCount >= 3 ? 2 : 1);
+
+      var lateCloseout = gen >= 7 && coreSteps <= 18;
+      if (breakdown.venus < 30 && isWgt) {
+        if (lateCloseout) stepsPerGen += 1;
+        else if (gen < 7) stepsPerGen = Math.max(3, stepsPerGen - 1);
+      }
+
+      var rawGens = coreSteps / Math.max(1, stepsPerGen);
+      var gensLeft = lateCloseout ? Math.round(rawGens) : Math.ceil(rawGens);
+      if (gen >= 8 && playerCount >= 3 && coreSteps <= 18) gensLeft = Math.min(gensLeft, 2);
+      return Math.max(1, gensLeft);
     };
 
   // Calculate VP for any player from visible game data
@@ -2421,14 +2461,8 @@
     if (sharedBuildEndgameTiming) {
       return sharedBuildEndgameTiming(state, {
         remainingSteps: remainingSteps,
-        estimateGens: function(_state, steps, gen) {
-          var numPlayers2 = (_state && _state.players) ? (_state.players.length || 3) : 3;
-          var totalSteps2 = 19 + 14 + 9 + 7; // match remainingSteps()
-          var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
-          var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
-          var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
-          var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
-          return steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
+        estimateGens: function(_state) {
+          return estimateGensLeft(_state);
         },
         shouldPush: shouldPushGlobe,
         vpLead: vpLead,
@@ -2436,14 +2470,7 @@
     }
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 1;
-
-    var numPlayers2 = (state && state.players) ? (state.players.length || 3) : 3;
-    var totalSteps2 = 19 + 14 + 9 + 7; // match remainingSteps()
-    var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
-    var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
-    var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
-    var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
-    var estimatedGens = steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
+    var estimatedGens = estimateGensLeft(state);
 
     var dangerZone;
     if (estimatedGens <= 1) dangerZone = 'red';
@@ -2942,6 +2969,7 @@
 
     // Core analytics
     remainingSteps: remainingSteps,
+    estimateGensLeft: estimateGensLeft,
     calcPlayerVP: calcPlayerVP,
     vpLead: vpLead,
     shouldPushGlobe: shouldPushGlobe,

@@ -148,6 +148,14 @@ for (const [name, e] of Object.entries(effects)) {
   // Trade fleet
   if (e.tradeFleet) beh.tradeFleet = e.tradeFleet;
 
+  const colonies = {};
+  if (e.colony) colonies.buildColony = typeof e.colony === 'object' ? e.colony : {};
+  if (typeof e.tradeFleet === 'number') colonies.addTradeFleet = e.tradeFleet;
+  if (typeof e.tradeDiscount === 'number') colonies.tradeDiscount = e.tradeDiscount;
+  if (typeof e.tradeOffset === 'number') colonies.tradeOffset = e.tradeOffset;
+  if (typeof e.tradeMC === 'number') colonies.tradeMC = e.tradeMC;
+  if (Object.keys(colonies).length > 0) beh.colonies = colonies;
+
   // Draw cards
   if (e.cd) beh.drawCard = e.cd;
 

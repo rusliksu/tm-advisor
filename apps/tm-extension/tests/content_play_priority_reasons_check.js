@@ -196,9 +196,40 @@ function testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists() {
   assert(!result.reasons.includes('Корп: Credicor'), 'bare corp reason should be removed once a specific corp reason exists');
 }
 
+function testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement() {
+  const result = {
+    total: 67,
+    uncappedTotal: 67,
+    reasons: ['Нужно 1 Earth сейчас -4'],
+  };
+
+  playPriority.adjustForResearch({
+    result,
+    el: makeCardEl('Conscription'),
+    myHand: [],
+    ctx: {mc: 20, gensLeft: 4},
+    getCardCost() {
+      return 5;
+    },
+    getPlayerVueData() {
+      return {
+        game: {players: []},
+        thisPlayer: {megaCredits: 20},
+      };
+    },
+    tmBrain: null,
+    cardEffects: null,
+  });
+
+  assert(result.total >= 65, 'soft one-tag requirements should not take the full hard-block draft penalty');
+  assert(result.reasons.includes('Позже (req)'), 'soft one-tag requirements should be marked as later, not skip');
+  assert(!result.reasons.includes('Skip'), 'soft one-tag requirements should not be marked as skip');
+}
+
 testAdjustForResearchTreatsStepRequirementAsHardBlock();
 testScoreDraftCardMarksSpecificReqAsPenaltyForPositionalFactors();
 testScoreDraftCardDropsGenericFarFallbackWhenSpecificReasonExists();
 testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists();
+testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement();
 
 console.log('content-play-priority reason checks: OK');

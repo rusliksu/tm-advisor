@@ -7,6 +7,8 @@
   var logFilterText = '';
   var logSearchDebounceTimer = null;
   var prevHandCards = [];
+  var logRatingLookup = null;
+  var logRatingLookupSource = null;
 
   function applyLogFilter(logPanel) {
     if (!logPanel || !logPanel.querySelectorAll) return;
@@ -170,10 +172,139 @@
     prevHandCards = curHand;
   }
 
+  function getLogRatingLookup(ratings) {
+    if (!ratings) return null;
+    if (logRatingLookup && logRatingLookupSource === ratings) return logRatingLookup;
+
+    var lookup = Object.create(null);
+    Object.keys(ratings).forEach(function(name) {
+      lookup[name.toLowerCase()] = { name: name, data: ratings[name] };
+    });
+    logRatingLookup = lookup;
+    logRatingLookupSource = ratings;
+    return lookup;
+  }
+
+  function getLogCardName(cardEl) {
+    if (!cardEl || typeof cardEl.getAttribute !== 'function') return '';
+    var stored = cardEl.getAttribute('data-tm-log-card-name');
+    if (stored) return stored;
+
+    var rawName = ((cardEl.textContent || '').split(':')[0] || '').trim();
+    if (rawName) cardEl.setAttribute('data-tm-log-card-name', rawName);
+    return rawName;
+  }
+
+  function resolveLogRating(input, rawName) {
+    var adjusted = resolveVisibleAdjustedLogRating(input, rawName);
+    if (adjusted) return adjusted;
+
+    var ratings = input && input.ratings;
+    if (!ratings || !rawName) return null;
+    if (ratings[rawName]) return { name: rawName, data: ratings[rawName] };
+
+    var lookup = getLogRatingLookup(ratings);
+    return lookup ? (lookup[rawName.toLowerCase()] || null) : null;
+  }
+
+  function parseVisibleBadgeRating(badge) {
+    if (!badge) return null;
+    var text = (badge.textContent || '').trim();
+    var match = text.match(/^([SABCDF])\s+(\d+)/);
+    if (!match) return null;
+    return {
+      tier: match[1],
+      score: parseInt(match[2], 10),
+      adjusted: badge.hasAttribute('data-tm-original')
+    };
+  }
+
+  function resolveVisibleAdjustedLogRating(input, rawName) {
+    var documentObj = input && input.documentObj;
+    if (!documentObj || !documentObj.querySelectorAll || !rawName) return null;
+
+    var best = null;
+    documentObj.querySelectorAll('.card-container[data-tm-card]').forEach(function(cardEl) {
+      if (!cardEl || typeof cardEl.getAttribute !== 'function') return;
+      var visibleName = (cardEl.getAttribute('data-tm-card') || '').trim();
+      if (!visibleName || visibleName.toLowerCase() !== rawName.toLowerCase()) return;
+      if (typeof cardEl.querySelector !== 'function') return;
+
+      var parsed = parseVisibleBadgeRating(cardEl.querySelector('.tm-tier-badge'));
+      if (!parsed) return;
+
+      var resolved = {
+        name: visibleName,
+        data: { t: parsed.tier, s: parsed.score },
+        adjusted: parsed.adjusted
+      };
+      if (parsed.adjusted) {
+        best = resolved;
+        return;
+      }
+      if (!best) best = resolved;
+    });
+    return best;
+  }
+
+  function findLogCardScoreBadge(cardEl) {
+    if (!cardEl) return null;
+    if (typeof cardEl.querySelector === 'function') {
+      var childBadge = cardEl.querySelector('.tm-log-card-score');
+      if (childBadge) return childBadge;
+    }
+    var nextNode = cardEl.nextSibling;
+    while (nextNode && nextNode.nodeType === 3 && !String(nextNode.textContent || '').trim()) nextNode = nextNode.nextSibling;
+    if (nextNode && nextNode.classList && nextNode.classList.contains('tm-log-card-score')) return nextNode;
+    return null;
+  }
+
+  function decorateLogCardScores(input) {
+    var documentObj = input && input.documentObj;
+    var enabled = !input || input.enabled !== false;
+    if (!documentObj || !documentObj.querySelectorAll) return;
+
+    if (!enabled) {
+      documentObj.querySelectorAll('.tm-log-card-score').forEach(function(el) { el.remove(); });
+      return;
+    }
+
+    documentObj.querySelectorAll('.log-card').forEach(function(cardEl) {
+      if (!cardEl || typeof cardEl.getAttribute !== 'function') return;
+      var oldBadge = findLogCardScoreBadge(cardEl);
+      var rawName = getLogCardName(cardEl);
+      var rating = resolveLogRating(input, rawName);
+      if (!rating || !rating.data || rating.data.s == null || !rating.data.t) {
+        if (oldBadge) oldBadge.remove();
+        if (cardEl.style && typeof cardEl.style.removeProperty === 'function') {
+          cardEl.style.removeProperty('position');
+          cardEl.style.removeProperty('display');
+          cardEl.style.removeProperty('margin-right');
+        }
+        return;
+      }
+
+      var badge = oldBadge || documentObj.createElement('span');
+      badge.className = 'tm-log-card-score tm-log-tier tm-tier-' + rating.data.t;
+      badge.textContent = rating.data.t + ' ' + rating.data.s;
+      badge.style.cssText = 'display:inline-block;margin-left:4px;padding:2px 6px;font-size:12px;line-height:1.2;vertical-align:middle;white-space:nowrap;';
+      if (cardEl.style && typeof cardEl.style.removeProperty === 'function') {
+        cardEl.style.removeProperty('position');
+        cardEl.style.removeProperty('display');
+        cardEl.style.removeProperty('margin-right');
+      }
+      if (!oldBadge) {
+        if (typeof cardEl.insertAdjacentElement === 'function') cardEl.insertAdjacentElement('afterend', badge);
+        else if (cardEl.parentNode && typeof cardEl.parentNode.appendChild === 'function') cardEl.parentNode.appendChild(badge);
+      }
+    });
+  }
+
   global.TM_CONTENT_LOG_UI = {
     applyLogFilter: applyLogFilter,
     buildLogFilterBar: buildLogFilterBar,
     buildLogSearchBar: buildLogSearchBar,
+    decorateLogCardScores: decorateLogCardScores,
     trackHandChoices: trackHandChoices
   };
 })(typeof globalThis !== 'undefined' ? globalThis : window);

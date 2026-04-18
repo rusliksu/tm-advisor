@@ -14,9 +14,7 @@ const {
 
 const ROOT = path.resolve(__dirname, '..');
 const extracted = require(path.join(ROOT, 'data', 'all-card-behaviors.json'));
-const TAGS = require(path.join(ROOT, 'extension', 'data', 'card_tags'));
-const DATA = require(path.join(ROOT, 'extension', 'data', 'card_data'));
-
+const allCards = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'all_cards.json'), 'utf8'));
 // Load existing card_effects
 const effectsPath = resolveGeneratedExtensionPath('card_effects.json.js');
 const effectsSrc = fs.readFileSync(effectsPath, 'utf8');
@@ -31,23 +29,21 @@ const PROD_MAP = { megacredits: 'mp', steel: 'sp', titanium: 'tp', plants: 'pp',
 const STOCK_MAP = { megacredits: 'mc', steel: 'st', titanium: 'ti', plants: 'pl', energy: 'en', heat: 'he' };
 const GLOBAL_MAP = { temperature: 'tmp', oxygen: 'o2', venus: 'vn' };
 
-// Find missing cards
-const inData = new Set(Object.keys(DATA));
 const inEffects = new Set(Object.keys(effects));
-const inTags = new Set(Object.keys(TAGS));
+const inCatalog = new Set(allCards.map((card) => card.name).concat(Object.keys(effects)));
 
 let added = 0;
+let updated = 0;
 
 for (const name of Object.keys(extracted)) {
-  // Skip if already in effects
-  if (inEffects.has(name)) continue;
-  // Only process cards that are in card_tags (i.e., part of the game)
-  if (!inTags.has(name)) continue;
+  // Only process cards that exist in the canonical card catalog or current effects bundle.
+  if (!inCatalog.has(name)) continue;
 
   const card = extracted[name];
   const beh = card.behavior || {};
   const act = card.action || {};
-  const entry = {};
+  const entry = Object.assign({}, effects[name] || {});
+  const before = JSON.stringify(entry);
 
   // Production
   if (beh.production) {
@@ -89,7 +85,11 @@ for (const name of Object.keys(extracted)) {
   if (beh.drawCard) entry.cd = beh.drawCard;
 
   // Colony/trade fleet
+  if (beh.colony) entry.colony = beh.colony;
   if (beh.tradeFleet) entry.tradeFleet = beh.tradeFleet;
+  if (typeof beh.tradeDiscount === 'number') entry.tradeDiscount = beh.tradeDiscount;
+  if (typeof beh.tradeOffset === 'number') entry.tradeOffset = beh.tradeOffset;
+  if (typeof beh.tradeMC === 'number') entry.tradeMC = beh.tradeMC;
 
   // Decrease production
   if (beh.decreaseAnyProduction) entry.pOpp = beh.decreaseAnyProduction;
@@ -136,12 +136,19 @@ for (const name of Object.keys(extracted)) {
   // Only add if we have something
   if (Object.keys(entry).length > 0) {
     effects[name] = entry;
-    added++;
-    console.log('  + ' + name + ': ' + JSON.stringify(entry));
+    const after = JSON.stringify(entry);
+    if (!inEffects.has(name)) {
+      added++;
+      console.log('  + ' + name + ': ' + after);
+    } else if (after !== before) {
+      updated++;
+      console.log('  ~ ' + name + ': ' + after);
+    }
   }
 }
 
 console.log('\nAdded:', added, 'new effects');
+console.log('Updated:', updated, 'existing effects');
 console.log('Total effects:', Object.keys(effects).length);
 
 // Write back
