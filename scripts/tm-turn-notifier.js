@@ -18,14 +18,51 @@ const http = require('http');
 const https = require('https');
 const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 
 const BOT_TOKEN = process.env.TM_BOT_TOKEN || '';
 const BASE_URL = (process.env.TM_BASE_URL || 'https://tm.knightbyte.win').replace(/\/+$/, '');
 const DB_PATH = process.env.TM_DB_PATH || '/home/openclaw/tm-runtime/prod/shared/db/game.db';
 const POLL_INTERVAL = parseInt(process.env.POLL_INTERVAL || '15') * 1000;
+const STATE_FILE = process.env.TM_STATE_PATH || path.join(path.dirname(DB_PATH), 'tm-turn-notifier-state.json');
 
 // Track: playerId -> { noticeKey, messageId, chatId }
 const playerState = new Map();
+
+function persistPlayerState() {
+  try {
+    const payload = JSON.stringify(Object.fromEntries(playerState.entries()));
+    const tempFile = `${STATE_FILE}.tmp`;
+    fs.writeFileSync(tempFile, payload);
+    fs.renameSync(tempFile, STATE_FILE);
+  } catch (err) {
+    console.warn('persist state error:', err.message);
+  }
+}
+
+function restorePlayerState() {
+  try {
+    if (!fs.existsSync(STATE_FILE)) return;
+    const raw = fs.readFileSync(STATE_FILE, 'utf8').trim();
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return;
+    for (const [playerId, entry] of Object.entries(parsed)) {
+      if (!playerId || !entry || typeof entry !== 'object') continue;
+      const noticeKey = typeof entry.noticeKey === 'string' ? entry.noticeKey : '';
+      const chatId = normalizeChatId(entry.chatId);
+      const messageId = Number(entry.messageId);
+      if (!noticeKey || !chatId) continue;
+      playerState.set(playerId, {
+        noticeKey,
+        chatId,
+        messageId: Number.isInteger(messageId) ? messageId : -1,
+      });
+    }
+  } catch (err) {
+    console.warn('restore state error:', err.message);
+  }
+}
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -266,6 +303,7 @@ async function clearPlayerNotice(playerId) {
   const previous = playerState.get(playerId);
   if (!previous) return;
   playerState.delete(playerId);
+  persistPlayerState();
   try {
     await deleteTelegramMessage(previous.chatId, previous.messageId);
   } catch (e) {
@@ -318,6 +356,7 @@ async function checkPlayer(entry) {
       chatId,
       messageId: Number.isInteger(messageId) ? messageId : -1,
     });
+    persistPlayerState();
     console.log(`[${new Date().toISOString().slice(11, 19)}] ${playerName} notified (gen ${gen})`);
   } catch (e) {
     // Keep player state on transient API or Telegram failures to avoid duplicate spam.
@@ -348,8 +387,10 @@ async function poll() {
 console.log('TM Turn Notifier started');
 console.log(`Base URL: ${BASE_URL}`);
 console.log(`DB: ${DB_PATH}`);
+console.log(`State: ${STATE_FILE}`);
 console.log(`Poll: ${POLL_INTERVAL / 1000}s`);
 console.log(`Bot: ${BOT_TOKEN ? 'configured' : 'DRY RUN'}`);
 
+restorePlayerState();
 setInterval(() => { void poll(); }, POLL_INTERVAL);
 poll();
