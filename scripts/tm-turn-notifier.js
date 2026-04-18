@@ -9,7 +9,6 @@
  *   TM_BOT_TOKEN    — Telegram bot token
  *   TM_BASE_URL     — TM base URL (default: https://tm.knightbyte.win)
  *   TM_DB_PATH      — path to game.db (default: /home/openclaw/tm-runtime/prod/shared/db/game.db)
- *   PLAYER_TELEGRAM_JSON — optional JSON object with extra player → chat ID mappings
  *   POLL_INTERVAL   — seconds between polls (default: 15)
  */
 
@@ -24,38 +23,6 @@ const BOT_TOKEN = process.env.TM_BOT_TOKEN || '';
 const BASE_URL = (process.env.TM_BASE_URL || 'https://tm.knightbyte.win').replace(/\/+$/, '');
 const DB_PATH = process.env.TM_DB_PATH || '/home/openclaw/tm-runtime/prod/shared/db/game.db';
 const POLL_INTERVAL = parseInt(process.env.POLL_INTERVAL || '15') * 1000;
-
-// Player name -> Telegram chat ID
-const DEFAULT_PLAYER_TELEGRAM = {
-  'gydro': 162438481,
-  'руслан': 162438481,
-  'ruslan': 162438481,
-  'илья': 353877502,
-  'genuinegold': 353877502,
-};
-
-function parsePlayerTelegramOverrides() {
-  const raw = process.env.PLAYER_TELEGRAM_JSON || '';
-  if (!raw.trim()) return {};
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
-    const normalized = {};
-    for (const [name, chatId] of Object.entries(parsed)) {
-      if (!name || chatId == null) continue;
-      normalized[name.trim().toLowerCase()] = chatId;
-    }
-    return normalized;
-  } catch (err) {
-    console.warn('PLAYER_TELEGRAM_JSON parse error:', err.message);
-    return {};
-  }
-}
-
-const PLAYER_TELEGRAM = {
-  ...DEFAULT_PLAYER_TELEGRAM,
-  ...parsePlayerTelegramOverrides(),
-};
 
 // Track: playerId -> { noticeKey, messageId, chatId }
 const playerState = new Map();
@@ -125,11 +92,6 @@ function deleteTelegramMessage(chatId, messageId) {
   });
 }
 
-function findChatId(name) {
-  const lower = (name || '').trim().toLowerCase();
-  return PLAYER_TELEGRAM[lower] || null;
-}
-
 function runSql(query) {
   if (!fs.existsSync(DB_PATH)) return '';
   try {
@@ -170,7 +132,7 @@ function getActivePlayerEntriesFromDb() {
         if (!player || typeof player.id !== 'string' || !player.id.startsWith('p')) continue;
         entries.set(player.id, {
           activePlayerId,
-          chatId: normalizeChatId(player.telegramID) || findChatId(player.name),
+          chatId: normalizeChatId(player.telegramID),
           gameId: game.id || '',
           phase,
           needsToDraft: player.needsToDraft === true,
@@ -316,7 +278,7 @@ async function checkPlayer(entry) {
     }
 
     const playerName = state.thisPlayer?.name || entry.playerName || state.color || 'Unknown';
-    const chatId = entry.chatId || findChatId(playerName);
+    const chatId = entry.chatId || normalizeChatId(state.thisPlayer?.telegramID);
     if (!chatId) return;
 
     const noticeKey = buildNoticeKey(entry, state);
