@@ -1629,11 +1629,10 @@ function handleInput(wf, state, depth = 0) {
       const hand = subWf.cards?.length > 0 ? subWf.cards : cardsInHand;
       if (hand.length > 0) {
         const extraMC = (payOpts.heat ? heat : 0) + (payOpts.lunaTradeFederationTitanium ? titanium * (state?.thisPlayer?.titaniumValue || 3) : 0);
-        // v76: Keep MC reserve for SP — play cards only if MC stays >= 14 after
-        // Exception: if card EV > 20 (great card) or endgame (no SP needed)
-        // v76: Minimal MC reserve — just enough for heat→temp (free) or delegate (5 MC)
-        // Don't hold back card plays for SP — cards give more VP long-term
-        const _spReserve = (gen >= 5 && _anyGlobalOpen) ? 5 : 0;
+        // v76: Keep a small MC reserve only when a standard project branch is
+        // actually available in this action tree. Otherwise the reserve
+        // incorrectly suppresses cheap positive cards in no-SP/action-only spots.
+        const _spReserve = (spAvailable && gen >= 5 && _anyGlobalOpen) ? 5 : 0;
         const _lowMcPlayFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
         const totalBudget = mc + extraMC;
         const playable = hand
@@ -1810,11 +1809,12 @@ function handleInput(wf, state, depth = 0) {
             }
             // v74: Optimal Aerobraking underrated — +3 MC +3 heat per space event = 30+ MC with 5+ events
             if (c.name === 'Optimal Aerobraking') score += 5;
+            const preLowMcScore = score;
             // Midgame low-MC starvation guard: penalize draining cash on non-engine cards.
             if (!protectedCard && gen >= 4 && cashAfter < 5) {
               score -= (5 - cashAfter) * 1.5;
             }
-            return { ...c, _score: score };
+            return { ...c, _score: score, _preLowMcScore: preLowMcScore };
           })
           .sort((a, b) => b._score - a._score);
         // Greedy: pick highest-scored playable card
@@ -1951,17 +1951,18 @@ function handleInput(wf, state, depth = 0) {
     if (cardActionIdx >= 0) {
       const _blueCards = opts[cardActionIdx]?.cards || [];
       const _bestBlueAction = bestBlueAction;
+      const topPlayablePreLowMcScore = topPlayableCard?._preLowMcScore ?? topPlayableEV;
       const noSpSingleVisibleWeakActionBias =
         gen >= 5 &&
         gen <= 8 &&
         !spAvailable &&
         visibleProjectCards === 1 &&
         topPlayableCard &&
-        topPlayableEV >= 2 &&
+        topPlayablePreLowMcScore >= 2 &&
         (
           isSmallEdgeSetupBiasCard(topPlayableCard.name) ||
           (topPlayableCard.calculatedCost ?? topPlayableCard.cost ?? 999) <= 5 ||
-          topPlayableEV >= 3
+          topPlayablePreLowMcScore >= 3
         ) &&
         _bestBlueAction &&
         _bestBlueAction._actionEV <= 2;
