@@ -393,6 +393,33 @@ function testEarlyStandardProjectPrefersColonyOverBlindAsteroid() {
   assert.deepStrictEqual(input.response?.cards, ['Colony']);
 }
 
+function testStrongPlayableCardBeatsSmallColonyEdgeInMidgame() {
+  const hand = ['Trading Colony', 'Titan Floating Launch-pad', 'Coordinated Raid', 'Return to Abandoned Technology', 'Hydrogen to Venus'].map(makeCard);
+  const players = [
+    {color: 'red', megacreditProduction: 0, terraformRating: 25},
+    {color: 'blue', megacreditProduction: 0, terraformRating: 24},
+    {color: 'green', megacreditProduction: 0, terraformRating: 23},
+  ];
+  const state = makeState({mc: 24, gen: 5, hand, players, income: 0});
+  state.thisPlayer.terraformRating = 25;
+  state.thisPlayer.steel = 2;
+  state.thisPlayer.plants = 2;
+  state.game.temperature = -24;
+  state.game.oxygenLevel = 4;
+  state.game.oceans = 2;
+  state.game.venusScaleLevel = 18;
+  state.game.colonies = [
+    {name: 'Luna', colonies: ['blue']},
+    {name: 'Europa', colonies: ['green']},
+    {name: 'Ganymede', colonies: []},
+  ];
+  const input = BOT.handleInput(makeStandardProjectWorkflow(hand), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.strictEqual(input.response?.card, 'Hydrogen to Venus');
+}
+
 function testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback() {
   const state = makeState({mc: 40, gen: 15, hand: []});
   state.game.temperature = 8;
@@ -692,6 +719,7 @@ function main() {
   testProdSetupCardMidgameBeatsSmallSpEdge();
   testNonSetupFillerStillLetsSpWinOnBigEdge();
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid();
+  testStrongPlayableCardBeatsSmallColonyEdgeInMidgame();
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
   testWeakEndgameStandardProjectsDoNotBeatBlueAction();
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions();
@@ -733,6 +761,7 @@ module.exports = {
   testProdSetupCardMidgameBeatsSmallSpEdge,
   testNonSetupFillerStillLetsSpWinOnBigEdge,
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid,
+  testStrongPlayableCardBeatsSmallColonyEdgeInMidgame,
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
   testWeakEndgameStandardProjectsDoNotBeatBlueAction,
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions,

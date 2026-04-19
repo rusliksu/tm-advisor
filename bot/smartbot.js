@@ -1920,6 +1920,27 @@ function handleInput(wf, state, depth = 0) {
         response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name], bestCard.name) }
       };
     }
+    // Early/midgame: a narrowly-better Colony SP should not crowd out a clearly
+    // useful playable card. This keeps the bot from overbuilding colonies while
+    // starving its hand/engine when the EV edge is only marginal.
+    const colonySmallEdgeCardBias =
+      gen <= 7 &&
+      steps > 8 &&
+      spAvailable &&
+      bestSpCard &&
+      String(bestSpCard.name || '').toLowerCase().includes('colony') &&
+      bestCard &&
+      adjustedSpEV > bestCardEV &&
+      adjustedSpEV - bestCardEV <= 3 &&
+      (isSmallEdgeSetupBiasCard(bestCard.name) || bestCardEV >= 10);
+    if (colonySmallEdgeCardBias) {
+      dbg(`colony small-edge bias: play ${bestCard.name} over ${bestSpCard.name} edge=${(adjustedSpEV - bestCardEV).toFixed(1)}`);
+      const subWf2 = opts[playCardIdx] || {};
+      return {
+        type: 'or', index: playCardIdx,
+        response: { type: 'projectCard', card: bestCard.name, payment: smartPay(bestCard.calculatedCost ?? bestCard.cost ?? 0, state, subWf2, CARD_TAGS[bestCard.name], bestCard.name) }
+      };
+    }
     const closureTerraformSpGuard =
       closureMode &&
       spAvailable &&
