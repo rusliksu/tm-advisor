@@ -564,6 +564,19 @@ function testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp() {
   assert.strictEqual(input.response?.card, 'Mining Market Insider');
 }
 
+function testWeakBlueActionMidgamePrefersSingleDrawSetupCardWithoutSp() {
+  const hand = ['Invention Contest'].map(makeCard);
+  const actionCards = ['Cloud Vortex Outpost', 'Space Elevator', 'Cloud Tourism', 'Sub-Crust Measurements', 'Atmo Collectors'].map(makeCard);
+  const state = makeState({mc: 4, gen: 6, hand, income: 19});
+  state.thisPlayer.steel = 1;
+  state.thisPlayer.heat = 4;
+  const input = BOT.handleInput(makeProjectVsActionWorkflow(hand, actionCards), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.strictEqual(input.response?.card, 'Invention Contest');
+}
+
 function testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp() {
   const hand = ['Hydrogen Processing Plant'].map(makeCard);
   const actionCards = ['Extremophiles', 'Think Tank'].map(makeCard);
@@ -691,6 +704,7 @@ function main() {
   testStrongerBlueActionStillBeatsNearThresholdSetupCard();
   testWeakBlueActionMidgamePrefersSingleCheapPositiveCardWithoutSp();
   testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp();
+  testWeakBlueActionMidgamePrefersSingleDrawSetupCardWithoutSp();
   testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp();
   testSellPatentsKeepsSetupCardsInMidgame();
   testSellPatentsStillDumpsDeadCardsInEndgame();
@@ -731,6 +745,7 @@ module.exports = {
   testStrongerBlueActionStillBeatsNearThresholdSetupCard,
   testWeakBlueActionMidgamePrefersSingleCheapPositiveCardWithoutSp,
   testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp,
+  testWeakBlueActionMidgamePrefersSingleDrawSetupCardWithoutSp,
   testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp,
   testSellPatentsKeepsSetupCardsInMidgame,
   testSellPatentsStillDumpsDeadCardsInEndgame,

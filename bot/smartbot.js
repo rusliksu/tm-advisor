@@ -162,6 +162,7 @@ const DRAW_SETUP_CARDS = new Set([
   'Mars University',
   'Olympus Conference',
   'Spin-off Department',
+  'Invention Contest',
   'Research',
   'AI Central',
   'Technology Demonstration',
@@ -1777,6 +1778,11 @@ function handleInput(wf, state, depth = 0) {
             if (DRAW_EFFECTS.has(c.name)) {
               score += 6; // play draw/trigger effects first in gen
             }
+            // One-shot draw/setup cards are still useful midgame hand smoothing,
+            // but they do not deserve the same bonus as persistent draw engines.
+            if (hasCardDrawUtility(c.name) && !DRAW_EFFECTS.has(c.name)) {
+              score += 2;
+            }
             // v75: Opponent strategy detection — penalize cards that raise globals helping opponents
             // If opponent is plant engine → don't raise O2 for them. Heat rush → don't raise temperature.
             {
@@ -1952,6 +1958,8 @@ function handleInput(wf, state, depth = 0) {
       const _blueCards = opts[cardActionIdx]?.cards || [];
       const _bestBlueAction = bestBlueAction;
       const topPlayablePreLowMcScore = topPlayableCard?._preLowMcScore ?? topPlayableEV;
+      const noSpWeakActionCutoff =
+        topPlayableCard && hasCardDrawUtility(topPlayableCard.name) ? 3 : 2;
       const noSpSingleVisibleWeakActionBias =
         gen >= 5 &&
         gen <= 8 &&
@@ -1965,7 +1973,7 @@ function handleInput(wf, state, depth = 0) {
           topPlayablePreLowMcScore >= 3
         ) &&
         _bestBlueAction &&
-        _bestBlueAction._actionEV <= 2;
+        _bestBlueAction._actionEV <= noSpWeakActionCutoff;
       if (noSpSingleVisibleWeakActionBias) {
         dbg(`no-sp single-card bias: play ${topPlayableCard.name} over weak action ${_bestBlueAction.name}`);
         const subWf2 = opts[playCardIdx] || {};
