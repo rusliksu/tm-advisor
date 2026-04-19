@@ -1,0 +1,49 @@
+name: SmartBot Tests
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'bot/**'
+      - 'apps/tm-smartbot/**'
+      - 'packages/tm-brain-js/**'
+      - 'tools/brain/**'
+      - '.github/workflows/smartbot.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  pull_request:
+    paths:
+      - 'bot/**'
+      - 'apps/tm-smartbot/**'
+      - 'packages/tm-brain-js/**'
+      - 'tools/brain/**'
+      - '.github/workflows/smartbot.yml'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  smartbot:
+    name: SmartBot regressions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run smartbot liquidity tests
+        run: node bot/smartbot-liquidity.test.js
+
+      - name: Run smartbot regression tests
+        run: node apps/tm-smartbot/tests/regressions.js
+
+      - name: Run brain core tests
+        run: node tools/brain/test-core.js
+
+      - name: Check brain core sync
+        run: node tools/brain/sync-core.js --check
