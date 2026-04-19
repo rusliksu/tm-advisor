@@ -8,7 +8,7 @@
   var pvApiStateTime = 0;
   var pvApiFetchInFlight = false;
   var pvLastApiFetchAt = 0;
-  var pvGraceMs = 60000;
+  var pvGraceMs = 10000;
   var pvApiFetchCooldownMs = 5000;
 
   function getBridgeTargets(documentObj) {
