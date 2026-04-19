@@ -64,6 +64,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   var _bridgeObserver = null;
   var _pendingFastRetry = 0;
   var _projectVariantMap = null;
+  var _storedSeenCardsByGame = Object.create(null);
+  var _storedSeenLoadStateByGame = Object.create(null);
 
   function hasBridgeData() {
     var targets = [
@@ -159,9 +161,202 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return parts.join('::');
   }
 
+  function getStableGameId(state) {
+    var gameId = (state && state.game && state.game.id) || '';
+    if (!gameId && state && state.game) {
+      var opts = state.game.gameOptions || {};
+      var playerNames = (state.players || []).map(function(p) { return p.name || ''; }).sort().join(',');
+      gameId = 'g_' + (opts.boardName || 'x') + '_' + playerNames + '_' +
+        ((state.thisPlayer && state.thisPlayer.color) || '');
+    }
+    return gameId;
+  }
+
+  function getVisibleHandCardNames() {
+    var names = [];
+    var seen = Object.create(null);
+    document.querySelectorAll('.player_home_block--hand .card-container[data-tm-card]').forEach(function(cardEl) {
+      var name = '';
+      if (cardEl && typeof cardEl.getAttribute === 'function') name = cardEl.getAttribute('data-tm-card') || '';
+      if (!name) {
+        var titleEl = cardEl ? cardEl.querySelector('.card-title') : null;
+        name = ((titleEl && titleEl.textContent) || '').trim();
+      }
+      if (!name || seen[name]) return;
+      seen[name] = true;
+      names.push(name);
+    });
+    return names;
+  }
+
+  function isGreeneryTileType(tileType) {
+    return tileType === 1 || tileType === 'greenery';
+  }
+
+  function detectMyCorpName(state) {
+    var tp = state && state.thisPlayer;
+    var tableau = tp && tp.tableau ? tp.tableau : [];
+    for (var i = 0; i < tableau.length; i++) {
+      var cardName = getCardName(tableau[i]);
+      var rating = cardName ? TM_RATINGS[cardName] : null;
+      if (rating && rating.t === 'corp') return cardName;
+    }
+    return '';
+  }
+
+  function getScoringConfig() {
+    if (typeof TM_SCORING_CONFIG !== 'undefined' && TM_SCORING_CONFIG) return TM_SCORING_CONFIG;
+    return {
+      defaultSteelVal: 2,
+      maxGL: 10,
+      spCosts: { power: 11, asteroid: 14, aquifer: 18, greenery: 23, city: 25, venus: 15, buffer: 13, lobby: 5 },
+      thorgatePowerCost: 7,
+      tempMax: 8,
+      oceansMax: 9,
+      oxyMax: 14,
+      venusMax: 30,
+      spScoreMax: 95,
+      spScoreMin: 10,
+      spBases: { power: 46, asteroid: 46, aquifer: 46, greenery: 48, city: 44, venus: 44, buffer: 42, lobby: 40 },
+      spScales: { power: 2.4, asteroid: 2.4, aquifer: 2.2, greenery: 2.0, city: 1.8, venus: 2.1, buffer: 2.0, lobby: 1.7 },
+      spMilestoneReach: 8,
+      spMilestoneClose: 4,
+      spAwardLead: 5,
+      spAwardContrib: 3
+    };
+  }
+
+  function getFTNRow(gl) {
+    var table = (typeof TM_FTN_TABLE !== 'undefined' && TM_FTN_TABLE) ? TM_FTN_TABLE : null;
+    var fallback = [7, 5, 5];
+    if (!table || !table.length) return fallback;
+    return table[gl] || table[table.length - 1] || fallback;
+  }
+
+  function estimatePanelGensLeft(state) {
+    if (TM_ADVISOR && typeof TM_ADVISOR.estimateGensLeft === 'function') {
+      return TM_ADVISOR.estimateGensLeft(state);
+    }
+    var gen = (state && state.game && state.game.generation) || 1;
+    return Math.max(1, 10 - gen);
+  }
+
+  function countMyDelegatesForPanel(game, playerColor) {
+    if (!game || !game.turmoil || !game.turmoil.parties) return 0;
+    var count = 0;
+    for (var i = 0; i < game.turmoil.parties.length; i++) {
+      var party = game.turmoil.parties[i];
+      var delegates = party && party.delegates ? party.delegates : [];
+      for (var j = 0; j < delegates.length; j++) {
+        var delegate = delegates[j];
+        var color = typeof delegate === 'string' ? delegate : (delegate && delegate.color ? delegate.color : '');
+        if (color === playerColor) count += delegate && delegate.number ? delegate.number : 1;
+      }
+    }
+    return count;
+  }
+
+  function computeStandardProjectRows(state) {
+    if (!state || !state.thisPlayer || !state.game) return [];
+    var sc = getScoringConfig();
+    var p = state.thisPlayer;
+    var g = state.game;
+    var gl = Math.max(0, Math.min(sc.maxGL || 10, estimatePanelGensLeft(state)));
+    var row = getFTNRow(gl);
+    var trVal = row[0] || 7;
+    var prodVal = row[1] || 5;
+    var vpVal = row[2] || 5;
+    var corp = detectMyCorpName(state);
+    var isHelion = corp === 'Helion';
+    var mcBudget = (p.megaCredits || p.megacredits || 0) + (isHelion ? (p.heat || 0) : 0);
+    var steelValue = p.steelValue || sc.defaultSteelVal || 2;
+    var steelBudget = (p.steel || 0) * steelValue;
+    var rows = [];
+
+    function milestoneAwardBonus(type) {
+      if (typeof TM_CONTENT_STANDARD_PROJECTS === 'undefined' ||
+          !TM_CONTENT_STANDARD_PROJECTS ||
+          typeof TM_CONTENT_STANDARD_PROJECTS.checkSPMilestoneAward !== 'function') {
+        return { bonus: 0, reason: '' };
+      }
+      var bonusInfo = TM_CONTENT_STANDARD_PROJECTS.checkSPMilestoneAward({
+        spType: type,
+        pv: state,
+        isGreeneryTile: isGreeneryTileType,
+        sc: sc
+      }) || {};
+      return {
+        bonus: bonusInfo.bonus || 0,
+        reason: bonusInfo.reasonRows && bonusInfo.reasonRows.length > 0
+          ? (bonusInfo.reasonRows[0].text || '')
+          : ''
+      };
+    }
+
+    function pushRow(type, name, net, cost, detail, extraBudget) {
+      var budget = mcBudget + (extraBudget || 0);
+      if (budget < cost) return;
+      var bonusInfo = milestoneAwardBonus(type);
+      rows.push({
+        type: type,
+        name: name,
+        net: Math.round((net + (bonusInfo.bonus || 0)) * 10) / 10,
+        label: name,
+        reason: bonusInfo.reason || detail || ''
+      });
+    }
+
+    if (gl > 2) {
+      var powerCost = corp === 'Thorgate' ? (sc.thorgatePowerCost || 7) : sc.spCosts.power;
+      pushRow('power', 'Электростанция', Math.round(prodVal * 1.5) - powerCost, powerCost, 'прод ' + Math.round(prodVal * 1.5) + ' − ' + powerCost);
+    }
+    if (g.temperature == null || g.temperature < sc.tempMax) {
+      pushRow('asteroid', 'Астероид', Math.round(trVal) - sc.spCosts.asteroid, sc.spCosts.asteroid, 'TR ' + Math.round(trVal) + ' − ' + sc.spCosts.asteroid);
+    }
+    if (g.oceans == null || g.oceans < sc.oceansMax) {
+      var aquiferValue = Math.round(trVal + 2);
+      pushRow('aquifer', 'Океан', aquiferValue - sc.spCosts.aquifer, sc.spCosts.aquifer, 'TR+бонус ' + aquiferValue + ' − ' + sc.spCosts.aquifer);
+    }
+    {
+      var greeneryValue = Math.round(vpVal + ((g.oxygenLevel == null || g.oxygenLevel < sc.oxyMax) ? trVal : 0) + 2);
+      var greeneryCost = sc.spCosts.greenery;
+      pushRow('greenery', 'Озеленение', greeneryValue - greeneryCost, greeneryCost, 'VP+TR ' + greeneryValue + ' − ' + greeneryCost);
+    }
+    {
+      var cityValue = Math.round(vpVal * 2 + 3);
+      var cityCost = sc.spCosts.city;
+      pushRow('city', 'Город', cityValue - cityCost, cityCost, 'VP+прод ' + cityValue + ' − ' + cityCost);
+    }
+    if (g.venusScaleLevel == null || g.venusScaleLevel < sc.venusMax) {
+      pushRow('venus', 'Очистка', Math.round(trVal) - sc.spCosts.venus, sc.spCosts.venus, 'TR ' + Math.round(trVal) + ' − ' + sc.spCosts.venus);
+      pushRow('buffer', 'Буфер', Math.round(trVal) - sc.spCosts.buffer, sc.spCosts.buffer, 'TR ' + Math.round(trVal) + ' − ' + sc.spCosts.buffer);
+    }
+    if (g.turmoil) {
+      var myDelegates = countMyDelegatesForPanel(g, p.color || '');
+      var lobbyBonus = myDelegates < 3 ? 5 : (myDelegates < 5 ? 3 : 1);
+      pushRow('lobby', 'Лобби', lobbyBonus, sc.spCosts.lobby, 'влияние +' + lobbyBonus);
+    }
+
+    rows.sort(function(a, b) { return b.net - a.net; });
+    return rows;
+  }
+
+  function withRecoveredHand(state) {
+    if (!state || !state.thisPlayer) return state;
+    if (state.thisPlayer.cardsInHand && state.thisPlayer.cardsInHand.length > 0) return state;
+    var visibleNames = getVisibleHandCardNames();
+    if (visibleNames.length === 0) return state;
+    var clone = Object.assign({}, state);
+    clone.thisPlayer = Object.assign({}, state.thisPlayer, {
+      cardsInHand: visibleNames.map(function(name) { return { name: name }; })
+    });
+    return clone;
+  }
+
   function buildStateHash(state) {
     if (!state || !state.thisPlayer) return '';
-    var tp = state.thisPlayer;
+    var planningState = withRecoveredHand(state);
+    var tp = planningState.thisPlayer;
     var players = state.players || [];
     var lastPlayed = [tp.lastCardPlayed || ''];
     for (var i = 0; i < players.length; i++) {
@@ -244,7 +439,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   }
 
   function buildRankableHandCards(state) {
-    var tp = state && state.thisPlayer;
+    var planningState = withRecoveredHand(state);
+    var tp = planningState && planningState.thisPlayer;
     var hand = tp && tp.cardsInHand ? tp.cardsInHand : [];
     var built = [];
     for (var i = 0; i < hand.length; i++) {
@@ -263,7 +459,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return built;
   }
 
-  function collectStandardProjectHints(limit) {
+  function collectStandardProjectHints(state, limit) {
     var rows = [];
     var detectSPType = (typeof TM_CONTENT_STANDARD_PROJECTS !== 'undefined' && TM_CONTENT_STANDARD_PROJECTS && TM_CONTENT_STANDARD_PROJECTS.detectSPType)
       ? TM_CONTENT_STANDARD_PROJECTS.detectSPType
@@ -287,6 +483,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         reason: reasonRows.length > 0 ? (reasonRows[0].text || '') : ''
       });
     });
+    if (rows.length === 0) rows = computeStandardProjectRows(withRecoveredHand(state));
     rows.sort(function(a, b) { return b.net - a.net; });
     if (typeof limit === 'number' && limit >= 0) return rows.slice(0, limit);
     return rows;
@@ -294,6 +491,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
   function renderOffTurnPlan(state) {
     if (!state || !state.thisPlayer) return '';
+    var planningState = withRecoveredHand(state);
 
     var activePlayer = null;
     var players = state.players || [];
@@ -306,11 +504,11 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     var ranked = [];
     if (typeof TM_ADVISOR.rankHandCards === 'function') {
-      ranked = TM_ADVISOR.rankHandCards(buildRankableHandCards(state), state) || [];
+      ranked = TM_ADVISOR.rankHandCards(buildRankableHandCards(planningState), planningState) || [];
     }
     ranked = ranked.filter(function(card) { return card && card.name; }).slice(0, 3);
 
-    var spHints = collectStandardProjectHints(3);
+    var spHints = collectStandardProjectHints(planningState, 3);
     var sections = [];
     if (ranked.length > 0) {
       var cardLines = [];
@@ -2106,6 +2304,102 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   var _DRAFT_MEM_KEY = 'tm-advisor-draft-memory';
   var _draftMemGameId = '';
 
+  function rememberSeenCard(seen, seenSet, rawName, cardData) {
+    if (!rawName) return false;
+    var name = String(rawName).trim();
+    if (!name) return false;
+    var variantMap = getProjectVariantMap(cardData);
+    var base = _baseCardName(name);
+    var candidates = [name, base];
+    var variants = variantMap[base] || [];
+    for (var vi = 0; vi < variants.length; vi++) candidates.push(variants[vi]);
+    var added = false;
+    for (var ci = 0; ci < candidates.length; ci++) {
+      var candidate = candidates[ci];
+      if (!candidate || seenSet[candidate]) continue;
+      if (cardData && !cardData[candidate]) continue;
+      seenSet[candidate] = true;
+      seen.push(candidate);
+      added = true;
+    }
+    return added;
+  }
+
+  function rememberSeenCardList(seen, seenSet, list, cardData) {
+    if (!list || !list.length) return false;
+    var added = false;
+    for (var i = 0; i < list.length; i++) {
+      var item = list[i];
+      var name = item && item.name ? item.name : item;
+      if (rememberSeenCard(seen, seenSet, name, cardData)) added = true;
+    }
+    return added;
+  }
+
+  function extractSeenCardsFromGameLog(log, cardData) {
+    var seen = [];
+    var seenSet = Object.create(null);
+    if (!log || typeof log !== 'object') return seen;
+    var myColor = log.myColor || '';
+    var events = Array.isArray(log.events) ? log.events : [];
+    for (var ei = 0; ei < events.length; ei++) {
+      var ev = events[ei] || {};
+      if ((ev.type === 'state_snapshot' || ev.type === 'final_state') &&
+          ev.players && myColor && ev.players[myColor] && ev.players[myColor].hand) {
+        rememberSeenCardList(seen, seenSet, ev.players[myColor].hand, cardData);
+      }
+      if (ev.type === 'hand_change') {
+        rememberSeenCardList(seen, seenSet, ev.added || [], cardData);
+        rememberSeenCardList(seen, seenSet, ev.removed || [], cardData);
+      }
+    }
+    var draftLog = Array.isArray(log.draftLog) ? log.draftLog : [];
+    for (var di = 0; di < draftLog.length; di++) {
+      var draftEntry = draftLog[di] || {};
+      rememberSeenCardList(seen, seenSet, draftEntry.offered || [], cardData);
+      rememberSeenCardList(seen, seenSet, draftEntry.passed || [], cardData);
+      rememberSeenCardList(seen, seenSet, draftEntry.skipped || [], cardData);
+      if (draftEntry.taken) rememberSeenCard(seen, seenSet, draftEntry.taken.name || draftEntry.taken, cardData);
+      rememberSeenCardList(seen, seenSet, draftEntry.bought || [], cardData);
+    }
+    return seen;
+  }
+
+  function loadStoredSeenCards(gameId, cardData) {
+    if (!gameId) return;
+    if (_storedSeenLoadStateByGame[gameId] === 'loaded' || _storedSeenLoadStateByGame[gameId] === 'pending') return;
+    var storageAccessor = _safeStorage
+      ? function(cb) { _safeStorage(function(storage) { cb(storage); }); }
+      : ((typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local)
+        ? function(cb) { cb(chrome.storage); }
+        : null);
+    if (!storageAccessor) {
+      _storedSeenLoadStateByGame[gameId] = 'loaded';
+      _storedSeenCardsByGame[gameId] = [];
+      return;
+    }
+    _storedSeenLoadStateByGame[gameId] = 'pending';
+    storageAccessor(function(storage) {
+      try {
+        storage.local.get('gamelog_' + gameId, function(data) {
+          var log = data ? data['gamelog_' + gameId] : null;
+          _storedSeenCardsByGame[gameId] = extractSeenCardsFromGameLog(log, cardData);
+          _storedSeenLoadStateByGame[gameId] = 'loaded';
+          setTimeout(update, 0);
+        });
+      } catch (e) {
+        _storedSeenCardsByGame[gameId] = [];
+        _storedSeenLoadStateByGame[gameId] = 'loaded';
+      }
+    });
+  }
+
+  function getStoredSeenCards(gameId, cardData) {
+    if (!gameId) return [];
+    if (!_storedSeenLoadStateByGame[gameId]) loadStoredSeenCards(gameId, cardData);
+    return _storedSeenCardsByGame[gameId] || [];
+  }
+
   function getDraftMemory(gameId) {
     if (_draftMemGameId !== gameId) {
       _draftMemGameId = gameId;
@@ -2126,36 +2420,30 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     } catch(e) {}
   }
 
-  function trackDraftCards(state) {
-    var gameId = (state.game && state.game.id) || '';
-    // Fallback: use board+players+color as stable ID if game.id is empty
-    if (!gameId && state.game) {
-      var opts = state.game.gameOptions || {};
-      var playerNames = (state.players || []).map(function(p) { return p.name || ''; }).sort().join(',');
-      gameId = 'g_' + (opts.boardName || 'x') + '_' + playerNames + '_' +
-        ((state.thisPlayer && state.thisPlayer.color) || '');
-    }
-    if (!gameId) return;
+  function trackDraftCards(state, cardData) {
+    var planningState = withRecoveredHand(state);
+    var gameId = getStableGameId(planningState);
+    if (!gameId) return [];
     var seen = getDraftMemory(gameId);
-    var seenSet = {};
+    var seenSet = Object.create(null);
     for (var i = 0; i < seen.length; i++) seenSet[seen[i]] = true;
     var added = false;
 
+    // Cards currently visible in hand or recovered from bridge.
+    var currentHand = (planningState.thisPlayer && planningState.thisPlayer.cardsInHand) || [];
+    if (rememberSeenCardList(seen, seenSet, currentHand, cardData)) added = true;
+
     // Cards in current draft offer (draftedCards from vue-bridge)
-    var drafted = state.draftedCards || (state.thisPlayer && state.thisPlayer.draftedCards) || [];
+    var drafted = planningState.draftedCards || (planningState.thisPlayer && planningState.thisPlayer.draftedCards) || [];
     for (var d = 0; d < drafted.length; d++) {
-      var dn = drafted[d].name || drafted[d];
-      if (dn && !seenSet[dn]) { seen.push(dn); seenSet[dn] = true; added = true; }
+      if (rememberSeenCard(seen, seenSet, drafted[d].name || drafted[d], cardData)) added = true;
     }
 
     // Cards in waitingFor (select-card prompts during draft)
-    var wf = state._waitingFor;
+    var wf = planningState._waitingFor;
     if (wf && typeof TM_ADVISOR_WORKFLOW !== 'undefined' && TM_ADVISOR_WORKFLOW.collectWorkflowCardNames) {
       var wfNames = TM_ADVISOR_WORKFLOW.collectWorkflowCardNames(wf);
-      for (var w = 0; w < wfNames.length; w++) {
-        var wn = wfNames[w];
-        if (wn && !seenSet[wn]) { seen.push(wn); seenSet[wn] = true; added = true; }
-      }
+      if (rememberSeenCardList(seen, seenSet, wfNames, cardData)) added = true;
     }
 
     if (added) saveDraftMemory(gameId, seen);
@@ -2171,7 +2459,12 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (!ratings || !cardData) { el.innerHTML = ''; return; }
 
     // Track draft-seen cards and cards already consumed in log / lastCardPlayed.
-    var seenCards = trackDraftCards(state) || [];
+    var gameId = getStableGameId(state);
+    var seenCards = trackDraftCards(state, cardData) || [];
+    var storedSeenCards = getStoredSeenCards(gameId, cardData);
+    for (var ssi = 0; ssi < storedSeenCards.length; ssi++) {
+      if (seenCards.indexOf(storedSeenCards[ssi]) === -1) seenCards.push(storedSeenCards[ssi]);
+    }
     var logSeenCards = collectSeenProjectCards(state, cardData);
     for (var lsi = 0; lsi < logSeenCards.length; lsi++) {
       if (seenCards.indexOf(logSeenCards[lsi]) === -1) seenCards.push(logSeenCards[lsi]);
