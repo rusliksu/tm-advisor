@@ -86,6 +86,20 @@ function testCoreHelpers() {
   assert.strictEqual(closeoutInterpolated.boardBased, 2);
   assert.strictEqual(closeoutInterpolated.gensLeft, 2);
 
+  const smartPay = core.smartPay(14, {
+    thisPlayer: {
+      megaCredits: 30,
+      megacredits: 30,
+      steel: 2,
+      titanium: 1,
+      steelValue: 2,
+      titaniumValue: 3,
+    },
+  }, {});
+  assert.strictEqual(smartPay.hasOwnProperty('megaCredits'), true);
+  assert.strictEqual(smartPay.hasOwnProperty('megacredits'), false);
+  assert.strictEqual(typeof smartPay.megaCredits, 'number');
+
   const accelerating = core.estimateScoreCardTimingAccelerating({
     steps: 10,
     playerCount: 3,

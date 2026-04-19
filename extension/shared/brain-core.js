@@ -4,7 +4,7 @@
   'use strict';
 
   var PAY_ZERO = {
-    heat: 0, megacredits: 0, steel: 0, titanium: 0, plants: 0,
+    heat: 0, megaCredits: 0, steel: 0, titanium: 0, plants: 0,
     microbes: 0, floaters: 0, lunaArchivesScience: 0, spireScience: 0,
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
@@ -71,7 +71,7 @@
       remaining = Math.max(0, remaining - use * alt.val);
     }
 
-    pay.megacredits = Math.max(0, Math.min(remaining, tp.megaCredits || tp.megacredits || 0));
+    pay.megaCredits = Math.max(0, Math.min(remaining, tp.megaCredits || tp.megacredits || 0));
     return pay;
   }
 
