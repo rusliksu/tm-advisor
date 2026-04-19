@@ -1,0 +1,327 @@
+/* ── TM Advisor Panel ── */
+
+.tm-advisor-panel {
+  position: fixed;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 310px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: rgba(12, 12, 25, 0.96);
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  z-index: 10002;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  transition: width 0.2s, opacity 0.2s;
+  line-height: 1.4;
+}
+
+.tm-advisor-panel.tm-advisor-dragging {
+  opacity: 0.85;
+  transition: none;
+}
+
+.tm-advisor-panel.tm-advisor-collapsed {
+  width: 36px;
+  max-height: none;
+  overflow: hidden;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.tm-advisor-panel.tm-advisor-collapsed .tm-advisor-body {
+  display: none;
+}
+
+.tm-advisor-panel.tm-advisor-hidden {
+  display: none;
+}
+
+/* Header */
+.tm-advisor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #333;
+  cursor: grab;
+  user-select: none;
+}
+
+.tm-advisor-header:active {
+  cursor: grabbing;
+}
+
+.tm-advisor-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: #f1c40f;
+  cursor: pointer;
+}
+
+.tm-advisor-title:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.tm-advisor-toggle {
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.tm-advisor-toggle:hover {
+  color: #fff;
+  border-color: #f1c40f;
+}
+
+/* Timing block */
+.tm-advisor-timing {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.tm-advisor-timing.tm-dz-red {
+  background: rgba(231, 76, 60, 0.2);
+  border-left: 3px solid #e74c3c;
+  color: #ff6b6b;
+}
+
+.tm-advisor-timing.tm-dz-yellow {
+  background: rgba(241, 196, 15, 0.15);
+  border-left: 3px solid #f1c40f;
+  color: #f1c40f;
+}
+
+.tm-advisor-timing.tm-dz-green {
+  background: rgba(46, 204, 113, 0.12);
+  border-left: 3px solid #2ecc71;
+  color: #2ecc71;
+}
+
+.tm-advisor-timing-detail {
+  font-size: 12px;
+  font-weight: normal;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.tm-advisor-timing-detail b {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Alerts — section separators */
+.tm-advisor-alerts {
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+.tm-advisor-alerts > div {
+  padding: 1px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.tm-advisor-alerts > div:last-child {
+  border-bottom: none;
+}
+
+/* Alert severity classes */
+.tm-alert-danger { color: #e74c3c; }
+.tm-alert-warning { color: #f39c12; }
+.tm-alert-success { color: #2ecc71; }
+.tm-alert-info { color: #3498db; }
+
+/* Section headers in alerts */
+.tm-alert-section {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.35;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tm-advisor-alerts > div:first-child .tm-alert-section {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Action checklist */
+.tm-advisor-actions {
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(52, 152, 219, 0.08);
+  border-left: 2px solid #3498db;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #aad;
+}
+
+.tm-advisor-bot-hint {
+  padding: 2px 0 4px;
+}
+
+.tm-advisor-bot-title {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #d6e9ff;
+}
+
+.tm-advisor-bot-main {
+  font-size: 12px;
+  color: #f3f8ff;
+}
+
+.tm-advisor-bot-main b {
+  color: #ffffff;
+}
+
+.tm-advisor-bot-score {
+  color: #7fc8ff;
+  font-size: 11px;
+}
+
+.tm-advisor-bot-reason,
+.tm-advisor-bot-alt {
+  font-size: 10px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-bot-alt {
+  margin-top: 1px;
+}
+
+/* Pass indicator */
+.tm-advisor-pass {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.tm-advisor-pass-safe {
+  background: rgba(46, 204, 113, 0.12);
+  color: #2ecc71;
+}
+
+.tm-advisor-pass-risky {
+  background: rgba(231, 76, 60, 0.12);
+  color: #e74c3c;
+}
+
+.tm-advisor-pass-neutral {
+  background: rgba(149, 165, 166, 0.12);
+  color: #95a5a6;
+}
+
+/* VP Lead */
+.tm-advisor-vp-lead {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.tm-advisor-vp-lead.positive { color: #2ecc71; }
+.tm-advisor-vp-lead.negative { color: #e74c3c; }
+.tm-advisor-vp-lead.neutral { color: #95a5a6; }
+
+/* Compact mode — hide detail rows but keep VP header */
+.tm-advisor-compact .tm-advisor-timing-detail,
+.tm-advisor-compact .tm-detail-row {
+  display: none;
+}
+
+.tm-advisor-compact .tm-advisor-vp-lead {
+  font-size: 12px;
+}
+
+.tm-advisor-compact .tm-advisor-timing {
+  font-size: 13px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+}
+
+.tm-advisor-compact .tm-advisor-pass {
+  margin-top: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* Compact alerts — inline */
+.tm-advisor-compact .tm-advisor-alerts > div {
+  display: inline;
+  border-bottom: none;
+}
+
+.tm-advisor-compact .tm-advisor-alerts .tm-alert-section {
+  display: none;
+}
+
+.tm-advisor-compact .tm-advisor-actions {
+  font-size: 10px;
+  padding: 2px 6px;
+}
+
+/* Details/Summary toggle */
+.tm-advisor-alerts details summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.tm-advisor-alerts details summary::-webkit-details-marker {
+  display: none;
+}
+
+.tm-advisor-alerts details[open] summary {
+  opacity: 0.3;
+}
+
+/* Scrollbar */
+.tm-advisor-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.tm-advisor-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tm-advisor-panel::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 2px;
+}
+
+/* VP bar tooltip */
+.tm-advisor-panel [title] {
+  cursor: default;
+}
+
+/* Table styles in VP comparison */
+.tm-advisor-panel table {
+  border-spacing: 0;
+}
+
+.tm-advisor-panel table td {
+  white-space: nowrap;
+}
