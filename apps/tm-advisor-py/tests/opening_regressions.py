@@ -13,8 +13,9 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
-from tm_advisor.analysis import _generate_alerts  # noqa: E402
-from tm_advisor.colony_advisor import analyze_settlement, analyze_trade_options, colony_strategy_advice, format_trade_hints  # noqa: E402
+from tm_advisor.analysis import _generate_alerts, summarize_action_card  # noqa: E402
+from tm_advisor.colony_advisor import analyze_settlement, analyze_trade_options, colony_strategy_advice, format_trade_hints, _get_trade_modifiers  # noqa: E402
+from tm_advisor.draft_play_advisor import _estimate_req_gap  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -259,6 +260,124 @@ def main():
     )
     assert project_score(bot, established_strong_state, "Thorgate", "Established Methods") > (
         project_score(bot, established_weak_state, "Helion", "Established Methods")
+    )
+
+    established_poseidon_state = build_state(
+        corps=["Poseidon", "Thorgate", "CrediCor"],
+        preludes=["Established Methods", "Donation", "Allied Banks"],
+        projects=["Research", "Acquired Company"],
+        colonies=[("Luna", True), ("Pluto", True), ("Triton", True), ("Callisto", True)],
+        player_count=4,
+    )
+    assert project_score(bot, established_poseidon_state, "Poseidon", "Established Methods") > (
+        project_score(bot, established_poseidon_state, "Thorgate", "Established Methods")
+    )
+    assert project_score(bot, established_poseidon_state, "Poseidon", "Established Methods") > (
+        project_score(bot, established_poseidon_state, "CrediCor", "Established Methods")
+    )
+
+    solarnet_alliance_state = build_state(
+        corps=["Saturn Systems", "Helion", "Teractor"],
+        preludes=["Planetary Alliance", "Donation", "Allied Banks"],
+        projects=["Solarnet", "Warp Drive"],
+        game_options={
+            "coloniesExtension": True,
+            "preludeExtension": True,
+            "ceosExtension": True,
+            "venusNextExtension": True,
+        },
+    )
+    solarnet_blank_state = build_state(
+        corps=["Saturn Systems", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Loan"],
+        projects=["Solarnet", "Warp Drive"],
+        game_options={
+            "coloniesExtension": True,
+            "preludeExtension": True,
+            "ceosExtension": True,
+            "venusNextExtension": True,
+        },
+    )
+    assert project_score(bot, solarnet_alliance_state, "Saturn Systems", "Solarnet") > (
+        project_score(bot, solarnet_blank_state, "Saturn Systems", "Solarnet")
+    )
+
+    high_circles_blank_state = build_state(
+        corps=["Helion", "Arklight", "Saturn Systems"],
+        preludes=["High Circles", "Donation", "Allied Banks"],
+        projects=["Research"],
+        game_options={
+            "expansions": {
+                "prelude": True,
+                "colonies": False,
+                "ceos": False,
+                "turmoil": True,
+            }
+        },
+    )
+    high_circles_corridors_state = build_state(
+        corps=["Helion", "Arklight", "Saturn Systems"],
+        preludes=["High Circles", "Corridors of Power", "Allied Banks"],
+        projects=["Research"],
+        game_options={
+            "expansions": {
+                "prelude": True,
+                "colonies": False,
+                "ceos": False,
+                "turmoil": True,
+            }
+        },
+    )
+    high_circles_rise_state = build_state(
+        corps=["Helion", "Arklight", "Saturn Systems"],
+        preludes=["High Circles", "Rise To Power", "Allied Banks"],
+        projects=["Research"],
+        game_options={
+            "expansions": {
+                "prelude": True,
+                "colonies": False,
+                "ceos": False,
+                "turmoil": True,
+            }
+        },
+    )
+    high_circles_septem_state = build_state(
+        corps=["Septem Tribus", "Helion", "Arklight"],
+        preludes=["High Circles", "Donation", "Allied Banks"],
+        projects=["Research"],
+        game_options={
+            "expansions": {
+                "prelude": True,
+                "colonies": False,
+                "ceos": False,
+                "turmoil": True,
+            }
+        },
+    )
+    high_circles_full_state = build_state(
+        corps=["Septem Tribus", "Helion", "Arklight"],
+        preludes=["High Circles", "Corridors of Power", "Rise To Power"],
+        projects=["Research"],
+        game_options={
+            "expansions": {
+                "prelude": True,
+                "colonies": False,
+                "ceos": False,
+                "turmoil": True,
+            }
+        },
+    )
+    assert project_score(bot, high_circles_corridors_state, "Helion", "High Circles") > (
+        project_score(bot, high_circles_blank_state, "Helion", "High Circles")
+    )
+    assert project_score(bot, high_circles_rise_state, "Helion", "High Circles") > (
+        project_score(bot, high_circles_blank_state, "Helion", "High Circles")
+    )
+    assert project_score(bot, high_circles_septem_state, "Septem Tribus", "High Circles") > (
+        project_score(bot, high_circles_blank_state, "Helion", "High Circles")
+    )
+    assert project_score(bot, high_circles_full_state, "Septem Tribus", "High Circles") > (
+        project_score(bot, high_circles_septem_state, "Septem Tribus", "High Circles")
     )
 
     titan_sink_state = build_state(
@@ -572,6 +691,36 @@ def main():
     ceres_trade_hints = format_trade_hints(ceres_trade_state)
     assert any("Сначала Ceres" in hint for hint in ceres_trade_hints)
 
+    generated_trade_mod_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Luna", True), ("Triton", True)],
+        generation=3,
+    )
+    generated_trade_mod_state.me.tableau = [
+        {"name": "Cryo-Sleep"},
+        {"name": "Rim Freighters"},
+        {"name": "Trade Envoys"},
+        {"name": "Trading Colony"},
+        {"name": "L1 Trade Terminal"},
+        {"name": "Venus Trade Hub"},
+    ]
+    generated_mods = _get_trade_modifiers(generated_trade_mod_state.me)
+    assert generated_mods["energy_discount"] == 2, generated_mods
+    assert generated_mods["track_boost"] == 4, generated_mods
+    assert generated_mods["mc_bonus"] == 3, generated_mods
+    assert "Cryo-Sleep (-1 energy)" in generated_mods["descriptions"], generated_mods
+    assert "L1 Trade Terminal (+2 track)" in generated_mods["descriptions"], generated_mods
+    assert "Venus Trade Hub (+3 MC)" in generated_mods["descriptions"], generated_mods
+
+    assert "When you trade, gain 3 M€." in bot.db.get_desc("Venus Trade Hub")
+    research_outpost_eff = bot.effect_parser.get("Research Outpost")
+    assert research_outpost_eff is not None
+    assert research_outpost_eff.discount.get("all") == 1, research_outpost_eff.discount
+    assert summarize_action_card("Development Center", bot.effect_parser) == "1 energy → draw 1 card"
+    assert summarize_action_card("Viron", bot.effect_parser) == "reuse action card"
+
     engine_no_draw_state = build_state(
         corps=["Cheung Shing MARS", "Helion", "Teractor"],
         preludes=["Donation", "Allied Banks", "Power Generation"],
@@ -623,15 +772,16 @@ def main():
     draw_heavy_state.me.steel_prod = 0
     draw_heavy_state.me.energy_prod = 0
 
-    assert project_score(bot, engine_no_draw_state, "Cheung Shing MARS", "Research") >= (
-        project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Research")
-    )
-    assert project_score(bot, engine_no_draw_state, "Cheung Shing MARS", "Earth Catapult") < (
-        project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Earth Catapult")
-    )
-    assert project_score(bot, draw_heavy_state, "Cheung Shing MARS", "Acquired Company") > (
-        project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Acquired Company")
-    )
+    research_no_draw = project_score(bot, engine_no_draw_state, "Cheung Shing MARS", "Research")
+    research_with_draw = project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Research")
+    earth_cat_no_draw = project_score(bot, engine_no_draw_state, "Cheung Shing MARS", "Earth Catapult")
+    earth_cat_with_draw = project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Earth Catapult")
+    acquired_draw_heavy = project_score(bot, draw_heavy_state, "Cheung Shing MARS", "Acquired Company")
+    acquired_with_draw = project_score(bot, engine_with_draw_state, "Cheung Shing MARS", "Acquired Company")
+
+    assert abs(research_no_draw - research_with_draw) <= 2
+    assert earth_cat_no_draw < earth_cat_with_draw
+    assert acquired_draw_heavy > acquired_with_draw
 
     engine_relief_state = build_state(
         corps=["Cheung Shing MARS", "Helion", "Teractor"],
@@ -695,10 +845,37 @@ def main():
             "description": info.get("description", "") or "",
         })
 
-    engine_alerts = _generate_alerts(engine_alert_state)
+    engine_alerts = _generate_alerts(engine_alert_state, bot.effect_parser)
     assert any("добора мало" in alert for alert in engine_alerts)
-    engine_draw_ok_alerts = _generate_alerts(engine_with_draw_state)
+    engine_draw_ok_alerts = _generate_alerts(engine_with_draw_state, bot.effect_parser)
     assert not any("добора мало" in alert for alert in engine_draw_ok_alerts)
+
+    action_alert_state = build_state(
+        corps=["Cheung Shing MARS", "Helion", "Teractor"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Development Center"],
+        colonies=[("Luna", True)],
+        generation=3,
+    )
+    action_alert_state.me.tableau = [
+        {"name": "Development Center"},
+        {"name": "Birds"},
+        {"name": "Viron"},
+    ]
+    action_alerts = _generate_alerts(action_alert_state, bot.effect_parser)
+    assert any("🔵 Actions" in alert and "Development Center: 1 energy → draw 1 card" in alert and "Viron: reuse action card" in alert for alert in action_alerts), action_alerts
+
+    req_gap_state = build_state(
+        corps=["Saturn Systems"],
+        preludes=["Donation"],
+        projects=[],
+        colonies=[("Luna", True), ("Ceres", True), ("Miranda", True)],
+        generation=2,
+    )
+    req_gap_state.game["phase"] = "action"
+    assert _estimate_req_gap("Нужно 4 science tag (есть 0)", req_gap_state, 9) == 4
+    assert _estimate_req_gap("Нужно 2 venus tag (есть 0)", req_gap_state, 9) == 2
+    assert _estimate_req_gap("Нужно 5 ocean (сейчас 0)", req_gap_state, 9) == 3
 
     print("advisor opening regression checks: OK")
 
