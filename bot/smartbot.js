@@ -7,6 +7,7 @@ const {
   VP_CARDS, ENGINE_CARDS, CITY_CARDS, PROD_CARDS, DYNAMIC_VP_CARDS,
   COLONY_TRADE, COLONY_BUILD_PRIORITY,
   STATIC_VP,
+  isOffBoardCityCard,
   remainingSteps, vpLead, shouldPushGlobe, isRedsRuling,
   scoreColonyTrade, scoreCard, smartPay,
 } = TM_BRAIN;
@@ -189,6 +190,34 @@ function getVisibleColonyNames(state) {
   return [...new Set(((state?.game?.colonies) || []).map((col) => col?.name).filter(Boolean))];
 }
 
+function countOpeningTags(tag, projectCards, preludes, excludeName) {
+  const pool = [...(projectCards || []), ...(preludes || [])];
+  let count = 0;
+  for (const card of pool) {
+    const name = card?.name || '';
+    if (!name || name === excludeName) continue;
+    if (((CARD_TAGS[name] || [])).includes(tag)) count++;
+  }
+  return count;
+}
+
+function estimateOpeningEnergySupport(projectCards, preludes, excludeName) {
+  const pool = [...(projectCards || []), ...(preludes || [])];
+  let support = 0;
+  for (const card of pool) {
+    const name = card?.name || '';
+    if (!name || name === excludeName) continue;
+    const data = CARD_DATA[name] || {};
+    const beh = data.behavior || {};
+    const prodEnergy = beh.production?.energy || 0;
+    const stockEnergy = beh.stock?.energy || 0;
+    if (prodEnergy > 0) support += prodEnergy;
+    if (stockEnergy > 0) support += stockEnergy * 0.5;
+    if (((CARD_TAGS[name] || [])).includes('power')) support += 0.5;
+  }
+  return support;
+}
+
 function hasCardDrawUtility(cardName) {
   const data = CARD_DATA[cardName] || {};
   return DRAW_SETUP_CARDS.has(cardName) || !!data.behavior?.drawCards || !!data.behavior?.drawCard;
@@ -199,14 +228,76 @@ function hasCardDiscountUtility(cardName) {
   return !!data.cardDiscount || DISCOUNT_SETUP_CARDS.has(cardName);
 }
 
+function countSupportTags(state, tag, excludeName) {
+  let count = 0;
+  const tp = state?.thisPlayer || {};
+  for (const card of (tp.tableau || [])) {
+    const name = card?.name || '';
+    if (!name || name === excludeName) continue;
+    if ((CARD_TAGS[name] || []).includes(tag)) count++;
+  }
+  const hand = state?.cardsInHand || tp.cardsInHand || [];
+  for (const card of hand) {
+    const name = card?.name || card || '';
+    if (!name || name === excludeName) continue;
+    if ((CARD_TAGS[name] || []).includes(tag)) count++;
+  }
+  return count;
+}
+
+function isWeakPseudoVpActionCard(cardName) {
+  return cardName === 'Search For Life' || cardName === 'Security Fleet';
+}
+
+function hasWeakPseudoVpActionSupport(cardName, state) {
+  const tp = state?.thisPlayer || {};
+  if (cardName === 'Search For Life') return countSupportTags(state, 'science', cardName) >= 1;
+  if (cardName === 'Security Fleet') return (tp.titaniumProduction || 0) >= 1 || (tp.titanium || 0) >= 3;
+  return false;
+}
+
+function shouldSkipEarlyTrapProject(cardName, state) {
+  const gen = state?.game?.generation || 1;
+  const tp = state?.thisPlayer || {};
+  if (cardName === 'Search For Life') {
+    return gen <= 4 && countSupportTags(state, 'science', cardName) === 0;
+  }
+  if (cardName === 'Security Fleet') {
+    return gen <= 6 && (tp.titaniumProduction || 0) === 0 && (tp.titanium || 0) < 3;
+  }
+  return false;
+}
+
+function shouldAvoidWeakPseudoVpBuy(cardName, state) {
+  if (!isWeakPseudoVpActionCard(cardName)) return false;
+  const gen = state?.game?.generation || 1;
+  const supported = hasWeakPseudoVpActionSupport(cardName, state);
+  if (cardName === 'Search For Life') {
+    return gen >= 7 || !supported;
+  }
+  if (cardName === 'Security Fleet') {
+    return gen >= 8 || !supported;
+  }
+  return false;
+}
+
+function getWeakPseudoVpBuyPenalty(cardName, state) {
+  if (!isWeakPseudoVpActionCard(cardName)) return 0;
+  const gen = state?.game?.generation || 1;
+  if (shouldAvoidWeakPseudoVpBuy(cardName, state)) return -12;
+  return gen >= 5 ? -4 : -2;
+}
+
 function isSellProtectedCard(card, state, corp, isEndgame) {
   const name = card?.name || '';
   const data = CARD_DATA[name] || {};
+  if (isWeakPseudoVpActionCard(name) && (isEndgame || shouldAvoidWeakPseudoVpBuy(name, state))) return false;
   const vpd = CARD_VP[name];
   if (vpd && (vpd.type !== 'static' || vpd.vp > 0)) return true;
   const vp = STATIC_VP[name] ?? 0;
   if (vp > 0 || DYNAMIC_VP_CARDS.has(name)) return true;
   if (!isEndgame) {
+    const isEvent = ((CARD_TAGS[name] || []).includes('event')) || String(data.type || '').toLowerCase() === 'event';
     if (
       ENGINE_CARDS.has(name) ||
       PROD_CARDS.has(name) ||
@@ -222,7 +313,7 @@ function isSellProtectedCard(card, state, corp, isEndgame) {
     const steps = remainingSteps(state);
     if (steps > 8 && keepScore >= (gen <= 7 ? 8 : 10)) return true;
     const cost = card?.calculatedCost ?? card?.cost ?? 0;
-    if (gen <= 6 && cost <= 10 && keepScore >= 4) return true;
+    if (!isEvent && gen <= 6 && cost <= 10 && keepScore >= 4) return true;
   }
   return false;
 }
@@ -240,6 +331,17 @@ function estimateCardCashCost(card, state) {
 
 function isLiquidityProtectedCard(cardName) {
   return ENGINE_CARDS.has(cardName) || PROD_CARDS.has(cardName) || CITY_CARDS.has(cardName);
+}
+
+function isBottomTierLowCashUtilityCard(cardName, state) {
+  if (!cardName || isLiquidityProtectedCard(cardName)) return false;
+  const data = CARD_DATA[cardName] || {};
+  if (hasCardDrawUtility(cardName) || hasCardDiscountUtility(cardName) || !!data.behavior?.colony) {
+    return false;
+  }
+  if (!TM_BRAIN || typeof TM_BRAIN.getOverlayRatingScore !== 'function') return false;
+  const overlayScore = TM_BRAIN.getOverlayRatingScore(cardName, state, null);
+  return typeof overlayScore === 'number' && overlayScore <= 50;
 }
 
 function computeLowMcPlayFloor(state, urgency, spAvailable) {
@@ -270,6 +372,67 @@ function isSmallEdgeSetupBiasCard(cardName) {
   );
 }
 
+function getVironActionBoost(cardName, context) {
+  const ctx = context || {};
+  const state = ctx.state;
+  const allProjectCards = ctx.allProjectCards || [];
+  const allPreludes = ctx.allPreludes || [];
+  const colonyNames = ctx.colonyNames || new Set();
+  const opening = !!ctx.opening;
+  const data = CARD_DATA[cardName] || {};
+  const type = String(data.type || '').toLowerCase();
+  const hasRepeatableAction = type === 'active' || !!data.action;
+  if (!hasRepeatableAction) return 0;
+
+  let boost = 0;
+  if (state) {
+    boost += Math.max(0, scoreBlueActionCard({name: cardName, resources: 0}, state) - 1) * (opening ? 0.8 : 0.6);
+  }
+  if (ENGINE_CARDS.has(cardName)) boost += 1;
+  if (PROD_CARDS.has(cardName)) boost += 1;
+  if (DRAW_SETUP_CARDS.has(cardName)) boost += opening ? 1.5 : 0.75;
+  if (opening && hasCardDrawUtility(cardName)) boost += 0.5;
+
+  const cost = data.cost || 0;
+  if (opening && cost > 0) {
+    if (cost <= 12) boost += 0.5;
+    else if (cost <= 16) boost += 0.25;
+  }
+  if (opening && !data.requirements) boost += 0.5;
+
+  const scienceSupport = countOpeningTags('science', allProjectCards, allPreludes, cardName);
+  const microbeSupport = countOpeningTags('microbe', allProjectCards, allPreludes, cardName);
+  const earthSupport = countOpeningTags('earth', allProjectCards, allPreludes, cardName);
+  const energySupport = estimateOpeningEnergySupport(allProjectCards, allPreludes, cardName);
+  const playerCount = state?.players?.length || 3;
+
+  if (cardName === 'AI Central') {
+    if (scienceSupport >= 2) boost += 8;
+    else if (scienceSupport >= 1) boost += 3.5;
+    if (energySupport >= 1) boost += 2;
+  } else if (cardName === 'Development Center') {
+    boost += scienceSupport >= 1 ? 4 : 2;
+  } else if (cardName === 'Physics Complex') {
+    if (energySupport >= 2) boost += 4;
+    else if (energySupport >= 1) boost += 2;
+  } else if (cardName === 'Floating Trade Hub') {
+    boost += colonyNames.size > 0 ? 7 : 4;
+  } else if (cardName === 'Extreme-Cold Fungus') {
+    boost += 4;
+    if (colonyNames.has('Enceladus')) boost += 3;
+    if (microbeSupport >= 1) boost += 2;
+  } else if (cardName === 'Red Ships') {
+    boost += playerCount >= 4 ? 4 : 2.5;
+    if (earthSupport >= 1) boost += 1;
+  } else if (cardName === 'Martian Rails') {
+    boost -= 2;
+  } else if (cardName === 'Search For Life' || cardName === 'Security Fleet' || cardName === 'Underground Detonations') {
+    boost -= cardName === 'Security Fleet' ? 5 : 3.5;
+  }
+
+  return Math.round(boost * 10) / 10;
+}
+
 function scoreBlueActionCard(card, state) {
   const name = card?.name || '';
   const stepsNow = remainingSteps(state);
@@ -296,6 +459,101 @@ function getBestBlueActionCard(cards, state) {
     .sort((a, b) => b._actionEV - a._actionEV)[0] || null;
 }
 
+function getBestTradeInfo(tradeIdx, opts, state, resources) {
+  if (tradeIdx < 0) return null;
+  const mc = resources?.mc ?? 0;
+  const energy = resources?.energy ?? 0;
+  const titanium = resources?.titanium ?? 0;
+  if (!(mc >= 9 || energy >= 3 || titanium >= 3)) return null;
+  const tradeOpt = opts?.[tradeIdx];
+  const colonies = tradeOpt?.coloniesModel || tradeOpt?.colonies || [];
+  if (colonies.length === 0) return null;
+  const ranked = [...colonies]
+    .map((colony) => ({ colony, value: scoreColonyTrade(colony, state) }))
+    .sort((a, b) => b.value - a.value);
+  const threshold = energy >= 3 ? 4 : (titanium >= 3 ? 6 : 8);
+  return {
+    colony: ranked[0]?.colony,
+    value: ranked[0]?.value ?? -999,
+    threshold,
+    worthwhile: (ranked[0]?.value ?? -999) >= threshold,
+  };
+}
+
+function shouldPreferTradeOverCardAction(tradeInfo, bestBlueActionEV) {
+  if (!tradeInfo || !tradeInfo.worthwhile) return false;
+  if (bestBlueActionEV == null || !isFinite(bestBlueActionEV)) return true;
+  return tradeInfo.value >= bestBlueActionEV + 1.5;
+}
+
+function remainingCoreSteps(state) {
+  const g = state?.game || {};
+  const temp = typeof g.temperature === 'number' ? g.temperature : -30;
+  const o2 = typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0;
+  const oceans = typeof g.oceans === 'number' ? g.oceans : 0;
+  return Math.max(0, Math.round((8 - temp) / 2)) +
+    Math.max(0, 14 - o2) +
+    Math.max(0, 9 - oceans);
+}
+
+function countOpenCoreGlobals(state) {
+  const g = state?.game || {};
+  return ((g.temperature ?? -30) < 8 ? 1 : 0) +
+    ((g.oxygenLevel ?? 0) < 14 ? 1 : 0) +
+    ((g.oceans ?? 0) < 9 ? 1 : 0);
+}
+
+function getLateCoreCompletionStepLimit(gen, openCoreGlobalCount) {
+  if (gen >= 12 && openCoreGlobalCount <= 2) return 13;
+  return 10;
+}
+
+function isLateCoreCatchUpMode(gen, coreSteps) {
+  return gen >= 11 && coreSteps >= 14;
+}
+
+function isGen11OceanLagCompletionMode(state, gen, coreSteps, openCoreGlobalCount) {
+  const g = state?.game || {};
+  const temperature = g.temperature ?? -30;
+  const oxygen = g.oxygenLevel ?? 0;
+  const oceans = g.oceans ?? 0;
+  const closedTempOceanLag = temperature >= 8 && oceans <= 3;
+  const severeOceanLag = oxygen >= 14 && temperature >= 0 && oceans <= 2;
+  return gen >= 11 &&
+    coreSteps > 10 &&
+    coreSteps <= 12 &&
+    openCoreGlobalCount <= 2 &&
+    (closedTempOceanLag || severeOceanLag);
+}
+
+function isGen11OxygenLagCompletionMode(state, gen, coreSteps, openCoreGlobalCount) {
+  const g = state?.game || {};
+  const temperature = g.temperature ?? -30;
+  const oxygen = g.oxygenLevel ?? 0;
+  const oceans = g.oceans ?? 0;
+  return gen >= 11 &&
+    coreSteps >= 11 &&
+    coreSteps <= 13 &&
+    openCoreGlobalCount <= 2 &&
+    temperature >= 8 &&
+    oxygen <= 4 &&
+    oceans >= 5 &&
+    oceans <= 7;
+}
+
+function hasImmediateCoreGlobalProgress(cardName) {
+  const beh = CARD_DATA[cardName]?.behavior || {};
+  if (beh.ocean || beh.greenery) return true;
+  if (!beh.global || typeof beh.global !== 'object') return false;
+  return Number(beh.global.temperature) > 0 || Number(beh.global.oxygen) > 0;
+}
+
+function hasProductionGain(cardName) {
+  const production = CARD_DATA[cardName]?.behavior?.production;
+  if (!production || typeof production !== 'object') return false;
+  return Object.values(production).some((value) => Number(value) > 0);
+}
+
 function scoreCardForEarlyAwardDelay(card, state) {
   const name = card?.name || '';
   const data = CARD_DATA[name] || {};
@@ -304,9 +562,10 @@ function scoreCardForEarlyAwardDelay(card, state) {
   if (hasCardDiscountUtility(name)) score += 4;
   if (ENGINE_CARDS.has(name)) score += 3;
   if (PROD_CARDS.has(name)) score += 4;
-  if (CITY_CARDS.has(name)) score += 4;
+  if (CITY_CARDS.has(name) && !isOffBoardCityCard(name)) score += 4;
   if (data.behavior?.colony) score += 4;
-  if (VP_CARDS.has(name) || DYNAMIC_VP_CARDS.has(name)) score += 2;
+  if ((VP_CARDS.has(name) || DYNAMIC_VP_CARDS.has(name)) && !isWeakPseudoVpActionCard(name)) score += 2;
+  score += getWeakPseudoVpBuyPenalty(name, state);
   return score;
 }
 
@@ -344,7 +603,7 @@ function getEarlyAwardDelayCard(playCardOption, state) {
         hasCardDiscountUtility(name) ||
         ENGINE_CARDS.has(name) ||
         PROD_CARDS.has(name) ||
-        CITY_CARDS.has(name) ||
+        (CITY_CARDS.has(name) && !isOffBoardCityCard(name)) ||
         !!data.behavior?.colony;
       return {
         ...card,
@@ -367,11 +626,91 @@ function isTerraformingStandardProject(name) {
     lower.includes('greenery');
 }
 
+function isCoreTerraformingStandardProject(name) {
+  const lower = String(name || '').toLowerCase();
+  return lower.includes('asteroid') ||
+    lower.includes('aquifer') ||
+    lower.includes('greenery');
+}
+
 function isWeakUtilityStandardProject(name) {
   const lower = String(name || '').toLowerCase();
   return lower.includes('excavate') ||
     lower.includes('collusion') ||
     lower.includes('power plant');
+}
+
+function getExcavateTokenCount(state) {
+  const tokens = state?.thisPlayer?.underworldData?.tokens;
+  return Array.isArray(tokens) ? tokens.length : 0;
+}
+
+function hasStrongExcavateSupport(state) {
+  const tp = state?.thisPlayer || {};
+  const steelProd = tp.steelProduction || 0;
+  const steelNow = tp.steel || 0;
+  const corruption = tp.corruption ?? tp.underworldData?.corruption ?? 0;
+  return corruption > 0 || steelProd >= 2 || (steelProd >= 1 && steelNow >= 4);
+}
+
+function shouldSkipVisibleStandardProject(spCard, state, score) {
+  const name = spCard?.name || spCard || '';
+  const lower = String(name).toLowerCase();
+  const gen = state?.game?.generation || 1;
+  const gm = state?.game || {};
+  const coreClosed = (gm.temperature ?? -30) >= 8 &&
+    (gm.oxygenLevel ?? 0) >= 14 &&
+    (gm.oceans ?? 0) >= 9;
+
+  if (lower.includes('excavate')) {
+    const hasSupport = hasStrongExcavateSupport(state);
+    const tokenCount = getExcavateTokenCount(state);
+    if (!hasSupport && gen <= 4 && score <= 4) return true;
+    if (!hasSupport && gen <= 8 && score <= 1) return true;
+    if (tokenCount >= 1 && gen <= 4 && score <= 4) return true;
+    if (tokenCount >= 2 && gen <= 8 && score <= 2) return true;
+  }
+
+  if (lower.includes('colony')) {
+    if (gen >= 3 && score <= 0) return true;
+  }
+
+  if (lower.includes('collusion')) {
+    return true;
+  }
+
+  if (lower.includes('air scrapping')) {
+    if (!coreClosed && score <= 2) return true;
+  }
+
+  return false;
+}
+
+function shouldApplyClosureTerraformingBoost(spCard, state) {
+  const name = spCard?.name || spCard || '';
+  if (isCoreTerraformingStandardProject(name)) return true;
+  const lower = String(name).toLowerCase();
+  if (!lower.includes('air scrapping')) return false;
+  const gm = state?.game || {};
+  return (gm.temperature ?? -30) >= 8 &&
+    (gm.oxygenLevel ?? 0) >= 14 &&
+    (gm.oceans ?? 0) >= 9 &&
+    (gm.venusScaleLevel ?? 0) < 30;
+}
+
+function getClosureBoostCap(steps, spCard, rawSpEV) {
+  const lower = String(spCard?.name || spCard || '').toLowerCase();
+  if (lower.includes('asteroid') && rawSpEV <= 0) {
+    if (steps > 16) return 12;
+    if (steps > 10) return 15;
+  }
+  if (lower.includes('aquifer') && rawSpEV <= 0 && steps > 8) {
+    return 12;
+  }
+  if (steps > 28) return 6;
+  if (steps > 20) return 10;
+  if (steps > 14) return 15;
+  return 20;
 }
 
 function scoreVisibleStandardProject(spCard, state, context) {
@@ -440,19 +779,25 @@ function scoreVisibleStandardProject(spCard, state, context) {
     const playableColonies = colonies.filter((colony) => (colony?.colonies?.length ?? 0) < 3);
     if (playableColonies.length === 0) return -999;
     const myColonies = tp.coloniesCount || 0;
+    const currentMc = tp.megacredits ?? tp.megaCredits ?? 0;
+    const currentEnergy = tp.energy || 0;
     let best = -999;
     for (const colony of playableColonies) {
       const colonyName = colony?.name || colony;
       const rank = COLONY_BUILD_PRIORITY.indexOf(colonyName);
       const occupants = colony?.colonies?.length ?? 0;
-      let score = rank >= 0 ? 13 - rank : 4;
-      if (occupants === 0) score += 1;
-      else if (occupants >= 2) score += 2;
-      if (gen <= 3) score += 4;
-      else if (gen <= 6) score += 2;
+      let score = rank >= 0 ? Math.max(2, 8 - rank) : 2;
+      if (myColonies === 0 && (colonyName === 'Luna' || colonyName === 'Triton')) score += 2;
+      else if (occupants >= 2) score += 1;
+      if (gen <= 2) score += 2;
+      else if (gen <= 6) score += 1;
       else if (gen >= 13 || steps <= 4) score -= 7;
       else if (gen >= 9) score -= 4;
-      if (myColonies >= 2) score -= (myColonies - 1) * 3;
+      if (myColonies >= 1) {
+        score -= gen <= 2 ? 16 : (gen <= 4 ? 10 : 5);
+        if (myColonies >= 2) score -= (myColonies - 1) * 4;
+      }
+      if (myColonies === 0 && currentEnergy === 0 && gen <= 2 && currentMc < 26) score -= 2;
       best = Math.max(best, score);
     }
     return best;
@@ -462,15 +807,19 @@ function scoreVisibleStandardProject(spCard, state, context) {
     const steelProd = tp.steelProduction || 0;
     const steelNow = tp.steel || 0;
     const corruption = tp.corruption ?? tp.underworldData?.corruption ?? 0;
+    const tokenCount = getExcavateTokenCount(state);
     let score = 0;
-    if (steelProd > 0 || steelNow >= 2) score += 2;
-    if (steelProd >= 2 || steelNow >= 4) score += 1;
-    if (corruption > 0) score += 1;
-    if (gen <= 3) score += 1;
+    if (steelProd >= 1) score += 1;
+    if (steelProd >= 2) score += 1;
+    if (steelNow >= 4) score += 1;
+    if (corruption > 0) score += 2;
+    if (gen <= 3) score -= 1;
     else if (gen >= 11 || steps <= 4) score -= 10;
     else if (gen >= 8 || steps <= 8) score -= 6;
     else if (gen >= 5) score -= 3;
-    if (steelProd === 0 && steelNow < 2 && corruption === 0) score -= 2;
+    if (steelProd === 0 && steelNow < 4 && corruption === 0) score -= 3;
+    if (tokenCount >= 1 && gen <= 4) score -= 2;
+    else if (tokenCount >= 2 && gen <= 8) score -= 2;
     return score;
   }
 
@@ -496,6 +845,7 @@ function getBestVisibleStandardProject(spCards, state, context) {
   let best = null;
   for (const card of available) {
     const score = scoreVisibleStandardProject(card, state, context);
+    if (shouldSkipVisibleStandardProject(card, state, score)) continue;
     const terraforming = isTerraformingStandardProject(card.name);
     const prefer =
       !best ||
@@ -521,11 +871,45 @@ function getBestVisibleTerraformingStandardProject(spCards, state, context) {
   return getBestVisibleStandardProject(terraformingOnly, state, context);
 }
 
+function getBestVisibleCoreTerraformingStandardProject(spCards, state, context) {
+  const coreTerraformingOnly = (spCards || []).filter((card) => {
+    if (!card || card.isDisabled) return false;
+    return isCoreTerraformingStandardProject(card.name || card);
+  });
+  if (coreTerraformingOnly.length === 0) return null;
+  return getBestVisibleStandardProject(coreTerraformingOnly, state, context);
+}
+
+function getBestVisibleAquiferStandardProject(spCards, state, context) {
+  const aquiferOnly = (spCards || []).filter((card) => {
+    if (!card || card.isDisabled) return false;
+    return String(card.name || card || '').toLowerCase().includes('aquifer');
+  });
+  if (aquiferOnly.length === 0) return null;
+  return getBestVisibleStandardProject(aquiferOnly, state, context);
+}
+
+function getBestVisibleGreeneryStandardProject(spCards, state, context) {
+  const mc = state?.thisPlayer?.megacredits ?? state?.thisPlayer?.megaCredits ?? 0;
+  const greeneryOnly = (spCards || []).filter((card) => {
+    if (!card || card.isDisabled) return false;
+    const name = String(card.name || card || '');
+    if (!name.toLowerCase().includes('greenery')) return false;
+    const cost = typeof card.calculatedCost === 'number'
+      ? card.calculatedCost
+      : (typeof card.cost === 'number' ? card.cost : 23);
+    return mc >= cost;
+  });
+  if (greeneryOnly.length === 0) return null;
+  return getBestVisibleStandardProject(greeneryOnly, state, context);
+}
+
 function corpCardBoost(cardName, corpName) {
   var tags = (typeof CARD_TAGS !== "undefined" ? CARD_TAGS[cardName] : null) || [];
   var cd = typeof CARD_DATA !== "undefined" ? CARD_DATA[cardName] : null;
   var beh = (cd && cd.behavior) || {};
   var boost = 0;
+  var context = arguments.length > 2 ? arguments[2] : null;
 
   if (corpName === "Ecoline" || corpName === "EcoLine") {
     if (tags.includes("plant")) boost += 4;
@@ -580,6 +964,9 @@ function corpCardBoost(cardName, corpName) {
       if (cd.vp && ((cd.vp.vp || 0) > 0 || cd.vp.type === 'special')) boost += 2;
     }
   }
+  if (corpName === 'Viron') {
+    boost += getVironActionBoost(cardName, context);
+  }
   return boost;
 }
 
@@ -627,7 +1014,7 @@ function scorePrelude(prelude, state, corpName) {
   if (beh.tr) ev += beh.tr * (GENS + 3); // pure TR (no tempo)
   if (beh.ocean) ev += (typeof beh.ocean === "number" ? beh.ocean : 1) * (trVal + 5); // TR + placement bonus
   if (beh.greenery) ev += (trVal + 5); // TR + 1VP
-  if (beh.city) ev += 12; // city ~2 VP + positional value
+  if (beh.city && !isOffBoardCityCard(name)) ev += 12; // city ~2 VP + positional value
 
   // -- DRAW CARDS --
   if (beh.drawCard) ev += beh.drawCard * 3.5;
@@ -1366,10 +1753,12 @@ function handleInput(wf, state, depth = 0) {
     const gen = state?.game?.generation ?? 5;
     const redsTax = isRedsRuling(state) ? 3 : 0;
     const steps = remainingSteps(state);
+    const coreSteps = remainingCoreSteps(state);
+    const coreGlobalOpen = coreSteps > 0;
     // Smooth urgency: 0 = early game, 1 = pure endgame
     // Ramps from ~0.2 at 12 steps to 1.0 at 0 steps
-    const urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
-    const endgameMode = steps > 0 && (steps <= 6 || gen >= 14);
+    const urgency = Math.max(0, Math.min(1, 1 - (coreSteps - 2) / 14));
+    const endgameMode = !coreGlobalOpen || (steps > 0 && (steps <= 6 || gen >= 14));
 
     // v73: Global Event awareness — protect resources before destructive events
     const _turmoil = state?.game?.turmoil || state?.turmoil || {};
@@ -1387,19 +1776,56 @@ function handleInput(wf, state, depth = 0) {
     // Early game (gen 1-4): do immediately (need TR for income)
     // Mid game (gen 5-7): stall unless bonus or urgent
     // Late/endgame: do immediately
-    const _tempBonus = ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
+    const _temperatureOpen = (state?.game?.temperature ?? -30) < 8;
+    const _tempBonus = _temperatureOpen && ((state?.game?.temperature ?? -30) % 4 === -2); // next step is bonus
     // v73: URGENT heat conversion if Global Dust Storm coming (lose ALL heat!)
-    const _heatUrgent = _dustStormComing && heat >= 8;
-    const _heatDoNow = _heatUrgent || gen <= 4 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
-    if (heatIdx >= 0 && heat >= 8 && mc >= redsTax && _heatDoNow) return pick(heatIdx);
+    const _heatUrgent = _temperatureOpen && _dustStormComing && heat >= 8;
+    const _heatDoNow = _heatUrgent || gen <= 4 || gen >= 10 || endgameMode || _tempBonus || steps <= 6 || urgency >= 0.5;
+    if (heatIdx >= 0 && _temperatureOpen && heat >= 8 && mc >= redsTax && _heatDoNow) return pick(heatIdx);
 
     const gm = state?.game || {};
     const _anyGlobalOpen = (gm.temperature ?? -30) < 8 || (gm.oxygenLevel ?? 0) < 14 || (gm.oceans ?? 0) < 9 || (gm.venusScaleLevel ?? 0) < 30;
-    const closureMode = _anyGlobalOpen && (gen >= 12 || steps <= 6);
+    const openCoreGlobalCount = countOpenCoreGlobals(state);
+    const closureMode = coreGlobalOpen && (gen >= 12 || steps <= 6);
     // Rate includes WGT raises + player SPs. In 3P Venus: ~6-8 steps/gen total.
     const ratePerGen = Math.max(4, Math.min(8, (state?.players?.length || 3) * 2));
     const gensLeftNow = Math.max(1, Math.ceil(steps / ratePerGen));
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
+    const coreGensLeftNow = Math.max(1, Math.ceil(Math.max(1, coreSteps) / ratePerGen));
+    const coreTrMCNow = coreGensLeftNow + (coreGensLeftNow >= 6 ? 3 : coreGensLeftNow >= 3 ? 5 : 7) - redsTax;
+    const coreSpContext = {
+      steps: coreSteps,
+      ratePerGen,
+      gensLeftNow: coreGensLeftNow,
+      redsTax,
+      trMCNow: coreTrMCNow,
+      urgency,
+    };
+    const lateCoreStepLimit = getLateCoreCompletionStepLimit(gen, openCoreGlobalCount);
+    const gen11OceanLagCompletion = isGen11OceanLagCompletionMode(state, gen, coreSteps, openCoreGlobalCount);
+    const gen11OxygenLagCompletion = isGen11OxygenLagCompletionMode(state, gen, coreSteps, openCoreGlobalCount);
+    const lateCoreCompletionSp = (
+      (gen >= 11 || (gen >= 10 && openCoreGlobalCount <= 1)) &&
+      coreGlobalOpen &&
+      (coreSteps <= lateCoreStepLimit || gen11OceanLagCompletion || gen11OxygenLagCompletion) &&
+      stdProjIdx >= 0 &&
+      mc >= 14 + redsTax
+    ) ? (
+      gen11OceanLagCompletion
+        ? (getBestVisibleAquiferStandardProject(opts[stdProjIdx]?.cards || [], state, coreSpContext) ||
+          getBestVisibleCoreTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, coreSpContext))
+        : (gen11OxygenLagCompletion
+          ? (getBestVisibleGreeneryStandardProject(opts[stdProjIdx]?.cards || [], state, coreSpContext) ||
+            getBestVisibleCoreTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, coreSpContext))
+          : getBestVisibleCoreTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, coreSpContext))
+    ) : null;
+    const lateCoreCatchUpSp = (
+      !lateCoreCompletionSp &&
+      isLateCoreCatchUpMode(gen, coreSteps) &&
+      coreGlobalOpen &&
+      stdProjIdx >= 0 &&
+      mc >= 14 + redsTax
+    ) ? getBestVisibleCoreTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, coreSpContext) : null;
 
     // === ENDGAME ===
     if (endgameMode) {
@@ -1449,6 +1875,7 @@ function handleInput(wf, state, depth = 0) {
           // v76: +3 sunk cost recovery (card already bought)
           const ev = scoreCard(c, state) + 3;
           const hasVP = !!(CARD_DATA[c.name]?.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name);
+          if (!coreGlobalOpen && hasProductionGain(c.name) && !hasImmediateCoreGlobalProgress(c.name) && !hasVP) return false;
           return ev >= 0 || hasVP; // any positive EV or VP-giving card
         }).sort((a, b) => (scoreCard(b, state) + 3) - (scoreCard(a, state) + 3));
         if (vpCards.length > 0) {
@@ -1462,7 +1889,15 @@ function handleInput(wf, state, depth = 0) {
       if (cardActionIdx >= 0) {
         const _blueCardsE = opts[cardActionIdx]?.cards || [];
         const _hasActiveBlueE = _blueCardsE.some(c => !c.isDisabled);
-        if (_hasActiveBlueE && !(passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
+        if (_hasActiveBlueE && !(passIdx >= 0 && onlyWeakLateActions)) {
+          const _bestBlueActionE = getBestBlueActionCard(_blueCardsE, state);
+          const _bestTradeInfoE = getBestTradeInfo(tradeIdx, opts, state, {mc, energy, titanium});
+          if (shouldPreferTradeOverCardAction(_bestTradeInfoE, _bestBlueActionE?._actionEV)) {
+            dbg(`trade-over-action(endgame): ${_bestTradeInfoE.colony?.name || _bestTradeInfoE.colony || 'trade'}=${_bestTradeInfoE.value.toFixed(1)} vs ${_bestBlueActionE?.name || 'action'}=${(_bestBlueActionE?._actionEV ?? -999).toFixed(1)}`);
+            return pick(tradeIdx);
+          }
+          return pick(cardActionIdx);
+        }
       }
       if (playCardIdx >= 0) {
         const subWf = opts[playCardIdx] || {};
@@ -1480,6 +1915,8 @@ function handleInput(wf, state, depth = 0) {
             if (cTags.includes('building')) budget += (steel * (state?.thisPlayer?.steelValue || 2));
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
             if (cost > budget) return false;
+            const hasVP = !!(CARD_DATA[c.name]?.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name);
+            if (!coreGlobalOpen && hasProductionGain(c.name) && !hasImmediateCoreGlobalProgress(c.name) && !hasVP) return false;
             return scoreCard(c, state) + 3 >= 0; // must have positive EV (+3 sunk cost)
           })
           .sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
@@ -1570,6 +2007,10 @@ function handleInput(wf, state, depth = 0) {
           shouldFundAwardNow(awardSlot, gen, mcAfter, bestExpectedVP, bestLead, bestAwardEV) &&
           !earlyAwardDelayCard
         ) {
+          if (lateCoreCompletionSp) {
+            dbg(`late-core award guard: ${lateCoreCompletionSp.name} before funding`);
+            return pick(stdProjIdx);
+          }
           console.log(`    → FUNDING award! cost=${awardCost} expectedEV=${bestAwardEV.toFixed(0)} MC=${mc}`);
           return pick(awardIdx);
         }
@@ -1635,6 +2076,14 @@ function handleInput(wf, state, depth = 0) {
         // Don't hold back card plays for SP — cards give more VP long-term
         const _spReserve = (gen >= 5 && _anyGlobalOpen) ? 5 : 0;
         const _lowMcPlayFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
+        const _lateTerraformRace =
+          gen >= 10 &&
+          gensLeftNow <= 2 &&
+          coreSteps <= 10 &&
+          coreGlobalOpen &&
+          spAvailable &&
+          bestSpCard &&
+          isCoreTerraformingStandardProject(bestSpCard.name);
         const totalBudget = mc + extraMC;
         const playable = hand
           .filter(c => {
@@ -1645,6 +2094,7 @@ function handleInput(wf, state, depth = 0) {
             if (cTags.includes('building')) budget += (steel * (state?.thisPlayer?.steelValue || 2));
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
             if (cost > budget) return false;
+            if (shouldSkipEarlyTrapProject(c.name, state)) return false;
             const cashAfter = mc - estimateCardCashCost(c, state);
             const protectedCard = isLiquidityProtectedCard(c.name);
             // v76: Reserve MC for SP — skip card if it leaves MC below reserve
@@ -1652,6 +2102,11 @@ function handleInput(wf, state, depth = 0) {
             if (_spReserve > 0 && (mc - cost) < _spReserve) {
               const ev = scoreCard(c, state) + 3;
               if (ev < 10) return false;
+            }
+            if (!protectedCard && gen >= 4 && (mc <= 11 || cashAfter < 5) && isBottomTierLowCashUtilityCard(c.name, state)) {
+              const ev = scoreCard(c, state) + 3;
+              const bottomTierFloor = mc <= 11 ? 24 : 20;
+              if (ev < bottomTierFloor) return false;
             }
             // Midgame low-MC starvation guard: do not burn the last cash on marginal cards.
             if (!protectedCard && _lowMcPlayFloor > -900 && cashAfter < 5) {
@@ -1674,71 +2129,8 @@ function handleInput(wf, state, depth = 0) {
               else if (_plan.playPlan.sell.includes(c.name)) score -= 10;
             }
             // VP and city cards: modest priority bonus (scoreCard already values VP via vpMC)
-            if (VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) score += 3 + Math.round(urgency * 4);
-            // Terraforming cards: scoreCard already values globals/TR correctly via trMC.
-            // No extra boost needed — cards compete on pure EV.
-            // v76: Cities = 3-4 VP from adj greeneries. Boost, especially with < 2 cities.
-            if (CITY_CARDS.has(c.name)) {
-              const _myCities = state?.thisPlayer?.citiesCount || 0;
-              score += 4 + Math.round(urgency * 4) + (_myCities < 2 ? 4 : 0);
-            }
-            // Award proximity: boost cards that strengthen our award lead
-            var fundedAwards = getFundedAwards(state);
-            if (fundedAwards.length > 0) {
-              var cTags2 = CARD_TAGS[c.name] || [];
-              var prod2 = (CARD_DATA[c.name]||{}).behavior?.production || {};
-              var hasFunded = function(kw) { return fundedAwards.some(function(a) { return (a.name||a).toLowerCase().indexOf(kw) >= 0; }); };
-              // Banker: MC production
-              if (hasFunded('banker') && prod2.megacredits > 0) score += 3;
-              // Scientist: science tags
-              if (hasFunded('scientist') && cTags2.indexOf('science') >= 0) score += 3;
-              // Thermalist: heat/energy production
-              if (hasFunded('thermalist') && (prod2.heat > 0 || prod2.energy > 0)) score += 2;
-              // Miner: steel/titanium production
-              if (hasFunded('miner') && (prod2.steel > 0 || prod2.titanium > 0)) score += 3;
-              // Venuphile: venus tags
-              if (hasFunded('venuphile') && cTags2.indexOf('venus') >= 0) score += 3;
-              // Landlord: city cards
-              if (hasFunded('landlord') && CITY_CARDS.has(c.name)) score += 2;
-            }
-            // v67: Combo-aware discount: count actual cards in hand that benefit from this discount
-            var ccd = CARD_DATA[c.name] || {};
-            const DISCOUNT_MAP = {
-              'Earth Office': { tag: 'earth', amount: 3 },
-              'Earth Catapult': { tag: null, amount: 2 }, // all cards
-              'Space Station': { tag: 'space', amount: 2 },
-              'Anti-Gravity Technology': { tag: null, amount: 2 }, // all cards with requirements
-              'Warp Drive': { tag: 'space', amount: 4 },
-              'Cutting Edge Technology': { tag: null, amount: 2 }, // cards with requirements
-              'Sky Docks': { tag: 'earth', amount: 2 },
-              'Mass Converter': { tag: 'space', amount: 2 },
-              'Shuttles': { tag: 'space', amount: 2 },
-              'Research Outpost': { tag: null, amount: 1 }, // all cards
-            };
-            const _discInfo = DISCOUNT_MAP[c.name];
-            if (_discInfo || ccd.cardDiscount) {
-              // Count how many cards in hand would benefit
-              let _discountedCards = 0;
-              let _totalSaving = 0;
-              const _dTag = _discInfo?.tag;
-              const _dAmt = _discInfo?.amount || 1;
-              for (const hc of cardsInHand) {
-                if (hc.name === c.name) continue; // skip self
-                const hTags = CARD_TAGS[hc.name] || [];
-                if (!_dTag || hTags.includes(_dTag)) {
-                  _discountedCards++;
-                  _totalSaving += _dAmt;
-                }
-              }
-              // Bonus = MC saved from future plays this game
-              // Immediate gen: ~2-3 cards. Future gens: rest of hand.
-              score += Math.min(_totalSaving, 20); // cap at 20
-            }
-            // Production cards: bonus decays with urgency (compounds early, useless late)
-            // v74: Extra bonus gen 1-3 — production compounds for 7+ gens
-            if (PROD_CARDS.has(c.name)) {
-              const prodBonus = gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
-              score += prodBonus;
+            if ((VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name)) && !isWeakPseudoVpActionCard(c.name)) {
+              score += 3 + Math.round(urgency * 4);
             }
             // v75: Heat production balancing to 8/16 multiples (BonelessDota rule)
             // Getting exact multiples of 8 heat prod = convert every bit to temperature raises
@@ -1753,24 +2145,6 @@ function handleInput(wf, state, depth = 0) {
                 // no bonus if overshoots (e.g. 9 instead of 8)
               }
             }
-            // v68: Play timing — hold pure VP cards until late game
-            // Jovian multipliers (IO Mining, Ganymede, Luna Metropolis) = play last gen
-            // Pure VP with no production (Colonizer Training Camp, etc) = hold if early
-            const _cTags68 = CARD_TAGS[c.name] || [];
-            const _cData68 = CARD_DATA[c.name] || {};
-            const _hasVP = !!((_cData68.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name));
-            const _hasProd = !!(_cData68.behavior?.production);
-            const _hasAction = !!(_cData68.behavior?.action);
-            // Pure VP (no prod, no action) — delay only EXPENSIVE VP cards in early game
-            // Cheap VP (cost < 12) = play anytime, they're efficient
-            const _vpCost = c.calculatedCost ?? c.cost ?? 0;
-            if (_hasVP && !_hasProd && !_hasAction && urgency < 0.3 && _vpCost >= 15) {
-              score -= 3; // hold expensive pure VP cards for late game
-            }
-            // VP action cards (Venusian Animals, Birds, etc) — play ASAP, they accumulate
-            if (_hasVP && _hasAction && urgency < 0.5) {
-              score += 4; // action VP cards compound — earlier = more VP
-            }
             // v72: Card-draw effect cards — play BEFORE other cards (triggers on subsequent plays)
             // BonelessDota: "Play Mars University before Quantum Extractor — subsequent plays trigger draw"
             const DRAW_EFFECTS = new Set(['Mars University', 'Olympus Conference', 'Spin-off Department',
@@ -1778,41 +2152,15 @@ function handleInput(wf, state, depth = 0) {
             if (DRAW_EFFECTS.has(c.name)) {
               score += 6; // play draw/trigger effects first in gen
             }
-            // v75: Opponent strategy detection — penalize cards that raise globals helping opponents
-            // If opponent is plant engine → don't raise O2 for them. Heat rush → don't raise temperature.
-            {
-              const _cardBeh = CARD_DATA[c.name]?.behavior || {};
-              const _cardGlobal = _cardBeh.global || {};
-              const _oppPlayers = (state?.players || []).filter(p => p.color !== state?.thisPlayer?.color);
-              let _oppPenalty = 0;
-              // Card raises temperature? Check if opponent has heat engine
-              if (_cardGlobal.temperature > 0 || _cardGlobal.heat > 0) {
-                const _oppHeatRush = _oppPlayers.some(p => (p.heatProduction || 0) >= 5 || (p.heat || 0) >= 16);
-                if (_oppHeatRush) _oppPenalty -= 3;
-              }
-              // Card raises oxygen? Check if opponent has plant engine
-              if (_cardGlobal.oxygen > 0) {
-                const _oppPlantEngine = _oppPlayers.some(p => (p.plantProduction || 0) >= 4);
-                if (_oppPlantEngine) _oppPenalty -= 3;
-              }
-              // Card places ocean (raises O2 indirectly)? Check plant engine
-              if (_cardBeh.ocean) {
-                const _oppPlantEngine2 = _oppPlayers.some(p => (p.plantProduction || 0) >= 4);
-                if (_oppPlantEngine2) _oppPenalty -= 2;
-              }
-              score += _oppPenalty;
-            }
-            // v76: Greenhouses value depends on city count — useless without cities
-            if (c.name === 'Greenhouses') {
-              const _totalCities = (state?.players || []).reduce((s, p) => s + (p.citiesCount || 0), 0);
-              if (_totalCities >= 3) score += _totalCities * 2; // ~2 MC per plant
-              // no bonus with 0-2 cities — not worth playing
-            }
-            // v74: Optimal Aerobraking underrated — +3 MC +3 heat per space event = 30+ MC with 5+ events
-            if (c.name === 'Optimal Aerobraking') score += 5;
             // Midgame low-MC starvation guard: penalize draining cash on non-engine cards.
             if (!protectedCard && gen >= 4 && cashAfter < 5) {
               score -= (5 - cashAfter) * 1.5;
+            }
+            // Shadow logs showed gen-10 races where production-only cards beat core SPs
+            // while Mars closure globals were still open. Venus is optional and does not
+            // end the game, so only temperature/oxygen/oceans count here.
+            if (_lateTerraformRace && hasProductionGain(c.name) && !hasImmediateCoreGlobalProgress(c.name)) {
+              score -= 12;
             }
             return { ...c, _score: score };
           })
@@ -1823,7 +2171,7 @@ function handleInput(wf, state, depth = 0) {
         // Human players play MUCH more aggressively — 47.5 cards vs bot 36.
         // Playing more cards = #1 predictor of winning (backtest: 59.5 winner vs 44.4 loser).
         let _playThreshold = urgency >= 0.7 ? -3 : (urgency >= 0.4 ? -5 : -8);
-        if (_lowMcPlayFloor > -900) _playThreshold = Math.max(_playThreshold, _lowMcPlayFloor);
+        if (_lowMcPlayFloor > -900) _playThreshold = Math.max(_playThreshold, _lowMcPlayFloor + 1);
         if (playable.length > 0) {
           topPlayableCard = playable[0];
           topPlayableEV = playable[0]._score;
@@ -1848,6 +2196,7 @@ function handleInput(wf, state, depth = 0) {
         bestBlueActionEV = bestBlueAction?._actionEV ?? -999;
       }
     }
+    const bestTradeInfo = getBestTradeInfo(tradeIdx, opts, state, {mc, energy, titanium});
 
     // Position-aware: adjust SP/card balance based on VP lead
     const lead = vpLead(state); // positive = winning, negative = losing
@@ -1874,7 +2223,10 @@ function handleInput(wf, state, depth = 0) {
     // Higher urgency = close game faster = more VP/Gen efficiency.
     // Gen 1-3: 0 (build engine). Gen 4-5: +3. Gen 6-7: +5. Gen 8+: +7.
     const terraformUrgency = gen <= 3 ? 0 : (gen <= 5 ? 3 : (gen <= 7 ? 5 : 7));
-    const spAdjustment = bestSpCard && bestSpCard._spTerraforming ? (leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency) : 0;
+    const spGetsClosureBoost = shouldApplyClosureTerraformingBoost(bestSpCard, state);
+    const rawClosureBoost = leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency;
+    const spAdjustment = spGetsClosureBoost ? Math.min(rawClosureBoost, getClosureBoostCap(steps, bestSpCard, bestSpEV)) : 0;
+    const standardProjectFloor = spGetsClosureBoost ? 1 : (gen <= 2 ? 3 : -2);
     const adjustedSpEV = bestSpEV + spAdjustment;
     // v75: When in tempo mode, also penalize card EV (play fewer cards, push SP)
     if (tempoSwitchBonus > 0 && bestCard) {
@@ -1883,8 +2235,36 @@ function handleInput(wf, state, depth = 0) {
 
     // Pure EV competition: pick whichever is better
     const standaloneCardFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
-    const requiredCardEV = Math.max(adjustedSpEV, standaloneCardFloor > -900 ? standaloneCardFloor : -999);
+    const requiredCardEV = Math.max(adjustedSpEV, standaloneCardFloor > -900 ? standaloneCardFloor + 1 : -999);
     dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${bestSpCard?.name||'none'}=${adjustedSpEV.toFixed(0)}) spAdj=${spAdjustment}`);
+    const lateCoreNonProgressCardFloor = coreSteps <= 5 ? 50 : 36;
+    if (
+      lateCoreCompletionSp &&
+      (
+        !bestCard ||
+        (
+          !hasImmediateCoreGlobalProgress(bestCard.name) &&
+          bestCardEV < lateCoreNonProgressCardFloor
+        )
+      )
+    ) {
+      dbg(`late-core completion guard: ${lateCoreCompletionSp.name} before ${bestCard?.name || 'no-card'}`);
+      return pick(stdProjIdx);
+    }
+    const lateCoreCatchUpCardFloor = 20;
+    if (
+      lateCoreCatchUpSp &&
+      (
+        !bestCard ||
+        (
+          !hasImmediateCoreGlobalProgress(bestCard.name) &&
+          bestCardEV < lateCoreCatchUpCardFloor
+        )
+      )
+    ) {
+      dbg(`late-core catch-up guard: ${lateCoreCatchUpSp.name} before ${bestCard?.name || 'no-card'}`);
+      return pick(stdProjIdx);
+    }
     if (bestCard && bestCardEV >= requiredCardEV) {
       const subWf2 = opts[playCardIdx] || {};
       return {
@@ -1894,7 +2274,8 @@ function handleInput(wf, state, depth = 0) {
     }
     const visibleProjectCards = playCardIdx >= 0 ? ((opts[playCardIdx]?.cards || []).length) : cardsInHand.length;
     const thinHandMidgame = gen >= 4 && gen <= 7 && visibleProjectCards <= 2 && steps > 10;
-    if (bestCard && thinHandMidgame && bestCardEV >= 5 && spAvailable && adjustedSpEV - bestCardEV <= 3) {
+    const thinHandPlayableFloor = bestSpEV < 0 ? 2 : 5;
+    if (bestCard && thinHandMidgame && bestCardEV >= thinHandPlayableFloor && spAvailable && adjustedSpEV - bestCardEV <= 3) {
       dbg(`thin-hand bias: play ${bestCard.name} over small SP edge`);
       const subWf2 = opts[playCardIdx] || {};
       return {
@@ -1918,7 +2299,7 @@ function handleInput(wf, state, depth = 0) {
       closureMode &&
       spAvailable &&
       bestSpCard &&
-      bestSpCard._spTerraforming &&
+      spGetsClosureBoost &&
       steps <= 5;
     if (closureTerraformSpGuard) {
       dbg(`closure-mode bias: terraform via ${bestSpCard.name} over late blue action`);
@@ -1934,7 +2315,7 @@ function handleInput(wf, state, depth = 0) {
       dbg(`weak-utility-sp bias: action ${bestBlueAction.name} (${bestBlueActionEV.toFixed(1)}) over ${bestSpCard.name} (${adjustedSpEV.toFixed(1)})`);
       return pick(cardActionIdx);
     }
-    if (spAvailable && adjustedSpEV > -5) {
+    if (spAvailable && bestSpCard && adjustedSpEV >= standardProjectFloor) {
       return pick(stdProjIdx);
     }
     // Card is only option (SP not available/affordable)
@@ -1992,23 +2373,30 @@ function handleInput(wf, state, depth = 0) {
         };
       }
       const _hasActiveBlue = hasActiveBlueAction;
-      if (_hasActiveBlue && !(urgency >= 0.75 && passIdx >= 0 && onlyWeakLateActions)) return pick(cardActionIdx);
-    }
-
-    // Trade colonies (high-value trades first, lower threshold if paying with energy)
-    if (tradeIdx >= 0 && (mc >= 9 || energy >= 3 || titanium >= 3)) {
-      const tradeOpt = opts[tradeIdx];
-      const colonies = tradeOpt?.coloniesModel || tradeOpt?.colonies || [];
-      if (colonies.length > 0) {
-        const bestTradeVal = Math.max(...colonies.map(c => scoreColonyTrade(c, state)));
-        // Energy payment = ~2.4 MC effective cost (3 energy × 0.8); MC payment = 9 MC
-        const tradeThreshold = energy >= 3 ? 4 : (titanium >= 3 ? 6 : 8);
-        if (bestTradeVal >= tradeThreshold) return pick(tradeIdx);
+      if (_hasActiveBlue && !(urgency >= 0.75 && passIdx >= 0 && onlyWeakLateActions)) {
+        if (shouldPreferTradeOverCardAction(bestTradeInfo, bestBlueActionEV)) {
+          dbg(`trade-over-action: ${bestTradeInfo.colony?.name || bestTradeInfo.colony || 'trade'}=${bestTradeInfo.value.toFixed(1)} vs ${bestBlueAction?.name || 'action'}=${bestBlueActionEV.toFixed(1)}`);
+          return pick(tradeIdx);
+        }
+        return pick(cardActionIdx);
       }
     }
 
-    // SP fallback when globals still far — but only if there ARE open globals
-    if (spAvailable && steps > 12 && _anyGlobalOpen) return pick(stdProjIdx);
+    // Trade colonies (high-value trades first, lower threshold if paying with energy)
+    if (bestTradeInfo?.worthwhile) {
+      return pick(tradeIdx);
+    }
+
+    // SP fallback when globals are still far — but only for genuinely positive projects.
+    if (
+      spAvailable &&
+      steps > 12 &&
+      _anyGlobalOpen &&
+      (
+        !opts[stdProjIdx]?.cards ||
+        (bestSpCard && adjustedSpEV >= standardProjectFloor)
+      )
+    ) return pick(stdProjIdx);
 
     // Trade colonies — energy/titanium trade is almost free, always do before pass
     if (tradeIdx >= 0 && (energy >= 3 || titanium >= 3)) return pick(tradeIdx);
@@ -2018,7 +2406,7 @@ function handleInput(wf, state, depth = 0) {
     if (colonyIdx >= 0 && mc >= 17 && urgency < 0.7) return pick(colonyIdx);
 
     // Heat→temp is pure board progress and should beat Turmoil delegate spam.
-    if (heatIdx >= 0 && heat >= 8 && (redsTax === 0 || mc >= redsTax)) return pick(heatIdx);
+    if (heatIdx >= 0 && (state?.game?.temperature ?? -30) < 8 && heat >= 8 && (redsTax === 0 || mc >= redsTax)) return pick(heatIdx);
 
     // Delegate (chairman VP, party leader VP, anti-Reds) — skip in late game
     // Free lobby delegates are only a clean fallback when no project-card branch is visible.
@@ -2029,6 +2417,23 @@ function handleInput(wf, state, depth = 0) {
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
     const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
     if (sellIdx >= 0 && cardsInHand.length > sellThreshold) return pick(sellIdx);
+
+    // Late idle tempo: do not pass with cash while Mars closure globals are still open.
+    // Use only core SPs here; Venus/Air Scrapping is optional and does not end the game.
+    if (stdProjIdx >= 0 && gen >= 9 && coreGlobalOpen && coreSteps <= 10 && mc >= 14 + redsTax) {
+      const lateCoreSp = getBestVisibleCoreTerraformingStandardProject(opts[stdProjIdx]?.cards || [], state, {
+        steps,
+        ratePerGen,
+        gensLeftNow,
+        redsTax,
+        trMCNow,
+        urgency,
+      });
+      if (lateCoreSp) {
+        dbg(`late-idle core SP: ${lateCoreSp.name} over pass`);
+        return pick(stdProjIdx);
+      }
+    }
 
     // 13. Try first unhandled option (CEO actions, prelude-phase triggers, card effects, etc.)
     // Skip options already handled by dedicated steps above
@@ -2145,6 +2550,7 @@ function handleInput(wf, state, depth = 0) {
       const _dsTags = (_draftStrat && _draftStrat.confidence >= 0.7) ? (STRATEGY_TAGS[_draftStrat.primary] || []) : [];
       const buyCards = cards.map((card) => {
         let score = scoreCard(card, state) + corpCardBoost(card.name, corp);
+        score += getWeakPseudoVpBuyPenalty(card.name, state);
         const cost = card.calculatedCost ?? card.cost ?? 0;
         const data = CARD_DATA[card.name] || {};
         const prod = data.behavior?.production || {};
@@ -2153,9 +2559,8 @@ function handleInput(wf, state, depth = 0) {
         const setupCard = ENGINE_CARDS.has(card.name) || PROD_CARDS.has(card.name) || hasDiscount || hasDraw;
         // VP/city priority: modest bonus (scoreCard handles EV, this is just ordering)
         const vpBonus = 3 + Math.round(urg * 4);
-        if (VP_CARDS.has(card.name) || DYNAMIC_VP_CARDS.has(card.name)) score += vpBonus;
-        // v76: Cities give 3-4 VP from adj greeneries — bigger boost, especially mid-game
-        if (CITY_CARDS.has(card.name)) score += 4 + Math.round(urg * 4);
+        if ((VP_CARDS.has(card.name) || DYNAMIC_VP_CARDS.has(card.name)) && !isWeakPseudoVpActionCard(card.name)) score += vpBonus;
+        if (shouldSkipEarlyTrapProject(card.name, state)) score -= 8;
         // Engine bonus decays with urgency (engine useless late)
         const engineBonus = Math.round(6 * (1 - urg));
         if (gen <= 4 && ENGINE_CARDS.has(card.name)) score += engineBonus;
@@ -2213,18 +2618,37 @@ function handleInput(wf, state, depth = 0) {
       const gm = state?.game || {};
       const gen = gm.generation || 1;
       const steps = remainingSteps(state);
-      const closureMode =
-        (((gm.temperature ?? -30) < 8) ||
-          ((gm.oxygenLevel ?? 0) < 14) ||
-          ((gm.oceans ?? 0) < 9) ||
-          ((gm.venusScaleLevel ?? 0) < 30)) &&
-        (gen >= 12 || steps <= 6);
-      const bestSp = closureMode
-        ? (getBestVisibleTerraformingStandardProject(cards, state) || getBestVisibleStandardProject(cards, state))
-        : getBestVisibleStandardProject(cards, state);
+      const coreSteps = remainingCoreSteps(state);
+      const openCoreGlobalCount = countOpenCoreGlobals(state);
+      const closureMode = coreSteps > 0 && (gen >= 12 || steps <= 6);
+      const lateCorePushMode = coreSteps > 0 && gen >= 9 && coreSteps <= getLateCoreCompletionStepLimit(gen, openCoreGlobalCount);
+      const lateCoreCatchUpMode = coreSteps > 0 && isLateCoreCatchUpMode(gen, coreSteps);
+      const gen11OceanLagCompletion = coreSteps > 0 && isGen11OceanLagCompletionMode(state, gen, coreSteps, openCoreGlobalCount);
+      const gen11OxygenLagCompletion = coreSteps > 0 && isGen11OxygenLagCompletionMode(state, gen, coreSteps, openCoreGlobalCount);
+      const bestSp = gen11OceanLagCompletion
+        ? (getBestVisibleAquiferStandardProject(cards, state) ||
+          getBestVisibleCoreTerraformingStandardProject(cards, state) ||
+          getBestVisibleTerraformingStandardProject(cards, state) ||
+          getBestVisibleStandardProject(cards, state))
+        : gen11OxygenLagCompletion
+          ? (getBestVisibleGreeneryStandardProject(cards, state) ||
+          getBestVisibleCoreTerraformingStandardProject(cards, state) ||
+          getBestVisibleTerraformingStandardProject(cards, state) ||
+          getBestVisibleStandardProject(cards, state))
+        : (closureMode || lateCorePushMode || lateCoreCatchUpMode
+          ? (getBestVisibleCoreTerraformingStandardProject(cards, state) ||
+          getBestVisibleTerraformingStandardProject(cards, state) ||
+          getBestVisibleStandardProject(cards, state))
+          : getBestVisibleStandardProject(cards, state));
       if (bestSp) {
         dbg(`std project: ${bestSp.name}=${bestSp._spScore.toFixed(0)}`);
         return { type: 'card', cards: [bestSp.name] };
+      }
+      const fallbackSp = (cards || []).find((card) => card && !card.isDisabled);
+      if (fallbackSp) {
+        const fallbackName = fallbackSp.name || fallbackSp;
+        dbg(`std project fallback: ${fallbackName}`);
+        return { type: 'card', cards: [fallbackName] };
       }
       return { type: 'card', cards: [] };
     }
@@ -2239,7 +2663,9 @@ function handleInput(wf, state, depth = 0) {
     // Draft/keep: pick highest-scored card(s)
     if (title.includes('select a card') || title.includes('keep')) {
       const count = Math.max(1, min);
-      const scored = [...cards].sort((a, b) => (scoreCard(b, state) + corpCardBoost(b.name, corp)) - (scoreCard(a, state) + corpCardBoost(a.name, corp)));
+      const scored = [...cards].sort((a, b) =>
+        (scoreCard(b, state) + corpCardBoost(b.name, corp) + getWeakPseudoVpBuyPenalty(b.name, state)) -
+        (scoreCard(a, state) + corpCardBoost(a.name, corp) + getWeakPseudoVpBuyPenalty(a.name, state)));
       return { type: 'card', cards: scored.slice(0, count).map(c => c.name) };
     }
 
@@ -2656,6 +3082,18 @@ function handleInput(wf, state, depth = 0) {
         if (microbePlacerCount > 0) ev += Math.min(2, microbePlacerCount);
         if (colonyNames.has('Enceladus')) ev += 2;
       }
+      if (corpName === 'Viron') {
+        const actionShell = allProjectCards
+          .map((card) => getVironActionBoost(card.name, {state, allProjectCards, allPreludes, colonyNames, opening: true}))
+          .filter((score) => score > 0)
+          .sort((a, b) => b - a);
+        if (actionShell.length === 0) {
+          ev -= 2;
+        } else {
+          ev += Math.min(8, actionShell[0]);
+          if (actionShell[1]) ev += Math.min(3, actionShell[1] * 0.4);
+        }
+      }
       if (corpName === 'Pristar') {
         let pristarShell = 0;
         for (const c of allProjectCards) {
@@ -2721,7 +3159,10 @@ function handleInput(wf, state, depth = 0) {
           const openingBias = TM_BRAIN && typeof TM_BRAIN.getOpeningHandBias === 'function'
             ? TM_BRAIN.getOpeningHandBias(card.name, state)
             : 0;
-          return scoreCard(card, state) + corpCardBoost(card.name, draftCorp) + (openingDraft ? openingBias * 6 : 0);
+          return scoreCard(card, state) +
+            getWeakPseudoVpBuyPenalty(card.name, state) +
+            corpCardBoost(card.name, draftCorp, {state, allProjectCards, allPreludes, colonyNames, opening: openingDraft}) +
+            (openingDraft ? openingBias * 6 : 0);
         };
         const scored = [...cards].sort((a, b) => openingKeepScore(b) - openingKeepScore(a));
         // Include corp boost in threshold — corp-synergy cards are worth buying even if base EV is low

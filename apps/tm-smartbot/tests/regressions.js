@@ -11,9 +11,30 @@ const {
   testBuyPhaseRelaxesReserveWhenHandStarved,
   testBuyPhaseStaysTightWhenHandIsAlreadyFull,
   testPrefersHeatOverFreeDelegate,
-  testPassesOnNegativeNoSpGen3Card,
+  testGen12FarCoreConvertsHeatBeforeAward,
+  testClosedTemperatureSkipsHeatAndPushesGreenery,
+  testCheapEventNoSpGen3CardIsPlayable,
   testPassesOnMarginalLowMcMidgameCard,
   testPassesOnWeakNoSpMidgameCard,
+  testPassesOnExactFloorTrapWhenLowOnCash,
+  testPassesOnInflatedWeakUtilityWhenLowOnCash,
+  testStillPlaysSetupDrawCardWhenLowOnCash,
+  testScoreCardPenalizesGlobalRaiseThatHelpsOpponents,
+  testScoreCardValuesGreenhousesWhenCitiesExist,
+  testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport,
+  testScoreCardValuesDiscountCardMoreWithMatchingHand,
+  testScoreCardGivesProductionCardsMoreRunwayEarly,
+  testScoreCardDelaysExpensivePureVpCardsEarly,
+  testScoreCardRewardsVpActionCardsEarlier,
+  testScoreCardDoesNotGiveWeakPseudoVpActionEarlyBoost,
+  testScoreCardValuesFirstCityHigherThanLaterCities,
+  testScoreCardDoesNotGiveOffBoardCitiesMarsCityPremium,
+  testScoreCardKeepsCityPremiumVisibleLate,
+  testSearchForLifeEarlyNoSupportPassesWithoutSp,
+  testSearchForLifeScienceShellStillPlayableEarly,
+  testLateBuySkipsSearchForLifePseudoVpTrap,
+  testLateDraftKeepSkipsSearchForLifePseudoVpTrap,
+  testPassesOnUndergroundDetonationsTrapMidgame,
   testSkipsPaidDelegateInMidgame,
   testStarvedBuySkipsWeakFiller,
   testFreeDelegateDoesNotDelayProjectCardPass,
@@ -24,22 +45,59 @@ const {
   testProdSetupCardMidgameBeatsSmallSpEdge,
   testNonSetupFillerStillLetsSpWinOnBigEdge,
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid,
+  testEarlySecondColonyStandardProjectPasses,
+  testLateNegativeBuildColonyStandardProjectPasses,
+  testEarlyZeroBuildColonySecondColonyPasses,
+  testEarlyExcavateStandardProjectPassesWithoutStrongSupport,
+  testEarlyExcavateStandardProjectPassesWithOnlySteelStock,
+  testExcavateStandardProjectStillAllowedWithStrongSupport,
+  testRepeatedEarlyExcavateStandardProjectPassesAfterFirstToken,
+  testAirScrappingStandardProjectPassesWhileCoreGlobalsOpen,
+  testAirScrappingStandardProjectPassesWhenOnlyVenusOpen,
+  testCollusionStandardProjectPassesEvenWithCorruption,
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
   testWeakEndgameStandardProjectsDoNotBeatBlueAction,
+  testProfitableLunaTradeBeatsWeakCardAction,
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions,
-  testLateClosureStandardProjectSelectionPrefersTerraformingOverUtilitySp,
-  testClosureModeCompetitionUsesTerraformingSpOverWeakUtilitySp,
+  testOnlyVenusOpenPrefersBestBlueActionOverAirScrapping,
+  testOnlyVenusOpenDoesNotForceAirScrappingOverWeakAction,
+  testMandatoryStandardProjectSelectorDoesNotReturnEmpty,
+  testLateIdleHighCashCoreOpenChoosesStandardProjectBeforePass,
+  testLateCoreStandardProjectSelectorPrefersCoreOverExcavate,
+  testLateCoreCompletionDefersNonCoreCardForAquifer,
+  testLateCoreCompletionFundsCoreSpBeforeAward,
+  testGen10CoreCompletionDefersNonCoreCardForGreenery,
+  testGen12TwoCoreGlobalsDefersNonCoreCardForAquifer,
+  testGen12ThirteenCoreStepsDefersMidValueCardForAquifer,
+  testFinalCoreStepsDefersHighValueVenusCardForGreenery,
+  testLateFarCoreCatchUpDefersWeakCardForAquifer,
+  testLateFarCoreCatchUpStillPlaysStrongCard,
+  testGen11OceanLagDefersSolidCardForAquifer,
+  testGen11OceanLagStillPlaysPremiumCard,
+  testGen11SevereOceanLagPrefersAquiferOverCardAndAsteroid,
+  testGen11SevereOceanLagStillPlaysPremiumCard,
+  testGen11OxygenLagDefersSolidCardForGreenery,
+  testGen11OxygenLagStillPlaysPremiumCard,
   testLateCoreGlobalClosurePrefersGreeneryOverBlueActions,
   testLateOceanClosurePrefersAquiferOverBlueActions,
+  testFarFromClosureAsteroidDoesNotBeatStrongCardOnTempoBoost,
+  testNearClosureAsteroidStillBeatsWeakCardOnTempoBoost,
+  testMidClosureAsteroidDoesNotBeatSolidCardOnNegativeRaw,
+  testLateTerraformRaceDefersProductionCardForAsteroid,
+  testLateTerraformRaceIgnoresVenusAndUtilityStandardProjects,
+  testCoreClosedVenusOpenDoesNotCreateProductionRunway,
+  testMidClosureAquiferDoesNotBeatSolidCardOnNegativeRaw,
+  testNearClosureAquiferStillBeatsWeakCard,
   testMidgameExcavateDoesNotBeatStrongBlueActionWithSynergy,
   testWeakBlueActionMidgamePrefersNearThresholdSetupCard,
   testStrongerBlueActionStillBeatsNearThresholdSetupCard,
-  testWeakBlueActionMidgamePrefersSingleCheapPositiveCardWithoutSp,
+  testWeakBlueActionMidgamePrefersSinglePlayablePositiveCardWithoutSp,
   testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp,
   testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp,
   testStillUsesFreeDelegateAsFallback,
   testStillPlaysStrongCardWhenLowOnCash,
   testSellPatentsKeepsSetupCardsInMidgame,
+  testSellPatentsDoesNotProtectSearchForLifeTrap,
   testSellPatentsStillDumpsDeadCardsInEndgame,
   testDelaysFirstAwardForStrongPlayableCard,
   testDelaysSecondAwardForVeryStrongPlayableCard,
@@ -211,6 +269,17 @@ function getProjectPicksFromInitialDraft(input) {
   return input.responses[2].cards;
 }
 
+function testEventCardsExposeSyntheticEventTag() {
+  assert.ok(
+    SMARTBOT.CARD_TAGS['Comet for Venus'].includes('event'),
+    'Comet for Venus should expose event tag to smartbot'
+  );
+  assert.ok(
+    SMARTBOT.CARD_TAGS['Large Convoy'].includes('event'),
+    'Large Convoy should expose event tag to smartbot'
+  );
+}
+
 function testOpeningDraftPrefersIcEventShell() {
   const wf = buildInitialDraftWorkflow(
     ['Interplanetary Cinematics', 'Splice', 'Arklight'],
@@ -281,6 +350,50 @@ function testOpeningDraftPrefersFactorumColoniesTempoShell() {
   assert.strictEqual(getCorpPickFromInitialDraft(input), 'Factorum');
   const bought = getProjectPicksFromInitialDraft(input);
   assert.ok(bought.includes('Trading Colony'));
+}
+
+function testOpeningDraftPrefersVironWithPremiumActionShell() {
+  const wf = buildInitialDraftWorkflow(
+    ['Viron', 'Helion', 'Teractor'],
+    ['Power Generation', 'Business Empire'],
+    ['AI Central', 'Development Center', 'Olympus Conference', 'Research']
+  );
+  const state = buildOpeningDraftState(['Luna', 'Ceres']);
+
+  const input = SMARTBOT.handleInput(wf, state);
+
+  assert.strictEqual(getCorpPickFromInitialDraft(input), 'Viron');
+  const bought = getProjectPicksFromInitialDraft(input);
+  assert.ok(bought.includes('AI Central'));
+  assert.ok(bought.includes('Development Center'));
+}
+
+function testVironBoostPrefersPremiumActionOverTrapAction() {
+  const state = buildOpeningDraftState(['Luna']);
+  const projects = ['AI Central', 'Development Center', 'Olympus Conference', 'Research'].map(buildDraftProjectCard);
+  const context = {
+    state,
+    allProjectCards: projects,
+    allPreludes: [{name: 'Power Generation'}],
+    colonyNames: new Set(['Luna']),
+    opening: true,
+  };
+
+  assert.ok(SMARTBOT.corpCardBoost('AI Central', 'Viron', context) > 10);
+  assert.ok(SMARTBOT.corpCardBoost('Security Fleet', 'Viron', context) <= 0);
+}
+
+function testOpeningDraftDoesNotForceVironWithoutActionShell() {
+  const wf = buildInitialDraftWorkflow(
+    ['Viron', 'Ecoline', 'Helion'],
+    ['Ecology Experts', 'Business Empire'],
+    ['Kelp Farming', 'Trees', 'Nitrogen-Rich Asteroid', 'Sponsors']
+  );
+  const state = buildOpeningDraftState(['Luna', 'Triton']);
+
+  const input = SMARTBOT.handleInput(wf, state);
+
+  assert.strictEqual(getCorpPickFromInitialDraft(input), 'Ecoline');
 }
 
 function testPristarBoostPrefersEngineShellOverTerraforming() {
@@ -648,7 +761,7 @@ function testAwardFundingBranchDoesNotUseStepsBeforeInit() {
 
 function testMegaCreditsNormalizationCamelCase() {
   // Our fork API returns megaCredits (camelCase), smartbot reads megacredits (lowercase).
-  // auto-join.js normalizes this. Verify smartPay outputs megaCredits for server compat.
+  // Verify smartPay still reads state aliases, but emits server-compatible payment.
   const state = {
     thisPlayer: {
       megaCredits: 30, megacredits: 30,
@@ -660,11 +773,10 @@ function testMegaCreditsNormalizationCamelCase() {
     game: { generation: 3, oxygenLevel: 2, temperature: -20, oceans: 1, venusScaleLevel: 4 },
   };
   const payment = SMARTBOT.TM_BRAIN.smartPay(14, state, {});
-  // Payment must use megaCredits (camelCase) for server compatibility
-  assert.ok(payment.hasOwnProperty('megaCredits'), 'payment must have megaCredits (camelCase)');
-  assert.ok(!payment.hasOwnProperty('megacredits') || payment.megacredits === undefined,
-    'payment must NOT have megacredits (lowercase) — server rejects it');
-  assert.ok(typeof payment.megaCredits === 'number', 'megaCredits must be a number');
+  assert.ok(payment.hasOwnProperty('megacredits'), 'payment must have megacredits (lowercase)');
+  assert.ok(!payment.hasOwnProperty('megaCredits'), 'payment must not leak legacy megaCredits');
+  assert.ok(typeof payment.megacredits === 'number', 'megacredits must be a number');
+  assert.ok(payment.hasOwnProperty('steel'), 'payment must include all server payment keys');
 }
 
 function testCardPlaySeesMegaCreditsFromState() {
@@ -708,11 +820,15 @@ function testCardPlaySeesMegaCreditsFromState() {
 function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
+  testEventCardsExposeSyntheticEventTag();
   testOpeningDraftPrefersIcEventShell();
   testOpeningDraftPrefersSpliceDenseMicrobeShell();
   testOpeningDraftKeepsIcAheadWhenSpliceOnlyHasLoneDecomposers();
   testOpeningDraftEcolineRushKeepsKelpAndSkipsDeadScienceGreed();
   testOpeningDraftPrefersFactorumColoniesTempoShell();
+  testOpeningDraftPrefersVironWithPremiumActionShell();
+  testVironBoostPrefersPremiumActionOverTrapAction();
+  testOpeningDraftDoesNotForceVironWithoutActionShell();
   testPristarBoostPrefersEngineShellOverTerraforming();
   testForcedSellFallsBackWhenAllCardsHaveVpPotential();
   testDiscardHonorsRequiredCount();
@@ -732,9 +848,30 @@ function run() {
   testBuyPhaseRelaxesReserveWhenHandStarved();
   testBuyPhaseStaysTightWhenHandIsAlreadyFull();
   testPrefersHeatOverFreeDelegate();
-  testPassesOnNegativeNoSpGen3Card();
+  testGen12FarCoreConvertsHeatBeforeAward();
+  testClosedTemperatureSkipsHeatAndPushesGreenery();
+  testCheapEventNoSpGen3CardIsPlayable();
   testPassesOnMarginalLowMcMidgameCard();
   testPassesOnWeakNoSpMidgameCard();
+  testPassesOnExactFloorTrapWhenLowOnCash();
+  testPassesOnInflatedWeakUtilityWhenLowOnCash();
+  testStillPlaysSetupDrawCardWhenLowOnCash();
+  testScoreCardPenalizesGlobalRaiseThatHelpsOpponents();
+  testScoreCardValuesGreenhousesWhenCitiesExist();
+  testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport();
+  testScoreCardValuesDiscountCardMoreWithMatchingHand();
+  testScoreCardGivesProductionCardsMoreRunwayEarly();
+  testScoreCardDelaysExpensivePureVpCardsEarly();
+  testScoreCardRewardsVpActionCardsEarlier();
+  testScoreCardDoesNotGiveWeakPseudoVpActionEarlyBoost();
+  testScoreCardValuesFirstCityHigherThanLaterCities();
+  testScoreCardDoesNotGiveOffBoardCitiesMarsCityPremium();
+  testScoreCardKeepsCityPremiumVisibleLate();
+  testSearchForLifeEarlyNoSupportPassesWithoutSp();
+  testSearchForLifeScienceShellStillPlayableEarly();
+  testLateBuySkipsSearchForLifePseudoVpTrap();
+  testLateDraftKeepSkipsSearchForLifePseudoVpTrap();
+  testPassesOnUndergroundDetonationsTrapMidgame();
   testSkipsPaidDelegateInMidgame();
   testStarvedBuySkipsWeakFiller();
   testFreeDelegateDoesNotDelayProjectCardPass();
@@ -745,22 +882,59 @@ function run() {
   testProdSetupCardMidgameBeatsSmallSpEdge();
   testNonSetupFillerStillLetsSpWinOnBigEdge();
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid();
+  testEarlySecondColonyStandardProjectPasses();
+  testLateNegativeBuildColonyStandardProjectPasses();
+  testEarlyZeroBuildColonySecondColonyPasses();
+  testEarlyExcavateStandardProjectPassesWithoutStrongSupport();
+  testEarlyExcavateStandardProjectPassesWithOnlySteelStock();
+  testExcavateStandardProjectStillAllowedWithStrongSupport();
+  testRepeatedEarlyExcavateStandardProjectPassesAfterFirstToken();
+  testAirScrappingStandardProjectPassesWhileCoreGlobalsOpen();
+  testAirScrappingStandardProjectPassesWhenOnlyVenusOpen();
+  testCollusionStandardProjectPassesEvenWithCorruption();
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
   testWeakEndgameStandardProjectsDoNotBeatBlueAction();
+  testProfitableLunaTradeBeatsWeakCardAction();
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions();
-  testLateClosureStandardProjectSelectionPrefersTerraformingOverUtilitySp();
-  testClosureModeCompetitionUsesTerraformingSpOverWeakUtilitySp();
+  testOnlyVenusOpenPrefersBestBlueActionOverAirScrapping();
+  testOnlyVenusOpenDoesNotForceAirScrappingOverWeakAction();
+  testMandatoryStandardProjectSelectorDoesNotReturnEmpty();
+  testLateIdleHighCashCoreOpenChoosesStandardProjectBeforePass();
+  testLateCoreStandardProjectSelectorPrefersCoreOverExcavate();
+  testLateCoreCompletionDefersNonCoreCardForAquifer();
+  testLateCoreCompletionFundsCoreSpBeforeAward();
+  testGen10CoreCompletionDefersNonCoreCardForGreenery();
+  testGen12TwoCoreGlobalsDefersNonCoreCardForAquifer();
+  testGen12ThirteenCoreStepsDefersMidValueCardForAquifer();
+  testFinalCoreStepsDefersHighValueVenusCardForGreenery();
+  testLateFarCoreCatchUpDefersWeakCardForAquifer();
+  testLateFarCoreCatchUpStillPlaysStrongCard();
+  testGen11OceanLagDefersSolidCardForAquifer();
+  testGen11OceanLagStillPlaysPremiumCard();
+  testGen11SevereOceanLagPrefersAquiferOverCardAndAsteroid();
+  testGen11SevereOceanLagStillPlaysPremiumCard();
+  testGen11OxygenLagDefersSolidCardForGreenery();
+  testGen11OxygenLagStillPlaysPremiumCard();
   testLateCoreGlobalClosurePrefersGreeneryOverBlueActions();
   testLateOceanClosurePrefersAquiferOverBlueActions();
+  testFarFromClosureAsteroidDoesNotBeatStrongCardOnTempoBoost();
+  testNearClosureAsteroidStillBeatsWeakCardOnTempoBoost();
+  testMidClosureAsteroidDoesNotBeatSolidCardOnNegativeRaw();
+  testLateTerraformRaceDefersProductionCardForAsteroid();
+  testLateTerraformRaceIgnoresVenusAndUtilityStandardProjects();
+  testCoreClosedVenusOpenDoesNotCreateProductionRunway();
+  testMidClosureAquiferDoesNotBeatSolidCardOnNegativeRaw();
+  testNearClosureAquiferStillBeatsWeakCard();
   testMidgameExcavateDoesNotBeatStrongBlueActionWithSynergy();
   testWeakBlueActionMidgamePrefersNearThresholdSetupCard();
   testStrongerBlueActionStillBeatsNearThresholdSetupCard();
-  testWeakBlueActionMidgamePrefersSingleCheapPositiveCardWithoutSp();
+  testWeakBlueActionMidgamePrefersSinglePlayablePositiveCardWithoutSp();
   testWeakBlueActionMidgamePrefersSingleHigherValueCardWithoutSp();
   testWeakBlueActionMidgameStillSkipsSingleDeadCardWithoutSp();
   testStillUsesFreeDelegateAsFallback();
   testStillPlaysStrongCardWhenLowOnCash();
   testSellPatentsKeepsSetupCardsInMidgame();
+  testSellPatentsDoesNotProtectSearchForLifeTrap();
   testSellPatentsStillDumpsDeadCardsInEndgame();
   testDelaysFirstAwardForStrongPlayableCard();
   testDelaysSecondAwardForVeryStrongPlayableCard();
