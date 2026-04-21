@@ -16,6 +16,7 @@
   var sharedEstimateTriggersPerGen = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateTriggersPerGen;
   var sharedPAtLeastOne = TM_BRAIN_CORE && TM_BRAIN_CORE.pAtLeastOne;
   var sharedBuildEndgameTiming = TM_BRAIN_CORE && TM_BRAIN_CORE.buildEndgameTiming;
+  var sharedEstimateGensLeftFromState = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateGensLeftFromState;
   var sharedAnalyzePass = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzePass;
   var sharedRankHandCards = TM_BRAIN_CORE && TM_BRAIN_CORE.rankHandCards;
   var sharedAnalyzeActions = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeActions;
@@ -236,6 +237,12 @@
     'Cultural Metropolis', 'City',
   ]);
 
+  var OFFBOARD_CITY_CARDS = new Set([
+    'Ganymede Colony', 'Phobos Space Haven', 'Luna Metropolis',
+    'Stratopolis', 'Stanford Torus', 'Dawn City', 'Maxwell Base',
+    'Venera Base', 'Dyson Screens',
+  ]);
+
   var PROD_CARDS = new Set([
     'Immigrant City', 'Mining Guild', 'Fuel Synthesis', 'Noctis City',
     'Domed Crater', 'Phobos Space Haven', 'Space Elevator', 'Ironworks',
@@ -271,6 +278,10 @@
     'Capital', 'Commercial District', 'Search For Life', 'Security Fleet',
   ]);
 
+  var WEAK_PSEUDO_VP_ACTION_CARDS = new Set([
+    'Search For Life', 'Security Fleet',
+  ]);
+
   var ANIMAL_VP_CARDS = new Set([
     'Birds', 'Fish', 'Predators', 'Animals', 'Livestock', 'Bees', 'Moose',
     'Penguins', 'Small Animals', 'Space Whales', 'Pets',
@@ -285,6 +296,10 @@
   var FLOATER_VP_CARDS = new Set([
     'Jovian Lanterns', 'Dirigibles', 'Stratospheric Birds', 'Venusian Animals',
   ]);
+
+  function isOffBoardCityCard(name) {
+    return OFFBOARD_CITY_CARDS.has(name);
+  }
 
   // ══════════════════════════════════════════════════════════════
   // STATIC DATA
@@ -399,11 +414,25 @@
     return count;
   }
 
+  function normalizePaymentShape(pay) {
+    var normalized = {};
+    var source = pay || {};
+    var k;
+    for (k in PAY_ZERO) normalized[k] = PAY_ZERO[k];
+    for (k in source) {
+      if (!Object.prototype.hasOwnProperty.call(source, k)) continue;
+      var targetKey = k === 'megaCredits' ? 'megacredits' : k;
+      if (!Object.prototype.hasOwnProperty.call(normalized, targetKey)) continue;
+      normalized[targetKey] = typeof source[k] === 'number' && !isNaN(source[k]) ? source[k] : normalized[targetKey];
+    }
+    return normalized;
+  }
+
   function adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName) {
     var tp = (state && state.thisPlayer) || {};
-    var payRes = pay || {};
+    var payRes = normalizePaymentShape(pay);
     var selectedCardName = cardName || (wfOrOpts && wfOrOpts.card) || '';
-    var mcKey = Object.prototype.hasOwnProperty.call(payRes, 'megaCredits') ? 'megaCredits' : 'megacredits';
+    var mcKey = 'megacredits';
     var availableMC = tp.megaCredits || tp.megacredits || 0;
     var wfRes = wfOrOpts || {};
     var adjustSpendAll = function(resourceKey, resourceType, unitValue) {
@@ -527,6 +556,45 @@
       var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
       // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
       return tempSteps + oxySteps + oceanSteps + Math.round(venusSteps * 0.5);
+    };
+
+  var estimateGensLeft = sharedEstimateGensLeftFromState
+    ? function(state) {
+      return sharedEstimateGensLeftFromState(state);
+    }
+    : function(state) {
+      var g = (state && state.game) || {};
+      var breakdown = {
+        tempSteps: Math.max(0, Math.round((8 - (typeof g.temperature === 'number' ? g.temperature : -30)) / 2)),
+        oxySteps: Math.max(0, 14 - (typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0)),
+        oceanSteps: Math.max(0, 9 - (typeof g.oceans === 'number' ? g.oceans : 0)),
+        venus: typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30,
+      };
+      var coreSteps = breakdown.tempSteps + breakdown.oxySteps + breakdown.oceanSteps;
+      var gen = g.generation || 1;
+      var playerCount = (state && state.players) ? (state.players.length || 3) : 3;
+      var isWgt = !!(g.gameOptions && g.gameOptions.solarPhaseOption);
+      if (coreSteps <= 0) return 1;
+
+      var baseSteps;
+      if (playerCount <= 2) baseSteps = isWgt ? 4 : 3;
+      else if (playerCount >= 4) baseSteps = isWgt ? 8 : 6;
+      else baseSteps = isWgt ? 6 : 4;
+
+      var stepsPerGen = baseSteps;
+      if (gen <= 3) stepsPerGen = Math.max(3, baseSteps - 2);
+      else if (gen >= 7) stepsPerGen = baseSteps + (playerCount >= 3 ? 2 : 1);
+
+      var lateCloseout = gen >= 7 && coreSteps <= 18;
+      if (breakdown.venus < 30 && isWgt) {
+        if (lateCloseout) stepsPerGen += 1;
+        else if (gen < 7) stepsPerGen = Math.max(3, stepsPerGen - 1);
+      }
+
+      var rawGens = coreSteps / Math.max(1, stepsPerGen);
+      var gensLeft = lateCloseout ? Math.round(rawGens) : Math.ceil(rawGens);
+      if (gen >= 8 && playerCount >= 3 && coreSteps <= 18) gensLeft = Math.min(gensLeft, 2);
+      return Math.max(1, gensLeft);
     };
 
   // Calculate VP for any player from visible game data
@@ -723,6 +791,27 @@
       return tradeValue;
     };
 
+  function countOwnColonies(state, tp) {
+    if (tp && typeof tp.coloniesCount === 'number') return tp.coloniesCount;
+    var colonies = state && state.game && state.game.colonies;
+    var color = tp && tp.color;
+    if (!Array.isArray(colonies) || !color) return 0;
+    var count = 0;
+    for (var ci = 0; ci < colonies.length; ci++) {
+      var slots = colonies[ci] && colonies[ci].colonies;
+      if (!Array.isArray(slots)) continue;
+      for (var si = 0; si < slots.length; si++) {
+        var slot = slots[si];
+        if (slot === color) {
+          count++;
+        } else if (slot && (slot.player === color || slot.playerColor === color || slot.color === color)) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
   var hasVPCard = (TM_BRAIN_CORE && TM_BRAIN_CORE.hasVPCard) || function(tableauNames, vpSet) {
     var arr = [];
     vpSet.forEach(function(c) { arr.push(c); });
@@ -900,7 +989,6 @@
 
     // === Colony / trade modifiers ===
     'Trading Colony':          { perGen: 2 },   // +2 resources per trade (~2 trades left, ~4 MC/trade bonus)
-    'Colonial Representation': { perGen: 1.5 }, // +1 influence permanent + colony rebate
     'L1 Trade Terminal':       { perGen: 2 },   // no energy/MC for trade, +1 VP
     'Cryo-Sleep':              { perGen: 1 },   // +1 trade income
 
@@ -1067,7 +1155,7 @@
 
     // === Cards with wrong/missing MANUAL_EV (no _behOverride needed) ===
     'Titan Air-scrapping':     { perGen: 1.5 }, // action: +1 floater or spend 2 → remove heat → raise temp. Slow but free TR
-    'Underground Detonations': { perGen: 1.5 }, // action: 8 MC (steel) → raise temp. Steel payable = real cost ~5 MC
+    'Underground Detonations': { once: -10 },   // classic trap: delayed 8 MC heat bump is too slow, so don't treat it as a real engine
     'United Nations Mars Initiative': { perGen: 3 }, // action: 3 MC → raise TR if raised this gen. ~1 TR/gen = 4 MC net
     'Cloud Vortex Outpost':    { perGen: 3, once: 7 }, // action: floater→Venus + colony placement(7 MC). Tags: Venus/Jovian
     'Micro-Geodesics':         { perGen: 3 },   // ongoing: -2 MC on Ares-compatible cards. Tags: Mars/Science
@@ -1364,6 +1452,9 @@
         ev += stock[sk] * sVal;
       }
     }
+    if (name === 'Colonial Representation') {
+      ev += countOwnColonies(state, tp) * 3;
+    }
 
     // ── GLOBAL PARAMETER RAISES ──
     // Each raise = 1 TR + tempo bonus (pushing game to end locks in your lead)
@@ -1389,7 +1480,7 @@
     // City = 3-4 VP from adjacent greeneries (accumulates over game) + positional value
     // Early city: ~4 VP by endgame (adj greeneries placed over time). Late city: ~2 VP.
     // +1 MC prod implicit. Landlord/Mayor award synergy.
-    if (beh.city) {
+    if (beh.city && !isOffBoardCityCard(name)) {
       var cityAdjVP = gensLeft >= 5 ? 4 : (gensLeft >= 3 ? 3 : 2);
       ev += vpMC(gensLeft) * cityAdjVP + 3; // VP from adj greeneries + MC prod + positional
     }
@@ -1487,6 +1578,64 @@
       var cardsPerGen = 2.5; // avg cards played per gen (universal discount)
       if (discount.tag) cardsPerGen = 1; // tag-specific: fewer matching cards
       ev += discount.amount * cardsPerGen * gensLeft;
+    }
+
+    // Hand-aware discount value: near-term matching cards materially increase real discount payoff.
+    {
+      var discountMap = {
+        'Earth Office': { tag: 'earth', amount: 3 },
+        'Earth Catapult': { tag: null, amount: 2 },
+        'Space Station': { tag: 'space', amount: 2 },
+        'Anti-Gravity Technology': { tag: null, amount: 2 },
+        'Warp Drive': { tag: 'space', amount: 4 },
+        'Cutting Edge Technology': { tag: null, amount: 2 },
+        'Sky Docks': { tag: 'earth', amount: 2 },
+        'Mass Converter': { tag: 'space', amount: 2 },
+        'Shuttles': { tag: 'space', amount: 2 },
+        'Research Outpost': { tag: null, amount: 1 },
+      };
+      var discountInfo = discountMap[name];
+      if (discountInfo || discount) {
+        var handSaving = 0;
+        var requiredTag = discountInfo && discountInfo.tag;
+        var amount = (discountInfo && discountInfo.amount) || discount.amount || 1;
+        for (var hdi = 0; hdi < handCards.length; hdi++) {
+          var handCardName = handCards[hdi].name || handCards[hdi] || '';
+          if (!handCardName || handCardName === name) continue;
+          var handTags = _cardTags[handCardName] || [];
+          if (!requiredTag || handTags.indexOf(requiredTag) >= 0) handSaving += amount;
+        }
+        ev += Math.min(handSaving, 20);
+      }
+    }
+
+    // Production timing policy belongs in base EV: the same production card should score higher
+    // in buy/draft/play when there is enough runway left for compounding.
+    var urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
+    {
+      if (PROD_CARDS.has(name)) {
+        ev += gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
+      }
+    }
+
+    {
+      var hasVpCard = (vpInfo || VP_CARDS.has(name) || DYNAMIC_VP_CARDS.has(name));
+      var hasWeakPseudoVpAction = WEAK_PSEUDO_VP_ACTION_CARDS.has(name);
+      var hasProd = !!beh.production;
+      var hasAction = !!beh.action || !!cd.action;
+      if (hasVpCard && !hasProd && !hasAction && urgency < 0.3 && cost >= 15) {
+        ev -= 3;
+      }
+      if (hasVpCard && hasAction && urgency < 0.5 && !hasWeakPseudoVpAction) {
+        ev += 4;
+      }
+    }
+
+    if ((CITY_CARDS.has(name) || beh.city) && !isOffBoardCityCard(name)) {
+      var myCities = tp.citiesCount || 0;
+      var cityPremium = 4 + Math.round(urgency * 4);
+      if (myCities < 2) cityPremium += 4;
+      ev += cityPremium;
     }
 
     // ── DECREASE ANY PRODUCTION (opponent harm) ──
@@ -1630,6 +1779,40 @@
       }
       return total;
     };
+
+    // Cards that raise globals can be materially worse if they accelerate the wrong opponent engine.
+    if (state && Array.isArray(state.players) && (((glob && ((glob.temperature || 0) > 0 || (glob.heat || 0) > 0 || (glob.oxygen || 0) > 0)) || beh.ocean))) {
+      var oppHeatRush = false;
+      var oppPlantEngine = false;
+      var myColor = tp.color || null;
+      for (var opi = 0; opi < state.players.length; opi++) {
+        var opp = state.players[opi] || {};
+        if (myColor && opp.color === myColor) continue;
+        if ((glob && ((glob.temperature || 0) > 0 || (glob.heat || 0) > 0)) &&
+            (((opp.heatProduction || 0) >= 5) || ((opp.heat || 0) >= 16))) {
+          oppHeatRush = true;
+        }
+        if ((((glob && (glob.oxygen || 0) > 0)) || beh.ocean) && ((opp.plantProduction || 0) >= 4)) {
+          oppPlantEngine = true;
+        }
+      }
+      if (oppHeatRush) ev -= 3;
+      if (glob && (glob.oxygen || 0) > 0 && oppPlantEngine) ev -= 3;
+      if (beh.ocean && oppPlantEngine) ev -= 2;
+    }
+
+    if (name === 'Greenhouses') {
+      var totalCities = 0;
+      var cityPlayers = Array.isArray(state && state.players) ? state.players : [];
+      for (var cpi = 0; cpi < cityPlayers.length; cpi++) {
+        totalCities += cityPlayers[cpi].citiesCount || 0;
+      }
+      if (totalCities >= 3) ev += totalCities * 2;
+    }
+
+    if (name === 'Optimal Aerobraking') {
+      ev += 5;
+    }
 
     if (name === 'Space Station') {
       var handSpace = futureTagSupport('space');
@@ -2137,14 +2320,8 @@
     if (sharedBuildEndgameTiming) {
       return sharedBuildEndgameTiming(state, {
         remainingSteps: remainingSteps,
-        estimateGens: function(_state, steps, gen) {
-          var numPlayers2 = (_state && _state.players) ? (_state.players.length || 3) : 3;
-          var totalSteps2 = 19 + 14 + 9 + 7;
-          var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
-          var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
-          var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
-          var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
-          return steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
+        estimateGens: function(_state) {
+          return estimateGensLeft(_state);
         },
         shouldPush: shouldPushGlobe,
         vpLead: vpLead,
@@ -2152,14 +2329,7 @@
     }
     var steps = remainingSteps(state);
     var gen = (state && state.game && state.game.generation) || 1;
-
-    var numPlayers2 = (state && state.players) ? (state.players.length || 3) : 3;
-    var totalSteps2 = 19 + 14 + 9 + 7;
-    var avgGameLen2 = numPlayers2 >= 4 ? 8 : (numPlayers2 >= 3 ? 9 : 10.5);
-    var genBased2 = Math.max(1, avgGameLen2 - gen + 1);
-    var stepsBased2 = Math.max(1, Math.round(steps / (totalSteps2 / avgGameLen2)));
-    var completionPct2 = steps > 0 ? Math.max(0, 1 - steps / totalSteps2) : 1;
-    var estimatedGens = steps > 0 ? Math.max(1, Math.round(genBased2 * completionPct2 + stepsBased2 * (1 - completionPct2))) : 0;
+    var estimatedGens = estimateGensLeft(state);
 
     var dangerZone;
     if (estimatedGens <= 1) dangerZone = 'red';
@@ -2204,6 +2374,7 @@
         isEngineCard: function(name) { return ENGINE_CARDS.has(name); },
         isProdCard: function(name) { return PROD_CARDS.has(name); },
         isCityCard: function(name) { return CITY_CARDS.has(name); },
+        isOffBoardCityCard: isOffBoardCityCard,
       });
     }
     if (!cards || cards.length === 0) return [];
@@ -2428,6 +2599,7 @@
     VP_CARDS: VP_CARDS,
     ENGINE_CARDS: ENGINE_CARDS,
     CITY_CARDS: CITY_CARDS,
+    OFFBOARD_CITY_CARDS: OFFBOARD_CITY_CARDS,
     PROD_CARDS: PROD_CARDS,
     DYNAMIC_VP_CARDS: DYNAMIC_VP_CARDS,
     ANIMAL_VP_CARDS: ANIMAL_VP_CARDS,
@@ -2445,6 +2617,7 @@
 
     // Core analytics
     remainingSteps: remainingSteps,
+    estimateGensLeft: estimateGensLeft,
     calcPlayerVP: calcPlayerVP,
     vpLead: vpLead,
     shouldPushGlobe: shouldPushGlobe,
@@ -2457,6 +2630,7 @@
     getOpeningHandBias: getOpeningHandBiasForName,
     getOverlayRatingByName: getOverlayRatingByName,
     getOverlayRatingScore: getOverlayRatingScore,
+    isOffBoardCityCard: isOffBoardCityCard,
 
     // Dashboard & advisor
     endgameTiming: endgameTiming,

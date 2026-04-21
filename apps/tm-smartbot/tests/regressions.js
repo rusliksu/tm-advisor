@@ -280,6 +280,61 @@ function testEventCardsExposeSyntheticEventTag() {
   );
 }
 
+function testGeneratedCardNamesKeepEscapedApostrophes() {
+  for (const [label, table] of [
+    ['CARD_DATA', SMARTBOT.CARD_DATA],
+    ['CARD_TAGS', SMARTBOT.CARD_TAGS],
+  ]) {
+    const badKeys = Object.keys(table).filter((key) => key.includes('\\'));
+    assert.deepStrictEqual(badKeys, [], label + ' should not contain escaped/truncated card-name keys');
+  }
+
+  for (const staleName of ['CEO\\', 'Inventors\\', 'An Offer You Can\\', 'Darkside Smugglers\\']) {
+    assert.strictEqual(SMARTBOT.CARD_DATA[staleName], undefined, staleName + ' should not exist in smartbot card data');
+    assert.strictEqual(SMARTBOT.CARD_TAGS[staleName], undefined, staleName + ' should not exist in smartbot card tags');
+  }
+
+  for (const canonicalName of ["CEO's Favorite Project", "Inventors' Guild", "An Offer You Can't Refuse", "Darkside Smugglers' Union"]) {
+    assert.ok(SMARTBOT.CARD_DATA[canonicalName], canonicalName + ' should exist in smartbot card data');
+  }
+  assert.ok(SMARTBOT.CARD_TAGS["Inventors' Guild"].includes('science'), "Inventors' Guild should keep its science tag");
+  assert.ok(SMARTBOT.CARD_TAGS["Darkside Smugglers' Union"].includes('space'), "Darkside Smugglers' Union should keep its space tag");
+}
+
+function testAsteroidResourcesDoesNotSumChoiceBranches() {
+  const behavior = SMARTBOT.CARD_DATA['Asteroid Resources'].behavior || {};
+  assert.strictEqual(behavior.production.steel, 1);
+  assert.strictEqual(behavior.production.titanium, 1);
+  assert.strictEqual(Object.prototype.hasOwnProperty.call(behavior, 'stock'), false);
+  assert.strictEqual(Object.prototype.hasOwnProperty.call(behavior, 'ocean'), false);
+}
+
+function testStatefulOrActionsDoNotSumChoiceBranches() {
+  for (const name of [
+    'Aerial Mappers',
+    'Atmo Collectors',
+    'Copernicus Tower',
+    'Deuterium Export',
+    'Dirigibles',
+    'Extractor Balloons',
+    'GHG Producing Bacteria',
+    'Local Shading',
+    'Nitrite Reducing Bacteria',
+    'Regolith Eaters',
+    'Sulphur-Eating Bacteria',
+    'Thermophiles',
+    'Weather Balloons',
+  ]) {
+    const action = SMARTBOT.CARD_DATA[name].action || {};
+    assert.strictEqual(action.addResources, 1, name + ' should keep only the accumulation action branch');
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(action, 'tr'), false, name + ' should not sum TR with resource accumulation');
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(action, 'global'), false, name + ' should not sum global raises with resource accumulation');
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(action, 'stock'), false, name + ' should not sum stock gains with resource accumulation');
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(action, 'production'), false, name + ' should not sum production gains with resource accumulation');
+  }
+  assert.strictEqual(SMARTBOT.CARD_DATA['Physics Complex'].vp.per, 0.5, 'Physics Complex should score 2 VP per science resource');
+}
+
 function testOpeningDraftPrefersIcEventShell() {
   const wf = buildInitialDraftWorkflow(
     ['Interplanetary Cinematics', 'Splice', 'Arklight'],
@@ -821,6 +876,9 @@ function run() {
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
   testEventCardsExposeSyntheticEventTag();
+  testGeneratedCardNamesKeepEscapedApostrophes();
+  testAsteroidResourcesDoesNotSumChoiceBranches();
+  testStatefulOrActionsDoNotSumChoiceBranches();
   testOpeningDraftPrefersIcEventShell();
   testOpeningDraftPrefersSpliceDenseMicrobeShell();
   testOpeningDraftKeepsIcAheadWhenSpliceOnlyHasLoneDecomposers();

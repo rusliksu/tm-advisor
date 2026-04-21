@@ -46,33 +46,13 @@ var TM_CARD_VP = {
   "type": "per_resource",
   "per": 2
  },
- "Regolith Eaters": {
-  "type": "per_resource",
-  "per": 3
- },
- "GHG Producing Bacteria": {
-  "type": "per_resource",
-  "per": 3
- },
- "Nitrite Reducing Bacteria": {
-  "type": "per_resource",
-  "per": 3
- },
  "Extremophiles": {
-  "type": "per_resource",
-  "per": 3
- },
- "Dirigibles": {
   "type": "per_resource",
   "per": 3
  },
  "Floating Habs": {
   "type": "per_resource",
   "per": 2
- },
- "Atmo Collectors": {
-  "type": "per_resource",
-  "per": 3
  },
  "Jovian Lanterns": {
   "type": "per_resource",
@@ -101,7 +81,7 @@ var TM_CARD_VP = {
  },
  "Small Animals": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Livestock": {
   "type": "per_resource",
@@ -117,7 +97,7 @@ var TM_CARD_VP = {
  },
  "Pets": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Stratospheric Birds": {
   "type": "per_resource",
@@ -167,11 +147,23 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": -1
  },
- "Dust Seals": {
+ "Asteroid Mining": {
   "type": "static",
   "vp": 2
  },
+ "Dust Seals": {
+  "type": "static",
+  "vp": 1
+ },
  "Research": {
+  "type": "static",
+  "vp": 1
+ },
+ "Wave Power": {
+  "type": "static",
+  "vp": 1
+ },
+ "Windmills": {
   "type": "static",
   "vp": 1
  },
@@ -183,19 +175,39 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 4
  },
+ "Open City": {
+  "type": "static",
+  "vp": 1
+ },
+ "Domed Crater": {
+  "type": "static",
+  "vp": 1
+ },
  "Decomposers": {
   "type": "per_resource",
   "per": 1
  },
  "Ants": {
   "type": "per_resource",
-  "per": 0.7
+  "per": 1
  },
  "Security Fleet": {
   "type": "per_resource",
-  "per": 0.5
+  "per": 1
  },
  "Electro Catapult": {
+  "type": "static",
+  "vp": 1
+ },
+ "AI Central": {
+  "type": "static",
+  "vp": 1
+ },
+ "Olympus Conference": {
+  "type": "static",
+  "vp": 1
+ },
+ "Mars University": {
   "type": "static",
   "vp": 1
  },
@@ -203,9 +215,29 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 3
  },
+ "Aerial Mappers": {
+  "type": "static",
+  "vp": 1
+ },
  "Luna Metropolis": {
   "type": "static",
   "vp": 2
+ },
+ "Maxwell Base": {
+  "type": "static",
+  "vp": 3
+ },
+ "Stratopolis": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Dawn City": {
+  "type": "static",
+  "vp": 3
+ },
+ "Community Services": {
+  "type": "static",
+  "vp": 1
  },
  "Space Station": {
   "type": "static",
@@ -227,11 +259,23 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 2
  },
+ "Pioneer Settlement": {
+  "type": "static",
+  "vp": 2
+ },
  "Earth Catapult": {
   "type": "static",
   "vp": 2
  },
+ "Gene Repair": {
+  "type": "static",
+  "vp": 2
+ },
  "Standard Technology": {
+  "type": "static",
+  "vp": 1
+ },
+ "Asteroid Mining Consortium": {
   "type": "static",
   "vp": 1
  },
@@ -259,15 +303,40 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 2
  },
+ "Atmoscoop": {
+  "type": "static",
+  "vp": 1
+ },
  "Luxury Foods": {
   "type": "static",
   "vp": 2
+ },
+ "Sponsored Academies": {
+  "type": "static",
+  "vp": 1
  },
  "Martian Survey": {
   "type": "static",
   "vp": 1
  },
+ "Solar Probe": {
+  "type": "static",
+  "vp": 1
+ },
  "Orbital Cleanup": {
+  "type": "static",
+  "vp": 2
+ },
+ "Wetlands": {
+  "type": "static",
+  "vp": 1
+ },
+ "Venera Base": {
+  "type": "per_tag",
+  "tag": "venus",
+  "per": 2
+ },
+ "Public Celebrations": {
   "type": "static",
   "vp": 2
  },
@@ -287,6 +356,22 @@ var TM_CARD_VP = {
   "type": "per_resource",
   "per": 1
  },
+ "Arklight": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Pristar": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Celestic": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Main Belt Asteroids": {
+  "type": "per_resource",
+  "per": 1
+ },
  "Nobel Prize": {
   "type": "static",
   "vp": 2
@@ -298,6 +383,10 @@ var TM_CARD_VP = {
  "Hospitals": {
   "type": "static",
   "vp": 1
+ },
+ "Neptunian Power Consultants": {
+  "type": "per_resource",
+  "per": 1
  },
  "Tundra Farming": {
   "type": "static",
@@ -409,7 +498,7 @@ var TM_CARD_VP = {
  },
  "Ecology Research": {
   "type": "static",
-  "vp": 3
+  "vp": 1
  },
  "Carbon Nanosystems": {
   "type": "static",
@@ -442,6 +531,10 @@ var TM_CARD_VP = {
  "Asteroid Resources": {
   "type": "static",
   "vp": 1
+ },
+ "Martian Repository": {
+  "type": "per_resource",
+  "per": 1
  },
  "Pollinators": {
   "type": "static",
@@ -493,7 +586,7 @@ var TM_CARD_VP = {
  },
  "Earth Elevator": {
   "type": "static",
-  "vp": 2
+  "vp": 4
  },
  "Great Dam": {
   "type": "static",
@@ -515,7 +608,15 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 2
  },
+ "Molecular Printing": {
+  "type": "static",
+  "vp": 1
+ },
  "Public Baths": {
+  "type": "static",
+  "vp": 1
+ },
+ "Vesta Shipyard": {
   "type": "static",
   "vp": 1
  },
@@ -530,6 +631,10 @@ var TM_CARD_VP = {
  "Breathing Filters": {
   "type": "static",
   "vp": 2
+ },
+ "Diaspora Movement": {
+  "type": "static",
+  "vp": 1
  },
  "Lightning Harvest": {
   "type": "static",
@@ -555,6 +660,10 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 1
  },
+ "Beam From A Thorium Asteroid": {
+  "type": "static",
+  "vp": 1
+ },
  "Hi-Tech Lab": {
   "type": "static",
   "vp": 1
@@ -564,6 +673,10 @@ var TM_CARD_VP = {
   "vp": 2
  },
  "Aqueduct Systems": {
+  "type": "static",
+  "vp": 1
+ },
+ "Nitrogen from Titan": {
   "type": "static",
   "vp": 1
  },
@@ -583,6 +696,18 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 1
  },
+ "Cloud Tourism": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Phobos Space Haven": {
+  "type": "static",
+  "vp": 3
+ },
+ "Physics Complex": {
+  "type": "per_resource",
+  "per": 0.5
+ },
  "City Parks": {
   "type": "static",
   "vp": 2
@@ -594,6 +719,23 @@ var TM_CARD_VP = {
  "Tectonic Stress Power": {
   "type": "static",
   "vp": 1
+ },
+ "Asteroid Deflection System": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Controlled Bloom": {
+  "type": "static",
+  "vp": 1
+ },
+ "Cultivation of Venus": {
+  "type": "per_tag",
+  "tag": "venus",
+  "per": 2
+ },
+ "Economic Espionage": {
+  "type": "per_resource",
+  "per": 1
  },
  "Interplanetary Transport": {
   "type": "static",
@@ -639,15 +781,27 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 1
  },
+ "Solarpedia": {
+  "type": "per_resource",
+  "per": 1
+ },
  "Asimov": {
   "type": "static",
   "vp": 2
+ },
+ "Bio-Sol": {
+  "type": "per_resource",
+  "per": 1
  },
  "Duncan": {
   "type": "static",
   "vp": 6
  },
  "Stratospheric Expedition": {
+  "type": "static",
+  "vp": 1
+ },
+ "Ceres Tech Market": {
   "type": "static",
   "vp": 1
  },
@@ -660,8 +814,8 @@ var TM_CARD_VP = {
   "vp": 1
  },
  "Microgravity Nutrition": {
-  "type": "per_resource",
-  "per": 0.5
+  "type": "static",
+  "vp": 1
  },
  "Great Dam:promo": {
   "type": "static",
@@ -746,6 +900,10 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": 3
  },
+ "Cut-throat Budgeting": {
+  "type": "static",
+  "vp": -1
+ },
  "Expedition Vehicles": {
   "type": "static",
   "vp": 1
@@ -757,6 +915,10 @@ var TM_CARD_VP = {
  "Henkei Genetics": {
   "type": "per_resource",
   "per": 1
+ },
+ "Infrastructure Overload": {
+  "type": "static",
+  "vp": -1
  },
  "Investigative Journalism": {
   "type": "per_resource",
@@ -773,6 +935,10 @@ var TM_CARD_VP = {
  "Neutrinograph": {
   "type": "static",
   "vp": 2
+ },
+ "Off-World Tax Haven": {
+  "type": "static",
+  "vp": -1
  },
  "Orbital Laser Drill": {
   "type": "static",
@@ -799,49 +965,97 @@ var TM_CARD_VP = {
   "type": "per_resource",
   "per": 1
  },
- "Asteroid Mining": {
+ "Undermoon Drug Lords Network": {
   "type": "static",
-  "vp": 2
+  "vp": -1
  },
- "Beam From A Thorium Asteroid": {
+ "Landfill": {
+  "type": "static",
+  "vp": -2
+ },
+ "Racketeering": {
+  "type": "static",
+  "vp": -1
+ },
+ "Labor Trafficking": {
+  "type": "static",
+  "vp": -2
+ },
+ "Space Privateers": {
+  "type": "static",
+  "vp": -2
+ },
+ "Corporate Theft": {
+  "type": "static",
+  "vp": -1
+ },
+ "Monopoly": {
+  "type": "static",
+  "vp": -2
+ },
+ "Martian Express": {
   "type": "static",
   "vp": 1
+ },
+ "Deepnuking": {
+  "type": "static",
+  "vp": -1
+ },
+ "Patent Manipulation": {
+  "type": "static",
+  "vp": -2
+ },
+ "Tunneling Loophole": {
+  "type": "static",
+  "vp": -1
+ },
+ "Narrative Spin": {
+  "type": "static",
+  "vp": -1
+ },
+ "Corporate Blackmail": {
+  "type": "static",
+  "vp": -1
+ },
+ "Price Wars": {
+  "type": "static",
+  "vp": -1
+ },
+ "Export Convoy": {
+  "type": "static",
+  "vp": -1
+ },
+ "Soil Export": {
+  "type": "static",
+  "vp": -1
+ },
+ "Hackers:u": {
+  "type": "static",
+  "vp": -1
+ },
+ "Ecological Zone:ares": {
+  "type": "per_resource",
+  "per": 1
+ },
+ "Great Dam:ares": {
+  "type": "static",
+  "vp": 1
+ },
+ "Natural Preserve:ares": {
+  "type": "static",
+  "vp": 1
+ },
+ "Nuclear Zone:ares": {
+  "type": "static",
+  "vp": -2
  },
  "Biomass Combustors": {
   "type": "static",
   "vp": -1
  },
- "Domed Crater": {
-  "type": "static",
-  "vp": 1
- },
  "Heat Trappers": {
   "type": "static",
   "vp": -1
- },
- "Open City": {
-  "type": "static",
-  "vp": 1
- },
- "Phobos Space Haven": {
-  "type": "static",
-  "vp": 3
- },
- "Wave Power": {
-  "type": "static",
-  "vp": 1
- },
- "Windmills": {
-  "type": "static",
-  "vp": 1
- },
- "AI Central": {
-  "type": "static",
-  "vp": 1
- },
- "Asteroid Mining Consortium": {
-  "type": "static",
-  "vp": 1
  },
  "Corporate Stronghold": {
   "type": "static",
@@ -851,10 +1065,6 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": -1
  },
- "Gene Repair": {
-  "type": "static",
-  "vp": 2
- },
  "Hackers": {
   "type": "static",
   "vp": -1
@@ -863,113 +1073,25 @@ var TM_CARD_VP = {
   "type": "static",
   "vp": -1
  },
- "Mars University": {
-  "type": "static",
-  "vp": 1
- },
- "Olympus Conference": {
-  "type": "static",
-  "vp": 1
- },
- "Physics Complex": {
-  "type": "static",
-  "vp": 2
- },
- "Vesta Shipyard": {
-  "type": "static",
-  "vp": 1
- },
- "Asteroid Deflection System": {
-  "type": "static",
-  "vp": 1
- },
- "Neptunian Power Consultants": {
-  "type": "static",
-  "vp": 1
- },
- "Aerial Mappers": {
-  "type": "static",
-  "vp": 1
- },
- "Atmoscoop": {
-  "type": "static",
-  "vp": 1
- },
- "Dawn City": {
-  "type": "static",
-  "vp": 3
- },
- "Maxwell Base": {
-  "type": "static",
-  "vp": 3
- },
- "Sponsored Academies": {
-  "type": "static",
-  "vp": 1
- },
- "Stratopolis": {
-  "type": "static",
-  "vp": 1
- },
- "Celestic": {
-  "type": "static",
-  "vp": 1
- },
- "Community Services": {
-  "type": "static",
-  "vp": 1
- },
  "Conscription": {
   "type": "static",
   "vp": -1
- },
- "Molecular Printing": {
-  "type": "static",
-  "vp": 1
- },
- "Nitrogen from Titan": {
-  "type": "static",
-  "vp": 1
- },
- "Pioneer Settlement": {
-  "type": "static",
-  "vp": 2
- },
- "Solar Probe": {
-  "type": "static",
-  "vp": 1
  },
  "Space Port Colony": {
   "type": "static",
   "vp": 1
  },
- "Arklight": {
+ "Desperate Measures": {
   "type": "static",
-  "vp": 1
+  "vp": -2
  },
- "Ceres Tech Market": {
+ "Planetary Rights Buyout": {
   "type": "static",
-  "vp": 1
+  "vp": -3
  },
- "Cloud Tourism": {
+ "Kingdom of Tauraro": {
   "type": "static",
-  "vp": 1
- },
- "Main Belt Asteroids": {
-  "type": "static",
-  "vp": 1
- },
- "Diaspora Movement": {
-  "type": "static",
-  "vp": 1
- },
- "Public Celebrations": {
-  "type": "static",
-  "vp": 2
- },
- "Pristar": {
-  "type": "static",
-  "vp": 1
+  "vp": -2
  }
 };
 if (typeof module !== 'undefined') module.exports = TM_CARD_VP;

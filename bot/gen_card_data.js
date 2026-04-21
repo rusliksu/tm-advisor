@@ -9,8 +9,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const CARDS_DIR = path.join(__dirname, 'src/server/cards');
-const OUT_FILE = path.join(__dirname, 'card_data.js');
+const TM_ROOT = process.env.TM_ROOT || path.resolve(__dirname, '..', '..', 'terraforming-mars');
+const CARDS_DIR = path.join(TM_ROOT, 'src/server/cards');
+const OUT_FILE = process.env.OUT_FILE || path.join(__dirname, 'card_data.js');
 
 // Expansion from directory name
 const EXPANSION_MAP = {
@@ -27,17 +28,17 @@ function loadEnumMap(filePath) {
   try {
     const src = fs.readFileSync(filePath, 'utf8');
     const map = {};
-    for (const m of src.matchAll(/(\w+)\s*=\s*'([^']+)'/g)) {
-      map[m[1]] = m[2];
+    for (const m of src.matchAll(/(\w+)\s*=\s*'((?:\\'|[^'])*)'/g)) {
+      map[m[1]] = m[2].replace(/\\'/g, "'");
     }
     return map;
   } catch { return {}; }
 }
 
-const cardNameMap = loadEnumMap(path.join(__dirname, 'src/common/cards/CardName.ts'));
-const tagMap = loadEnumMap(path.join(__dirname, 'src/common/cards/Tag.ts'));
-const resourceMap = loadEnumMap(path.join(__dirname, 'src/common/Resource.ts'));
-const cardResourceMap = loadEnumMap(path.join(__dirname, 'src/common/CardResource.ts'));
+const cardNameMap = loadEnumMap(path.join(TM_ROOT, 'src/common/cards/CardName.ts'));
+const tagMap = loadEnumMap(path.join(TM_ROOT, 'src/common/cards/Tag.ts'));
+const resourceMap = loadEnumMap(path.join(TM_ROOT, 'src/common/Resource.ts'));
+const cardResourceMap = loadEnumMap(path.join(TM_ROOT, 'src/common/CardResource.ts'));
 
 function resolveTag(s) {
   return tagMap[s.trim().replace(/^Tag\./, '')] || s.toLowerCase().replace(/^tag\./, '');
@@ -208,6 +209,8 @@ function parseVP(raw) {
   if (!isNaN(num)) return { type: 'static', vp: num };
   if (raw.includes("'special'") || raw === 'special') return { type: 'special' };
   if (raw.includes('resourcesHere')) {
+    const each = raw.match(/each\s*:\s*(\d+)/);
+    if (each) return { type: 'per_resource', per: 1 / parseInt(each[1], 10) };
     const per = raw.match(/per\s*:\s*(\d+)/);
     return { type: 'per_resource', per: per ? parseInt(per[1]) : 1 };
   }
@@ -238,6 +241,38 @@ function parseDiscount(raw) {
   const perMatch = raw.match(/per\s*:\s*'(\w+)'/);
   if (perMatch) d.per = perMatch[1];
   return d;
+}
+
+function applyChoiceBehaviorOverrides(card) {
+  if (card.name !== 'Asteroid Resources') return;
+  // The server card is an either/or choice. Do not model both branches as
+  // simultaneous production + ocean/stock value.
+  card.behavior = {
+    production: { steel: 1, titanium: 1 },
+  };
+}
+
+const RESOURCE_ACCUMULATOR_OR_ACTIONS = new Set([
+  'Aerial Mappers',
+  'Atmo Collectors',
+  'Copernicus Tower',
+  'Deuterium Export',
+  'Dirigibles',
+  'Extractor Balloons',
+  'GHG Producing Bacteria',
+  'Local Shading',
+  'Nitrite Reducing Bacteria',
+  'Regolith Eaters',
+  'Sulphur-Eating Bacteria',
+  'Thermophiles',
+  'Weather Balloons',
+]);
+
+function applyChoiceActionOverrides(card) {
+  if (!RESOURCE_ACCUMULATOR_OR_ACTIONS.has(card.name)) return;
+  // OR-actions that accumulate then later spend a resource are stateful. The
+  // generated static model should not pretend both branches happen together.
+  card.action = { addResources: 1 };
 }
 
 // Process one .ts card file
@@ -306,6 +341,8 @@ function processFile(filePath) {
     if (desc2) card.description = desc2[1];
   }
 
+  applyChoiceBehaviorOverrides(card);
+  applyChoiceActionOverrides(card);
   card.expansion = expansion;
   return card;
 }

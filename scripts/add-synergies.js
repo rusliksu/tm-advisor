@@ -154,7 +154,7 @@ setSynergies('Deimos Down:promo', [['CrediCor', 3], ['Asteroid Mining Consortium
 setSynergies('Vital Colony', [['Poseidon', 3], ['Productive Outpost', 3]]);
 setSynergies('Early Colonization', [['Poseidon', 3], ['Mining Colony', 3]]);
 setSynergies('Interplanetary Colony Ship', [['Poseidon', 3], ['Productive Outpost', 3]]);
-setSynergies('Huygens Observatory', [['Poseidon', 3], ['Titan Floating Launch-Pad', 3]]);
+setSynergies('Huygens Observatory', [['Poseidon', 3], ['Titan Floating Launch-pad', 3]]);
 
 // B-tier corps/preludes
 setSynergies('Habitat Marte', [['Lava Flows', 3], ['Nuclear Zone', 3]]);

@@ -1,5 +1,5 @@
-// Auto-generated card data — 972 cards from TM source
-// Generated: 2026-03-16T12:02:39.976Z
+// Auto-generated card data — 973 cards from TM source
+// Generated: 2026-04-21T20:43:07.511Z
 const CARD_DATA = {
   "Bioengineering Enclosure": {
     "name": "Bioengineering Enclosure",
@@ -210,31 +210,6 @@ const CARD_DATA = {
     "description": "Place this tile which grants an ADJACENCY BONUS of 2 energy. Increase your energy production 1 step for each plant resource on the area where you place the tile.",
     "expansion": "ares"
   },
-  "AI Central": {
-    "name": "AI Central",
-    "type": "active",
-    "cost": 21,
-    "tags": [
-      "science",
-      "building"
-    ],
-    "requirements": {
-      "count": 3,
-      "tag": "science"
-    },
-    "vp": {
-      "type": "static",
-      "vp": 1
-    },
-    "behavior": {
-      "production": {
-        "energy": -1
-      }
-    },
-    "cardNumber": "208",
-    "description": "Requires 3 science tags to play. Decrease your energy production 1 step.",
-    "expansion": "base"
-  },
   "Acquired Company": {
     "name": "Acquired Company",
     "type": "automated",
@@ -326,6 +301,31 @@ const CARD_DATA = {
     },
     "cardNumber": "170",
     "description": "Increase your heat production 3 steps and your plant production 1 step. Add 2 microbes to ANOTHER card.",
+    "expansion": "base"
+  },
+  "AI Central": {
+    "name": "AI Central",
+    "type": "active",
+    "cost": 21,
+    "tags": [
+      "science",
+      "building"
+    ],
+    "requirements": {
+      "count": 3,
+      "tag": "science"
+    },
+    "vp": {
+      "type": "static",
+      "vp": 1
+    },
+    "behavior": {
+      "production": {
+        "energy": -1
+      }
+    },
+    "cardNumber": "208",
+    "description": "Requires 3 science tags to play. Decrease your energy production 1 step.",
     "expansion": "base"
   },
   "Algae": {
@@ -753,13 +753,6 @@ const CARD_DATA = {
     "description": "Decrease your M€ production 1 step.",
     "expansion": "base"
   },
-  "CEO\\": {
-    "name": "CEO\\",
-    "type": "event",
-    "cost": 1,
-    "cardNumber": "149",
-    "expansion": "base"
-  },
   "Callisto Penal Mines": {
     "name": "Callisto Penal Mines",
     "type": "automated",
@@ -821,6 +814,13 @@ const CARD_DATA = {
     ],
     "cardNumber": "137",
     "description": "Increase your M€ production 1 step for each Earth tag you have, including this.",
+    "expansion": "base"
+  },
+  "CEO's Favorite Project": {
+    "name": "CEO's Favorite Project",
+    "type": "event",
+    "cost": 1,
+    "cardNumber": "149",
     "expansion": "base"
   },
   "Cloud Seeding": {
@@ -1078,33 +1078,6 @@ const CARD_DATA = {
     "description": "Requires 3 or less ocean tiles.",
     "expansion": "base"
   },
-  "Eos Chasma National Park": {
-    "name": "Eos Chasma National Park",
-    "type": "automated",
-    "cost": 16,
-    "tags": [
-      "plant",
-      "building"
-    ],
-    "requirements": {
-      "temperature": -12
-    },
-    "vp": {
-      "type": "static",
-      "vp": 1
-    },
-    "behavior": {
-      "production": {
-        "megacredits": 2
-      },
-      "stock": {
-        "plants": 3
-      }
-    },
-    "cardNumber": "026",
-    "description": "Requires -12 C or warmer. Add 1 animal TO ANY ANIMAL CARD. Gain 3 plants. Increase your M€ production 2 steps.",
-    "expansion": "base"
-  },
   "Earth Catapult": {
     "name": "Earth Catapult",
     "type": "active",
@@ -1188,6 +1161,33 @@ const CARD_DATA = {
     },
     "cardNumber": "201",
     "description": "Decrease any energy production 1 step and increase your own 1 step.",
+    "expansion": "base"
+  },
+  "Eos Chasma National Park": {
+    "name": "Eos Chasma National Park",
+    "type": "automated",
+    "cost": 16,
+    "tags": [
+      "plant",
+      "building"
+    ],
+    "requirements": {
+      "temperature": -12
+    },
+    "vp": {
+      "type": "static",
+      "vp": 1
+    },
+    "behavior": {
+      "production": {
+        "megacredits": 2
+      },
+      "stock": {
+        "plants": 3
+      }
+    },
+    "cardNumber": "026",
+    "description": "Requires -12 C or warmer. Add 1 animal TO ANY ANIMAL CARD. Gain 3 plants. Increase your M€ production 2 steps.",
     "expansion": "base"
   },
   "Equatorial Magnetizer": {
@@ -1308,24 +1308,6 @@ const CARD_DATA = {
     "description": "Decrease your plant production 1 step and increase your M€ production 4 steps.",
     "expansion": "base"
   },
-  "Fuel Factory": {
-    "name": "Fuel Factory",
-    "type": "automated",
-    "cost": 6,
-    "tags": [
-      "building"
-    ],
-    "behavior": {
-      "production": {
-        "energy": -1,
-        "megacredits": 1,
-        "titanium": 1
-      }
-    },
-    "cardNumber": "180",
-    "description": "Decrease your energy production 1 step and increase your titanium and your M€ production 1 step each.",
-    "expansion": "base"
-  },
   "Fueled Generators": {
     "name": "Fueled Generators",
     "type": "automated",
@@ -1342,6 +1324,24 @@ const CARD_DATA = {
     },
     "cardNumber": "100",
     "description": "Decrease your M€ production 1 step and increase your energy production 1 steps.",
+    "expansion": "base"
+  },
+  "Fuel Factory": {
+    "name": "Fuel Factory",
+    "type": "automated",
+    "cost": 6,
+    "tags": [
+      "building"
+    ],
+    "behavior": {
+      "production": {
+        "energy": -1,
+        "megacredits": 1,
+        "titanium": 1
+      }
+    },
+    "cardNumber": "180",
+    "description": "Decrease your energy production 1 step and increase your titanium and your M€ production 1 step each.",
     "expansion": "base"
   },
   "Fusion Power": {
@@ -1364,46 +1364,6 @@ const CARD_DATA = {
     },
     "cardNumber": "132",
     "description": "Requires 2 power tags. Increase your energy production 3 steps.",
-    "expansion": "base"
-  },
-  "GHG Factories": {
-    "name": "GHG Factories",
-    "type": "automated",
-    "cost": 11,
-    "tags": [
-      "building"
-    ],
-    "behavior": {
-      "production": {
-        "energy": -1,
-        "heat": 4
-      }
-    },
-    "cardNumber": "126",
-    "description": "Decrease your energy production 1 step and increase your heat production 4 steps.",
-    "expansion": "base"
-  },
-  "GHG Producing Bacteria": {
-    "name": "GHG Producing Bacteria",
-    "type": "active",
-    "cost": 8,
-    "tags": [
-      "science",
-      "microbe"
-    ],
-    "requirements": {
-      "oxygen": 4
-    },
-    "action": {
-      "addResources": 1,
-      "global": {
-        "temperature": 1
-      },
-      "temperature": true
-    },
-    "resourceType": "Microbe",
-    "cardNumber": "034",
-    "description": "Requires 4% oxygen.",
     "expansion": "base"
   },
   "Ganymede Colony": {
@@ -1466,6 +1426,42 @@ const CARD_DATA = {
     },
     "cardNumber": "117",
     "description": "Increase your energy production 2 steps.",
+    "expansion": "base"
+  },
+  "GHG Factories": {
+    "name": "GHG Factories",
+    "type": "automated",
+    "cost": 11,
+    "tags": [
+      "building"
+    ],
+    "behavior": {
+      "production": {
+        "energy": -1,
+        "heat": 4
+      }
+    },
+    "cardNumber": "126",
+    "description": "Decrease your energy production 1 step and increase your heat production 4 steps.",
+    "expansion": "base"
+  },
+  "GHG Producing Bacteria": {
+    "name": "GHG Producing Bacteria",
+    "type": "active",
+    "cost": 8,
+    "tags": [
+      "science",
+      "microbe"
+    ],
+    "requirements": {
+      "oxygen": 4
+    },
+    "action": {
+      "addResources": 1
+    },
+    "resourceType": "Microbe",
+    "cardNumber": "034",
+    "description": "Requires 4% oxygen.",
     "expansion": "base"
   },
   "Giant Ice Asteroid": {
@@ -1590,6 +1586,28 @@ const CARD_DATA = {
     "description": "Decrease your energy production 1 step and any M€ production 2 steps. Increase your M€ production 2 steps.",
     "expansion": "base"
   },
+  "Heather": {
+    "name": "Heather",
+    "type": "automated",
+    "cost": 6,
+    "tags": [
+      "plant"
+    ],
+    "requirements": {
+      "temperature": -14
+    },
+    "behavior": {
+      "production": {
+        "plants": 1
+      },
+      "stock": {
+        "plants": 1
+      }
+    },
+    "cardNumber": "88",
+    "description": "Requires -14 C° or warmer. Increase your plant production 1 step. Gain 1 plant.",
+    "expansion": "base"
+  },
   "Heat Trappers": {
     "name": "Heat Trappers",
     "type": "automated",
@@ -1613,28 +1631,6 @@ const CARD_DATA = {
     },
     "cardNumber": "178",
     "description": "Decrease any heat production 2 steps and increase your energy production 1 step.",
-    "expansion": "base"
-  },
-  "Heather": {
-    "name": "Heather",
-    "type": "automated",
-    "cost": 6,
-    "tags": [
-      "plant"
-    ],
-    "requirements": {
-      "temperature": -14
-    },
-    "behavior": {
-      "production": {
-        "plants": 1
-      },
-      "stock": {
-        "plants": 1
-      }
-    },
-    "cardNumber": "88",
-    "description": "Requires -14 C° or warmer. Increase your plant production 1 step. Gain 1 plant.",
     "expansion": "base"
   },
   "Herbivores": {
@@ -1732,23 +1728,6 @@ const CARD_DATA = {
     "description": "Increase your M€ production 5 steps.",
     "expansion": "base"
   },
-  "Import of Advanced GHG": {
-    "name": "Import of Advanced GHG",
-    "type": "event",
-    "cost": 9,
-    "tags": [
-      "earth",
-      "space"
-    ],
-    "behavior": {
-      "production": {
-        "heat": 2
-      }
-    },
-    "cardNumber": "167",
-    "description": "Increase your heat production 2 steps.",
-    "expansion": "base"
-  },
   "Imported GHG": {
     "name": "Imported GHG",
     "type": "event",
@@ -1800,6 +1779,23 @@ const CARD_DATA = {
     },
     "cardNumber": "163",
     "description": "Raise your TR 1 step and gain 4 plants. Add 3 microbes to ANOTHER card and 2 animals to ANOTHER card.",
+    "expansion": "base"
+  },
+  "Import of Advanced GHG": {
+    "name": "Import of Advanced GHG",
+    "type": "event",
+    "cost": 9,
+    "tags": [
+      "earth",
+      "space"
+    ],
+    "behavior": {
+      "production": {
+        "heat": 2
+      }
+    },
+    "cardNumber": "167",
+    "description": "Increase your heat production 2 steps.",
     "expansion": "base"
   },
   "Indentured Workers": {
@@ -1884,8 +1880,8 @@ const CARD_DATA = {
     "cardNumber": "192",
     "expansion": "base"
   },
-  "Inventors\\": {
-    "name": "Inventors\\",
+  "Inventors' Guild": {
+    "name": "Inventors' Guild",
     "type": "active",
     "cost": 9,
     "tags": [
@@ -2425,8 +2421,7 @@ const CARD_DATA = {
       "addResources": 3
     },
     "action": {
-      "addResources": 1,
-      "tr": 1
+      "addResources": 1
     },
     "resourceType": "Microbe",
     "cardNumber": "157",
@@ -2691,7 +2686,7 @@ const CARD_DATA = {
     ],
     "vp": {
       "type": "per_resource",
-      "per": 1
+      "per": 0.5
     },
     "action": {
       "addResources": 1
@@ -2888,10 +2883,7 @@ const CARD_DATA = {
       "microbe"
     ],
     "action": {
-      "addResources": 1,
-      "global": {
-        "oxygen": 1
-      }
+      "addResources": 1
     },
     "resourceType": "Microbe",
     "cardNumber": "033",
@@ -3246,6 +3238,30 @@ const CARD_DATA = {
     },
     "cardNumber": "068",
     "description": "Increase your M€ production 2 steps.",
+    "expansion": "base"
+  },
+  "Aquifer": {
+    "name": "Aquifer",
+    "cost": 18,
+    "cardNumber": "SP2",
+    "expansion": "base"
+  },
+  "City": {
+    "name": "City",
+    "cost": 25,
+    "cardNumber": "SP4",
+    "expansion": "base"
+  },
+  "Greenery": {
+    "name": "Greenery",
+    "cost": 23,
+    "cardNumber": "SP6",
+    "expansion": "base"
+  },
+  "Sell Patents": {
+    "name": "Sell Patents",
+    "cost": 0,
+    "cardNumber": "SP8",
     "expansion": "base"
   },
   "Standard Technology": {
@@ -3746,30 +3762,6 @@ const CARD_DATA = {
     "description": "Requires 5% oxygen. Increase your M€ production 1 step for each city tile ON MARS.",
     "expansion": "base"
   },
-  "Aquifer": {
-    "name": "Aquifer",
-    "cost": 18,
-    "cardNumber": "SP2",
-    "expansion": "base"
-  },
-  "City": {
-    "name": "City",
-    "cost": 25,
-    "cardNumber": "SP4",
-    "expansion": "base"
-  },
-  "Greenery": {
-    "name": "Greenery",
-    "cost": 23,
-    "cardNumber": "SP6",
-    "expansion": "base"
-  },
-  "Sell Patents": {
-    "name": "Sell Patents",
-    "cost": 0,
-    "cardNumber": "SP8",
-    "expansion": "base"
-  },
   "Apollo": {
     "name": "Apollo",
     "cardNumber": "L35",
@@ -4003,14 +3995,6 @@ const CARD_DATA = {
     "description": "Once per game, place all of your available delegates in Reds. Gain 1 M€ for each delegate placed this way.",
     "expansion": "ceos"
   },
-  "Air Raid": {
-    "name": "Air Raid",
-    "type": "event",
-    "cost": 0,
-    "cardNumber": "C02",
-    "description": "Requires that you lose 1 floater. Steal 5 M€ from any player.",
-    "expansion": "colonies"
-  },
   "Airliners": {
     "name": "Airliners",
     "type": "automated",
@@ -4029,6 +4013,14 @@ const CARD_DATA = {
     },
     "cardNumber": "C01",
     "description": "Requires that you have 3 floaters. Increase your M€ production 2 steps. Add 2 floaters to ANY card.",
+    "expansion": "colonies"
+  },
+  "Air Raid": {
+    "name": "Air Raid",
+    "type": "event",
+    "cost": 0,
+    "cardNumber": "C02",
+    "description": "Requires that you lose 1 floater. Steal 5 M€ from any player.",
     "expansion": "colonies"
   },
   "Aridor": {
@@ -4061,18 +4053,15 @@ const CARD_DATA = {
     "type": "active",
     "cost": 15,
     "action": {
-      "addResources": 1,
-      "stock": {
-        "titanium": 2
-      }
+      "addResources": 1
     },
     "resourceType": "Floater",
     "cardNumber": "C03",
     "description": "Add 2 floaters to ANY card.",
     "expansion": "colonies"
   },
-  "Colony": {
-    "name": "Colony",
+  "Build Colony": {
+    "name": "Build Colony",
     "cost": 17,
     "cardNumber": "SP5",
     "expansion": "colonies"
@@ -5141,8 +5130,8 @@ const CARD_DATA = {
     "description": "You start with 57 M€.",
     "expansion": "corporation"
   },
-  "EcoLine": {
-    "name": "EcoLine",
+  "Ecoline": {
+    "name": "Ecoline",
     "tags": [
       "plant"
     ],
@@ -5263,8 +5252,8 @@ const CARD_DATA = {
     "description": "You start with 40 M€. As your first action in the game, place a city tile.",
     "expansion": "corporation"
   },
-  "Thorgate": {
-    "name": "Thorgate",
+  "ThorGate": {
+    "name": "ThorGate",
     "tags": [
       "power"
     ],
@@ -5323,14 +5312,6 @@ const CARD_DATA = {
     "description": "Decrease your plant production 1 step. Raise the habitat rate 1 step and oxygen 1%.",
     "expansion": "moon"
   },
-  "An Offer You Can\\": {
-    "name": "An Offer You Can\\",
-    "type": "event",
-    "cost": 5,
-    "cardNumber": "M62",
-    "description": "Exchange a NON-NEUTRAL opponent delegate with one of your own from the reserve. This exchange may not change the party leader. You may then move your delegate to another party.",
-    "expansion": "moon"
-  },
   "Ancient Shipyards": {
     "name": "Ancient Shipyards",
     "type": "active",
@@ -5346,6 +5327,14 @@ const CARD_DATA = {
     "resourceType": "Resource cube",
     "cardNumber": "M19",
     "description": "Spend 3 titanium. -1 VP for every resource here.",
+    "expansion": "moon"
+  },
+  "An Offer You Can't Refuse": {
+    "name": "An Offer You Can't Refuse",
+    "type": "event",
+    "cost": 5,
+    "cardNumber": "M62",
+    "description": "Exchange a NON-NEUTRAL opponent delegate with one of your own from the reserve. This exchange may not change the party leader. You may then move your delegate to another party.",
     "expansion": "moon"
   },
   "Archimedes Hydroponics Station": {
@@ -5447,8 +5436,7 @@ const CARD_DATA = {
       "per": 1
     },
     "action": {
-      "addResources": 1,
-      "tr": 1
+      "addResources": 1
     },
     "resourceType": "Science",
     "cardNumber": "M72",
@@ -5553,8 +5541,8 @@ const CARD_DATA = {
     "cardNumber": "M75",
     "expansion": "moon"
   },
-  "Darkside Smugglers\\": {
-    "name": "Darkside Smugglers\\",
+  "Darkside Smugglers' Union": {
+    "name": "Darkside Smugglers' Union",
     "type": "active",
     "cost": 17,
     "tags": [
@@ -5636,6 +5624,24 @@ const CARD_DATA = {
     "description": "Draw 1 card per 2 Moon tags you have, including this.",
     "expansion": "moon"
   },
+  "Habitat 14": {
+    "name": "Habitat 14",
+    "type": "automated",
+    "cost": 5,
+    "tags": [
+      "city",
+      "moon"
+    ],
+    "behavior": {
+      "production": {
+        "energy": -1,
+        "megacredits": -1
+      }
+    },
+    "cardNumber": "M05",
+    "description": "Decrease your energy production 1 step and your M€ production 1 step. Spend 1 titanium. Place a habitat tile on The Moon and raise the habitat rate 1 step.",
+    "expansion": "moon"
+  },
   "HE3 Fusion Plant": {
     "name": "HE3 Fusion Plant",
     "type": "automated",
@@ -5685,24 +5691,6 @@ const CARD_DATA = {
       "moon"
     ],
     "cardNumber": "M49",
-    "expansion": "moon"
-  },
-  "Habitat 14": {
-    "name": "Habitat 14",
-    "type": "automated",
-    "cost": 5,
-    "tags": [
-      "city",
-      "moon"
-    ],
-    "behavior": {
-      "production": {
-        "energy": -1,
-        "megacredits": -1
-      }
-    },
-    "cardNumber": "M05",
-    "description": "Decrease your energy production 1 step and your M€ production 1 step. Spend 1 titanium. Place a habitat tile on The Moon and raise the habitat rate 1 step.",
     "expansion": "moon"
   },
   "Heavy Duty Rovers": {
@@ -5969,6 +5957,17 @@ const CARD_DATA = {
     "description": "Requires 2 science tags.",
     "expansion": "moon"
   },
+  "Lunar Dust Processing Plant": {
+    "name": "Lunar Dust Processing Plant",
+    "type": "active",
+    "cost": 6,
+    "tags": [
+      "building"
+    ],
+    "cardNumber": "M17",
+    "description": "Spend 1 titanium. Raise the logistic rate 1 step.",
+    "expansion": "moon"
+  },
   "Luna Resort": {
     "name": "Luna Resort",
     "type": "automated",
@@ -5987,112 +5986,6 @@ const CARD_DATA = {
     },
     "cardNumber": "M21",
     "description": "Requires 2 habitats on The Moon. Spend 2 titanium. Decrease your energy production 1 step and increase your M€ production 3 steps. Raise the habitat rate 1 step.",
-    "expansion": "moon"
-  },
-  "Luna Senate": {
-    "name": "Luna Senate",
-    "type": "automated",
-    "cost": 32,
-    "tags": [
-      "moon",
-      "moon"
-    ],
-    "requirements": {
-      "count": 3,
-      "tag": "moon"
-    },
-    "vp": {
-      "type": "per_tag",
-      "tag": "moon",
-      "per": 1
-    },
-    "cardNumber": "M70",
-    "description": "Requires that you have 3 Moon tags. Increase your M€ production 1 step per Moon tag in the game (including these.)",
-    "expansion": "moon"
-  },
-  "Luna Staging Station": {
-    "name": "Luna Staging Station",
-    "type": "automated",
-    "cost": 12,
-    "tags": [
-      "moon",
-      "building"
-    ],
-    "requirements": {
-      "logisticRate": 2
-    },
-    "cardNumber": "M30",
-    "description": "Requires the logistic rate to be 2 or higher. Spend 1 titanium. Raise the logistic rate 2 steps.",
-    "expansion": "moon"
-  },
-  "Luna Trade Federation": {
-    "name": "Luna Trade Federation",
-    "tags": [
-      "moon",
-      "space"
-    ],
-    "behavior": {
-      "stock": {
-        "titanium": 10
-      }
-    },
-    "cardNumber": "MC9",
-    "description": "You start with 15 M€ and 10 titanium. As your first action, place a mine tile on The Moon and raise the mining rate 1 step.",
-    "expansion": "moon"
-  },
-  "Luna Trade Station": {
-    "name": "Luna Trade Station",
-    "type": "active",
-    "cost": 10,
-    "tags": [
-      "moon",
-      "moon",
-      "space"
-    ],
-    "behavior": {
-      "city": true
-    },
-    "action": {
-      "stock": {
-        "each": 2
-      }
-    },
-    "cardNumber": "M13",
-    "description": "Spend 2 titanium. Place this tile ON THE RESERVED AREA.",
-    "expansion": "moon"
-  },
-  "Luna Train Station": {
-    "name": "Luna Train Station",
-    "type": "automated",
-    "cost": 24,
-    "tags": [
-      "building"
-    ],
-    "requirements": {
-      "logisticRate": 5
-    },
-    "vp": {
-      "type": "special"
-    },
-    "behavior": {
-      "production": {
-        "megacredits": 4
-      },
-      "city": true
-    },
-    "cardNumber": "M15",
-    "description": "Requires a logistic rate of 5 or higher. Spend 2 steel. ",
-    "expansion": "moon"
-  },
-  "Lunar Dust Processing Plant": {
-    "name": "Lunar Dust Processing Plant",
-    "type": "active",
-    "cost": 6,
-    "tags": [
-      "building"
-    ],
-    "cardNumber": "M17",
-    "description": "Spend 1 titanium. Raise the logistic rate 1 step.",
     "expansion": "moon"
   },
   "Lunar Industry Complex": {
@@ -6209,6 +6102,101 @@ const CARD_DATA = {
     },
     "cardNumber": "M35",
     "description": "Requires that you have 2 titanium production. ",
+    "expansion": "moon"
+  },
+  "Luna Senate": {
+    "name": "Luna Senate",
+    "type": "automated",
+    "cost": 32,
+    "tags": [
+      "moon",
+      "moon"
+    ],
+    "requirements": {
+      "count": 3,
+      "tag": "moon"
+    },
+    "vp": {
+      "type": "per_tag",
+      "tag": "moon",
+      "per": 1
+    },
+    "cardNumber": "M70",
+    "description": "Requires that you have 3 Moon tags. Increase your M€ production 1 step per Moon tag in the game (including these.)",
+    "expansion": "moon"
+  },
+  "Luna Staging Station": {
+    "name": "Luna Staging Station",
+    "type": "automated",
+    "cost": 12,
+    "tags": [
+      "moon",
+      "building"
+    ],
+    "requirements": {
+      "logisticRate": 2
+    },
+    "cardNumber": "M30",
+    "description": "Requires the logistic rate to be 2 or higher. Spend 1 titanium. Raise the logistic rate 2 steps.",
+    "expansion": "moon"
+  },
+  "Luna Trade Federation": {
+    "name": "Luna Trade Federation",
+    "tags": [
+      "moon",
+      "space"
+    ],
+    "behavior": {
+      "stock": {
+        "titanium": 10
+      }
+    },
+    "cardNumber": "MC9",
+    "description": "You start with 15 M€ and 10 titanium. As your first action, place a mine tile on The Moon and raise the mining rate 1 step.",
+    "expansion": "moon"
+  },
+  "Luna Trade Station": {
+    "name": "Luna Trade Station",
+    "type": "active",
+    "cost": 10,
+    "tags": [
+      "moon",
+      "moon",
+      "space"
+    ],
+    "behavior": {
+      "city": true
+    },
+    "action": {
+      "stock": {
+        "each": 2
+      }
+    },
+    "cardNumber": "M13",
+    "description": "Spend 2 titanium. Place this tile ON THE RESERVED AREA.",
+    "expansion": "moon"
+  },
+  "Luna Train Station": {
+    "name": "Luna Train Station",
+    "type": "automated",
+    "cost": 24,
+    "tags": [
+      "building"
+    ],
+    "requirements": {
+      "logisticRate": 5
+    },
+    "vp": {
+      "type": "special"
+    },
+    "behavior": {
+      "production": {
+        "megacredits": 4
+      },
+      "city": true
+    },
+    "cardNumber": "M15",
+    "description": "Requires a logistic rate of 5 or higher. Spend 2 steel. ",
     "expansion": "moon"
   },
   "Mare Imbrium Mine": {
@@ -6351,6 +6339,28 @@ const CARD_DATA = {
     "description": "Spend 1 titanium. Increase your heat production 2 steps and your M€ production 3 steps. ",
     "expansion": "moon"
   },
+  "Mooncrate Block Factory": {
+    "name": "Mooncrate Block Factory",
+    "type": "active",
+    "cost": 8,
+    "tags": [
+      "building"
+    ],
+    "requirements": {
+      "miningTiles": 1
+    },
+    "cardNumber": "M38",
+    "description": "Requires 1 mine on The Moon.",
+    "expansion": "moon"
+  },
+  "Mooncrate Convoys To Mars": {
+    "name": "Mooncrate Convoys To Mars",
+    "type": "event",
+    "cost": 13,
+    "cardNumber": "M60",
+    "description": "Requires that Mars First are ruling or that you have 2 delegates there. ",
+    "expansion": "moon"
+  },
   "Lunar Habitat (var. 1)": {
     "name": "Lunar Habitat (var. 1)",
     "cost": 23,
@@ -6382,28 +6392,6 @@ const CARD_DATA = {
     },
     "cardNumber": "M90",
     "description": "Requires 6 space tags.",
-    "expansion": "moon"
-  },
-  "Mooncrate Block Factory": {
-    "name": "Mooncrate Block Factory",
-    "type": "active",
-    "cost": 8,
-    "tags": [
-      "building"
-    ],
-    "requirements": {
-      "miningTiles": 1
-    },
-    "cardNumber": "M38",
-    "description": "Requires 1 mine on The Moon.",
-    "expansion": "moon"
-  },
-  "Mooncrate Convoys To Mars": {
-    "name": "Mooncrate Convoys To Mars",
-    "type": "event",
-    "cost": 13,
-    "cardNumber": "M60",
-    "description": "Requires that Mars First are ruling or that you have 2 delegates there. ",
     "expansion": "moon"
   },
   "Nanotech Industries": {
@@ -6930,12 +6918,7 @@ const CARD_DATA = {
       "production": {
         "steel": 1,
         "titanium": 1
-      },
-      "stock": {
-        "steel": 2,
-        "titanium": 1
-      },
-      "ocean": true
+      }
     },
     "cardNumber": "Pf40",
     "description": "Spend 3 energy. Either increase your steel and titanium production one step, OR ",
@@ -7012,21 +6995,6 @@ const CARD_DATA = {
     "description": "Requires 1 science tag and 1 animal tag. Raise the temperature 1 step.",
     "expansion": "pathfinders"
   },
-  "CO² Reducers": {
-    "name": "CO² Reducers",
-    "tags": [
-      "microbe",
-      "venus"
-    ],
-    "behavior": {
-      "production": {
-        "megacredits": 3
-      }
-    },
-    "cardNumber": "PfP03",
-    "description": "Increase your M€ production 3 steps. Draw 2 cards with a microbe tag.",
-    "expansion": "pathfinders"
-  },
   "Cassini Station": {
     "name": "Cassini Station",
     "type": "automated",
@@ -7095,6 +7063,21 @@ const CARD_DATA = {
     },
     "cardNumber": "PfC5",
     "description": "You start with 36 M€, 1 steel, and 1 titanium.",
+    "expansion": "pathfinders"
+  },
+  "CO² Reducers": {
+    "name": "CO² Reducers",
+    "tags": [
+      "microbe",
+      "venus"
+    ],
+    "behavior": {
+      "production": {
+        "megacredits": 3
+      }
+    },
+    "cardNumber": "PfP03",
+    "description": "Increase your M€ production 3 steps. Draw 2 cards with a microbe tag.",
     "expansion": "pathfinders"
   },
   "Collegium Copernicus": {
@@ -8280,11 +8263,23 @@ const CARD_DATA = {
     "description": "Requires that Greens are ruling or you have 2 delegates there. Increase your plant production 1 step",
     "expansion": "pathfinders"
   },
-  "SolBank": {
-    "name": "SolBank",
+  "Solarpedia": {
+    "name": "Solarpedia",
+    "type": "active",
+    "cost": 12,
+    "tags": [
+      "space"
+    ],
+    "requirements": {
+      "tag": "jovian"
+    },
+    "vp": {
+      "type": "per_resource",
+      "per": 6
+    },
     "resourceType": "Data",
-    "cardNumber": "PfC13",
-    "description": "You start with 40 M€",
+    "cardNumber": "Pf54",
+    "description": "Requires 1 Venus, Earth, Mars, and Jovian Tag. Add 2 data to ANY card. 1 VP for every 6 data resources here.",
     "expansion": "pathfinders"
   },
   "Solar Storm": {
@@ -8306,23 +8301,11 @@ const CARD_DATA = {
     "description": "Every player loses 2 plants. Remove up to 3 data from any player. ",
     "expansion": "pathfinders"
   },
-  "Solarpedia": {
-    "name": "Solarpedia",
-    "type": "active",
-    "cost": 12,
-    "tags": [
-      "space"
-    ],
-    "requirements": {
-      "tag": "jovian"
-    },
-    "vp": {
-      "type": "per_resource",
-      "per": 6
-    },
+  "SolBank": {
+    "name": "SolBank",
     "resourceType": "Data",
-    "cardNumber": "Pf54",
-    "description": "Requires 1 Venus, Earth, Mars, and Jovian Tag. Add 2 data to ANY card. 1 VP for every 6 data resources here.",
+    "cardNumber": "PfC13",
+    "description": "You start with 40 M€",
     "expansion": "pathfinders"
   },
   "Soylent Seedling Systems": {
@@ -9120,6 +9103,22 @@ const CARD_DATA = {
     "description": "You start with 47 M€.",
     "expansion": "prelude"
   },
+  "Self-Sufficient Settlement": {
+    "name": "Self-Sufficient Settlement",
+    "tags": [
+      "building",
+      "city"
+    ],
+    "behavior": {
+      "production": {
+        "megacredits": 2
+      },
+      "city": true
+    },
+    "cardNumber": "P29",
+    "description": "Increase your M€ production 2 steps. Place a city tile.",
+    "expansion": "prelude"
+  },
   "SF Memorial": {
     "name": "SF Memorial",
     "type": "automated",
@@ -9136,22 +9135,6 @@ const CARD_DATA = {
     },
     "cardNumber": "P41",
     "description": "Draw 1 card.",
-    "expansion": "prelude"
-  },
-  "Self-Sufficient Settlement": {
-    "name": "Self-Sufficient Settlement",
-    "tags": [
-      "building",
-      "city"
-    ],
-    "behavior": {
-      "production": {
-        "megacredits": 2
-      },
-      "city": true
-    },
-    "cardNumber": "P29",
-    "description": "Increase your M€ production 2 steps. Place a city tile.",
     "expansion": "prelude"
   },
   "Smelting Plant": {
@@ -9687,9 +9670,6 @@ const CARD_DATA = {
   },
   "Preservation Program": {
     "name": "Preservation Program",
-    "behavior": {
-      "tr": 5
-    },
     "cardNumber": "P57",
     "description": "Raise your TR 5 steps.",
     "expansion": "prelude2"
@@ -10190,8 +10170,8 @@ const CARD_DATA = {
     "description": "RETURN UP TO 2 OF YOUR PLAYED EVENT CARDS TO YOUR HAND. THEY MAY NOT BE CARDS THAT PLACE SPECIAL TILES.",
     "expansion": "promo"
   },
-  "Astrodrill": {
-    "name": "Astrodrill",
+  "AstroDrill": {
+    "name": "AstroDrill",
     "tags": [
       "space"
     ],
@@ -10426,6 +10406,16 @@ const CARD_DATA = {
       "power"
     ],
     "cardNumber": "X03",
+    "expansion": "promo"
+  },
+  "Established Methods": {
+    "name": "Established Methods",
+    "behavior": {
+      "stock": {
+        "megacredits": 30
+      }
+    },
+    "cardNumber": "X54",
     "expansion": "promo"
   },
   "Factorum": {
@@ -11217,17 +11207,6 @@ const CARD_DATA = {
     "description": "You start with 44 M€. As your first action, reveal cards until you have revealed a microbe tag. Take it and discard the rest.",
     "expansion": "promo"
   },
-  "St. Joseph of Cupertino Mission": {
-    "name": "St. Joseph of Cupertino Mission",
-    "type": "active",
-    "cost": 7,
-    "vp": {
-      "type": "special"
-    },
-    "cardNumber": "X64",
-    "description": "1 VP per City with a Cathedral in it.",
-    "expansion": "promo"
-  },
   "Stanford Torus": {
     "name": "Stanford Torus",
     "type": "automated",
@@ -11264,6 +11243,17 @@ const CARD_DATA = {
     },
     "cardNumber": "X74",
     "description": "Requires 3 or fewer ocean tiles. Increase your energy production 1 step. Gain 1 M€ per building tag you have.",
+    "expansion": "promo"
+  },
+  "St. Joseph of Cupertino Mission": {
+    "name": "St. Joseph of Cupertino Mission",
+    "type": "active",
+    "cost": 7,
+    "vp": {
+      "type": "special"
+    },
+    "cardNumber": "X64",
+    "description": "1 VP per City with a Cathedral in it.",
     "expansion": "promo"
   },
   "Strategic Base Planning": {
@@ -11678,20 +11668,6 @@ const CARD_DATA = {
     "description": "Requires that Mars First is ruling or that you have 2 delegates there. Increase your M€ production 2 steps.",
     "expansion": "turmoil"
   },
-  "PR Office": {
-    "name": "PR Office",
-    "type": "automated",
-    "cost": 7,
-    "tags": [
-      "earth"
-    ],
-    "behavior": {
-      "tr": 1
-    },
-    "cardNumber": "T09",
-    "description": "Requires that Unity are ruling or that you have 2 delegates there. Gain 1 TR. Gain 1 M€ for each Earth tag you have, including this.",
-    "expansion": "turmoil"
-  },
   "Parliament Hall": {
     "name": "Parliament Hall",
     "type": "automated",
@@ -11735,6 +11711,20 @@ const CARD_DATA = {
     "resourceType": "Preservation",
     "cardNumber": "R07",
     "description": "You start with 53 M€. Decrease your TR 2 steps. 1 VP per preservation resource here.",
+    "expansion": "turmoil"
+  },
+  "PR Office": {
+    "name": "PR Office",
+    "type": "automated",
+    "cost": 7,
+    "tags": [
+      "earth"
+    ],
+    "behavior": {
+      "tr": 1
+    },
+    "cardNumber": "T09",
+    "description": "Requires that Unity are ruling or that you have 2 delegates there. Gain 1 TR. Gain 1 M€ for each Earth tag you have, including this.",
     "expansion": "turmoil"
   },
   "Public Celebrations": {
@@ -11808,8 +11798,8 @@ const CARD_DATA = {
     "description": "Requires that Scientists are ruling or that you have 2 delegates there. Draw 2 cards.",
     "expansion": "turmoil"
   },
-  "Terralabs Research": {
-    "name": "Terralabs Research",
+  "TerraLabs Research": {
+    "name": "TerraLabs Research",
     "tags": [
       "science",
       "earth"
@@ -12621,7 +12611,7 @@ const CARD_DATA = {
       "crime"
     ],
     "cardNumber": "UX02",
-    "description": "Steal 4 M€, plus 1 extra M€ for each corruption resource you have, from any player.",
+    "description": "Steal up to 4 M€, plus 1 extra M€ for each corruption resource you have, from any player.",
     "expansion": "underworld"
   },
   "Hyperspace Drive Prototype": {
@@ -13842,7 +13832,7 @@ const CARD_DATA = {
       "vp": 1
     },
     "action": {
-      "drawCard": 1
+      "addResources": 1
     },
     "resourceType": "Floater",
     "cardNumber": "213",
@@ -14027,10 +14017,7 @@ const CARD_DATA = {
       "power"
     ],
     "action": {
-      "addResources": 1,
-      "production": {
-        "energy": 1
-      }
+      "addResources": 1
     },
     "resourceType": "Floater",
     "cardNumber": "221",
@@ -14045,6 +14032,9 @@ const CARD_DATA = {
     ],
     "resourceType": "Floater",
     "cardNumber": "222",
+    "action": {
+      "addResources": 1
+    },
     "expansion": "venus"
   },
   "Extractor Balloons": {
@@ -14060,6 +14050,9 @@ const CARD_DATA = {
     "resourceType": "Floater",
     "cardNumber": "223",
     "description": "Add 3 floaters to this card",
+    "action": {
+      "addResources": 1
+    },
     "expansion": "venus"
   },
   "Extremophiles": {
@@ -14264,10 +14257,7 @@ const CARD_DATA = {
       "venus"
     ],
     "action": {
-      "addResources": 1,
-      "production": {
-        "megacredits": 1
-      }
+      "addResources": 1
     },
     "resourceType": "Floater",
     "cardNumber": "235",
@@ -14583,6 +14573,9 @@ const CARD_DATA = {
     "resourceType": "Microbe",
     "cardNumber": "251",
     "description": "Requires Venus 6%",
+    "action": {
+      "addResources": 1
+    },
     "expansion": "venus"
   },
   "Sulphur Exports": {
@@ -14633,9 +14626,7 @@ const CARD_DATA = {
       "venus": 6
     },
     "action": {
-      "global": {
-        "venus": 1
-      }
+      "addResources": 1
     },
     "resourceType": "Microbe",
     "cardNumber": "253",
@@ -14661,67 +14652,6 @@ const CARD_DATA = {
     },
     "cardNumber": "255",
     "description": "Requires 2 Venus tags. Increase your M€ production 2 steps.",
-    "expansion": "venus"
-  },
-  "Venus Magnetizer": {
-    "name": "Venus Magnetizer",
-    "type": "active",
-    "cost": 7,
-    "tags": [
-      "venus"
-    ],
-    "requirements": {
-      "venus": 10
-    },
-    "action": {
-      "production": {
-        "energy": -1
-      },
-      "global": {
-        "venus": 1
-      }
-    },
-    "cardNumber": "256",
-    "description": "Requires Venus 10%.",
-    "expansion": "venus"
-  },
-  "Venus Soils": {
-    "name": "Venus Soils",
-    "type": "automated",
-    "cost": 20,
-    "tags": [
-      "venus",
-      "plant"
-    ],
-    "behavior": {
-      "production": {
-        "plants": 1
-      },
-      "global": {
-        "venus": 1
-      }
-    },
-    "cardNumber": "257",
-    "description": "Raise Venus 1 step. Increase your plant production 1 step. Add 2 microbes to ANOTHER card",
-    "expansion": "venus"
-  },
-  "Venus Waystation": {
-    "name": "Venus Waystation",
-    "type": "active",
-    "cost": 9,
-    "tags": [
-      "venus",
-      "space"
-    ],
-    "vp": {
-      "type": "static",
-      "vp": 1
-    },
-    "cardDiscount": {
-      "amount": 2,
-      "tag": "venus"
-    },
-    "cardNumber": "258",
     "expansion": "venus"
   },
   "Venusian Animals": {
@@ -14790,6 +14720,67 @@ const CARD_DATA = {
     },
     "cardNumber": "261",
     "description": "Requires Venus 16%. Raise Venus 1 step. Add 1 microbe or 1 animal to ANOTHER VENUS CARD",
+    "expansion": "venus"
+  },
+  "Venus Magnetizer": {
+    "name": "Venus Magnetizer",
+    "type": "active",
+    "cost": 7,
+    "tags": [
+      "venus"
+    ],
+    "requirements": {
+      "venus": 10
+    },
+    "action": {
+      "production": {
+        "energy": -1
+      },
+      "global": {
+        "venus": 1
+      }
+    },
+    "cardNumber": "256",
+    "description": "Requires Venus 10%.",
+    "expansion": "venus"
+  },
+  "Venus Soils": {
+    "name": "Venus Soils",
+    "type": "automated",
+    "cost": 20,
+    "tags": [
+      "venus",
+      "plant"
+    ],
+    "behavior": {
+      "production": {
+        "plants": 1
+      },
+      "global": {
+        "venus": 1
+      }
+    },
+    "cardNumber": "257",
+    "description": "Raise Venus 1 step. Increase your plant production 1 step. Add 2 microbes to ANOTHER card",
+    "expansion": "venus"
+  },
+  "Venus Waystation": {
+    "name": "Venus Waystation",
+    "type": "active",
+    "cost": 9,
+    "tags": [
+      "venus",
+      "space"
+    ],
+    "vp": {
+      "type": "static",
+      "vp": 1
+    },
+    "cardDiscount": {
+      "amount": 2,
+      "tag": "venus"
+    },
+    "cardNumber": "258",
     "expansion": "venus"
   },
   "Viron": {

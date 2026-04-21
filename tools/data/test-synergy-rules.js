@@ -456,9 +456,6 @@ const v5Annotations = [
   ['Jet Stream Microscrappers', 'res', 'floater'],
   ['Forced Precipitation', 'res', 'floater'],
   ['Deuterium Export', 'res', 'floater'],
-  ['Icy Impactors', 'res', 'floater'],
-  ['Comet Aiming', 'res', 'floater'],
-  ['Directed Impactors', 'res', 'floater'],
   ['Asteroid Deflection System', 'res', 'asteroid'],
 ];
 for (const [card, field, expected] of v5Annotations) {
@@ -468,6 +465,14 @@ for (const [card, field, expected] of v5Annotations) {
     passed++; console.log(`  ✓ ${card}.${field} = '${fx[field]}'`);
   } else {
     failed++; console.log(`  ✗ ${card}.${field}: expected '${expected}', got '${fx[field]}'`);
+  }
+}
+
+for (const card of ['Comet Aiming', 'Directed Impactors', 'Icy Impactors', 'Rotator Impacts']) {
+  if (FX[card] && FX[card].res === undefined) {
+    passed++; console.log(`  ✓ ${card}.res = undefined (paid asteroid action is not a free resource feeder)`);
+  } else {
+    failed++; console.log(`  ✗ ${card}.res: expected undefined, got '${FX[card] && FX[card].res}'`);
   }
 }
 
@@ -533,7 +538,7 @@ for (const card of ['Celestic', 'Stormcraft Incorporated', 'Floater Technology',
 }
 
 // Venus floater accumulators
-const venusTg = ['Dirigibles', 'Aerial Mappers', 'Stratopolis', 'Rotator Impacts',
+const venusTg = ['Dirigibles', 'Aerial Mappers', 'Stratopolis',
   'Atmo Collectors', 'Floater-Urbanism', 'Floating Habs', 'Local Shading'];
 for (const card of venusTg) {
   const fx = FX[card];
