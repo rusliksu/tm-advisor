@@ -61,6 +61,13 @@ class CardEffectParser:
     _GENERATED_PROD_EXCLUDES = {
         # Generated fx currently leaks a fake mp:3 into this city card.
         "Phobos Space Haven": {"mc"},
+        # Action costs are not immediate production changes.
+        "Equatorial Magnetizer": {"energy"},
+        "Venus Magnetizer": {"energy"},
+    }
+    _GENERATED_TR_EXCLUDES = {
+        # Action-only TR bumps must not inflate on-play value.
+        "Equatorial Magnetizer",
     }
 
     def __init__(self, db):
@@ -229,13 +236,14 @@ class CardEffectParser:
             ):
                 eff.production_change[prod_key] = int(amount) if float(amount).is_integer() else amount
 
-        derived_tr = 0
-        for tr_key in ("tr", "tmp", "o2", "oc", "vn"):
-            amount = generated.get(tr_key)
-            if isinstance(amount, (int, float)) and amount > 0:
-                derived_tr += amount
-        if derived_tr > eff.tr_gain:
-            eff.tr_gain = derived_tr
+        if eff.name not in self._GENERATED_TR_EXCLUDES:
+            derived_tr = 0
+            for tr_key in ("tr", "tmp", "o2", "oc", "vn"):
+                amount = generated.get(tr_key)
+                if isinstance(amount, (int, float)) and amount > 0:
+                    derived_tr += amount
+            if derived_tr > eff.tr_gain:
+                eff.tr_gain = derived_tr
 
         needs_discount_fallback = (
             not eff.discount
