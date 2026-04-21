@@ -61,3 +61,7 @@ def main():
                          snapshot_mode=args.snapshot, output_file=args.file,
                          events_mode=args.events)
         bot.run()
+
+
+if __name__ == "__main__":
+    main()

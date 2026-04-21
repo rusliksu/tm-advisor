@@ -26,6 +26,7 @@ Canonical test commands:
 Canonical runtime commands:
 - `npm run advisor:cli -- <player_id>`
 - `npm run advisor:snapshot -- <player_id>`
+- `npm run advisor:summary -- <player_id>`
 - `npm run advisor:backtest -- --player NAME`
 
 Shared dependencies:
@@ -34,6 +35,7 @@ Shared dependencies:
 - `data/ceo_cards.json`
 - `data/pathfinder_cards.json`
 - `data/planetary_tracks.json`
+- `packages/tm-data/generated/extension/card_data.js`
 - `packages/tm-data/generated/extension/card_vp.js`
 
 Out of scope:

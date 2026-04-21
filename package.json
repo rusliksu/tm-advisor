@@ -9,6 +9,7 @@
     "advisor:cli": "python apps/tm-advisor-py/entrypoints/tm_advisor.py",
     "advisor:logger-quality": "python tools/advisor/logger-quality.py",
     "advisor:postgame": "python tools/advisor/postgame-summary.py",
+    "advisor:summary": "python apps/tm-advisor-py/entrypoints/advisor_snapshot.py --summary",
     "advisor:snapshot": "python apps/tm-advisor-py/entrypoints/advisor_snapshot.py",
     "advisor:finish-live-logging": "node tools/advisor/finish-live-logging.js",
     "advisor:start-live-logging": "node tools/advisor/start-live-logging.js",
