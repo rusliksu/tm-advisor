@@ -31,6 +31,21 @@ def snapshot(player_id: str) -> dict:
     return module.snapshot(player_id)
 
 
+def snapshot_from_raw(raw: dict) -> dict:
+    module = _load_entrypoint_module()
+    return module.snapshot_from_raw(raw)
+
+
+def format_snapshot_summary(data: dict) -> str:
+    module = _load_entrypoint_module()
+    return module.format_snapshot_summary(data)
+
+
+def _get_runtime_bundle():
+    module = _load_entrypoint_module()
+    return module._get_runtime_bundle()
+
+
 def main() -> None:
     if ENTRYPOINT_DIR not in sys.path:
         sys.path.insert(0, ENTRYPOINT_DIR)

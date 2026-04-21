@@ -497,7 +497,8 @@ class ClaudeOutput:
                 a(tip)
             a("")
 
-        alerts = _generate_alerts(state)
+        effect_parser = getattr(getattr(self.synergy, "combo", None), "parser", None)
+        alerts = _generate_alerts(state, effect_parser)
         if alerts:
             a("## Рекомендации")
             a("")

@@ -5,7 +5,7 @@ import math
 import os
 import re
 
-from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_DISCOUNT_CARDS, TABLEAU_REBATES, GLOBAL_EVENTS, PARTY_POLICIES, PARTY_STRATEGY, GLOBAL_EVENT_ADVICE, COLONY_TIERS
+from .constants import TILE_GREENERY, TILE_CITY, TILE_OCEAN, TABLEAU_DISCOUNT_CARDS, TABLEAU_REBATES, GLOBAL_EVENTS, PARTY_STRATEGY, GLOBAL_EVENT_ADVICE, COLONY_TIERS, party_policy_info
 from .economy import resource_values, game_phase
 from .map_advisor import _get_neighbors
 from .shared_data import load_generated_extension_object
@@ -81,9 +81,170 @@ def summarize_action_card(name: str, effect_parser=None) -> str | None:
     return None
 
 
+def _normalize_action_resource_name(raw: str) -> str:
+    key = re.sub(r"[^a-z]", "", str(raw or "").lower())
+    aliases = {
+        "floater": "floater",
+        "floaters": "floater",
+        "animal": "animal",
+        "animals": "animal",
+        "microbe": "microbe",
+        "microbes": "microbe",
+        "science": "science",
+        "sciences": "science",
+        "fighter": "fighter",
+        "fighters": "fighter",
+        "data": "data",
+        "resource": "resource",
+    }
+    return aliases.get(key, "")
+
+
+def _count_tableau_resource_type(state, effect_parser, resource_key: str) -> int:
+    db = getattr(effect_parser, "db", None) if effect_parser else None
+    me = getattr(state, "me", None)
+    if not db or not me or not resource_key:
+        return 0
+
+    total = 0
+    for card in me.tableau or []:
+        if not isinstance(card, dict):
+            continue
+        name = card.get("name", "")
+        info = db.get_info(name) or {}
+        raw_type = info.get("resourceType", "")
+        if _normalize_action_resource_name(raw_type) != resource_key:
+            continue
+        total += int(card.get("resources", 0) or 0)
+    return total
+
+
+def _extract_hand_resource_requirement(card_name: str, resource_key: str, effect_parser=None) -> int | None:
+    db = getattr(effect_parser, "db", None) if effect_parser else None
+    if not db or not card_name or not resource_key:
+        return None
+
+    info = db.get_info(card_name) or {}
+    req_text = str(info.get("requirements", "") or "")
+    desc_text = str(info.get("description", "") or "")
+    patterns = [
+        rf"'{resource_key}s?':\s*(\d+)",
+        rf"requires(?: that you have)?\s+(\d+)\s+{resource_key}s?\b",
+    ]
+    for text in (req_text.lower(), desc_text.lower()):
+        for pattern in patterns:
+            match = re.search(pattern, text)
+            if match:
+                return int(match.group(1))
+    return None
+
+
+def _action_unlocks_hand_requirement(state, effect_parser, resource_key: str, add_amount: int) -> bool:
+    if not resource_key or add_amount <= 0:
+        return False
+    have = _count_tableau_resource_type(state, effect_parser, resource_key)
+    for card in getattr(state, "cards_in_hand", []) or []:
+        if not isinstance(card, dict):
+            continue
+        need = _extract_hand_resource_requirement(card.get("name", ""), resource_key, effect_parser)
+        if need is None:
+            continue
+        if have < need <= have + add_amount:
+            return True
+    return False
+
+
+def _is_action_alert_relevant(name: str, state, effect_parser=None, gens_left: int = 99) -> bool:
+    if gens_left > 1 or effect_parser is None:
+        return True
+    if name == "Viron":
+        return True
+
+    eff = effect_parser.get(name)
+    if not eff or not eff.actions:
+        return True
+
+    resource_vp_card = (
+        bool(eff.resource_holds)
+        and bool(eff.vp_per)
+        and "resource" in str(eff.vp_per.get("per", "")).lower()
+    )
+
+    for action in eff.actions:
+        effect = str(action.get("effect", "") or "").lower()
+        if not effect:
+            continue
+
+        if "draw" in effect and "card" in effect:
+            continue
+
+        if ("gain" in effect and ("mc" in effect or "m€" in effect or "megacredit" in effect)
+                or re.search(r"\b\d+\s*(?:mc|m€|megacredit)\b", effect)):
+            return True
+
+        if "vp" in effect or "victory" in effect:
+            return True
+
+        if "raise" in effect and any(token in effect for token in ("temperature", "oxygen", "terraform", "tr", "venus")):
+            return True
+
+        add_match = re.search(
+            r"add\s+(\d+)\s+(animal|microbe|floater|science|fighter|data|resource)",
+            effect,
+        )
+        if add_match:
+            add_amount = int(add_match.group(1))
+            resource_key = _normalize_action_resource_name(add_match.group(2))
+            if resource_vp_card:
+                return True
+            if _action_unlocks_hand_requirement(state, effect_parser, resource_key, add_amount):
+                return True
+
+    return False
+
+
 def _player_tag_count(player, tag: str) -> int:
     tags = getattr(player, "tags", {}) or {}
     return tags.get(tag, 0)
+
+
+def _dominant_party_tip(dominant: str, state) -> str:
+    ps = PARTY_STRATEGY.get(dominant)
+    if not ps:
+        return ""
+
+    gens_left = _estimate_remaining_gens(state)
+    phase = game_phase(gens_left, state.generation)
+    me = state.me
+    policy = party_policy_info(state.turmoil, dominant)
+    policy_text = policy.get("policy", "")
+    policy_suffix = f" Policy: {policy_text}." if policy_text else ""
+
+    if dominant == "Scientists":
+        if phase == "endgame" or gens_left <= 1:
+            sci_tags = _player_tag_count(me, "science")
+            if policy.get("policy_id") == "sp01" and sci_tags > 0:
+                return (
+                    f"Science ruling всё ещё платит MC за теги ({sci_tags} science), "
+                    "но policy draw 3 уже почти мертва в endgame"
+                )
+            return f"Science ruling по тегам ещё может платить MC.{policy_suffix}"
+        if policy.get("policy_id") == "sp01" and (phase == "late" or gens_left <= 2):
+            return "Science ruling ещё нормальна, но policy draw 3 уже заметно слабее, чем в mid-game"
+
+    if dominant == "Kelvinists" and state.temperature >= 8 and policy.get("policy_id") == "kp03":
+        return "Ruling по heat-prod ещё даёт MC, но policy 6 heat → temp мертва после max temp"
+
+    if dominant == "Greens" and policy.get("policy_id") == "gp04" and (phase == "endgame" or gens_left <= 1):
+        return "Bio ruling по тегам ещё даёт MC, но policy на 2 plants уже почти не важна в endgame"
+
+    if dominant == "Unity" and policy.get("policy_id") == "up04" and (phase == "endgame" or gens_left <= 1):
+        return "Широкий ruling-бонус по Venus/Earth/Jovian ещё ок; policy discount важна только под реальный последний play"
+
+    if dominant == "Mars First" and policy.get("policy_id") == "mp04" and (phase == "endgame" or gens_left <= 1):
+        return "Building ruling ещё даёт MC, но policy draw Building почти мертва в endgame"
+
+    return ps.get("ruling_tip", "") + policy_suffix
 
 
 def _engine_draw_alert(state) -> str | None:
@@ -417,13 +578,14 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
     funded_count = sum(1 for a in state.awards if a.get("funded_by"))
     gens_left_aw = _estimate_remaining_gens(state)
     phase_aw = game_phase(gens_left_aw, state.generation)
+    end_triggered = is_game_end_triggered(state)
     urgent = urgent_award_actions(state)
     if funded_count < 3 and urgent:
         cost = urgent[0]["cost"]
         # Save-up alert: I'm leading but can't afford this turn
         affordable = [u for u in urgent if mc >= u["cost"]]
         save_up = [u for u in urgent if mc < u["cost"] and u["lead"] > 0]
-        if save_up:
+        if save_up and not end_triggered:
             lead_list = ", ".join(
                 f"{u['award_name']} +{u['lead']}" for u in save_up[:3]
             )
@@ -459,7 +621,7 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
     reds_coming = False
     if state.turmoil:
         dominant = str(state.turmoil.get("dominant", ""))
-        reds_coming = "Reds" in dominant and not reds_now
+        reds_coming = "Reds" in dominant and not reds_now and not end_triggered
 
     gens_left_conv = _estimate_remaining_gens(state)
 
@@ -535,12 +697,14 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
 
     # === Action cards in tableau ===
     active_actions = []
+    gens_left_actions = _estimate_remaining_gens(state)
     for c in me.tableau:
         name = c["name"]
         if c.get("isDisabled"):
             continue
         action_summary = summarize_action_card(name, effect_parser)
-        if action_summary:
+        if action_summary and _is_action_alert_relevant(
+                name, state, effect_parser, gens_left=gens_left_actions):
             active_actions.append(f"{name}: {action_summary}")
     if active_actions:
         alerts.append("🔵 Actions (" + str(len(active_actions)) + "): " +
@@ -563,17 +727,18 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
             alerts.append("⛔ REDS RULING: -1 TR/шаг при подъёме параметров!")
 
         # Reds incoming warning
-        if dominant and "Reds" in str(dominant):
+        if dominant and "Reds" in str(dominant) and not end_triggered:
             alerts.append("⚠️ REDS DOMINANT → станут ruling! Блокируй делегатами или придержи terraform")
 
         # Party strategy for dominant party
-        if dominant and dominant in PARTY_STRATEGY:
-            ps = PARTY_STRATEGY[dominant]
-            alerts.append(f"🏛️ Dominant: {dominant} — {ps['ruling_tip']}")
+        if dominant and dominant in PARTY_STRATEGY and not end_triggered:
+            tip = _dominant_party_tip(dominant, state)
+            if tip:
+                alerts.append(f"🏛️ Dominant: {dominant} — {tip}")
 
         # Global event preparation
         coming = t.get("coming")
-        if coming and coming in GLOBAL_EVENT_ADVICE:
+        if coming and coming in GLOBAL_EVENT_ADVICE and not end_triggered:
             ev = GLOBAL_EVENTS.get(coming, {})
             icon = "🟢" if ev.get("good", True) else "🔴"
             alerts.append(f"{icon} Событие (след. gen): {coming}")
@@ -581,15 +746,30 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
 
         # v73: Specific resource protection alerts
         coming_lower = (coming or '').lower()
-        if 'dust storm' in coming_lower and me.heat >= 8:
+        if not end_triggered and 'dust storm' in coming_lower and me.heat >= 8:
             alerts.append(f"🔥 DUST STORM через 1 gen! Потрать heat ({me.heat}) СЕЙЧАС — потеряешь ВСЁ!")
-        if ('eco sabotage' in coming_lower or 'sabotage' in coming_lower) and me.plants >= 4:
+        if (not end_triggered and
+                ('eco sabotage' in coming_lower or 'sabotage' in coming_lower) and me.plants >= 4):
             alerts.append(f"🌿 ECO SABOTAGE через 1 gen! Конвертируй plants ({me.plants}) в greenery!")
-        if 'miners on strike' in coming_lower and (me.titanium or 0) >= 3:
-            alerts.append(f"⛏️ MINERS STRIKE через 1 gen! Потрать titanium ({me.titanium}) на карты!")
+        if not end_triggered and 'miners on strike' in coming_lower:
+            me_tags = getattr(me, 'tags', {}) if me else {}
+            jovian_tags = 0
+            if isinstance(me_tags, dict):
+                jovian_tags = int(me_tags.get("jovian", 0) or me_tags.get("Jovian", 0) or 0)
+            influence = int(getattr(me, 'influence', 0) or 0)
+            exposed_tags = max(0, min(5, jovian_tags) - influence)
+            titanium_risk = min(me.titanium or 0, exposed_tags)
+            if titanium_risk > 0:
+                alerts.append(
+                    f"⛏️ MINERS STRIKE через 1 gen! Под риском ~{titanium_risk} titanium "
+                    f"({jovian_tags} Jovian, influence {influence}) — трать ti или добирай influence.")
+            elif jovian_tags > 0:
+                alerts.append(
+                    f"⛏️ MINERS STRIKE через 1 gen: influence {influence} уже прикрывает "
+                    f"текущие Jovian ({jovian_tags}). Saturn/Jovian line ок.")
 
         distant = t.get("distant")
-        if distant and distant in GLOBAL_EVENT_ADVICE:
+        if distant and distant in GLOBAL_EVENT_ADVICE and not end_triggered:
             ev = GLOBAL_EVENTS.get(distant, {})
             if not ev.get("good", True):
                 alerts.append(f"⚠️ Через 2 gen: {distant} — начинай готовиться")
@@ -1536,6 +1716,15 @@ def _strategy_overview_lines(state) -> list[str]:
     return ["🧭 Линии стола:"] + lines
 
 
+def is_game_end_triggered(state) -> bool:
+    """True once the current generation is the final action generation."""
+    return (
+        getattr(state, "temperature", -30) >= 8
+        and getattr(state, "oxygen", 0) >= 14
+        and getattr(state, "oceans", 0) >= 9
+    )
+
+
 def _estimate_remaining_gens(state) -> int:
     """Estimate remaining generations based on global parameters progress.
 
@@ -2064,17 +2253,15 @@ def _vp_projection(state) -> list[str]:
             "Penguins": ("animal", 1), "Fish": ("animal", 1),
             "Birds": ("animal", 1), "Livestock": ("animal", 1),
             "Predators": ("animal", 1), "Small Animals": ("animal", 1),
-            "Herbivores": ("animal", 1), "Venusian Animals": ("animal", 1),
+            "Venusian Animals": ("animal", 1),
             "Security Fleet": ("fighter", 1), "Refugee Camps": ("camp", 1),
             "Physics Complex": ("science", 1),
             # 1 VP per 2 resources
-            "Venusian Insects": ("microbe", 0.5), "Atmo Collectors": ("floater", 0.5),
+            "Herbivores": ("animal", 0.5),
+            "Venusian Insects": ("microbe", 0.5),
             "Stratopolis": ("floater", 0.5), "Ants": ("microbe", 0.5),
             # 1 VP per 3 resources
             "Decomposers": ("microbe", 0.33), "Extremophiles": ("microbe", 0.33),
-            "GHG Producing Bacteria": ("microbe", 0.33),
-            "Nitrite Reducing Bacteria": ("microbe", 0.33),
-            "Sulphur-Eating Bacteria": ("microbe", 0.33),
             "Tardigrades": ("microbe", 0.25),
         }
         # Cards that add extra resources of a type each gen

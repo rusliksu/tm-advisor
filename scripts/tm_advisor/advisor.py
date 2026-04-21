@@ -1161,7 +1161,7 @@ class AdvisorBot:
             for tip in tips:
                 print(f"  {Fore.CYAN}{tip}{Style.RESET_ALL}")
 
-        alerts = _generate_alerts(state)
+        alerts = _generate_alerts(state, self.effect_parser)
         if alerts:
             self.display.section("⚡ Рекомендации:")
             for alert in alerts:
