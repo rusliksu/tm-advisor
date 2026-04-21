@@ -35,7 +35,7 @@ from .analysis import (
     _safe_title, _extract_wf_card_names, _parse_wf_card,
     _rush_calculator, _vp_projection, _card_play_impact,
     _build_action_chains, _forecast_requirements, _trade_optimizer,
-    _mc_flow_projection,
+    _mc_flow_projection, summarize_action_card,
 )
 from .draft_play_advisor import (draft_buy_advice, play_hold_advice,
                                   mc_allocation_advice, _effective_cost,
@@ -1056,44 +1056,9 @@ class AdvisorBot:
             name = c.get("name", "")
             if c.get("isDisabled"):
                 continue
-            known_actions = {
-                "Development Center": "energy → card",
-                "Physics Complex": "6 energy → science VP",
-                "Penguins": "+1 animal = +1 VP",
-                "Red Ships": "trade action",
-                "Electro Catapult": "plant/steel → 7 MC",
-                "Search For Life": "reveal → 3 VP",
-                "Stratospheric Birds": "+1 floater",
-                "Sulphur-Eating Bacteria": "+1 microbe (or 3→TR)",
-                "GHG Producing Bacteria": "+1 microbe (or 3→TR)",
-                "Nitrite Reducing Bacteria": "+1 microbe (or 3→TR)",
-                "Regolith Eaters": "+1 microbe (or 2→O₂)",
-                "Local Shading": "+1 floater",
-                "Extremophiles": "+1 microbe (+½ VP)",
-                "Decomposers": "+1 microbe (+½ VP)",
-                "Tardigrades": "+1 microbe (+⅓ VP)",
-                "Ceres Tech Market": "science → cards",
-                "Orbital Cleanup": "Space tags → MC",
-                "Restricted Area": "2 MC → draw card",
-                "Rover Construction": "+2 MC per city",
-                "Birds": "+1 animal (+1 VP)",
-                "Fish": "+1 animal (+1 VP)",
-                "Livestock": "+1 animal (+1 VP)",
-                "Predators": "+1 animal (+1 VP)",
-                "Directed Impactors": "6 MC → +1 asteroid",
-                "Atmo Collectors": "+1 floater (or 2→res)",
-                "Stratopolis": "+2 floaters (+⅓ VP)",
-                "Titan Floating Launch-Pad": "+1 floater (or trade)",
-                "Titan Air-scrapping": "+1 floater (or 2→TR)",
-                "Jupiter Floating Station": "+1 floater (+⅓ VP)",
-                "Rotator Impacts": "6 MC → +1 asteroid (or Venus)",
-                "Venus Orbital Survey": "free Venus card",
-                "Viron": "reuse action card",
-                "Self-Replicating Robots": "install card cheaper",
-                "Inventors' Guild": "look at top card",
-            }
-            if name in known_actions:
-                action_cards.append(f"🔵 {name}: {known_actions[name]}")
+            action_summary = summarize_action_card(name, self.effect_parser)
+            if action_summary:
+                action_cards.append(f"🔵 {name}: {action_summary}")
 
         if action_cards:
             for ac in action_cards[:4]:
@@ -1583,8 +1548,28 @@ class AdvisorBot:
         results.sort(key=lambda x: x[1], reverse=True)
         return results
 
+    @staticmethod
+    def _compose_note_desc(note: str, desc: str, max_len: int = 280, desc_first: bool = False) -> str:
+        note = str(note or "").strip()
+        desc = str(desc or "").strip()
+        if note and desc:
+            if desc.lower() in note.lower():
+                return note[:max_len]
+            merged = f"Описание: {desc} │ {note}" if desc_first else f"{note} │ Описание: {desc}"
+            return merged if len(merged) <= max_len else merged[: max_len - 3].rstrip() + "..."
+        if desc:
+            only_desc = f"Описание: {desc}"
+            return only_desc if len(only_desc) <= max_len else only_desc[: max_len - 3].rstrip() + "..."
+        return note
+
     def _get_note(self, name, state=None, card_cost=0):
         """Build card note with effects, effective cost, and ROI."""
+        desc = self.db.get_advisor_description(name, max_len=150)
+        desc_first = self.db.prefer_description_first(name)
+        localized_note = self.db.get_advisor_note(name, locale="ru", max_len=110)
+        if localized_note:
+            return self._compose_note_desc(localized_note, desc, max_len=280, desc_first=desc_first)
+
         info = self.db.get_info(name)
         if not info:
             return "нет данных"
@@ -1789,7 +1774,7 @@ class AdvisorBot:
             "eff_cost": eff_cost, "pay_notes": pay_notes,
             "total_value": total_value, "raw_cost": cost,
         }
-        return f"{effect_str}{roi_str}"
+        return self._compose_note_desc(f"{effect_str}{roi_str}", desc, max_len=280, desc_first=desc_first)
 
     def _extract_cards_list(self, wf):
         cards = wf.get("cards", [])

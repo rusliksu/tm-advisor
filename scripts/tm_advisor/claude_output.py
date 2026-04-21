@@ -2,7 +2,7 @@
 
 from types import SimpleNamespace
 
-from .constants import STANDARD_PROJECTS, PARTY_POLICIES, GLOBAL_EVENTS, COLONY_TRADE_DATA
+from .constants import STANDARD_PROJECTS, GLOBAL_EVENTS, COLONY_TRADE_DATA, party_policy_info
 from .economy import sp_efficiency, check_energy_sinks
 from .analysis import (
     _score_to_tier, _parse_wf_card, _safe_title,
@@ -46,6 +46,20 @@ class ClaudeOutput:
             context="tableau",
         )
         return score, _score_to_tier(score)
+
+    @staticmethod
+    def _compose_note_desc(note: str, desc: str, max_len: int = 230, desc_first: bool = False) -> str:
+        note = str(note or "").strip()
+        desc = str(desc or "").strip()
+        if note and desc:
+            if desc.lower() in note.lower():
+                return note[:max_len]
+            merged = f"Описание: {desc} │ {note}" if desc_first else f"{note} │ Описание: {desc}"
+            return merged if len(merged) <= max_len else merged[: max_len - 3].rstrip() + "..."
+        if desc:
+            only_desc = f"Описание: {desc}"
+            return only_desc if len(only_desc) <= max_len else only_desc[: max_len - 3].rstrip() + "..."
+        return note
 
     def format(self, state) -> str:
         lines = []
@@ -131,8 +145,8 @@ class ClaudeOutput:
         if state.cards_in_hand:
             a("## Карты в руке")
             a("")
-            a("| Карта | Cost | Score | Tier | Req | Заметка |")
-            a("|-------|------|-------|------|-----|---------|")
+            a("| Карта | Cost | Score | Tier | Req | Описание / заметка |")
+            a("|-------|------|-------|------|-----|--------------------|")
             for card in state.cards_in_hand:
                 name = card["name"]
                 cost = card.get("cost", 0)
@@ -219,7 +233,7 @@ class ClaudeOutput:
             a("")
             ruling = t.get("ruling", "?")
             dominant = t.get("dominant", "?")
-            policy = PARTY_POLICIES.get(ruling, {})
+            policy = party_policy_info(t, ruling)
             a(f"**Ruling:** {ruling} │ **Dominant:** {dominant} │ **Chairman:** {t.get('chairman', '?')}")
             a(f"**Policy:** {policy.get('policy', '?')}")
             a(f"**Мой influence:** {state.me.influence}")
@@ -347,7 +361,7 @@ class ClaudeOutput:
             if wf_cards:
                 a("")
                 a("**Карты на выбор:**")
-                headers = ["Карта", "Cost", "Score", "Tier", "Req", "Заметка"]
+                headers = ["Карта", "Cost", "Score", "Tier", "Req", "Описание / заметка"]
                 rows = []
                 for card in wf_cards:
                     name = card["name"]
@@ -638,9 +652,10 @@ class ClaudeOutput:
         # Policy action
         if state.turmoil:
             ruling = state.turmoil.get("ruling", "")
-            policy = PARTY_POLICIES.get(ruling, {}).get("policy", "")
-            if policy and "action" in policy.lower():
-                steps.append((f"Policy {ruling}: {policy}", 0, 2))
+            policy = party_policy_info(state.turmoil, ruling)
+            if policy.get("actionable"):
+                policy_text = policy.get("policy", "")
+                steps.append((f"Policy {ruling}: {policy_text}", 0, 2))
 
         # Playable cards from play_hold_advice
         ph = play_hold_advice(state.cards_in_hand or [], state,
@@ -807,13 +822,18 @@ class ClaudeOutput:
         return output_lines
 
     def _get_note(self, name: str) -> str:
+        desc = self.db.get_advisor_description(name, max_len=120)
+        desc_first = self.db.prefer_description_first(name)
+        localized_note = self.db.get_advisor_note(name, locale="ru", max_len=90)
+        if localized_note:
+            return self._compose_note_desc(localized_note, desc, max_len=230, desc_first=desc_first)
         card = self.db.get(name)
         if not card:
-            return "нет данных"
+            return desc or "нет данных"
         economy = card.get("economy", "")
         if economy:
-            return economy.split(".")[0][:60]
-        return ""
+            return self._compose_note_desc(economy.split(".")[0][:60], desc, max_len=230, desc_first=desc_first)
+        return desc
 
     @staticmethod
     def _extract_all_wf_cards(wf: dict) -> list[dict]:
