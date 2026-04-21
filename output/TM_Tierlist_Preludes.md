@@ -2,7 +2,7 @@
 
 **Формат:** 3P / WGT / Все дополнения
 
-**Всего оценено:** 82 прелюдий
+**Всего оценено:** 99 прелюдий
 
 **Средняя ценность прелюдии:** ~24.5 MC
 
@@ -16,109 +16,126 @@
 
 ---
 
-## A-Tier (12) — Почти всегда берём
+## A-Tier (14) — Почти всегда берём
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
-| High Circles | 85 | Earth | Одна из сильнейших прелюдий для Turmoil-игр |
-| UNMI Contractor | 85 | Earth | Best overall Prelude from Prelude 1 (benbever, icehawk84) |
-| Great Aquifer | 84 | — | Top-tier prelude |
-| Huge Asteroid | 83 | — | Excellent rush prelude |
-| Experimental Forest | 82 | Plant | Отличная прелюдия для ground game |
-| Planetary Alliance | 82 | Earth, Jovian, Venus | Prелюдия с огромной tag-density и solid TR |
+| High Circles | 85 | Earth | Top Turmoil prelude |
+| Great Aquifer | 84 | — | Top-tier prelude on raw value |
+| Central Reservoir | 84 | Building | Сочетает сильный базовый эффект океана с полноценным входом в underground econom |
+| UNMI Contractor | 82 | Earth | Still one of the strongest generic preludes: 3 TR, a card, and an Earth tag is h |
+| Experimental Forest | 82 | Plant | Excellent prelude for ground play |
+| Planetary Alliance | 82 | Earth, Jovian, Venus | Three useful tags plus 2 TR and two selected cards is a very high-ceiling prelud |
+| Suitable Infrastructure | 82 | — | Strong engine prelude with a real floor and excellent upside |
+| Tunneling Operation | 82 | Building | Сильнейшая utility/economy прелюдия Underworld: и разворачивает механику, и сраз |
+| Geological Expertise | 81 | — | Комбинирует доступ к Underworld board и лучший тип card selection, поэтому почти |
 | Allied Bank | 80 | Earth | One of the best production preludes |
-| Metal-Rich Asteroid | 80 | — | High value prelude (~30 MC when metals are spent) |
 | Business Empire | 80 | Earth | High production value but the 6 MC cost delays payoff to gen 3 |
-| Double Down | 80 | — | Мультипликатор ценности — ceiling зависит целиком от парной прелюдии |
-| Hydrogen Bombardment | 80 | Space, Venus | Одна из лучших Pathfinder прелюдий |
-| Research Grant | 80 | Science, Science | Одна из лучших Pathfinder прелюдий |
+| Metals Company | 80 | — | Near-universal pick |
+| Double Down | 80 | — | Pure ceiling multiplier |
+| Hydrogen Bombardment | 80 | — | One of the best Pathfinders preludes |
 
 ---
 
-## B-Tier (27) — Хорош с синергией
+## B-Tier (34) — Хорош с синергией
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
-| Vital Colony | 79 | Mars, Space | Сильная colony прелюдия |
-| Atmospheric Enhancers | 78 | Venus | Extremely flexible — choose which parameter to raise based on board state |
-| CO² Reducers | 78 | Microbe, Venus | 3 MC-prod за 11 MC (steel-payable, ~7-9 MC effective) = отличная ставка (2 |
-| Early Colonization | 77 | Space | Strong in Colony games |
-| Metals Company | 76 | — | Best pure-production prelude for engine building |
-| Survey Mission | 76 | Mars | 5 steel gen 1 — хороший ресурс для building карт |
-| Valuable Gases | 76 | Jovian, Venus | Высокодисперсная прелюдия |
-| Acquired Space Agency | 74 | — | Above average value when you can spend the titanium on gen 1 space cards |
-| Polar Industries | 74 | Building | Solid prelude combining terraforming (ocean) with heat engine |
+| Vital Colony | 79 | — | Strong colony prelude because the double placement bonus creates a huge spread b |
+| Atmospheric Enhancers | 78 | Venus | 2 TR with parameter choice + 2 floater-icon cards |
+| CO² Reducers | 78 | — | Excellent rate once playable |
+| Underground Settlement | 78 | City, Building | Очень качественная board prelude, чуть ниже топа только потому, что больше завис |
+| Early Colonization | 77 | Space | Colony + 3 energy-prod + colony tracks 2 steps forward |
+| Aquifer Turbines | 76 | Power | Solid prelude with ocean + 2 energy-prod |
+| Survey Mission | 76 | — | Positioning prelude more than a raw-economy one |
+| Valuable Gases | 76 | — | High-variance prelude with a huge ceiling and a bad floor |
+| Deepwater Dome | 76 | Plant, Building | Стабильная сильная прелюдия без сложных условий |
+| Metal-Rich Asteroid | 75 | — | High value prelude (~30 MC when metals are spent) |
+| Aerospace Mission | 75 | — | Decent colony opener |
 | Strategic Base Planning | 74 | City, Building, Space | Strong in the right context: city + colony for 3 MC is excellent efficiency |
-| Corridors of Power | 74 | Earth | High theoretical value but inconsistent in 3P |
-| Design Company | 74 | Mars | Steel production + 3 building карты = setup для building/steel стратегии |
-| Personal Agenda | 74 | — | 3 MC-prod — топовая экономическая база gen 1 |
+| Supply Drop | 74 | — | High raw value (~27 MC) when you can spend all resources |
+| Corridors of Power | 74 | Earth | 1 TR + 4 MC + card draw engine via party leader |
+| Design Company | 74 | — | Solid setup prelude for building or steel starts |
+| Personal Agenda | 74 | — | Reliable production prelude with decent upside from the event draw |
 | Corporate Archives | 73 | Science | Solid 'money now + smart card draw' prelude |
-| Research Network | 73 | Wild | The Wild tag is the star — counts as any tag for NRA, milestones, awards, and co |
-| Space Lanes | 73 | Space | Colony-oriented прелюдия с decent base |
-| Venus First | 73 | Venus | 2 TR через Venus scale gen 1 — хороший immediate value |
-| Aquifer Turbines | 72 | Power | Solid prelude with good total value |
+| Space Lanes | 73 | Space | Colony-oriented prelude with a decent base |
+| Venus First | 73 | — | Reasonable Venus prelude |
+| Acquired Space Agency | 72 | — | Space-heavy openers make this look much better than its average COTD reputation |
 | Merger | 72 | — | The most volatile prelude |
 | Smelting Plant | 72 | Building | Good value prelude with immediate 2 TR from oxygen |
-| Co-leadership | 72 | — | Это прелюдия, а не CEO |
-| Supply Drop | 71 | — | High raw value (~27 MC) when you can spend all resources |
+| Co-leadership | 72 | — | This prelude is really about improving CEO selection quality |
+| Polar Industries | 71 | Building | Solid prelude combining terraforming (ocean) with heat engine |
+| Ganymede Trading Company | 71 | Jovian, Space | Хорошая специализированная прелюдия: не универсальная, но в правильном формате о |
+| Battery Shipment | 71 | Power | Мощный специализированный энергетический старт, особенно в colonу/ares/power сто |
+| Secret Research | 71 | Science | Нормальная сильная прелюдия для engine-столов, чуть слабее топов из-за коррупцио |
 | Ecology Experts | 70 | Plant, Microbe | Extremely swingy |
 | New Partner | 70 | — | Effective mulligan for preludes |
 | World Government Advisor | 70 | Earth | Extremely powerful rush prelude with game-warping action |
-| Deep Space Operations | 70 | Space | 4 titanium gen 1 — серьёзный ресурс |
-| The New Space Race | 70 | Science, Earth | Unique ability: revealed BEFORE all other preludes, become starting player, set  |
+| Deep Space Operations | 70 | — | Four titanium on gen 1 is a real resource burst, and the two Space events are of |
+| The New Space Race | 70 | — | Unique Turmoil prelude with solid but not amazing raw value |
+| Inherited Fortune | 70 | Crime | Хорошая честная экономика на старте, если не бояться умеренного коррупционного д |
+| Free Trade Port | 69 | Earth, Space | Сильная тематическая прелюдия под Colonies: upside высокий, но tied to table set |
 
 ---
 
-## C-Tier (21) — Ситуативный
+## C-Tier (32) — Ситуативный
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
-| Experienced Martians | 68 | — | 2 MC-prod и delegate — солидная base value |
-| Trade Advance | 68 | Earth | Бесплатный трейд при покупке = 5-10 MC value в зависимости от развитости колоний |
-| Rise To Power | 66 | — | Decent combo of production + political influence |
-| Supplier | 66 | Power | Solid average prelude |
-| Recession | 66 | — | Относительная прелюдия — ценность зависит от того, насколько больно оппонентам |
-| Soil Bacteria | 65 | Microbe | Выглядит слабой по прямому MC value (~15 MC), но ценность заключается в гарантир |
-| Crew Training | 65 | — | Чистая tag-прелюдия без экономического эффекта |
-| Power Generation | 64 | Power | Good with Colonies (instant trading capability if you have 3 energy), decent wit |
+| Investor Plaza | 69 | Earth, City | Играбельная, но не премиальная прелюдия: value есть, но коррупция съедает часть  |
+| Research Network | 68 | Wild | The Wild tag is the star: it fills awkward tag requirements, pushes milestone ra |
+| Power Generation | 68 | Power | In Colonies, this jumps when premium trade colonies like Luna, Pluto, Triton, or |
+| Experienced Martians | 68 | — | Acceptable filler, not a premium prelude |
+| Trade Advance | 68 | — | Free trade on purchase can be worth around 5-10 MC depending on how developed th |
+| Election Sponsorship | 68 | Crime | Сильная тематическая turmoil-прелюдия, но зависимость от конкретного формата оче |
+| Huge Asteroid | 66 | — | 3 temp TR = 21 MC - 5 MC cost = 16 MC net + ~4 MC heat-prod bonus = ~20 MC |
+| Rise To Power | 66 | — | 3 delegates in 3 parties + 3 MC-prod |
+| Supplier | 66 | Power | Reliable upper-middle prelude |
+| Recession | 66 | — | Pure disruption prelude |
+| Colony Trade Hub | 66 | Space | Very weak base value (~13 MC) |
+| Giant Solar Collector | 66 | Power, Space | 2 energy-prod + Venus step = TR + production start |
+| Established Methods | 66 | — | This should read as a flexible setup prelude rather than a narrow colony trick |
+| Soil Bacteria | 65 | Microbe | Engine-focused prelude with a wide spread |
+| Crew Training | 65 | — | Pure tag prelude with almost no raw economy |
+| Mining Operations | 64 | Building | Above average raw value but highly conditional on having building cards |
+| Floating Trade Hub | 64 | Space | Slow engine card on a prelude |
+| Cloud Vortex Outpost | 64 | Venus | Нишевая прелюдия, которая живёт только внутри venus/floater engine |
 | Dome Farming | 63 | Plant, Building | Slightly below average in raw value but the 2 tags are genuinely useful |
-| Mining Operations | 63 | Building | Above average raw value but highly conditional on having building cards |
-| Terraforming Deal | 62 | Earth | Ongoing effect с потенциально высоким total value, но нулевым immediate impact g |
+| Focused Organization | 62 | — | Low immediate value (~6 MC) but cycling action is deceptively strong |
+| Terraforming Deal | 62 | Earth | Ongoing effect with potentially high total value, but almost no gen 1 impact |
+| Prospecting | 62 | Space | Хороша только в colony-heavy setups; otherwise слишком условная |
 | Albedo Plants | 60 | Plant | Low base value (~17 MC) for a prelude |
-| Donation | 60 | — | The baseline prelude — exactly average historically but slightly below the curre |
 | Venus L1 Shade | 60 | Space | 3 Venus steps is solid TR (3 TR = 21 MC at 7 MC/TR) plus it unlocks Venus requir |
 | Old Mining Colony | 60 | Space | About average value |
-| Orbital Construction Yard | 60 | Space | Average raw value but highly conditional |
 | Eccentric Sponsor | 58 | — | High variance prelude |
 | Industrial Complex | 58 | Building | High ceiling but very corp-dependent |
+| Biolab | 58 | Science | Below average value |
 | Main Belt Asteroids | 57 | Space | Slow but steady value |
-| Focused Organization | 55 | — | На первый взгляд action кажется бесплатным cycling, но это ровно trade 1:1 — вы  |
-| Board of Directors | 55 | Earth | Card filtering action — 4 directors дают 4 uses за игру |
+| Io Research Outpost | 56 | Jovian, Science | Below average |
+| Board of Directors | 55 | Earth | Card-filtering prelude with real ceiling but weak tempo |
+| Applied Science | 55 | Wild | No immediate production — action engine only |
 
 ---
 
-## D-Tier (20) — Очень слабый
+## D-Tier (17) — Очень слабый
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
-| Self-Sufficient Settlement | 53 | Building, City | Below average |
-| Anti-desertification Techniques | 52 | Microbe, Plant | Below average value at ~22 MC |
-| Martian Industries | 52 | Building | Just barely below average |
+| Self-Sufficient Settlement | 53 | Building, City | Below average in vacuum, but better than flat economy math suggests when the cit |
+| Anti-desertification Techniques | 52 | Microbe, Plant | Below average prelude at ~22 MC total value |
+| Martian Industries | 52 | Building | Below-average raw package, but better than pure value models suggest because 1 s |
 | Mohole | 52 | Building | Below average |
-| Floating Trade Hub | 50 | Space | Slow engine card on a prelude |
-| Biolab | 50 | Science | Below average value |
 | Early Settlement | 50 | Building, City | Below average |
-| Colony Trade Hub | 48 | Space | Very weak base value (~13 MC) |
-| Giant Solar Collector | 48 | Power, Space | Below average |
+| Orbital Construction Yard | 48 | Space | Average raw value but highly conditional |
 | Mohole Excavation | 48 | Building | Below average |
-| Preservation Program | 48 | — | 5 TR звучит впечатляюще, но математика неоднозначна |
-| Venus Contract | 46 | Venus | Одна из слабейших прелюдий |
+| Preservation Program | 48 | — | Looks impressive because 5 TR is a big number, but most of the value is delayed  |
+| Research Grant | 48 | — | Very weak unless the Science tags matter immediately |
+| Venus Contract | 46 | Venus | One of the weaker preludes |
+| Donation | 45 | — | The baseline prelude — exactly average historically but slightly below the curre |
 | Nobel Prize | 45 | Wild | Looks decent on paper but 2 VP on a prelude is terrible — VP does nothing to bui |
 | Loan | 44 | — | One of the worst preludes |
-| Io Research Outpost | 43 | Jovian, Science | Below average |
-| Applied Science | 42 | Wild | A prelude that gives zero immediate value — no MC, no production, no TR |
 | Galilean Mining | 42 | Jovian | Sounds good on paper (2 ti-prod + Jovian tag) but deeply flawed |
-| Biofuels | 40 | Microbe | Well below average value (~19 |
+| Biofuels | 40 | Microbe | Raw value is still below average (~19 |
 | Biosphere Support | 38 | Plant | One of the worst preludes |
 | Nitrogen Shipment | 36 | — | One of the worst preludes |
 
@@ -152,27 +169,13 @@
 
 Теги: Earth | Дополнение: Prelude 2
 
-**Экономика:** 1 TR = 7 MC. 1 card with party requirement = ~3-4 MC. 2 delegates in one party = ~6 MC (3 MC/delegate). Permanent +1 influence = ~3-5 MC/gen (better dominant bonuses, chairman votes). Earth tag ~2-3 MC. Total ~21-24 MC base + ~24-40 MC influence value over 8 gen.
+**Экономика:** 1 TR is worth about 7 MC. 1 drawn card with a party requirement is worth about 3-4 MC. 2 delegates in one party are worth about 6 MC at roughly 3 MC each. Permanent +1 influence can be worth about 3-5 MC per generation through dominant bonuses and chairman leverage. Earth tag adds about 2-3 MC. Total is around 21-24 MC in base value plus roughly 24-40 MC of influence value over 8 generations.
 
-**Почему A (85):** Одна из сильнейших прелюдий для Turmoil-игр. Permanent +1 influence — уникальный эффект, который масштабируется всю игру: лучшие dominant bonuses, больше влияния на chairman. 2 delegates в одну партию дают немедленный political control. 1 TR + Earth тег — solid base. Карта с party requirement обычно сильная (они balanced вокруг requirement). Без Turmoil — бесполезна, но с ним — одна из лучших прелюдий.
+**Почему A (85):** Top Turmoil prelude. Permanent +1 influence scales all game, and placing 2 delegates into one party gives immediate political control. The drawn party-requirement card is often playable, and the whole package dominates chairman races when Turmoil matters. Very strong, but heavily tied to the module.
 
-**Синергии:** Septem Tribus, Turmoil-heavy strategies, Corridors of Power, Rise To Power, Point Luna
+**Синергии:** Septem Tribus, Corridors of Power, Rise To Power, Point Luna, Cultural Metropolis
 
-**Когда брать:** Всегда берите в Turmoil-играх. Permanent +1 influence масштабируется экспоненциально. Особенно сильна с Septem Tribus (больше delegates = больше parties = больше MC/action).
-
----
-
-### UNMI Contractor (#P34) — 85/A
-
-Теги: Earth | Дополнение: Prelude
-
-**Экономика:** 3 TR = 3 MC-prod + 3 VP = ~21 MC immediate (3 x 7 MC). 1 card = 3-4 MC. Earth tag ~2-3 MC. Total ~27-31 MC (benbever: ~31MC).
-
-**Почему A (85):** Best overall Prelude from Prelude 1 (benbever, icehawk84). 3 TR is massive tempo — 3 MC-prod + 3 VP immediately. Card draw + Earth tag are strong bonuses (Cartel, Sky Docks, Conscription, Point Luna synergies). S-tier in multiplayer, still strong in 2P. One of the safest, most reliable preludes.
-
-**Синергии:** UNMI, Point Luna, TR rush, Terraformer milestone
-
-**Когда брать:** Almost always a top pick. Especially good for TR rush strategies and Point Luna (Earth tag + card).
+**Когда брать:** Almost always in Turmoil games. Permanent +1 influence scales extremely well, and it is especially strong with corps like Septem Tribus that already want dense delegate play.
 
 ---
 
@@ -182,25 +185,39 @@
 
 **Экономика:** 2 oceans = 2 TR (~14-15 MC) + 2 placement bonuses (~4-8 MC average). Kickstarts ground game. Total ~18-23 MC direct, but strategic value much higher.
 
-**Почему A (84):** Top-tier prelude. 2 oceans provides immediate 2 TR, excellent placement bonuses (up to 2 cards + 2 ti on Tharsis), and controls the ocean track. Enables Arctic Algae, Kelp Farming. COTD consensus: 'among the best preludes' (icehawk84), 'top tier, kickstarts ground game' (ad_hocNC). Strategic value exceeds raw MC calculation.
+**Почему A (84):** Top-tier prelude on raw value. 2 oceans gives immediate 2 TR, strong placement bonuses, and early control of the ocean track. It is best when the opener actually converts those oceans into tempo or payoff cards such as Arctic Algae, Kelp Farming, or Lakefront Resorts. It gets meaningfully weaker in engine-heavy Colonies starts where Luna, Pluto, Triton, or Ceres are the real prize, and it anti-synergizes with cards that want future oceans after setup, such as Neptunian Power Consultants.
 
 **Синергии:** Arctic Algae, Kelp Farming, Ecoline, Tharsis placement bonuses
 
-**Когда брать:** Almost always a strong pick. Best on Tharsis (placement bonuses). Slightly less good if you have zero ground game cards.
+**Когда брать:** Usually a strong pick, especially with ocean payoffs, good placement spots, or a ground-rush corp. Downgrade it in opener states that lean hard into Luna/Pluto/Triton/Ceres engine tempo, or when your hand would rather preserve future ocean triggers for Neptunian Power Consultants or similar payoffs.
 
 ---
 
-### Huge Asteroid (#P15) — 83/A
+### Central Reservoir (#UP09) — 84/A
 
-Теги: — | Дополнение: Prelude
+Теги: Building | Дополнение: Underworld
 
-**Экономика:** 3 temp steps = 3 TR (~21-22 MC) + heat-prod from 0->-2 step = ~4 MC. -5 MC cost. Total ~20 MC direct, but 3 TR is massive tempo.
+**Экономика:** Ocean + identify adjacent + claim 2. Один из лучших underworld tempo starts.
 
-**Почему A (83):** Excellent rush prelude. 3 TR is the highest immediate TR from any standard prelude. The heat production from temp steps is a bonus. The -5 MC is a real cost but 3 TR + heat prod is worth it. Unlocks temperature-dependent cards. COTD (benbever): 'in the top 10 best preludes by quantified value'.
+**Почему A (84):** Сочетает сильный базовый эффект океана с полноценным входом в underground economy.
 
-**Синергии:** Temperature-gated cards, Helion, TR rush strategies, Insects/Methane From Titan
+**Синергии:** Lakefront Resorts, Arctic Algae, Kelp Farming
 
-**Когда брать:** Strong in rush strategies. Good when you have temp-requirement cards. The 5 MC cost means less good if you're cash-starved.
+**Когда брать:** Почти всегда сильна: океан сам по себе хорош, а identify adjacent + claim 2 делает её ещё лучше.
+
+---
+
+### UNMI Contractor (#P34) — 82/A
+
+Теги: Earth | Дополнение: Prelude
+
+**Экономика:** 3 TR means 3 MC production plus 3 VP, about 21 MC immediately at 7 MC per TR. 1 card is about 3-4 MC. Earth tag is worth about 2-3 MC. Total value is roughly 27-31 MC, with community estimates around 31 MC.
+
+**Почему A (82):** Still one of the strongest generic preludes: 3 TR, a card, and an Earth tag is huge and flexible value. The floor remains excellent. The only caveat is that it is not an automatic best pick when a competing prelude offers immediate energy, colony tempo, or a much cleaner gen 1 line. Excellent baseline prelude, just less universal than a pure 90/S framing suggests in this format.
+
+**Синергии:** UNMI, Point Luna, Terraforming Contract, Conscription, Sky Docks, Cartel
+
+**Когда брать:** Almost always strong. Loses mainly to hands where another prelude gives a clearer immediate setup for trade, power, or a key engine start.
 
 ---
 
@@ -208,13 +225,13 @@
 
 Теги: Plant | Дополнение: Prelude
 
-**Экономика:** 1 greenery = 1 TR + O2 raise + placement bonus (~12-15 MC). 2 plant-tag cards from reveal = ~8-10 MC (selected, не random). Plant тег ~2 MC. Total ~22-27 MC + strategic board presence gen 1.
+**Экономика:** 1 greenery is worth about 1 TR plus 1 oxygen raise plus a placement bonus, roughly 12-15 MC total. 2 revealed plant-tag cards are worth about 8-10 MC because they are selected rather than random. Plant tag adds about 2 MC. Total is about 22-27 MC plus valuable gen 1 board presence.
 
-**Почему A (82):** Отличная прелюдия для ground game. Greenery gen 1 — мощный tempo: 1 TR + oxygen + placement bonus + board presence. 2 plant-tag cards из колоды — гарантированный pipeline для plant-стратегии. На Tharsis placement bonuses могут включать 2 cards или steel. Plant тег для NRA, Ecologist. Сравнима с Project Eden по ground game impact, но без city/ocean. Стабильно сильная.
+**Почему A (82):** Excellent prelude for ground play. A gen 1 greenery is huge tempo: TR, oxygen, placement bonus, and immediate board presence. On expansion maps the tile often gets a large rebate, the plant tag enables early synergies, and the revealed plant cards help build a real follow-up pipeline even when some are requirement-gated. One of the cleanest board-start preludes in the pool.
 
-**Синергии:** Ecoline, NRA (Nitrogen-Rich Asteroid), Gardener milestone, Arctic Algae, Tharsis (placement bonuses), Kelp Farming
+**Синергии:** Ecoline, Arctic Algae, Kelp Farming, Nitrogen-Rich Asteroid, Insects
 
-**Когда брать:** Plant/ground game стратегия. Особенно с Ecoline. На Tharsis для Gardener milestone. 2 plant-карты из колоды обеспечивают pipeline на следующие поколения.
+**Когда брать:** Pick in plant or ground-game starts, especially with Ecoline or on Tharsis where Gardener pressure matters. The two plant cards help keep the next generations flowing.
 
 ---
 
@@ -222,13 +239,55 @@
 
 Теги: Earth, Jovian, Venus | Дополнение: Prelude 2
 
-**Экономика:** 2 TR = 14 MC. 1 Jovian card = ~4-5 MC (selected). 1 Venus card = ~4-5 MC (selected). 3 тега: Earth (~2-3 MC) + Jovian (~3-5 MC) + Venus (~2 MC) = ~7-10 MC. Total ~29-34 MC.
+**Экономика:** 2 TR is about 14 MC. 1 selected Jovian card is worth about 4-5 MC, and 1 selected Venus card is worth about 4-5 MC. The 3 tags add another 7-10 MC total: Earth about 2-3 MC, Jovian about 3-5 MC, and Venus about 2 MC. Total is about 29-34 MC.
 
-**Почему A (82):** Prелюдия с огромной tag-density и solid TR. 3 тега (Earth + Jovian + Venus) — редкая комбинация, которая триггерит Aridor, Saturn Systems, Point Luna, всевозможные tag-dependent milestones. 2 TR — отличный immediate value. Jovian card + Venus card обеспечивают два стратегических направления. Основная сила — в универсальности тегов и flexibility полученных карт. Venus-dependent (нужен Venus модуль).
+**Почему A (82):** Three useful tags plus 2 TR and two selected cards is a very high-ceiling prelude. Compared with something like UNMI Contractor, it gives up some raw TR for much more tag density and synergy reach. Strong with Aridor, Saturn Systems, Point Luna, and milestone pressure such as Diversifier or Planetologist, and it cleanly unlocks requirement cards like Solarnet by itself. Excellent in Venus games, merely solid without support.
 
-**Синергии:** Saturn Systems, Point Luna, Aridor, Io Mining Industries, Jovian multipliers, Morning Star Inc.
+**Синергии:** Saturn Systems, Point Luna, Aridor, Solarnet, Morning Star Inc.
 
-**Когда брать:** Почти всегда сильна при игре с Venus. Особенно ценна с Saturn Systems (Jovian тег + Jovian карта) и Point Luna (Earth тег). 3 тега для Diversifier milestone.
+**Когда брать:** Usually strong when Venus is in the game. Especially valuable with Saturn Systems, Point Luna, Solarnet, or any opener that cares about tag count and tag diversity.
+
+---
+
+### Suitable Infrastructure (#?) — 82/A
+
+Теги: — | Дополнение: ?
+
+**Экономика:** 5 steel = 10 MC now. Ongoing: once per action, +2 MC whenever you increase any production. In a normal engine game this often triggers 6-10 times for ~12-20 MC. Building tag ~2 MC. Total ~24-32 MC with a high ceiling in production-heavy starts.
+
+**Почему A (82):** Strong engine prelude with a real floor and excellent upside. 5 steel matters when the opener can actually convert it, but the real payoff is the ongoing refund on repeated production bumps: cheap prod cards, production preludes, and blue actions that keep nudging production up. Community discussion pushes it into the upper prelude tier when you can chain these small increases instead of just sitting on steel; the main failure mode is a hand with weak steel conversion and no plan to keep taking production actions.
+
+**Синергии:** Manutech, Robinson Industries, Acquired Company, Mining Area, Business Empire
+
+**Когда брать:** High priority in production-heavy starts, especially with cheap prod cards, repeated production actions, or corps like Manutech and Robinson that keep triggering the refund. Downgrade it when the opener is mostly space/science tempo and neither the 5 steel nor the ongoing refund will convert quickly.
+
+---
+
+### Tunneling Operation (#UP05) — 82/A
+
+Теги: Building | Дополнение: Underworld
+
+**Экономика:** Identify 1 + excavate 2 + 2 steel-prod. Очень плотный стартовый пакет.
+
+**Почему A (82):** Сильнейшая utility/economy прелюдия Underworld: и разворачивает механику, и сразу даёт металл-экономику.
+
+**Синергии:** Hadesphere, Tunnel Boring Machine, Underground Railway
+
+**Когда брать:** Почти всегда, когда хочешь играть Underworld по-настоящему. Один из лучших стартовых пакетов на excavation.
+
+---
+
+### Geological Expertise (#UP06) — 81/A
+
+Теги: — | Дополнение: Underworld
+
+**Экономика:** Identify 4, claim 1 и добор 2 science-карт. Огромный quality boost gen1.
+
+**Почему A (81):** Комбинирует доступ к Underworld board и лучший тип card selection, поэтому почти всегда выше среднего.
+
+**Синергии:** Demetron Labs, Research, Olympus Conference
+
+**Когда брать:** Когда хочешь early claim quality tokens и science-card quality. Очень сильная универсальная прелюдия.
 
 ---
 
@@ -246,20 +305,6 @@
 
 ---
 
-### Metal-Rich Asteroid (#P19) — 80/A
-
-Теги: — | Дополнение: Prelude
-
-**Экономика:** 1 temp step = 1 TR (~7 MC) + heat-prod bonus. 4 ti = 12 MC, 4 steel = 8 MC. Total ~28-30 MC if metals are spent.
-
-**Почему A (80):** High value prelude (~30 MC when metals are spent). 1 TR is immediate tempo. 4 ti + 4 steel provides flexible gen 1 spending for both space and building cards. COTD (benbever): 'top 10 best preludes'. The key condition is having cards to spend the metals on — if you don't, metals are worth less. No tags is the only downside.
-
-**Синергии:** Phobolog, Mining Area, Mining Rights, Steel Works, Titan Air-scrapping
-
-**Когда брать:** When you have building and space cards to spend the metals. Almost always a strong pick.
-
----
-
 ### Business Empire (#P06) — 80/A
 
 Теги: Earth | Дополнение: Prelude
@@ -274,59 +319,59 @@
 
 ---
 
+### Metals Company (#P20) — 80/A
+
+Теги: — | Дополнение: Prelude
+
+**Экономика:** 1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Raw ~25.5 MC, net ~22.5 MC. Diverse production = high flexibility bonus.
+
+**Почему A (80):** Near-universal pick. Diverse production covers any strategy — MC for flexibility, steel for buildings, ti for space. No tags is a real penalty but compensated by zero requirements and fitting any corp/hand. Community consensus across two COTDs: 'auto slam pick 99% of the time' (charliec247), 'no reason to ever not take this' (thuswindburns), 'a must pick' (Mitnichar), '~25 MC value, even better with Advanced Alloys/Manutech/Sagitta' (benbever).
+
+**Синергии:** Advanced Alloys, Manutech, Sagitta, Phobolog, Interplanetary Cinematics, Space Elevator, Asteroid Mining Consortium
+
+**Когда брать:** Almost always. Default pick unless your other preludes are specifically stronger for your hand. Slightly less good in pure rush but still solid.
+
+---
+
 ### Double Down (#X40) — 80/A
 
 Теги: — | Дополнение: Promo
 
-**Экономика:** Копирует direct effect другой прелюдии. Value = стоимость другой прелюдии (без тегов и ongoing effects). Average prelude direct effect ~20-25 MC. С лучшими прелюдиями: Great Aquifer x2 = 4 oceans, Huge Asteroid x2 = 6 temp steps.
+**Экономика:** Copies the direct effect of another prelude. Value is therefore the value of the copied prelude's direct effect, but without copying tags or ongoing text. Average direct prelude effects are around 20-25 MC. With strong targets, this can mean things like Great Aquifer twice for 4 oceans or Huge Asteroid twice for 6 temperature steps.
 
-**Почему A (80):** Мультипликатор ценности — ceiling зависит целиком от парной прелюдии. С Great Aquifer (ещё 2 океана) или Huge Asteroid (ещё 3 temp steps) — одна из лучших прелюдий в игре. С Business Empire (ещё +6 MC-prod но ещё -6 MC) — приличная. С production-only прелюдиями — solid. С Donation (ещё 21 MC) — ок. Основная слабость: нет тегов, нужна хорошая парная прелюдия, не копирует ongoing/action effects. Нельзя копировать себя.
+**Почему A (80):** Pure ceiling multiplier. Its strength depends almost entirely on the paired prelude, and it gets much better in larger prelude-selection formats. The key limitation is serious: it does not copy tags or ongoing abilities, so many seemingly good targets are weaker than they look. Best with big direct-effect preludes like Great Aquifer or Huge Asteroid.
 
-**Синергии:** Great Aquifer (x2 = 4 oceans), Huge Asteroid (x2 = 6 temp), Business Empire (x2 = 12 MC-prod), Allied Bank (x2 = 8 MC-prod), UNMI Contractor (x2 = 6 TR)
+**Синергии:** Great Aquifer, Huge Asteroid, Business Empire, Allied Bank, UNMI Contractor
 
-**Когда брать:** Когда парная прелюдия имеет мощный direct effect. Лучше всего с Great Aquifer, Huge Asteroid, UNMI Contractor. Не берите если парная прелюдия слабая или её ценность в ongoing/action (которые не копируются).
+**Когда брать:** Pick when the paired prelude has a powerful direct effect. Best targets are things like Great Aquifer, Huge Asteroid, or other heavy one-shot effects. Avoid it when the paired prelude is weak or derives most of its value from tags, actions, or ongoing text.
 
 ---
 
-### Hydrogen Bombardment (#PfP04) — 80/A
+### Hydrogen Bombardment (#?) — 80/A
 
-Теги: Space, Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +1 Venus scale (1 TR = 7 MC) + 1 titanium-prod (12.5 MC value gen 1) + 6 MC immediate. Space + Venus теги (~4 MC). Total value: ~29.5 MC.
+**Экономика:** +1 on Venus is 1 TR, about 7 MC. 1 titanium production is about 12.5 MC on gen 1. +6 MC immediate. Space + Venus tags add roughly 4 MC. Total value is about 29.5 MC.
 
-**Почему A (80):** Одна из лучших Pathfinder прелюдий. 1 TR (Venus scale) + titanium production + 6 MC cash — отличная комбинация early game value. Titanium-prod — самая ценная production в игре (12.5 MC/gen). Space + Venus теги двигают два planetary tracks. 29.5 MC value — значительно выше среднего (24.5 MC). Работает с любой стратегией.
+**Почему A (80):** One of the best Pathfinders preludes. You get immediate cash, premium titanium production, useful tags, and an early Venus bump, all in one clean package. High raw value and good tempo make it strong in a wide range of openings, not just narrow Venus shells.
 
 **Синергии:** CrediCor, Lakefront Resorts
 
-**Когда брать:** Берём почти всегда — one of the best preludes. Особенно с Space/Venus стратегией.
+**Когда брать:** Almost always strong. Especially good in Space or Venus starts, but the baseline package is powerful enough for many generic openers too.
 
 ---
 
-### Research Grant (#PfP05) — 80/A
+### Vital Colony (#?) — 79/B
 
-Теги: Science, Science | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +1 energy-prod (7.5 MC value gen 1) + 14 MC immediate. Science + Science теги (2 тега! ~6-10 MC value для requirements, milestones, synergies). Total value: ~27.5-31.5 MC.
+**Экономика:** Place a colony, worth roughly 13-17 MC depending on the target, and receive its placement bonus twice. Mars + Space tags add about 4 MC. Best colonies are Luna, which can mean double 2 MC production, Pluto for two cards, and Ganymede for double plant production. Total value ranges roughly 20-35 MC depending on colony quality.
 
-**Почему A (80):** Одна из лучших Pathfinder прелюдий. 14 MC cash — огромный immediate boost gen 1. 2 Science тега с gen 1 — великолепно: Olympus Conference, Mars University, Scientist award/milestone, Research requirements, и множество карт с Science requirements. Energy-prod полезна (конвертируется в heat). Value 28-32 MC — значительно выше среднего. 2 Science тега — один из самых ценных аспектов любой прелюдии.
-
-**Синергии:** Research
-
-**Когда брать:** Берём почти всегда — 14 MC + 2 Science тега = top-tier value. Особенно с Science-dependent картами.
-
----
-
-### Vital Colony (#PfP11) — 79/B
-
-Теги: Mars, Space | Дополнение: Pathfinders
-
-**Экономика:** Place colony (13-17 MC value depending on colony) + receive placement bonus TWICE. Mars + Space теги (~4 MC). Лучшие colonies: Luna (2×2 MC-prod = 4 MC-prod = 22.8 MC), Pluto (2×1 card = 6-7 MC), Ganymede (2×1 plant-prod = 16 MC). Total value: ~20-35 MC depending on colony.
-
-**Почему B (79):** Сильная colony прелюдия. Placement bonus TWICE = double value на лучших колониях. Luna colony с double bonus = 4 MC-prod gen 1 — огромно. Mars + Space теги полезны для planetary tracks. Проблема: требует Colonies expansion и зависит от available колоний. С Luna/Ganymede — A-tier прелюдия. С Callisto — посредственная. В среднем ~27-28 MC = выше среднего.
+**Почему B (79):** Strong colony prelude because the double placement bonus creates a huge spread between weak and premium colony rows. Luna or Ganymede can be excellent, while mediocre colonies drag it down sharply. The tags are useful and the floor is still playable in Colonies games, but the real power depends on the colony lineup.
 
 **Синергии:** Poseidon, Productive Outpost
 
-**Когда брать:** Берём с Colonies в игре и сильными колониями (Luna, Ganymede). Пропускай без Colonies.
+**Когда брать:** Pick in Colonies games when the available colonies are strong, especially Luna or Ganymede. Skip without Colonies or when the colony row is weak.
 
 ---
 
@@ -336,7 +381,7 @@
 
 **Экономика:** 2 raises on any parameter = ~14-15 MC (2 TR). 2 floater-icon cards from reveal = ~8 MC. Venus tag ~2 MC. Total ~24-25 MC, but flexibility is huge.
 
-**Почему B (78):** Extremely flexible — choose which parameter to raise based on board state. 2 TR is strong. The 2 floater-icon cards drawn are a bonus. Can unlock Venus requirements early (for Stratospheric Birds gen 1 with Venus L1 Shade combo). Venus tag relevant for Morning Star Inc and discounts.
+**Почему B (78):** 2 TR with parameter choice + 2 floater-icon cards. Per COTD: 'shines with Stratospheric Birds — combined with Venus L1 Shade can get Birds gen 1.' Choose Venus to unlock strong cards, or oxygen/temp for speed. Venus tag for Morning Star Inc. Rated B+ by community — good baseline, excellent with Venus.
 
 **Синергии:** Morning Star Inc, Stratospheric Birds, Venus L1 Shade, Aphrodite
 
@@ -344,17 +389,31 @@
 
 ---
 
-### CO² Reducers (#NEW) — 78/B
+### CO² Reducers (#?) — 78/B
 
-Теги: Microbe, Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
 **Экономика:** +3 MC-prod (17 MC value gen 1) + draw 2 microbe cards (~7 MC)
 
-**Почему B (78):** 3 MC-prod за 11 MC (steel-payable, ~7-9 MC effective) = отличная ставка (2.3-3 MC/prod). Microbe тег для Decomposers, Splice. Req 6% Venus выполнимо в mid-game. Берём почти всегда — универсальная economy карта. Ещё лучше с microbe или Venus engine.
+**Почему B (78):** Excellent rate once playable. Three MC production for a low effective cost is strong baseline economy, and the extra microbe support adds real upside for Decomposers, Splice, or Venus-microbe shells. The 6% Venus requirement keeps it from being a fully generic snap, but it is still one of the better economy preludes when live.
 
 **Синергии:** Ants
 
-**Когда брать:** Берём почти всегда при выполненном Venus req. Steel payment делает карту ещё эффективнее. Пропускай только если Venus далека от 6%.
+**Когда брать:** Pick almost whenever the 6% Venus requirement is already live or trivially close. Steel payment makes it even more efficient. Pass mainly when Venus is still far away.
+
+---
+
+### Underground Settlement (#UP07) — 78/B
+
+Теги: City, Building | Дополнение: Underworld
+
+**Экономика:** City + identify adjacent resources + claim 1. Сильный tempo+setup ход.
+
+**Почему B (78):** Очень качественная board prelude, чуть ниже топа только потому, что больше зависит от карты и размещения.
+
+**Синергии:** Philares, Capital, Underground Railway
+
+**Когда брать:** Когда ранний город и board control важны. Особенно хороша на картах с жирными бонусами возле выбранного города.
 
 ---
 
@@ -364,7 +423,7 @@
 
 **Экономика:** Colony placement = ~13 MC. 3 energy = 1 trade = ~8-12 MC depending on colony. Space tag ~1 MC. Also moves tracks 2 steps up. Total ~24-28 MC.
 
-**Почему B (77):** Strong in Colony games. You get a colony + immediate trade capability (3 energy). The colony tracks move 2 steps forward as a bonus. Secures a spot on the best colony before anyone else. Space tag is minor. Less good if colonies are weak.
+**Почему B (77):** Colony + 3 energy-prod + colony tracks 2 steps forward. Per COTD: track advancement is the hidden power. Securing best colony early is huge. Trading gen 1 isn't great alone, but colony lock-in matters. Needs 3 energy-prod path; without it much less attractive. Colony-dependent.
 
 **Синергии:** Titan, Io, Ganymede, Miranda, Poseidon
 
@@ -372,73 +431,87 @@
 
 ---
 
-### Metals Company (#P20) — 76/B
+### Aquifer Turbines (#P02) — 76/B
 
-Теги: — | Дополнение: Prelude
+Теги: Power | Дополнение: Prelude
 
-**Экономика:** 1 MC-prod = 5 MC, 1 steel-prod = 8 MC, 1 ti-prod = 12.5 MC. No tags = -3 MC. Total ~22.5 MC. BUT diverse production is very flexible.
+**Экономика:** 1 ocean = ~12 MC (1 TR + placement bonus). 2 energy-prod = 15 MC. -3 MC cost. Power tag ~1 MC. Total ~25 MC.
 
-**Почему B (76):** Best pure-production prelude for engine building. Gives a bit of everything — MC for flexibility, steel for buildings, ti for space cards. No tags is a real penalty but the production diversity compensates. COTD consensus: 'great, gives a bit of everything' (shai_aus), 'literally the best income prelude' (FieldMouse007).
+**Почему B (76):** Solid prelude with ocean + 2 energy-prod. Per COTD community, value is heavily colony-dependent: near-autopick with Colonies (energy for trading), mediocre without. Ocean placement bonus can be significant on Tharsis. Experienced players value it at ~28 MC total. Without Colonies, energy production is the most useless stat to get early.
 
-**Синергии:** Mining Area, Mining Rights, Steel Works, Phobolog, Interplanetary Cinematics
+**Синергии:** Strip Mine, Electro Catapult, Thorgate, Power Infrastructure
 
-**Когда брать:** Almost always good for engine-building strategies. Less good in pure rush. Solid default pick.
+**Когда брать:** When you have energy sinks in hand or are playing with Colonies. Good on Tharsis for ocean placement bonuses.
 
 ---
 
-### Survey Mission (#PfP07) — 76/B
+### Survey Mission (#?) — 76/B
 
-Теги: Mars | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +5 steel (10 MC) + land-claim 3 spaces in triangle (placement bonuses ~3-8 MC + strategic value). Mars тег (~2 MC). Total value: ~15-20 MC + strategic positioning.
+**Экономика:** +5 steel is about 10 MC. Claiming 3 spaces in a triangle can add about 3-8 MC in placement bonuses plus strategic value. Mars tag adds about 2 MC. Total raw value is roughly 15-20 MC plus positional leverage.
 
-**Почему B (76):** 5 steel gen 1 — хороший ресурс для building карт. Land-claim 3 spaces в треугольнике — уникальный стратегический эффект: зарезервировать лучшие позиции на карте + получить placement bonuses. На Tharsis можно зарезервировать Noctis City area или ocean-adjacent spots для city+greenery combo. Проблема: pure MC value ниже среднего, value зависит от позиционной стратегии. Mars тег для track — бонус. Сильная для опытных игроков, средняя для остальных.
+**Почему B (76):** Positioning prelude more than a raw-economy one. The steel is useful, and reserving three spaces can be powerful on maps where key spots matter, but much of the value is strategic rather than immediate MC. Stronger for experienced board players than for generic starts.
 
 **Синергии:** Gordon, Philares
 
-**Когда брать:** Берём с tile-placing стратегией на map-dependent играх. На Tharsis — чуть лучше.
+**Когда брать:** Pick in tile-heavy or map-sensitive games where claiming board space matters. Better on Tharsis and in openers that can exploit those reserved spots quickly.
 
 ---
 
-### Valuable Gases (#PfP02) — 76/B
+### Valuable Gases (#?) — 76/B
 
-Теги: Jovian, Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +10 MC + play free active floater card (ignore requirements) + 5 floaters on it. Jovian + Venus теги (~5-6 MC). Free card value: card cost saved (0-20+ MC) + 5 floaters (5-15 MC depending on card). Total value: highly variable, 20-45+ MC.
+**Экономика:** +10 MC plus play a free active floater card ignoring requirements, then add 5 floaters to it. Jovian + Venus tags add about 5-6 MC. The free card plus 5 floaters can be worth anywhere from 10 MC to well over 30 MC depending on the target. Total value is extremely variable, roughly 20-45+ MC.
 
-**Почему B (76):** Высокодисперсная прелюдия. Ceiling огромный: play Dirigibles free + 5 floaters = 5 MC + 5 floaters (convertible to Venus raises) = ~25-30 MC extra value. Или Celestic free + 5 floaters = ~15 MC. Но нужна floater active card в руке! Без неё — 10 MC + 2 тега = ~16 MC (ужасно). Jovian + Venus теги оба ценны. В среднем (с подходящей картой): ~28-35 MC. Без подходящей карты: ~16 MC. Берём только с floater card.
+**Почему B (76):** High-variance prelude with a huge ceiling and a bad floor. If you already have an active floater card such as Dirigibles or Celestic, the free play plus 5 floaters can be massive. Without a target in hand, however, it collapses into a mediocre cash-plus-tags prelude. Strong only when the card half is live.
 
 **Синергии:** Morning Star Inc., Dirigibles
 
-**Когда брать:** ТОЛЬКО с активной floater картой в руке (Dirigibles, Celestic). Без неё — слабая прелюдия.
+**Когда брать:** Only pick with an active floater card already in hand. Without that setup, the prelude is too weak.
 
 ---
 
-### Acquired Space Agency (#P35) — 74/B
+### Deepwater Dome (#UP11) — 76/B
+
+Теги: Plant, Building | Дополнение: Underworld
+
+**Экономика:** Ocean + 1 plant-prod. Ничего хитрого, просто хороший пакет.
+
+**Почему B (76):** Стабильная сильная прелюдия без сложных условий.
+
+**Синергии:** Lakefront Resorts, EcoLine, Kelp Farming
+
+**Когда брать:** Когда ценишь ocean + plant production и хочешь честный универсальный старт.
+
+---
+
+### Metal-Rich Asteroid (#P19) — 75/B
 
 Теги: — | Дополнение: Prelude
 
-**Экономика:** 6 ti = 18 MC (24 as Phobolog). 2 space cards from reveal = ~8-10 MC value (not random, you see before picking). Total ~26-28 MC but volatile.
+**Экономика:** 1 temp step = 1 TR (~7 MC) + heat-prod bonus. 4 ti = 12 MC, 4 steel = 8 MC. Total ~28-30 MC if metals are spent.
 
-**Почему B (74):** Above average value when you can spend the titanium on gen 1 space cards. The 2 revealed space cards add significant value — you know what opponents saw. Variance is the main downside: sometimes the ti has no good targets. No tags is a minor penalty.
+**Почему B (75):** High value prelude (~30 MC when metals are spent). 1 TR is immediate tempo. 4 ti + 4 steel provides flexible gen 1 spending for both space and building cards. COTD (benbever): 'top 10 best preludes'. The key condition is having cards to spend the metals on — if you don't, metals are worth less. No tags is the only downside.
 
-**Синергии:** Phobolog, Saturn Systems, Point Luna, Satellites
+**Синергии:** Phobolog, Mining Area, Mining Rights, Steel Works, Titan Air-scrapping
 
-**Когда брать:** When you have space cards in hand or are playing Phobolog/Saturn Systems. Skip if your hand is all building/earth.
+**Когда брать:** When you have building and space cards to spend the metals. Almost always a strong pick.
 
 ---
 
-### Polar Industries (#P26) — 74/B
+### Aerospace Mission (#?) — 75/B
 
-Теги: Building | Дополнение: Prelude
+Теги: — | Дополнение: ?
 
-**Экономика:** 2 heat-prod = 8 MC, 1 ocean = ~12 MC (1 TR + placement bonus). Building tag ~2 MC. Total ~22 MC direct, but ocean + heat synergy is strong.
+**Экономика:** Two colonies on gen 1 equal roughly 34 MC of standard colony-project value. The 14 MC cost reduces that to about 20+ MC plus a Space tag, with real value rising if the colonies keep generating useful bonuses and trade access.
 
-**Почему B (74):** Solid prelude combining terraforming (ocean) with heat engine. Better than Mohole because the ocean provides immediate TR + placement bonus. Building tag enables Robotic Workforce. COTD (benbever): 'above average, top 10 excluding promos'. Strong for rush strategies. Heat is less flexible but ocean compensates.
+**Почему B (75):** Decent colony opener. Two early colonies can create real tempo through placement bonuses, trade access, and long-term economy, and the prelude gets much better with corps like Poseidon or Aridor. The downside is the heavy cash hit and dependence on colony quality. Premium colony rows make it strong; weak rows leave it merely fair.
 
-**Синергии:** Helion, Ecoline, Robotic Workforce, Rush strategies
+**Синергии:** Poseidon, Aridor, Titan colony, Cryo-Sleep
 
-**Когда брать:** Good for rush or terraforming strategies. Ocean placement bonuses can be excellent on Tharsis.
+**Когда брать:** Pick with colony-heavy corps or when two premium colonies such as Luna, Titan, Ganymede, or Europa are available. Skip if the colony pool is weak.
 
 ---
 
@@ -448,11 +521,25 @@
 
 **Экономика:** City = ~8-12 MC (placement bonus dependent), colony = ~13 MC. -3 MC cost. City+Building+Space tags ~4 MC. Total ~22-26 MC. Needs energy for trading.
 
-**Почему B (74):** Strong in the right context: city + colony for 3 MC is excellent efficiency. 3 valuable tags (City, Building, Space). The catch: you need energy production to trade the colony, and city value depends on the map. COTD: 'extremely powerful in right circumstances' (CaptainCFloyd). Better in Colony games with energy available.
+**Почему B (74):** Strong in the right context: city + colony for 3 MC is excellent efficiency. 3 valuable tags (City, Building, Space). The catch: you need energy production to trade the colony, city value depends on the map, and the colony half is much better on premium worlds like Pluto, Luna, or Triton than on weak fallback targets like Europa. COTD: 'extremely powerful in right circumstances' (CaptainCFloyd). Better in Colony games with energy available and real trade targets.
 
-**Синергии:** Colony games, Tharsis (Mayor), Energy production hands
+**Синергии:** Tharsis Republic, Mayor milestone, Pluto colony, Luna colony, Triton colony
 
-**Когда брать:** When strong colonies are in play and you have energy for trading. Also good for Mayor milestone on Tharsis.
+**Когда брать:** When premium colonies like Pluto, Luna, or Triton are in play and you have energy for trading. Also good for Mayor milestone on Tharsis. Downgrade when the colony half is stuck on weak targets like Europa.
+
+---
+
+### Supply Drop (#P33) — 74/B
+
+Теги: — | Дополнение: Prelude
+
+**Экономика:** 3 ti = 9 MC, 8 steel = 16 MC, 3 plants = ~5 MC. No tags = -3 MC. Total ~27 MC IF resources spent.
+
+**Почему B (74):** High raw value (~27 MC) when you can spend all resources. 8 steel is a lot — you need building cards. 3 ti needs space cards. 3 plants can contribute to an early greenery. The catch: no production means no recurring value. COTD: 'quite strong' (ad_hocNC). No tags hurts. Best in shorter games where immediate resources > production.
+
+**Синергии:** Advanced Alloys, Electro Catapult
+
+**Когда брать:** When you have building + space cards to spend resources immediately. Less good without targets.
 
 ---
 
@@ -462,39 +549,39 @@
 
 **Экономика:** 1 TR = 7 MC, 4 MC immediate, Earth tag ~2 MC. Effect: ~1 card/gen in 3P = ~3 MC/gen for ~7 gens = ~21 MC. Total ~34 MC if effect fires every gen.
 
-**Почему B (74):** High theoretical value but inconsistent in 3P. Becoming party leader every gen is realistic in 2P but harder in 3P (competition for lobbying). The 1 TR + 4 MC base is mediocre alone. Earth tag is nice. Overall decent but not spectacular — the effect's value is highly variable. Turmoil-dependent.
+**Почему B (74):** 1 TR + 4 MC + card draw engine via party leader. Per COTD: 'strong prelude, A rated.' Very strong in 2P (card almost every gen), much worse in 4-5P. In 3P moderate — party leader competition is real. Earth tag is nice. If you consistently hold party leader, one of best card advantage preludes.
 
-**Синергии:** Septum Tribus, Turmoil-heavy strategies, Point Luna
+**Синергии:** Point Luna, Septem Tribus, Cultural Metropolis
 
 **Когда брать:** When playing Turmoil-focused strategy or Septum Tribus. Less reliable in competitive 3P lobbying.
 
 ---
 
-### Design Company (#PfP08) — 74/B
+### Design Company (#?) — 74/B
 
-Теги: Mars | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +1 steel-prod (8 MC value gen 1) + draw 3 building cards (~10.5 MC). Mars тег (~2 MC). Total value: ~20.5 MC.
+**Экономика:** 1 steel production is about 8 MC on gen 1. 3 building cards are worth about 10.5 MC on average. Mars tag adds about 2 MC. Total value is around 20.5 MC.
 
-**Почему B (74):** Steel production + 3 building карты = setup для building/steel стратегии. Building карты часто хорошие (Strip Mine, Steel Works, Open City). Mars тег для planetary track — бонус. Value чуть ниже среднего (~20.5 MC), но building карты гарантированно полезны с steel-prod. Хорошая synergy-прелюдия.
+**Почему B (74):** Solid setup prelude for building or steel starts. The building cards are often relevant, the steel production helps convert them, and the Mars tag is a small bonus for track or synergy play. Slightly below average on raw value, but much better in openers that already want steel or building density.
 
 **Синергии:** Cutting Edge Technology, Anti-Gravity Technology
 
-**Когда брать:** Берём с building/steel стратегией. IC + Design Company = strong combo. Средний pick без steel focus.
+**Когда брать:** Pick with building or steel-focused starts. Especially good when the corp can convert steel cleanly. More filler-like without a real building plan.
 
 ---
 
-### Personal Agenda (#PfP10) — 74/B
+### Personal Agenda (#?) — 74/B
 
-Теги: — | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +3 MC-prod (17 MC value gen 1) + draw 3 non-Space event cards (~10.5 MC). No tags — штраф -2 to -3 MC. Total value: ~24.5-26 MC.
+**Экономика:** +3 MC production is about 17 MC on gen 1. Draw 3 non-Space event cards is about 10.5 MC on average. No tags is roughly a 2-3 MC penalty. Total value is about 24.5-26 MC.
 
-**Почему B (74):** 3 MC-prod — топовая экономическая база gen 1. 3 event карты без Space тега — можно получить хорошие дешёвые events (Virus, Energy Tapping, Investment Loan). Проблема: нет тегов на прелюдии. Non-Space restriction означает не получишь Asteroid Mining/Comet. Около среднего значения прелюдий. Надёжная но не выдающаяся.
+**Почему B (74):** Reliable production prelude with decent upside from the event draw. The lack of tags is the main drawback, and the non-Space restriction trims some of the highest-ceiling event hits, but three MC production is always welcome. Dependable rather than flashy.
 
 **Синергии:** Odyssey, Media Group
 
-**Когда брать:** Берём как generic production прелюдию. 3 MC-prod хороша всегда. Events — бонус.
+**Когда брать:** Pick as a generic production prelude when the opener wants steady economy. The event cards are a bonus, not the main reason.
 
 ---
 
@@ -506,23 +593,9 @@
 
 **Почему B (73):** Solid 'money now + smart card draw' prelude. The 7-card selection makes the 2 drawn cards significantly better than random (~8-10 MC value vs ~6-8 for random). Science tag is relevant. Less good with bad hands (digging for outs is unreliable). COTD: 'above average, good with good hands'.
 
-**Синергии:** Crescent Research, Science requirements, Good opening hand
+**Синергии:** Crescent Research, Good opening hand
 
 **Когда брать:** When your hand is already decent and you want to find specific synergy cards. The Science tag unlocks requirements. Skip if you need raw production.
-
----
-
-### Research Network (#P28) — 73/B
-
-Теги: Wild | Дополнение: Prelude
-
-**Экономика:** 1 MC-prod = 5 MC, 3 cards = 9-12 MC. Wild tag value = highly variable, ~3-8 MC. Total ~17-25 MC depending on tag usage.
-
-**Почему B (73):** The Wild tag is the star — counts as any tag for NRA, milestones, awards, and corp abilities. With the right strategy (NRA, Science requirements, Jovian count), the tag alone can be worth 5-10 MC. 1 MC-prod + 3 cards provides modest development. COTD (shai_aus, 27 upvotes): 'I love this one, the Wild tag is amazing'. Less good without tag synergies.
-
-**Синергии:** NRA, AI Central, Jovian multipliers, Any tag-dependent milestone
-
-**Когда брать:** When the Wild tag fills a critical need (NRA activation, milestone tag count). Less good if you just need raw production.
 
 ---
 
@@ -530,41 +603,41 @@
 
 Теги: Space | Дополнение: Prelude 2
 
-**Экономика:** 3 ti = 9 MC. Space тег ~1 MC. Effect: +2 MC per colony trade. 5-8 trades за игру = 10-16 MC. Total ~20-26 MC.
+**Экономика:** 3 titanium is worth about 9 MC. Space tag adds about 1 MC. Effect: +2 MC per colony trade. 5-8 trades in a game means about 10-16 MC. Total value is about 20-26 MC.
 
-**Почему B (73):** Colony-oriented прелюдия с decent base. 3 ti gen 1 помогают с space-картами. Ongoing effect +2 MC per trade — стабильный income в colony games. В 3P с 5-8 trades за игру это ~10-16 MC дополнительного дохода. Space тег для milestone/синергий. Без Colonies effect бесполезен — чистые 3 ti + Space тег (~10 MC). Сильна в colony-heavy meta, средняя без.
+**Почему B (73):** Colony-oriented prelude with a decent base. Three titanium on gen 1 helps fund space cards, and the +2 MC per trade creates steady income in real Colonies games. In 3P, 5-8 trades is a reasonable range, so the ongoing effect often adds meaningful money. Without Colonies, though, it collapses to little more than titanium plus a Space tag.
 
-**Синергии:** Colony-heavy games, Poseidon, Trade Fleet, Titan colony, Luna colony, Saturn Systems
+**Синергии:** Poseidon, Trade Fleet, Titan colony, Luna colony, Saturn Systems
 
-**Когда брать:** В играх с хорошими колониями, где вы планируете активно торговать. 3 ti gen 1 + ongoing trade bonus = solid combo. Без Colonies — слабая.
+**Когда брать:** Pick in games with strong colonies where you expect to trade actively. Three titanium on gen 1 plus the ongoing trade bonus is a solid combination. Without Colonies, it is weak.
 
 ---
 
-### Venus First (#PfP01) — 73/B
+### Venus First (#?) — 73/B
 
-Теги: Venus | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +2 Venus scale (2 TR = 14 MC) + draw 2 Venus cards (~7 MC). Venus тег (~2-3 MC). Total value: ~23-24 MC.
+**Экономика:** +2 on Venus is 2 TR, about 14 MC. Draw 2 Venus cards worth about 7 MC on average. Venus tag adds about 2-3 MC. Total value is about 23-24 MC.
 
-**Почему B (73):** 2 TR через Venus scale gen 1 — хороший immediate value. 2 Venus карты бонусом. Venus тег для planetary track. Проблема: 2 TR через Venus не даёт MC-production (в отличие от temperature/oxygen TR). Venus TR менее 'useful' чем other TR в раннем game. 2 Venus карты могут быть слабыми. Value ~23 MC — около среднего (24.5 MC). Надёжная Venus прелюдия.
+**Почему B (73):** Reasonable Venus prelude. Two TR on gen 1 is still good immediate value, and the extra Venus cards plus tag can matter in dedicated module starts. The weakness is that Venus TR is usually less useful than main-parameter TR in the opening, so the package is more average than exciting unless the rest of the hand already leans into Venus.
 
 **Синергии:** Morning Star Inc., Dirigibles
 
-**Когда брать:** Берём с Venus стратегией. 2 TR gen 1 всегда приятно. Без Venus фокуса — средняя.
+**Когда брать:** Pick in real Venus starts. The two early TR are still useful, but without Venus focus it is just an average prelude.
 
 ---
 
-### Aquifer Turbines (#P02) — 72/B
+### Acquired Space Agency (#P35) — 72/B
 
-Теги: Power | Дополнение: Prelude
+Теги: — | Дополнение: Prelude
 
-**Экономика:** 1 ocean = ~12 MC (1 TR + placement bonus). 2 energy-prod = 15 MC. -3 MC cost. Power tag ~1 MC. Total ~25 MC.
+**Экономика:** 6 ti = 18 MC (24 as Phobolog). 2 space cards from reveal = ~8-10 MC value (not random, you see before picking). Total ~26-28 MC but volatile.
 
-**Почему B (72):** Solid prelude with good total value. Ocean gives immediate TR + placement bonus (could be 2 cards on Tharsis). 2 energy-prod is excellent with Colonies (trade immediately) or energy-hungry cards (Strip Mine, Electro Catapult). The -3 MC is minor. Less good without energy sinks.
+**Почему B (72):** Space-heavy openers make this look much better than its average COTD reputation. 6 titanium plus two revealed space cards can create a gen 1 snowball when the hand already wants Earth Catapult, Deimos Down, Large Convoy, or other expensive space plays. Outside those shells it is still volatile, so the base score stays moderate rather than auto-pick territory.
 
-**Синергии:** Colonies (trading), Strip Mine, Electro Catapult, Thorgate
+**Синергии:** Phobolog, Saturn Systems, Point Luna, Satellites
 
-**Когда брать:** When you have energy sinks in hand or are playing with Colonies. Good on Tharsis for ocean placement bonuses.
+**Когда брать:** When the opener is already rich in space cards or wants an immediate titanium-fueled tempo line. Best with Phobolog, Saturn Systems, or expensive space keeps. Skip if the start is mostly building/earth setup.
 
 ---
 
@@ -576,7 +649,7 @@
 
 **Почему B (72):** The most volatile prelude. When it hits (Tharsis + Point Luna combo, etc.), it's game-winning. When it misses, you paid 42 MC for a mediocre second corp with depleted resources. COTD: 'broken in the literal sense — pure RNG' (Krazyguy75). No tags. The fun factor is high but reliability is low. Score reflects average expected value.
 
-**Синергии:** Valley Trust (9 preludes to look at), Any strong corp combination
+**Синергии:** Valley Trust, Double Down
 
 **Когда брать:** When your current setup is mediocre and you're willing to gamble. Skip if you already have a strong hand — the 42 MC cost is real.
 
@@ -590,37 +663,79 @@
 
 **Почему B (72):** Good value prelude with immediate 2 TR from oxygen. 5 steel is a nice bonus if you have building cards. Building tag enables Robotic Workforce and steel discount. COTD (benbever): 'high value, ~30 MC worth'. Slightly less good if O2 track is the easiest to complete anyway (your greeneries will not give TR). Can be better for engine players counterintuitively.
 
-**Синергии:** Building card hands, Small Animals, Cattle, O2 requirement cards
+**Синергии:** Small Animals, Cattle, Electro Catapult, Space Elevator
 
 **Когда брать:** When you have building cards to spend the steel. Good if O2 unlocks requirement cards. Solid TR prelude.
 
 ---
 
-### Co-leadership (#xxx) — 72/B
+### Co-leadership (#?) — 72/B
 
-Теги: — | Дополнение: CEOs
+Теги: — | Дополнение: ?
 
-**Экономика:** This is a PRELUDE, not a CEO. Draws 3 CEOs and picks 1. Value = expected value of best-of-3 CEO pick. Average CEO ~55 MC value. Best-of-3 selection ≈ 70-80 MC expected value. Cost: uses a prelude slot (average prelude = 24.5 MC value). Net value = CEO value - prelude slot opportunity cost. But you get a CEO when others might not, so pure upside if CEO expansion is in play.
+**Экономика:** This is a prelude, not a CEO. It draws 3 CEOs and lets you pick 1. Value is the expected value of the best-of-3 CEO choice. If the average CEO is worth about 55 MC, best-of-3 selection can easily land around 70-80 MC. The real cost is using a prelude slot that would otherwise be worth about 24.5 MC.
 
-**Почему B (72):** Это прелюдия, а не CEO. Даёт выбор из 3 CEOs — гарантирует хороший CEO. Но стоит слот прелюдии (~24.5 MC). Если другие игроки тоже получают CEOs, то ценность ниже (ты просто лучше выбираешь). Хороший, но не outstanding — зависит от пула CEO в игре.
+**Почему B (72):** This prelude is really about improving CEO selection quality. Seeing three CEOs and taking the best one is strong, but it still consumes a prelude slot, so the comparison is not free. If the table already grants CEOs broadly, the benefit is mostly better selection rather than exclusive access. Good, but not automatically outstanding.
 
-**Синергии:** Любая корпорация (CEO выбирается под неё), Strong prelude combos (если вторая прелюдия сильная), Гибкие стратегии
+**Синергии:** Double Down, Huge Asteroid, Business Empire
 
-**Когда брать:** Берём если вторая прелюдия сильная и CEO pool в игре включает топовых CEOs (VanAllen, Greta, Gordon). Не берём если альтернативная прелюдия даёт 30+ MC немедленно.
+**Когда брать:** Pick when the other prelude is already strong and the CEO pool contains genuine top-end hits. Pass when the competing prelude gives immediate 30+ MC style tempo and you cannot afford a slower setup.
 
 ---
 
-### Supply Drop (#P33) — 71/B
+### Polar Industries (#P26) — 71/B
 
-Теги: — | Дополнение: Prelude
+Теги: Building | Дополнение: Prelude
 
-**Экономика:** 3 ti = 9 MC, 8 steel = 16 MC, 3 plants = ~5 MC. No tags = -3 MC. Total ~27 MC IF resources spent.
+**Экономика:** 2 heat-prod = 8 MC, 1 ocean = ~12 MC (1 TR + placement bonus). Building tag ~2 MC. Total ~22 MC direct, but ocean + heat synergy is strong.
 
-**Почему B (71):** High raw value (~27 MC) when you can spend all resources. 8 steel is a lot — you need building cards. 3 ti needs space cards. 3 plants can contribute to an early greenery. The catch: no production means no recurring value. COTD: 'quite strong' (ad_hocNC). No tags hurts. Best in shorter games where immediate resources > production.
+**Почему B (71):** Solid prelude combining terraforming (ocean) with heat engine. Better than Mohole because the ocean provides immediate TR + placement bonus. Building tag enables Robotic Workforce. COTD (benbever): 'above average, top 10 excluding promos'. Strong for rush strategies. Heat is less flexible but ocean compensates.
 
-**Синергии:** Advanced Alloys, Mixed building+space hands, Ecoline (plants)
+**Синергии:** Helion, Ecoline, Robotic Workforce, Nitrogen-Rich Asteroid
 
-**Когда брать:** When you have building + space cards to spend resources immediately. Less good without targets.
+**Когда брать:** Good for rush or terraforming strategies. Ocean placement bonuses can be excellent on Tharsis.
+
+---
+
+### Ganymede Trading Company (#UP08) — 71/B
+
+Теги: Jovian, Space | Дополнение: Underworld
+
+**Экономика:** 1 corruption + 3 titanium + trade fleet. Отличный старт под colony/space линию.
+
+**Почему B (71):** Хорошая специализированная прелюдия: не универсальная, но в правильном формате очень живая.
+
+**Синергии:** Poseidon, Titan colony, Trade Fleet
+
+**Когда брать:** С Colonies и планом активно торговать. Без такой партии value заметно ниже.
+
+---
+
+### Battery Shipment (#UP10) — 71/B
+
+Теги: Power | Дополнение: Underworld
+
+**Экономика:** 12 energy + 2 energy-prod. Очень жирный power start.
+
+**Почему B (71):** Мощный специализированный энергетический старт, особенно в colonу/ares/power столах.
+
+**Синергии:** Thorgate, Power Infrastructure, Colonies
+
+**Когда брать:** Когда энергию есть куда девать сразу или в trade setup. Без payoffs старт остаётся сильным, но менее впечатляющим.
+
+---
+
+### Secret Research (#UP12) — 71/B
+
+Теги: Science | Дополнение: Underworld
+
+**Экономика:** 1 corruption + draw 3 cards. Карточный quality в gen1 заметный.
+
+**Почему B (71):** Нормальная сильная прелюдия для engine-столов, чуть слабее топов из-за коррупционной цены без board effect.
+
+**Синергии:** Research, Mars University, Point Luna
+
+**Когда брать:** Когда важна глубина руки и ты готов взять немного коррупции за качество старта.
 
 ---
 
@@ -630,11 +745,11 @@
 
 **Экономика:** 1 plant-prod = 8 MC. Free card play ignoring requirements = 0-30+ MC depending on target. Plant+Microbe tags ~3 MC. Total ~11 MC (no target) to ~40+ MC (Kelp Farming/NRA).
 
-**Почему B (70):** Extremely swingy. With Kelp Farming, Trees, Bushes, or NRA in hand — one of the best preludes in the game. Without a strong target — one of the worst, since 1 plant-prod + 2 tags alone is ~11 MC. COTD (benbever): 'best quantified value after Merger, but only works with a couple of cards'. Score reflects average case across all hands.
+**Почему B (70):** Extremely swingy. With Kelp Farming, Trees, Bushes, or NRA in hand it can be one of the best preludes in the game. Without a real target it collapses into little more than plant production plus two tags. Important rules note: it ignores global requirements only, not tag requirements, so it does not cheat out Anti-Gravity Technology or similar science gates.
 
-**Синергии:** Kelp Farming, NRA, Trees, Bushes, Fish, Livestock
+**Синергии:** Kelp Farming, Trees, Bushes, Fish, Livestock
 
-**Когда брать:** Only when you have a strong card with a global requirement you can't meet otherwise. Without target = bad prelude.
+**Когда брать:** Only when you have a strong card with a global requirement you can't meet otherwise. Remember: it ignores global requirements only, not tag requirements.
 
 ---
 
@@ -660,65 +775,163 @@
 
 **Почему B (70):** Extremely powerful rush prelude with game-warping action. Using the action every gen accelerates game end by 1-2 gens, which benefits the player if they are ahead in TR. The 2 TR + card + Earth tag base is decent. COTD concerns: 'too influential, can end game early' (benbever). Score reflects that the action is double-edged — shortening the game hurts engine builders including yourself.
 
-**Синергии:** TR rush strategies, UNMI, Point Luna, Venus strategies (raise Venus)
+**Синергии:** UNMI, Point Luna, Terraforming Contract, Venus Governor
 
 **Когда брать:** When you are committed to rushing and want to shorten the game. Dangerous if your opponents are also rushing or if you need engine time.
 
 ---
 
-### Deep Space Operations (#PfP12) — 70/B
+### Deep Space Operations (#?) — 70/B
 
-Теги: Space | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +4 titanium (12 MC immediate) + draw 2 Space event cards (~7 MC, но Space events часто хорошие: Asteroid Mining, Comet). Space тег (~2 MC). Total value: ~21 MC.
+**Экономика:** +4 titanium is 12 MC immediately. Draw 2 Space event cards, worth roughly 7 MC on average, with upside because Space events are often strong. Space tag adds about 2 MC. Total value is around 21 MC.
 
-**Почему B (70):** 4 titanium gen 1 — серьёзный ресурс. Titanium оплачивает Space карты по 3 MC/ti = 12 MC purchasing power для Space cards. 2 Space event карты — приятный бонус (Asteroid Mining = ocean, Comet = ocean + temp). Space тег для planetary track. Чуть ниже среднего prelude value (~21 MC vs 24.5 MC average), но titanium = premium ресурс и Space events часто сильные.
+**Почему B (70):** Four titanium on gen 1 is a real resource burst, and the two Space events are often high quality. Titanium converts at 3 MC each into premium space tempo, and the Space tag adds another small bonus for tracks and synergies. Slightly below average on pure prelude value, but the resource quality is very good in the right shell.
 
 **Синергии:** Asteroid Mining, Comet
 
-**Когда брать:** Берём с Space стратегией и titanium-friendly корпорацией. Phobolog + Deep Space Ops = отличная комбинация.
+**Когда брать:** Pick in Space starts and with titanium-friendly corporations. Especially strong with things like Phobolog or any opener that already wants immediate space tempo.
 
 ---
 
-### The New Space Race (#PfP14) — 70/B
+### The New Space Race (#?) — 70/B
 
-Теги: Science, Earth | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** +12 MC immediate. Science + Earth теги (~5-6 MC). First player for game + choose ruling policy gen 1 (political advantage ~3-5 MC). Total value: ~20-23 MC.
+**Экономика:** +12 MC immediate. Science + Earth tags are worth about 5-6 MC. Becoming first player for the game and choosing the gen 1 ruling policy is worth perhaps 3-5 MC in the right Turmoil setups. Total is about 20-23 MC.
 
-**Почему B (70):** Unique ability: revealed BEFORE all other preludes, become starting player, set ruling policy gen 1. 12 MC — приличный cash. Science + Earth теги отличны (Scientist synergies, Earth track). Choosing ruling policy gen 1 = Greens (plant prod), Scientists (draw cards), Mars First (steel) — ситуационно мощно. Проблема: value ruling policy не гарантированна, и becoming first player не всегда выгодно. ~21 MC total — чуть ниже среднего. Requires Turmoil.
+**Почему B (70):** Unique Turmoil prelude with solid but not amazing raw value. The tags are excellent, the cash is useful, and the ability to choose first player and the opening ruling policy can swing some starts, but that political leverage is not guaranteed to convert every game. Better when the table or hand can exploit the policy choice immediately.
 
 **Синергии:** Earth Catapult
 
-**Когда брать:** Берём с Turmoil в игре и когда первый ход даёт стратегическое преимущество. Science + Earth теги ценны сами по себе.
+**Когда брать:** Pick in Turmoil games when the first action and opening ruling policy create a real edge. Still reasonable on tag quality alone, but much better when the political choice matters.
 
 ---
 
-### Experienced Martians (#PfP13) — 68/C
+### Inherited Fortune (#U0P03) — 70/B
 
-Теги: — | Дополнение: Pathfinders
+Теги: Crime | Дополнение: Underworld
 
-**Экономика:** 2 MC-prod (10-12 MC) + 1 delegate (3 MC) + draw 2 Mars-tag cards. Mars-tag карт в колоде только 40/700 = могут быть средние. Total ~18-22 MC. Ниже среднего прелюда (24.5 MC).
+**Экономика:** 10 MC + 1 MC-prod за цену 1 corruption.
 
-**Почему C (68):** 2 MC-prod и delegate — солидная base value. Но draw 2 Mars-tag cards ограничена пулом: Mars теги только в Pathfinders, и многие Mars карты — средние или ситуативные. Нет тегов на прелюдии. Ниже среднего прелюда.
+**Почему B (70):** Хорошая честная экономика на старте, если не бояться умеренного коррупционного долга.
+
+**Синергии:** Point Luna, Teractor, Earth Office
+
+**Когда брать:** Когда нужен просто сильный и понятный экономический старт. Коррупция терпима, если стол не наказывает её слишком быстро.
+
+---
+
+### Free Trade Port (#UP01) — 69/B
+
+Теги: Earth, Space | Дополнение: Underworld
+
+**Экономика:** 1 corruption + colony. В colony-столах это заметный gen1 swing.
+
+**Почему B (69):** Сильная тематическая прелюдия под Colonies: upside высокий, но tied to table setup.
+
+**Синергии:** Poseidon, Trade Fleet, Luna colony
+
+**Когда брать:** Когда Colonies в игре и дополнительная колония действительно сильна. Коррупцию надо быть готовым обслуживать.
+
+---
+
+### Investor Plaza (#UP02) — 69/C
+
+Теги: Earth, City | Дополнение: Underworld
+
+**Экономика:** Free city + 1 corruption. Хороший темп, но не бесплатный.
+
+**Почему C (69):** Играбельная, но не премиальная прелюдия: value есть, но коррупция съедает часть выигрыша.
+
+**Синергии:** Immigrant City, Capital, Mayor
+
+**Когда брать:** Когда early city действительно нужен и ты готов играть от board. В engine-only стартах коррупция чувствуется сильнее.
+
+---
+
+### Research Network (#P28) — 68/C
+
+Теги: Wild | Дополнение: Prelude
+
+**Экономика:** 1 MC-prod = 5 MC, 3 cards = 9-12 MC. Wild tag value = highly variable, ~3-8 MC. Total ~17-25 MC depending on tag usage.
+
+**Почему C (68):** The Wild tag is the star: it fills awkward tag requirements, pushes milestone races, and makes mediocre opening hands keepable by widening your outs. 1 MC production plus 3 cards is only solid by itself; the card becomes great when the tag unlocks NRA, science gates, Jovian counts, or lets a rich engine opener cut dead keeps and dig toward payoffs. It still trails the raw top-tier money preludes on average, but good openers exploit its flexibility better than the base score suggests.
+
+**Синергии:** AI Central, Terraforming Ganymede, Io Mining Industries, Nitrogen-Rich Asteroid
+
+**Когда брать:** When the Wild tag solves a real problem: weak starting hand, milestone tag race, or key requirement card in the opener. Also stronger in rich 2P or engine-leaning starts where the extra cards and flexible tag improve card quality rather than just adding random cardboard. Less good if you only need raw production and the extra cards do not point anywhere.
+
+---
+
+### Power Generation (#P27) — 68/C
+
+Теги: Power | Дополнение: Prelude
+
+**Экономика:** 3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).
+
+**Почему C (68):** In Colonies, this jumps when premium trade colonies like Luna, Pluto, Triton, or Ceres are in the pool, and Callisto is especially nice because +3 energy can put trading online immediately. On 4-player tables, that early colony tempo matters more because trade windows and colony spots get contested faster. It is also one of the cleanest bridges into AI Central, Mass Converter, Energy Tapping, or early colony tempo. Without Colonies or relevant sinks, much weaker: 3 energy mostly degrades into acceptable but unexciting heat.
+
+**Синергии:** Luna colony, Pluto colony, Triton colony, Ceres colony, Callisto colony, any colony (trade fuel), Thorgate, Strip Mine, Electro Catapult, Power Infrastructure, Steelworks, Ironworks, Physics Complex, Water Splitting Plant, AI Central, Trading Colony, Mass Converter, Energy Tapping
+
+**Когда брать:** Best in Colonies, especially with Luna/Pluto/Triton/Ceres in the pool and Callisto as early energy-to-trade glue. Gets better on 4-player tables where colony tempo is more contested. Without sinks, it is just expensive heat prod.
+
+---
+
+### Experienced Martians (#?) — 68/C
+
+Теги: — | Дополнение: ?
+
+**Экономика:** 2 MC production is about 10-12 MC. 1 delegate is worth about 3 MC. Drawing 2 Mars-tag cards adds some value, but the Mars pool is shallow, so the package usually lands around 18-22 MC, below average for a prelude.
+
+**Почему C (68):** Acceptable filler, not a premium prelude. Two MC production plus a delegate is fine, but the Mars-card draw is capped by the small Pathfinders pool and many of those cards are only medium quality. Useful when you already want Mars tags; ordinary otherwise.
 
 **Синергии:** Lava Flows
 
-**Когда брать:** Filler прелюдия. 2 MC-prod и delegate нормально, Mars cards draw — бонус.
+**Когда брать:** Pick as a filler prelude when MC production and a delegate already fit the hand, or when your opener actively wants Mars-tag support. Usually not a priority.
 
 ---
 
-### Trade Advance (#NEW) — 68/C
+### Trade Advance (#?) — 68/C
 
-Теги: Earth | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** 2+3=5 MC за free trade (не тратит trade fleet)
+**Экономика:** About 5 MC of direct value for a free trade that does not spend a trade fleet.
 
-**Почему C (68):** Бесплатный трейд при покупке = 5-10 MC value в зависимости от развитости колоний. С 2+ built colonies = strong immediate value. Но без колоний — почти мёртвая карта. Как прелюдия хороша в colony-focused стартах (Poseidon, Aridor). Energy тег для milestone.
+**Почему C (68):** Free trade on purchase can be worth around 5-10 MC depending on how developed the colonies already are. With two or more built colonies it becomes strong immediate value; without colonies it is close to blank. Best in colony-focused starts rather than generic openings.
 
 **Синергии:** Poseidon, Aridor
 
-**Когда брать:** Берём в colony-focused стартах с 2+ built colonies. Без колоний — пропускай. Лучшая с Poseidon, Aridor.
+**Когда брать:** Pick in colony-focused starts with two or more built colonies or when the free trade will immediately hit a premium world. Without colonies, pass.
+
+---
+
+### Election Sponsorship (#UP14) — 68/C
+
+Теги: Crime | Дополнение: Underworld
+
+**Экономика:** 1 corruption + 2 delegates + постоянное +1 influence.
+
+**Почему C (68):** Сильная тематическая turmoil-прелюдия, но зависимость от конкретного формата очень высокая.
+
+**Синергии:** Septem Tribus, Corridors of Power, Rise To Power
+
+**Когда брать:** Когда Turmoil реально важен и ты умеешь монетизировать влияние. Без Turmoil почти нечего обсуждать.
+
+---
+
+### Huge Asteroid (#P15) — 66/C
+
+Теги: — | Дополнение: Prelude
+
+**Экономика:** 3 temp steps = 3 TR (~21-22 MC) + heat-prod from 0->-2 step = ~4 MC. -5 MC cost. Total ~20 MC direct, but 3 TR is massive tempo.
+
+**Почему C (66):** 3 temp TR = 21 MC - 5 MC cost = 16 MC net + ~4 MC heat-prod bonus = ~20 MC. Below average prelude (24.5 MC). Tempo is good but no tags, no production, no cards. Rush-only value, and WGT already raises temp. Per expert review: overrated.
+
+**Синергии:** Helion, Insects, Methane From Titan, Adaptation Technology
+
+**Когда брать:** Strong in rush strategies. Good when you have temp-requirement cards. The 5 MC cost means less good if you're cash-starved.
 
 ---
 
@@ -728,9 +941,9 @@
 
 **Экономика:** 3 MC-prod = 15-18 MC. 3 delegates = ~9 MC (3 MC per delegate). No tags = -3 MC. Total ~21-24 MC.
 
-**Почему C (66):** Decent combo of production + political influence. 3 delegates in separate parties means 3 party leader positions potentially, which gives influence and chairman TR chances. 3 MC-prod is solid. No tags hurts. Turmoil-dependent. In 3P the political value is moderate — others compete for lobbying.
+**Почему C (66):** 3 delegates in 3 parties + 3 MC-prod. Per COTD: 'delegate placement is really strong — grab party leader in 3 parties before anyone, making chairman control much easier.' Good all-purpose prelude, not strategy-dependent. No tags downside. In 3P the 3 party leaders give serious influence. Turmoil-dependent.
 
-**Синергии:** Septum Tribus, Turmoil strategies, Political lobbying
+**Синергии:** Septem Tribus, Cultural Metropolis, Banned Delegate
 
 **Когда брать:** When Turmoil matters to your strategy and you want early political control. Less impactful in non-political strategies.
 
@@ -742,11 +955,11 @@
 
 **Экономика:** 2 energy-prod = 15 MC, 4 steel = 8 MC. Power tag ~1 MC. Total ~24 MC.
 
-**Почему C (66):** Solid average prelude. 2 energy-prod is useful with Colonies or energy-hungry cards. 4 steel is decent gen 1 spending. Power tag is rarely relevant. COTD: 'generally like it, upper middle tier' (shai_aus). Not exciting but reliable. Slightly worse than Aquifer Turbines (which adds ocean TR).
+**Почему C (66):** Reliable upper-middle prelude. 2 energy production and 4 steel look merely fair on paper, but opening hands that immediately cash both halves into cards like Electro Catapult, Earth Catapult follow-up, Physics Complex, or early colony energy demands make it much stronger than a bland average setup piece.
 
-**Синергии:** Electro Catapult, Colonies (trading), Strip Mine, Building hands
+**Синергии:** Electro Catapult, Strip Mine, Power Infrastructure
 
-**Когда брать:** When you need energy for Colonies or have building cards to spend steel on. Decent default pick.
+**Когда брать:** When the opening hand can spend both the steel and the energy quickly, especially with Electro Catapult, building-heavy starts, Colonies, or energy payoffs. Fine default pick even without a premium combo.
 
 ---
 
@@ -754,13 +967,55 @@
 
 Теги: — | Дополнение: Prelude 2
 
-**Экономика:** 10 MC immediate. Opponents: -5 MC each (-10 MC total в 3P) + -1 MC-prod each (-2 MC-prod total). Relative advantage: 10 MC + 10 MC opponent loss + 2 MC-prod opponent loss per gen. Total relative value ~30-35 MC в 3P.
+**Экономика:** 10 MC immediately. Opponents each lose 5 MC and 1 MC production; in 3P that is 10 MC plus 2 MC production lost across the table. Relative swing is roughly 30-35 MC in 3P.
 
-**Почему C (66):** Относительная прелюдия — ценность зависит от того, насколько больно оппонентам. 10 MC immediate — ниже среднего. -5 MC и -1 MC-prod для каждого оппонента — болезненно gen 1, но не катастрофично. В 3P (2 оппонента) суммарный relative swing ~30 MC. Проблема: вы сами получаете всего 10 MC — нет production, нет тегов, нет ресурсов. Если оппоненты и так имеют низкий MC-prod (после Business Empire cost или Industrial Complex), эффект слабее. Hate-card которая не строит ваш engine.
+**Почему C (66):** Pure disruption prelude. The raw self-value is modest, but the relative swing in 3P can be brutal because it hits both immediate cash and future income, often wrecking tight gen 1 plans. Stronger as a tempo weapon than as an engine builder, and much better in 3P than in 2P.
 
-**Синергии:** Aggressive rush strategies, Early tempo plays, When opponents are cash-poor
+**Синергии:** Terraforming Contract, Nitrogen-Rich Asteroid
 
-**Когда брать:** При aggressive rush где вы хотите замедлить оппонентов. Лучше в 3P (2 жертвы) чем в 2P. Не берите если нужен engine — 10 MC не строит ничего.
+**Когда брать:** Pick in aggressive rush or tempo starts where slowing both opponents matters. Better in 3P than in 2P. Skip it if your own opener needs real engine resources more than disruption.
+
+---
+
+### Colony Trade Hub (#P46) — 66/C
+
+Теги: Space | Дополнение: Prelude 2
+
+**Экономика:** 1 energy-prod = 7.5 MC, 2 ti = 6 MC, effect +2 MC per colony placed. Need 6 colonies for full value (~12 MC additional). Total ~13 MC base + colony bonus.
+
+**Почему C (66):** Very weak base value (~13 MC). The colony bonus is too slow — need 6+ colonies to reach average prelude value, which rarely happens in 8-9 gen game. Space tag is minor. COTD (benbever): 'only worth ~13 in quantified value'. One of the weakest Prelude 2 cards.
+
+**Синергии:** Poseidon, Aridor, Trade Fleet
+
+**Когда брать:** Only in 4-5 player games with aggressive colony placement. In 3P, almost never reaches average value.
+
+---
+
+### Giant Solar Collector (#X55) — 66/C
+
+Теги: Power, Space | Дополнение: Promo
+
+**Экономика:** 2 energy-prod = 15 MC (energy→heat→temp chain), 1 Venus step = 7 MC (full TR). Power+Space tags ~3 MC. Total ~25 MC.
+
+**Почему C (66):** 2 energy-prod + Venus step = TR + production start. Per COTD: 'not the most impressive prelude.' With Colonies puts you 1 off trading. Supplier is generally better. Without Colonies, energy needs a destination. Power+Space tags occasionally useful. ~25 MC value — average prelude territory.
+
+**Синергии:** Morning Star Inc, Thorgate, Power Infrastructure, AI Central
+
+**Когда брать:** Good with Colonies (energy for trading) or when Venus is being actively pushed. Power tag helps Electrician award if in play.
+
+---
+
+### Established Methods (#?) — 66/C
+
+Теги: — | Дополнение: ?
+
+**Экономика:** 30 MC for 2 paid standard projects. Raw quantified value is around fair-to-slightly-below-average, but the practical floor is better than old scoring assumed because you can always convert it into the exact pair of standards your start wants: power, ocean, greenery, colony, temperature or even city.
+
+**Почему C (66):** This should read as a flexible setup prelude rather than a narrow colony trick. Colonies are a clear upside, but the real strength is turning the two paid standards into exactly the pair your opener wants: power, ocean, greenery, colony, temperature, or even city. Poseidon, Thorgate, CrediCor, Lakefront, and Sagitta all exploit that flexibility in different ways, with Poseidon being the cleanest colony-shell abuse case.
+
+**Синергии:** Poseidon, Thorgate, CrediCor, Sagitta Frontier Services, Lakefront Resorts
+
+**Когда брать:** Solid flexible prelude by default; noticeably better with Colonies, a premium colony row, or corps like Poseidon, Thorgate, CrediCor, or Sagitta. Not a blind snap-pick, but also not a colony-only gimmick.
 
 ---
 
@@ -768,41 +1023,69 @@
 
 Теги: Microbe | Дополнение: Prelude 2
 
-**Экономика:** 2 microbe cards (selected) = ~8-10 MC. 3 plants = ~5 MC. Microbe тег ~1-2 MC. Total ~14-17 MC direct. Но ценность microbe карт сильно варьируется — Decomposers, Ants, Tardigrades могут быть game-changing.
+**Экономика:** 2 selected microbe cards are worth about 8-10 MC. 3 plants are about 5 MC. Microbe tag adds about 1-2 MC. Total direct value is around 14-17 MC, but the microbe cards can swing much higher with premium hits like Decomposers, Ants, or Tardigrades.
 
-**Почему C (65):** Выглядит слабой по прямому MC value (~15 MC), но ценность заключается в гарантированном доступе к microbe engine. 2 microbe карты из колоды означают, что вы точно получите Decomposers, Ants, Tardigrades, GHG Producing Bacteria или подобные. С Decomposers+Ants — VP machine. 3 plants — приятный бонус для ground game. Microbe тег для Splice, Ecologist. Высокая ceiling при хороших microbe cards в колоде.
+**Почему C (65):** Engine-focused prelude with a wide spread. Two selected microbe cards guarantee access to the archetype, the 3 plants help the board immediately, and the deck-thinning is meaningful in long games. The ceiling is real with cards like Decomposers or Ants, but the floor is much lower when the revealed microbe cards are passive or slow.
 
-**Синергии:** Decomposers, Ants, Tardigrades, Splice, EcoTec, Ecologist milestone, Virus
+**Синергии:** Decomposers, Ants, Tardigrades, Splice, EcoTec
 
-**Когда брать:** При microbe-стратегии или когда нужен pipeline для VP через microbe engine. Особенно с Splice или EcoTec. 3 plants помогают ground game. Не брать если microbe engine не планируется.
+**Когда брать:** Pick in real microbe starts or when you need a VP pipeline through a microbe engine. Especially good with Splice or EcoTec. Skip it if you do not actually plan to build around microbes.
 
 ---
 
-### Crew Training (#PfP06) — 65/C
+### Crew Training (#?) — 65/C
 
-Теги: — | Дополнение: Pathfinders
+Теги: — | Дополнение: ?
 
-**Экономика:** 2 planetary тега по выбору. Каждый planetary тег ≈ 3-5 MC (planetary track advancement + synergies). Total value: ~6-10 MC direct, но стратегическая value выше. NO other effect — нет MC, нет production.
+**Экономика:** Choose any 2 planetary tags. Each planetary tag is worth roughly 3-5 MC through track advancement and synergies. Total direct value is only about 6-10 MC, though strategic value can be higher. There is no MC or production attached.
 
-**Почему C (65):** Чистая tag-прелюдия без экономического эффекта. 2 planetary тега по выбору — гибко, но value зависит от контекста. 2 Jovian тега с gen 1 = Rim Settler milestone help + Jovian track. 2 Science тега = Research enabler. Проблема: нет MC, нет production — gen 1 экономика страдает. Средняя прелюдия ~24.5 MC, а Crew Training даёт ~8-12 MC в tag value. Значительно ниже среднего по immediate value.
+**Почему C (65):** Pure tag prelude with almost no raw economy. Choosing two planetary tags is flexible and can be powerful for milestone races, planetary tracks, or specific requirement shells, but the lack of cash or production makes gen 1 noticeably weaker. Well below average on immediate value and only worthwhile when the tags solve a real problem.
 
 **Синергии:** Faraday
 
-**Когда брать:** Берём когда конкретные теги критичны (Rim Settler milestone, planetary track race). Пропускай если нужна экономика gen 1.
+**Когда брать:** Pick when specific tags are critical, such as a Rim Settler race or a planetary-track threshold. Skip it when the opener simply needs economy.
 
 ---
 
-### Power Generation (#P27) — 64/C
+### Mining Operations (#P21) — 64/C
 
-Теги: Power | Дополнение: Prelude
+Теги: Building | Дополнение: Prelude
 
-**Экономика:** 3 energy-prod = 22.5 MC. Power tag ~1 MC. Total ~23.5 MC. Energy as heat if unused = ~12 MC (3 heat-prod equivalent).
+**Экономика:** 2 steel-prod = 16 MC, 4 steel = 8 MC. Building tag ~2 MC. Total ~26 MC IF you can spend the steel.
 
-**Почему C (64):** Good with Colonies (instant trading capability if you have 3 energy), decent without. 3 energy-prod is a lot — you need sinks (Strip Mine, Electro Catapult) or it becomes expensive heat production. COTD: 'good if you need energy, skippable if not'. Power tag is rarely useful.
+**Почему C (64):** Above average raw value but highly conditional on having building cards. If your hand is space/science-heavy, the steel is nearly worthless. 2 steel-prod is a lot — you need consistent building card flow. COTD: 'feels like overkill' (shai_aus), 'situational' (FieldMouse007). Decent with heavy building strategy.
 
-**Синергии:** Colonies (trading), Strip Mine, Electro Catapult, Thorgate
+**Синергии:** Space Elevator, Electro Catapult, Mining Guild
 
-**Когда брать:** Best with Colonies (can trade gen 1). Also good with energy-hungry cards. Without sinks, it is just expensive heat prod.
+**Когда брать:** Only when you have 3+ building cards in hand. Without building targets, much weaker.
+
+---
+
+### Floating Trade Hub (#P49) — 64/C
+
+Теги: Space | Дополнение: Prelude 2
+
+**Экономика:** 2 floaters/action, convert to standard resource. ~3 MC/gen as titanium (1 ti every 1.5 gens average). Space tag ~1 MC. With other floater cards, value increases.
+
+**Почему C (64):** Slow engine card on a prelude. 2 floaters/action is decent but converting to ti is only ~3 MC/gen. No immediate value — zero MC, zero production gen 1. Space tag is minor. Better with other floater cards to feed. Floater trap concerns apply somewhat, though this is cheaper than most floater cards.
+
+**Синергии:** Dirigibles, Stratospheric Birds, Morning Star Inc, Titan Floating Launch-pad
+
+**Когда брать:** When you have floater synergies and other immediate-value preludes covering your gen 1 needs. Alone = weak.
+
+---
+
+### Cloud Vortex Outpost (#UP15) — 64/C
+
+Теги: Venus | Дополнение: Underworld
+
+**Экономика:** 2 Venus steps + 3 floaters и action-перенос floaters.
+
+**Почему C (64):** Нишевая прелюдия, которая живёт только внутри venus/floater engine.
+
+**Синергии:** Morning Star Inc., Dirigibles, Floater cards
+
+**Когда брать:** Когда уже есть явная Venus/floater линия. Без неё value быстро сползает.
 
 ---
 
@@ -814,23 +1097,23 @@
 
 **Почему C (63):** Slightly below average in raw value but the 2 tags are genuinely useful. Building tag makes it a Robotic Workforce target (+10 MC value if copied). Plant tag for NRA, Ecologist. COTD: 'not bad, tags are the most useful thing'. Solid filler but not exciting.
 
-**Синергии:** Robotic Workforce, NRA, Ecoline, Mining Guild
+**Синергии:** Robotic Workforce, Ecoline, Mining Guild
 
 **Когда брать:** When you need the Plant+Building tag combo, or have Robotic Workforce. Acceptable filler prelude.
 
 ---
 
-### Mining Operations (#P21) — 63/C
+### Focused Organization (#P50) — 62/C
 
-Теги: Building | Дополнение: Prelude
+Теги: — | Дополнение: Prelude 2
 
-**Экономика:** 2 steel-prod = 16 MC, 4 steel = 8 MC. Building tag ~2 MC. Total ~26 MC IF you can spend the steel.
+**Экономика:** Immediate: draw 1 card (~3-4 MC) + gain 1 standard resource (~2-3 MC). Action: discard 1 card + spend 1 standard resource → draw 1 card + gain 1 standard resource. Net action value = ~0 MC (trade 1 card + 1 resource for 1 card + 1 resource). Total immediate ~5-7 MC + cycling value.
 
-**Почему C (63):** Above average raw value but highly conditional on having building cards. If your hand is space/science-heavy, the steel is nearly worthless. 2 steel-prod is a lot — you need consistent building card flow. COTD: 'feels like overkill' (shai_aus), 'situational' (FieldMouse007). Decent with heavy building strategy.
+**Почему C (62):** Low immediate value (~6 MC) but cycling action is deceptively strong. Per COTD: pay-1-draw-1 equals Mars University trigger value. Resource conversion (steel/titanium) adds flexibility. ~13 MC total value. Best with card draw engines. Weaker gen 1 impact but builds value over time.
 
-**Синергии:** Steel-heavy hands, Space Elevator, Electro Catapult, Mining Guild
+**Синергии:** Viron, AI Central, Restricted Area
 
-**Когда брать:** Only when you have 3+ building cards in hand. Without building targets, much weaker.
+**Когда брать:** Pick when you specifically want resource conversion or card filtering and the alternatives are weak. Low priority when a prelude with real immediate tempo is available.
 
 ---
 
@@ -838,17 +1121,31 @@
 
 Теги: Earth | Дополнение: Prelude 2
 
-**Экономика:** Earth тег ~2-3 MC. Effect: +2 MC per TR step raised. В 3P WGT с 15-20 TR raises за игру (свои) = 30-40 MC. Но это растянуто на 8-9 gen, нет immediate value.
+**Экономика:** Earth tag is worth about 2-3 MC. Effect: +2 MC per TR step raised. In 3P WGT, 15-20 own TR raises over a game can mean 30-40 MC, but that value is spread across 8-9 generations and provides no immediate tempo.
 
-**Почему C (62):** Ongoing effect с потенциально высоким total value, но нулевым immediate impact gen 1. 2 MC per TR raise звучит хорошо, но в gen 1 вы получаете 0 MC, 0 production, 0 ресурсов — только Earth тег. Effect начинает окупаться с gen 2-3. В 3P WGT с короткими играми (8-9 gen) total value ~30-40 MC, но распределённый во времени. Для прелюдии, которая должна давать ~24.5 MC value сразу, это слабый gen 1 impact. Earth тег — единственный немедленный бонус.
+**Почему C (62):** Ongoing effect with potentially high total value, but almost no gen 1 impact. Gaining 2 MC per TR raise sounds good, yet on the first turn you get no cash, no production, and no resources beyond the Earth tag. The effect only starts paying off from gen 2 onward. In fast 3P/WGT games that delayed value is often worse than a prelude that gives real tempo immediately.
 
-**Синергии:** TR rush strategies, UNMI, UNMI Contractor, Huge Asteroid, Great Aquifer, Point Luna
+**Синергии:** UNMI, UNMI Contractor, Huge Asteroid, Great Aquifer, Point Luna
 
-**Когда брать:** При TR rush стратегии, где вы поднимаете 3-5 TR за gen. Сочетается с UNMI. Не берите если ваша стратегия — engine building с поздним terraforming.
+**Когда брать:** Pick in true TR-rush starts where you expect to raise 3-5 TR per generation. It pairs naturally with UNMI-style lines. Skip it if the game plan is engine building with late terraforming.
 
 ---
 
-### Albedo Plants (#X46) — 60/C
+### Prospecting (#UP13) — 62/C
+
+Теги: Space | Дополнение: Underworld
+
+**Экономика:** Заплати 4 MC, добавь новую колонию и сразу поставь туда колонию.
+
+**Почему C (62):** Хороша только в colony-heavy setups; otherwise слишком условная.
+
+**Синергии:** Poseidon, Aridor, Titan colony
+
+**Когда брать:** Только с Colonies и когда дополнительная колония действительно worth the spend. В прочих столах узковата.
+
+---
+
+### Albedo Plants (#X78) — 60/C
 
 Теги: Plant | Дополнение: Promo
 
@@ -856,23 +1153,9 @@
 
 **Почему C (60):** Low base value (~17 MC) for a prelude. The effect is conditional — needs plant-tag strategy to pay off. 3 heat per trigger sounds generous but plant-tags are not abundant in early gens, and late heat is less valuable (temp already raised). Single plant-prod is weak on its own. Corp plant tag (Ecoline) doesn't trigger the effect. Community discussion confirms it needs a second plant prelude (Experimental Forest, Expert Ecologists) to be viable.
 
-**Синергии:** Ecoline, Experimental Forest, Expert Ecologists, NRA, Insects, Adapted Lichen, Kelp Farming, Manutech
+**Синергии:** Ecoline, Experimental Forest, Expert Ecologists, Insects, Adapted Lichen
 
 **Когда брать:** Ecoline + second plant prelude (Experimental Forest / Expert Ecologists) — take it. NRA in hand + plant tags visible — take it. Without plant support — skip, 17 MC base is too low for a prelude.
-
----
-
-### Donation (#P08) — 60/C
-
-Теги: — | Дополнение: Prelude
-
-**Экономика:** 21 MC flat. No tags, no production. Average prelude benchmark.
-
-**Почему C (60):** The baseline prelude — exactly average historically but slightly below the current ~24.5 MC average. Raw money is flexible but has no multiplying effect (no production, no tags, no TR). COTD: 'perfectly average, the standard by which others are judged'. Fine with expensive gen 1 cards, underwhelming otherwise.
-
-**Синергии:** Expensive gen 1 cards, Io Mining Industries, Any corp with low starting MC
-
-**Когда брать:** When you have expensive cards to play gen 1 and other preludes don't fit. Never exciting but rarely terrible.
 
 ---
 
@@ -884,7 +1167,7 @@
 
 **Почему C (60):** 3 Venus steps is solid TR (3 TR = 21 MC at 7 MC/TR) plus it unlocks Venus requirements (8%, 12%, 16% Venus). Space tag is minor. The issue: Venus TR is less impactful because the Venus track does not end the game and the bonuses at 8%/16% are minor compared to temp/O2 bonuses. No COTD data. Worse than Huge Asteroid (3 temp steps + heat-prod for -5 MC).
 
-**Синергии:** Morning Star Inc, Aphrodite, Venus requirement cards, Atmospheric Enhancers
+**Синергии:** Morning Star Inc, Aphrodite, Atmospheric Enhancers, Stratospheric Birds
 
 **Когда брать:** When you have Venus strategy cards or Morning Star Inc. Without Venus synergy, Huge Asteroid or Great Aquifer are strictly better.
 
@@ -898,23 +1181,9 @@
 
 **Почему C (60):** About average value. Colony placement is nice but discarding a card hurts. 1 ti-prod is decent. Space tag is minor. COTD (benbever): 'it is ok, ~23 in quantified value'. Worse than Early Colonization (which gives a trade too) and does not provide energy for future trading.
 
-**Синергии:** Colony games, Saturn Systems, Space card hands
+**Синергии:** Saturn Systems, Rim Freighters, Cryo-Sleep
 
 **Когда брать:** When colonies are good and you have a junk card to discard. Early Colonization is generally better.
-
----
-
-### Orbital Construction Yard (#P25) — 60/C
-
-Теги: Space | Дополнение: Prelude
-
-**Экономика:** 1 ti-prod = 12.5 MC, 4 ti = 12 MC. Space tag ~1 MC. Total ~25.5 MC IF ti is spent. Vulnerable to AMC.
-
-**Почему C (60):** Average raw value but highly conditional. 4 ti + 1 ti-prod is a lot of titanium — you need space cards to spend it. Vulnerable to Asteroid Mining Consortium stealing the production. COTD: 'not great' (shai_aus), 'below average, often have 2 better options' (benbever). Less flexible than Metal-Rich Asteroid.
-
-**Синергии:** Phobolog, Space card-heavy hands, Saturn Systems
-
-**Когда брать:** When you have multiple space cards in hand. Skip if your hand is building/earth-focused or if AMC risk is high.
 
 ---
 
@@ -926,7 +1195,7 @@
 
 **Почему C (58):** High variance prelude. When you have an expensive engine card (Io Mining, Space Elevator, Terraforming Ganymede) in opening hand, it is better than Donation (+4 MC). When you don't, it's one of the worst preludes — literally does nothing useful. COTD: 'either great or useless, usually useless'. No tag is a penalty.
 
-**Синергии:** Io Mining Industries, Space Elevator, Any 25+ MC engine card
+**Синергии:** Io Mining Industries, Space Elevator, Anti-Gravity Technology
 
 **Когда брать:** Only when you have a 25+ MC card you want to play gen 1. If you don't have the target, never pick this.
 
@@ -940,9 +1209,23 @@
 
 **Почему C (58):** High ceiling but very corp-dependent. With corps that start at all zeros (Credicor, Point Luna), you get massive value. With corps that already have production (Mining Guild, Ecoline), it's terrible — you pay 18 MC for almost nothing. COTD: 'not compatible with corps that give production'. Building tag is nice. Average case ~22-25 MC.
 
-**Синергии:** Credicor, Point Luna, Loan (combo), Zero-production corps
+**Синергии:** Credicor, Point Luna, Loan, Business Empire
 
 **Когда брать:** Only with corps that start at 0 production across the board. Never with Ecoline, Mining Guild, Helion, etc.
+
+---
+
+### Biolab (#P04) — 58/C
+
+Теги: Science | Дополнение: Prelude
+
+**Экономика:** 1 plant-prod = 8 MC, 3 random cards = 9-12 MC. Science tag ~3 MC. Total ~20-23 MC.
+
+**Почему C (58):** Below average value. 1 plant-prod is weak standalone. 3 random cards are a gamble — you might get nothing useful. Science tag is the main draw (unlock requirements, Scientist award). COTD consensus: 'bottom 20% prelude, only playable with bad hand'. Better preludes exist for both production and card draw.
+
+**Синергии:** Crescent Research, AI Central
+
+**Когда брать:** Only when you need the Science tag to unlock something critical in gen 1, or your other preludes are truly terrible.
 
 ---
 
@@ -954,23 +1237,23 @@
 
 **Почему C (57):** Slow but steady value. The -5 MC hurts gen 1. Self-contained it's about 1 ti-prod + 0.5 VP/gen which is decent but not exciting. Better with Astrodrill or other asteroid cards. Space tag is minor. COTD (benbever): values it reasonably. Middle-low prelude.
 
-**Синергии:** Astrodrill, Asteroid cards, Kuiper Cooperative
+**Синергии:** Astrodrill, Kuiper Cooperative, Asteroid Mining, Asteroid Mining Consortium
 
 **Когда брать:** When you have asteroid synergies (Astrodrill). Without synergy, it's below average.
 
 ---
 
-### Focused Organization (#P50) — 55/C
+### Io Research Outpost (#P16) — 56/C
 
-Теги: — | Дополнение: Prelude 2
+Теги: Jovian, Science | Дополнение: Prelude
 
-**Экономика:** Immediate: draw 1 card (~3-4 MC) + gain 1 standard resource (~2-3 MC). Action: discard 1 card + spend 1 standard resource → draw 1 card + gain 1 standard resource. Net action value = ~0 MC (trade 1 card + 1 resource for 1 card + 1 resource). Total immediate ~5-7 MC + cycling value.
+**Экономика:** 1 ti-prod = 12.5 MC, 1 card = 3-4 MC. Jovian+Science tags = ~6 MC. Total ~21-23 MC.
 
-**Почему C (55):** На первый взгляд action кажется бесплатным cycling, но это ровно trade 1:1 — вы тратите карту и ресурс, получаете карту и ресурс. Ценность в filtering: вы можете сбросить плохую карту и получить random (может быть лучше). Можно конвертировать steel в titanium или наоборот. Immediate value очень низкая (~6 MC). Action полезна mid/late game для cycling ненужных карт. Без ongoing production или immediate value — одна из слабейших прелюдий по gen 1 impact.
+**Почему C (56):** Below average. 1 ti-prod + 1 card is underwhelming for a prelude slot. The Jovian+Science double tag is the main attraction but even then the total value is mediocre. COTD: 'one of the worst preludes' (ad_hocNC), 'weak card' (FieldMouse007). Only playable with Saturn Systems or when you need both tags for milestones.
 
-**Синергии:** Card-cycling strategies, Viron (double action), Corps с card draw benefits
+**Синергии:** Saturn Systems, Rim Settler, Terraforming Ganymede, Io Mining Industries
 
-**Когда брать:** Когда нужен resource conversion или card filtering и другие прелюдии хуже. Не приоритетный pick — immediate value слишком мала.
+**Когда брать:** Only with Saturn Systems or when both Jovian+Science tags are critical for your strategy.
 
 ---
 
@@ -978,13 +1261,27 @@
 
 Теги: Earth | Дополнение: Prelude 2
 
-**Экономика:** 4 director resources. Action: spend 1 director → look at top 5 cards, buy up to 2 for 3 MC each. Earth тег ~2-3 MC. 4 uses = look at 20 cards, buy up to 8 for 3 MC each. Best cards ~7-10 MC value at 3 MC cost = ~4-7 MC profit per use. Total ~16-28 MC + Earth тег over 4 uses.
+**Экономика:** 4 director resources. Action: spend 1 director to look at the top 5 cards and buy up to 2 for 3 MC each. Earth tag is worth about 2-3 MC. Four uses means looking at 20 cards and buying up to 8 at 3 MC each. If the bought cards are worth about 7-10 MC, the profit is roughly 4-7 MC per use. Total value is about 16-28 MC plus the Earth tag over 4 uses.
 
-**Почему C (55):** Card filtering action — 4 directors дают 4 uses за игру. Каждое use: look at 5, buy up to 2 for 3 MC. Это дешевле стандартных 3 MC/card, но не бесплатно — нужно 3 MC per card. При 1 good card per look: 4 x ~5 MC profit = ~20 MC total value. Проблема: нет immediate value gen 1 (0 MC, 0 prod, 0 resources). Earth тег — единственный немедленный бонус. Slow engine card на прелюдии, что плохо — прелюдии должны давать tempo gen 1.
+**Почему C (55):** Card-filtering prelude with real ceiling but weak tempo. Four directors means four uses of a selective draw action, and the bought cards can be very strong. The problem is timing: you get no immediate cash, production, or resources on gen 1 beyond the Earth tag. As a result, it behaves more like a slow engine piece than a true tempo prelude.
 
-**Синергии:** Point Luna (Earth tag), Card-hungry strategies, Viron (double action), Applied Science
+**Синергии:** Applied Science, Point Luna, Viron, Restricted Area
 
-**Когда брать:** Когда вам нужен card draw pipeline и Earth тег. Лучше с Point Luna. Не приоритетная — immediate value слишком мала для прелюдии.
+**Когда брать:** Pick when you specifically want a long card-flow pipeline and value the Earth tag, especially with Point Luna. Lower priority when gen 1 tempo matters more.
+
+---
+
+### Applied Science (#P43) — 55/C
+
+Теги: Wild | Дополнение: Prelude 2
+
+**Экономика:** 6 science resources. Action: spend 1 sci → 1 ti (3 MC) or 1 plant-prod (~6-8 MC gen 1). 6×ti = 18 MC, 6×plant-prod = 36-48 MC. Wild tag ~2 MC. Excentric award contribution. Free prelude = no MC cost.
+
+**Почему C (55):** No immediate production — action engine only. Per COTD: 'Physics Complex's best friend.' With Mass Converter + Physics Complex becomes compelling. Viron doubles speed. 'Don't take unless you have Physics Complex or 1-VP animals in opener.' Without specific synergy, doesn't generate advantage. Very build-dependent.
+
+**Синергии:** Physics Complex, Viron, Board of Directors, Mass Converter, AI Central
+
+**Когда брать:** Good with Viron or Physics Complex. Without them it is situational: plant-production mode is stronger early, while titanium mode is more of a dump. The wild tag and Excentric contribution add a bit of extra value.
 
 ---
 
@@ -994,11 +1291,11 @@
 
 **Экономика:** 2 MC-prod = 10-12 MC, city tile = ~5-10 MC. Building+City tags ~3 MC. Total ~18-25 MC.
 
-**Почему D (53):** Below average. Cities are overvalued and the 2 MC-prod does not compensate. COTD: 'one of the worst preludes generally' (Krazyguy75), 'meeeh' (shai_aus). Only good on Elysium (Olympus Mons) or Tharsis for Mayor. The Building+City tags have niche value but not enough.
+**Почему D (53):** Below average in vacuum, but better than flat economy math suggests when the city spot is immediately live. Early city placement can become 3 cards, 3 plants, estate pressure, or a key building and city-tag setup. It stays weak when the map spot is mediocre or your hand cannot exploit the city right away.
 
-**Синергии:** Tharsis Republic, Mayor milestone, Elysium (Olympus Mons)
+**Синергии:** Tharsis Republic, Rover Construction, Capital, Ecoline, Cupola City, Mining Area, Estate Dealer
 
-**Когда брать:** Only for Mayor milestone on Tharsis or prime city spot on Elysium. Otherwise skip.
+**Когда брать:** When the city spot immediately gives draw, plant tempo, or milestone pressure. Much worse as a generic economy prelude.
 
 ---
 
@@ -1008,9 +1305,9 @@
 
 **Экономика:** 1 plant-prod = 8 MC, 1 steel-prod = 8 MC, 3 MC immediate. 2 tags ~3 MC. Total ~22 MC.
 
-**Почему D (52):** Below average value at ~22 MC. The 2 tags (Microbe+Plant) can be useful for Ecologist milestone or Splice, but 1 plant-prod alone is weak — attracts hate without providing enough for conversion. Steel-prod is nice but only 1. Community rates it weak.
+**Почему D (52):** Below average prelude at ~22 MC total value. Per COTD community, 'acceptable but not too interesting.' The 2 tags (Microbe+Plant) can be useful for Ecologist or Splice. 1 plant-prod alone is weak in most strategies. Decent for Ecoline or Tharsis but rated below average by experienced players. Steel + 3 MC start capital helps a bit.
 
-**Синергии:** Ecoline, Splice, NRA, Tharsis Republic
+**Синергии:** Ecoline, Splice, Tharsis Republic
 
 **Когда брать:** Only when tags matter for your strategy (Ecologist, Splice) and other preludes are worse. Generally skip.
 
@@ -1022,11 +1319,11 @@
 
 **Экономика:** 1 energy-prod = 7.5 MC, 1 steel-prod = 8 MC, 6 MC immediate. Building tag ~2 MC. Total ~23.5 MC.
 
-**Почему D (52):** Just barely below average. The production mix is uninspiring — 1 of each doesn't build toward anything specific. The 6 MC immediate helps gen 1 spending. Building tag is fine. COTD: 'nothing offensive but nothing great' (shai_aus). Only good when energy is specifically needed (Colonies, Electro Catapult).
+**Почему D (52):** Below-average raw package, but better than pure value models suggest because 1 steel production, 1 energy production, and 6 MC often bridge directly into gen 1 tempo. Particularly good when the start can immediately spend steel or titanium, enable trade, or chain into space and building cards. Still not premium in abstract.
 
-**Синергии:** Electro Catapult, Colonies (trading), Steel-intensive hands
+**Синергии:** Electro Catapult, Power Infrastructure, Space Elevator, Point Luna, Interplanetary Cinematics, Orbital Construction Yard, Space Station, Titanium Mine
 
-**Когда брать:** When you specifically need energy production for a gen 1 play. Otherwise there are better options.
+**Когда брать:** When the opening can immediately convert steel, titanium, or energy into tempo, trade, or a space-building line. Much better in concrete starts than in abstract.
 
 ---
 
@@ -1038,37 +1335,9 @@
 
 **Почему D (52):** Below average. Heat production is overpriced and least efficient in the game. 3 heat-prod sounds impressive but heat is the cheapest resource. COTD (Krazyguy75): 'this prelude sucks'. Building tag is nice for Robotic Workforce. Only good for Helion (heat = MC) or dedicated rush strategies. Polar Industries is better (ocean + heat).
 
-**Синергии:** Helion, Robotic Workforce, TR rush strategies
+**Синергии:** Helion, Robotic Workforce, Caretaker Contract
 
 **Когда брать:** Only as Helion (where heat-prod = MC-prod) or for Robotic Workforce target. Otherwise avoid.
-
----
-
-### Floating Trade Hub (#P49) — 50/D
-
-Теги: Space | Дополнение: Prelude 2
-
-**Экономика:** 2 floaters/action, convert to standard resource. ~3 MC/gen as titanium (1 ti every 1.5 gens average). Space tag ~1 MC. With other floater cards, value increases.
-
-**Почему D (50):** Slow engine card on a prelude. 2 floaters/action is decent but converting to ti is only ~3 MC/gen. No immediate value — zero MC, zero production gen 1. Space tag is minor. Better with other floater cards to feed. Floater trap concerns apply somewhat, though this is cheaper than most floater cards.
-
-**Синергии:** Dirigibles, Stratospheric Birds, Floater cards, Morning Star Inc
-
-**Когда брать:** When you have floater synergies and other immediate-value preludes covering your gen 1 needs. Alone = weak.
-
----
-
-### Biolab (#P04) — 50/D
-
-Теги: Science | Дополнение: Prelude
-
-**Экономика:** 1 plant-prod = 8 MC, 3 random cards = 9-12 MC. Science tag ~3 MC. Total ~20-23 MC.
-
-**Почему D (50):** Below average value. 1 plant-prod is weak standalone. 3 random cards are a gamble — you might get nothing useful. Science tag is the main draw (unlock requirements, Scientist award). COTD consensus: 'bottom 20% prelude, only playable with bad hand'. Better preludes exist for both production and card draw.
-
-**Синергии:** Science tag requirements, Crescent Research, AI Central
-
-**Когда брать:** Only when you need the Science tag to unlock something critical in gen 1, or your other preludes are truly terrible.
 
 ---
 
@@ -1080,37 +1349,23 @@
 
 **Почему D (50):** Below average. Cities are overvalued by the game — they cost an action and adjacency VP takes many gens to develop. 1 plant-prod alone is weak. Building+City tags are niche. COTD: 'rarely worth picking'. Only decent for Mayor milestone on Tharsis or primo city spot on Elysium.
 
-**Синергии:** Tharsis Republic, Mayor milestone (Tharsis), Ecoline (with city placement)
+**Синергии:** Tharsis Republic, Rover Construction, Capital
 
 **Когда брать:** Only on Tharsis for Mayor milestone or if you can grab Olympus Mons on Elysium. Otherwise skip.
 
 ---
 
-### Colony Trade Hub (#P46) — 48/D
+### Orbital Construction Yard (#P25) — 48/D
 
-Теги: Space | Дополнение: Prelude 2
+Теги: Space | Дополнение: Prelude
 
-**Экономика:** 1 energy-prod = 7.5 MC, 2 ti = 6 MC, effect +2 MC per colony placed. Need 6 colonies for full value (~12 MC additional). Total ~13 MC base + colony bonus.
+**Экономика:** 1 ti-prod = 12.5 MC, 4 ti = 12 MC. Space tag ~1 MC. Total ~25.5 MC IF ti is spent. Vulnerable to AMC.
 
-**Почему D (48):** Very weak base value (~13 MC). The colony bonus is too slow — need 6+ colonies to reach average prelude value, which rarely happens in 8-9 gen game. Space tag is minor. COTD (benbever): 'only worth ~13 in quantified value'. One of the weakest Prelude 2 cards.
+**Почему D (48):** Average raw value but highly conditional. 4 ti + 1 ti-prod is a lot of titanium — you need space cards to spend it. Vulnerable to Asteroid Mining Consortium stealing the production. COTD: 'not great' (shai_aus), 'below average, often have 2 better options' (benbever). Less flexible than Metal-Rich Asteroid.
 
-**Синергии:** Colony-heavy games, Poseidon, Aridor
+**Синергии:** Phobolog, Saturn Systems, Io Mining Industries, Titan Shuttles
 
-**Когда брать:** Only in 4-5 player games with aggressive colony placement. In 3P, almost never reaches average value.
-
----
-
-### Giant Solar Collector (#X55) — 48/D
-
-Теги: Power, Space | Дополнение: Promo
-
-**Экономика:** 2 energy-prod = 15 MC, 1 Venus step = ~4-5 MC (Venus TR less valuable). Power+Space tags ~2 MC. Total ~21-22 MC.
-
-**Почему D (48):** Below average. 2 energy-prod is nice for Colonies but the Venus step is less efficient than temp/O2 raises (Venus TR is often wasted). Power+Space tags are rarely useful together. COTD: 'middling to weak with Colonies, terrible without' (Krazyguy75). Supplier is strictly better (same energy, 4 steel > 1 Venus step).
-
-**Синергии:** Colonies (trading), Morning Star Inc, Thorgate
-
-**Когда брать:** Only with Colonies when you need energy for trading and Venus synergy. Otherwise skip.
+**Когда брать:** When you have multiple space cards in hand. Skip if your hand is building/earth-focused or if AMC risk is high.
 
 ---
 
@@ -1122,7 +1377,7 @@
 
 **Почему D (48):** Below average. Unfocused production split between steel and heat is underwhelming. 2 heat-prod is weak. COTD (benbever): 'below average value, not very interesting'. Building tag helps slightly. Strictly worse than Mining Operations (which gives 2 steel-prod + 4 steel instead of 1 steel + 2 heat).
 
-**Синергии:** Helion, Robotic Workforce, Building tag cards
+**Синергии:** Helion, Robotic Workforce, Electro Catapult
 
 **Когда брать:** Almost never. Only as Helion or if you need Building tag and nothing better exists.
 
@@ -1132,13 +1387,27 @@
 
 Теги: — | Дополнение: Prelude 2
 
-**Экономика:** 5 TR = 5 MC-prod + 5 VP = ~35 MC (5 x 7 MC). Нет тегов = -3 MC. Total ~32 MC value. Но сравните: UNMI Contractor = 3 TR + 1 card + Earth тег = ~27 MC за 3 TR.
+**Экономика:** 5 TR is about 35 MC in combined MC production and VP. No tags is effectively a 3 MC penalty. Total raw package is around 32 MC, though the value is heavily back-loaded.
 
-**Почему D (48):** 5 TR звучит впечатляюще, но математика неоднозначна. 5 TR = 5 MC-prod which is ~25 MC gen 1 + 5 VP (~25 MC mid-game) = ~50 MC theoretical. Однако TR-prod ценится ниже MC-prod (1 TR ~7 MC vs 1 MC-prod ~5-6 MC gen 1 start). Нет тегов — серьёзный penalty. Нет ресурсов, нет карт, нет production кроме TR. Фактически эта прелюдия не помогает engine building gen 1: вы получаете +5 MC income начиная с gen 2, но gen 1 у вас пустые руки. UNMI Contractor (3 TR + card + Earth tag) часто лучше при score 82. Высокий raw value, но плохой timing и отсутствие тегов снижают оценку.
+**Почему D (48):** Looks impressive because 5 TR is a big number, but most of the value is delayed MC production and endgame VP rather than immediate tempo. That makes it much worse than it first appears unless you specifically exploit the TR count. The best homes are Pristar, Double Down, or extreme rush shells; otherwise it is usually weaker than cleaner preludes.
 
-**Синергии:** TR rush strategies, Terraformer milestone, Terraforming Deal
+**Синергии:** Terraforming Deal
 
-**Когда брать:** При pure TR rush, когда 5 TR ставят вас close к Terraformer milestone. Сочетается с Terraforming Deal (+10 MC from effect). Без rush стратегии — engine building прелюдии лучше.
+**Когда брать:** Pick in pure TR-rush starts, with Pristar, or when 5 TR meaningfully pushes a milestone or a synergy like Terraforming Deal. Skip it in normal engine starts.
+
+---
+
+### Research Grant (#?) — 48/D
+
+Теги: — | Дополнение: ?
+
+**Экономика:** 8 MC immediate plus 2 Science tags worth about 8 MC total. That is only around 16 MC of raw value, well below average for a prelude. This is the community Y04 version, not a Pathfinders card.
+
+**Почему D (48):** Very weak unless the Science tags matter immediately. The cash is too small to carry the slot by itself, so the prelude relies on milestone pressure, science payoffs, or requirement unlocks to justify itself. Without that context it is close to blank.
+
+**Синергии:** Pharmacy Union, Mars University, Olympus Conference
+
+**Когда брать:** Only pick with a science-heavy corporation, a science milestone race, or an opener where the double Science tag solves something real. Otherwise it is weak.
 
 ---
 
@@ -1146,13 +1415,27 @@
 
 Теги: Venus | Дополнение: Prelude 2
 
-**Экономика:** 1 Venus card (selected) = ~4-5 MC. 1 TR = 7 MC. Venus тег ~2 MC. Effect: +1 MC per Venus тег played = ~3-6 MC за всю игру (3-6 Venus тегов в 3P). Total ~16-20 MC.
+**Экономика:** 1 selected Venus card is worth about 4-5 MC. 1 TR is worth 7 MC. Venus tag adds about 2 MC. Effect: +1 MC per Venus tag played, usually only about 3-6 MC over a full 3P game. Total value is roughly 16-20 MC.
 
-**Почему D (46):** Одна из слабейших прелюдий. 1 TR + 1 Venus card + Venus тег — скромный базовый пакет (~13 MC). Ongoing effect +1 MC per Venus tag played звучит как Saturn Systems для Venus, но Venus тегов в колоде значительно меньше чем Jovian. В 3P может быть 3-6 Venus тегов за всю игру = 3-6 MC дополнительно. Суммарно ~16-20 MC — значительно ниже средней прелюдии (24.5 MC). Venus тег полезен только для Venus-стратегии. Без Venus — бесполезна.
+**Почему D (46):** One of the weaker preludes. The base package of 1 TR, 1 Venus card, and a Venus tag is modest, and the ongoing refund on Venus tags is far smaller than it first looks because Venus tags are much rarer than something like Jovians. The total package usually lands well below average prelude value unless the whole opener is already committed to Venus.
 
-**Синергии:** Morning Star Inc., Venus strategy cards, Aphrodite, Stratospheric Birds, Dirigibles
+**Синергии:** Morning Star Inc., Aphrodite, Stratospheric Birds, Dirigibles
 
-**Когда брать:** Только при активной Venus-стратегии и отсутствии лучших альтернатив. Слабый immediate value. Morning Star Inc. + Venus L1 Shade дают больше.
+**Когда брать:** Only pick in an active Venus strategy and only when the alternatives are weak. Immediate value is poor, and starts like Morning Star plus real Venus payoffs usually do more.
+
+---
+
+### Donation (#P08) — 45/D
+
+Теги: — | Дополнение: Prelude
+
+**Экономика:** 21 MC flat. No tags, no production. Average prelude benchmark.
+
+**Почему D (45):** The baseline prelude — exactly average historically but slightly below the current ~24.5 MC average. Raw money is flexible but has no multiplying effect (no production, no tags, no TR). COTD: 'perfectly average, the standard by which others are judged'. Fine with expensive gen 1 cards, underwhelming otherwise.
+
+**Синергии:** Io Mining Industries, Terraforming Ganymede, Large Convoy
+
+**Когда брать:** When you have expensive cards to play gen 1 and other preludes don't fit. Never exciting but rarely terrible.
 
 ---
 
@@ -1164,7 +1447,7 @@
 
 **Почему D (45):** Looks decent on paper but 2 VP on a prelude is terrible — VP does nothing to build your engine early. 5 MC is minimal. The 2 requirement cards are a gamble (might not hit what you need). COTD (icehawk84): 'absolutely horrendous, 2 VP is not something you want in a prelude'. Wild tag is minor consolation.
 
-**Синергии:** VP-focused late strategies, Wild tag requirements
+**Синергии:** Research Coordination, Solarnet
 
 **Когда брать:** Almost never. Production preludes are strictly better for gen 1. Only if other options are terrible.
 
@@ -1178,37 +1461,9 @@
 
 **Почему D (44):** One of the worst preludes. 30 MC sounds great but -2 MC-prod is brutal in gen 1 — you're cutting into your already thin 20 MC production. COTD (benbever): 'one of the worst preludes in quantified value'. Only justified if the 30 MC enables a game-changing gen 1 play that wouldn't happen otherwise. No tags hurts further.
 
-**Синергии:** Industrial Complex (combo), Expensive gen 1 cards, Community Services
+**Синергии:** Community Services, Industrial Complex, Business Empire
 
 **Когда брать:** Only when 30 MC enables a critical gen 1 play (e.g., Io Mining) and you have no better production prelude.
-
----
-
-### Io Research Outpost (#P16) — 43/D
-
-Теги: Jovian, Science | Дополнение: Prelude
-
-**Экономика:** 1 ti-prod = 12.5 MC, 1 card = 3-4 MC. Jovian+Science tags = ~6 MC. Total ~21-23 MC.
-
-**Почему D (43):** Below average. 1 ti-prod + 1 card is underwhelming for a prelude slot. The Jovian+Science double tag is the main attraction but even then the total value is mediocre. COTD: 'one of the worst preludes' (ad_hocNC), 'weak card' (FieldMouse007). Only playable with Saturn Systems or when you need both tags for milestones.
-
-**Синергии:** Saturn Systems, Jovian multipliers, Rim Settler, Scientist award
-
-**Когда брать:** Only with Saturn Systems or when both Jovian+Science tags are critical for your strategy.
-
----
-
-### Applied Science (#P43) — 42/D
-
-Теги: Wild | Дополнение: Prelude 2
-
-**Экономика:** 6 science resources on this card. Action: spend 1 science for 1 ti/plant-prod OR spend 4 science for 1 VP each. Without Physics Complex, self-contained value is ~6 ti-prod (slow, 6 actions) or mix of prod+VP.
-
-**Почему D (42):** A prelude that gives zero immediate value — no MC, no production, no TR. In gen 1, you get nothing to build your engine. The science resources are only useful with Physics Complex (spend 6 for 12 VP) or as slow prod gain. Wild tag is minor. Production preludes far outperform this.
-
-**Синергии:** Physics Complex, Mass Converter, Viron, Board of Directors
-
-**Когда брать:** Only with Physics Complex in opening hand. Otherwise one of the worst preludes.
 
 ---
 
@@ -1220,7 +1475,7 @@
 
 **Почему D (42):** Sounds good on paper (2 ti-prod + Jovian tag) but deeply flawed. The -5 MC cost means it doesn't start paying until gen 3. Ti-prod is useless without Space cards to spend it on, and vulnerable to AMC stealing. COTD: 'pretty bad' (shai_aus), 'one of the worst preludes' (ad_hocNC, icehawk84). Inflexible and risky.
 
-**Синергии:** Saturn Systems, Jovian multipliers, Rim Settler milestone
+**Синергии:** Saturn Systems, Terraforming Ganymede, Io Mining Industries
 
 **Когда брать:** Only with Saturn Systems or when you need Jovian tag for Rim Settler. Otherwise one of the weakest preludes.
 
@@ -1232,11 +1487,11 @@
 
 **Экономика:** 1 energy-prod = 7.5 MC, 1 plant-prod = 8 MC, 2 plants = ~3 MC. Microbe tag ~1 MC. Total ~19.5 MC.
 
-**Почему D (40):** Well below average value (~19.5 MC vs 24.5 average). Weak production spread, bad tag. COTD consensus: 'pretty bad'. Only marginally useful if you desperately need energy for something and have Ecoline for plant conversion. Bottom 20% of preludes.
+**Почему D (40):** Raw value is still below average (~19.5 MC vs 24.5 average), so this is not a generic good prelude. It becomes much better when the same start wants all three pieces at once: energy threshold, plant tempo, and microbe or bio support. In starts that can spend every piece immediately, it plays like a real setup prelude rather than generic filler.
 
-**Синергии:** Ecoline, Electro Catapult, Splice
+**Синергии:** Ecoline, Electro Catapult, Splice, Archaebacteria, Nitrite Reducing Bacteria, Methane from Titan
 
-**Когда брать:** Almost never. Only if you desperately need energy prod and nothing better is available.
+**Когда брать:** When you simultaneously need energy, plant prod, and a microbe or bio shell. Also much better in EcoLine rush openers that can use the energy and extra plants immediately.
 
 ---
 
@@ -1248,7 +1503,7 @@
 
 **Почему D (38):** One of the worst preludes. The -1 MC-prod is devastating in gen 1 when you only have ~20 MC production. 2 plant-prod alone rarely justifies losing MC income. COTD top comment: 'it sucks'. The plant tag is its only saving grace for NRA. Dome Farming is strictly better (same tag, better production, no MC loss).
 
-**Синергии:** Ecoline, NRA (if +3 plant tags), Nitrogen-Rich Asteroid
+**Синергии:** Ecoline, Nitrogen-Rich Asteroid
 
 **Когда брать:** Almost never. Only Ecoline with NRA in hand where you desperately need 3 plant tags. Bottom 5 prelude.
 
@@ -1276,7 +1531,7 @@
 
 **Почему F (30):** The worst or second-worst prelude in the game. Losing MC-prod in gen 1 is devastating, and you get 3 marginal productions in return with no tags at all. COTD (shai_aus): 'no idea what they were thinking'. The total value (~11.5 MC) is less than half the average prelude. Even the no-tag penalty is insult to injury.
 
-**Синергии:** Helion (slightly less bad), Nothing useful
+**Синергии:** Caretaker Contract, GHG Factories
 
 **Когда брать:** Never. There is virtually no scenario where this is the right pick.
 
