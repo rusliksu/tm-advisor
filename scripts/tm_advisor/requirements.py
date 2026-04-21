@@ -1,10 +1,36 @@
 """RequirementsChecker — проверка requirements карт против game state."""
 
-import json
 import os
 import re
 
-from .shared_data import resolve_data_path
+from .shared_data import load_json_file, resolve_data_path
+
+
+_COUNT_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+}
+
+_RESOURCE_ALIASES = {
+    "plant": ("plants", "plant", "plants"),
+    "plants": ("plants", "plant", "plants"),
+    "floater": ("floater", "floater", "floaters"),
+    "floaters": ("floater", "floater", "floaters"),
+    "animal": ("animal", "animal", "animals"),
+    "animals": ("animal", "animal", "animals"),
+    "microbe": ("microbe", "microbe", "microbes"),
+    "microbes": ("microbe", "microbe", "microbes"),
+    "science": ("science", "science", "science"),
+    "sciences": ("science", "science", "science"),
+    "heat": ("heat", "heat", "heat"),
+    "energy": ("energy", "energy", "energy"),
+    "steel": ("steel", "steel", "steel"),
+    "titanium": ("titanium", "titanium", "titanium"),
+}
 
 
 class RequirementsChecker:
@@ -15,20 +41,26 @@ class RequirementsChecker:
         self._norm_reqs: dict[str, str] = {}
         self.descriptions: dict[str, str] = {}
         self._norm_descs: dict[str, str] = {}
+        self.resource_types: dict[str, str] = {}
+        self._norm_resource_types: dict[str, str] = {}
         if all_cards_path is None:
             all_cards_path = str(resolve_data_path("all_cards.json"))
         if os.path.exists(all_cards_path):
-            with open(all_cards_path, "r", encoding="utf-8") as f:
-                cards = json.load(f)
+            cards = load_json_file(all_cards_path)
             for c in cards:
                 name = c.get("name", "")
+                norm = re.sub(r"[^a-z0-9]", "", name.lower())
                 desc = str(c.get("description", "") or "")
                 self.descriptions[name] = desc
-                self._norm_descs[re.sub(r"[^a-z0-9]", "", name.lower())] = desc
+                self._norm_descs[norm] = desc
                 req = c.get("requirements", "")
                 if req:
                     self.reqs[name] = str(req)
-                    self._norm_reqs[re.sub(r"[^a-z0-9]", "", name.lower())] = str(req)
+                    self._norm_reqs[norm] = str(req)
+                resource_type = str(c.get("resourceType", "") or "")
+                if resource_type:
+                    self.resource_types[name] = resource_type
+                    self._norm_resource_types[norm] = resource_type
 
     def get_req(self, name: str) -> str:
         if name in self.reqs:
@@ -41,6 +73,12 @@ class RequirementsChecker:
             return self.descriptions[name]
         norm = re.sub(r"[^a-z0-9]", "", name.lower())
         return self._norm_descs.get(norm, "")
+
+    def get_resource_type(self, name: str) -> str:
+        if name in self.resource_types:
+            return self.resource_types[name]
+        norm = re.sub(r"[^a-z0-9]", "", name.lower())
+        return self._norm_resource_types.get(norm, "")
 
     @staticmethod
     def _get_requirement_offsets(state) -> tuple[int, int]:
@@ -74,8 +112,11 @@ class RequirementsChecker:
         Учитывает Inventrix и Morning Star Inc. для global requirements."""
         req = self.get_req(name)
         placement_ok, placement_reason = self._check_placement(name, state)
+        resource_cost_ok, resource_cost_reason = self._check_description_resource_cost(name, state)
 
         if not req:
+            if not resource_cost_ok:
+                return False, resource_cost_reason
             return (placement_ok, placement_reason) if not placement_ok else (True, "")
 
         r = req.strip()
@@ -84,39 +125,102 @@ class RequirementsChecker:
 
         # Dict-type requirements (stored as string repr of dict)
         if r.startswith("{"):
-            ok, reason = self._check_dict_req(r)
+            ok, reason = self._check_dict_req(r, state)
             if not ok:
                 return ok, reason
+            if not resource_cost_ok:
+                return False, resource_cost_reason
             return (placement_ok, placement_reason) if not placement_ok else (ok, reason if reason != f"Req: {r}" else "")
 
         # Compound requirements: conditions separated by " / "
         if " / " in r:
-            ok, reason = self._check_compound(r, state, req_offset, venus_req_offset)
+            ok, reason = self._check_compound(r, state, req_offset, venus_req_offset, name)
             if not ok:
                 return ok, reason
+            if not resource_cost_ok:
+                return False, resource_cost_reason
             return (placement_ok, placement_reason) if not placement_ok else (ok, "")
 
-        ok, reason = self._check_single(r, state, req_offset, venus_req_offset)
+        ok, reason = self._check_single(r, state, req_offset, venus_req_offset, name)
         if not ok:
             return ok, reason
+        if not resource_cost_ok:
+            return False, resource_cost_reason
         return (placement_ok, placement_reason) if not placement_ok else (ok, "")
 
-    def _check_compound(self, req: str, state, req_offset: int = 0, venus_req_offset: int = 0) -> tuple[bool, str]:
+    def _check_compound(
+        self,
+        req: str,
+        state,
+        req_offset: int = 0,
+        venus_req_offset: int = 0,
+        card_name: str = "",
+    ) -> tuple[bool, str]:
         """Check compound requirements like '1 Plant tag / 1 Animal tag'."""
         parts = req.split(" / ")
-        for part in parts:
-            ok, reason = self._check_single(part.strip(), state, req_offset, venus_req_offset)
+        for _part, ok, reason in self._compound_part_statuses(parts, state, req_offset, venus_req_offset, card_name):
             if not ok:
                 return False, reason
         return True, ""
 
     @staticmethod
-    def _check_dict_req(req: str) -> tuple[bool, str]:
+    def _parse_tag_req_part(part: str) -> tuple[int, str] | None:
+        m = re.match(r"(\d+)\s+([\w]+)\s+tags?", part.strip(), re.IGNORECASE)
+        if not m:
+            return None
+        return int(m.group(1)), m.group(2).lower()
+
+    def _compound_part_statuses(
+        self,
+        parts: list[str],
+        state,
+        req_offset: int = 0,
+        venus_req_offset: int = 0,
+        card_name: str = "",
+    ) -> list[tuple[str, bool, str]]:
+        """Evaluate compound requirements while spending each wild tag at most once."""
+        tags = state.tags if hasattr(state, "tags") else {}
+        wild_left = int((tags or {}).get("wild", 0) or 0)
+        statuses: list[tuple[str, bool, str]] = []
+
+        for raw_part in parts:
+            part = raw_part.strip()
+            tag_req = self._parse_tag_req_part(part)
+            if not tag_req:
+                statuses.append((part, *self._check_single(part, state, req_offset, venus_req_offset, card_name)))
+                continue
+
+            need, tag_name = tag_req
+            exact = int((tags or {}).get(tag_name, 0) or 0)
+            if exact >= need:
+                statuses.append((part, True, ""))
+                continue
+            if tag_name == "wild":
+                statuses.append((part, False, f"Нужно {need} {tag_name} tag (есть {exact})"))
+                continue
+
+            deficit = need - exact
+            if wild_left >= deficit:
+                wild_left -= deficit
+                statuses.append((part, True, ""))
+                continue
+
+            have = exact + wild_left
+            wild_left = 0
+            statuses.append((part, False, f"Нужно {need} {tag_name} tag (есть {have})"))
+
+        return statuses
+
+    def _check_dict_req(self, req: str, state) -> tuple[bool, str]:
         """Handle dict-type requirements like {'floaters': 3}."""
         if "floaters" in req:
             m = re.search(r"'floaters':\s*(\d+)", req)
             if m:
-                return True, f"Req: {m.group(1)} floaters на карте"
+                need = int(m.group(1))
+                have = self._count_tableau_resource_type(state, "floater")
+                if have < need:
+                    return False, f"Нужно {need} floaters (сейчас {have})"
+                return True, ""
         if "plantsRemoved" in req:
             return True, "Req: растения удалены в этом gen"
         if "resourceTypes" in req:
@@ -124,6 +228,114 @@ class RequirementsChecker:
             if m:
                 return True, f"Req: {m.group(1)} типов ресурсов"
         return True, f"Req: {req}"
+
+    def _count_tableau_resource_type(self, state, resource_type: str) -> int:
+        me = getattr(state, "me", None)
+        tableau = getattr(me, "tableau", None) or []
+        want = str(resource_type or "").lower()
+        total = 0
+        for card in tableau:
+            if not isinstance(card, dict):
+                continue
+            name = card.get("name", "")
+            if self.get_resource_type(name).lower() != want:
+                continue
+            total += int(card.get("resources", 0) or 0)
+        return total
+
+    @staticmethod
+    def _parse_count_token(token: str) -> int:
+        raw = str(token or "").strip().lower()
+        if raw.isdigit():
+            return int(raw)
+        return _COUNT_WORDS.get(raw, 0)
+
+    @staticmethod
+    def _normalize_resource_name(raw: str) -> tuple[str, str, str]:
+        key = re.sub(r"[^a-z]", "", str(raw or "").lower())
+        return _RESOURCE_ALIASES.get(key, ("", "", ""))
+
+    @staticmethod
+    def _count_requirement_tags(tags: dict, tag_name: str) -> int:
+        """Count tags for a requirement; wild tags satisfy any non-wild tag req."""
+        tag_key = str(tag_name or "").lower()
+        counts = tags or {}
+        total = int(counts.get(tag_key, 0) or 0)
+        if tag_key != "wild":
+            total += int(counts.get("wild", 0) or 0)
+        return total
+
+    @staticmethod
+    def _count_cities_in_play(state) -> int:
+        raw = getattr(state, "raw", {}) or {}
+        players = raw.get("players", []) if isinstance(raw, dict) else []
+        total = 0
+        for player in players:
+            if isinstance(player, dict):
+                total += int(player.get("citiesCount", 0) or 0)
+        if total > 0:
+            return total
+
+        spaces = getattr(state, "spaces", []) or []
+        return sum(1 for space in spaces if isinstance(space, dict) and space.get("tileType") == 0)
+
+    def _city_requirement_uses_all_cities(self, card_name: str) -> bool:
+        desc = self.get_description(card_name).lower()
+        if "you have" in desc or "you own" in desc:
+            return False
+        return (
+            "cities in play" in desc
+            or "city tiles in play" in desc
+            or "any " in desc and "cit" in desc
+            or "city tiles on mars" in desc
+            or "city in play" in desc
+        )
+
+    def _resource_amount_available(self, state, resource_key: str) -> int:
+        me = getattr(state, "me", None)
+        if not me:
+            return 0
+        if resource_key == "plants":
+            return int(getattr(me, "plants", 0) or 0)
+        if resource_key == "heat":
+            return int(getattr(me, "heat", 0) or 0)
+        if resource_key == "energy":
+            return int(getattr(me, "energy", 0) or 0)
+        if resource_key == "steel":
+            return int(getattr(me, "steel", 0) or 0)
+        if resource_key == "titanium":
+            return int(getattr(me, "titanium", 0) or 0)
+        return self._count_tableau_resource_type(state, resource_key)
+
+    def _check_description_resource_cost(self, name: str, state) -> tuple[bool, str]:
+        desc = self.get_description(name)
+        if not desc:
+            return True, ""
+        first_sentence = desc.split(".", 1)[0].lower()
+        if "action:" in first_sentence:
+            return True, ""
+
+        spend_matches = list(re.finditer(
+            r"\b(lose|spend)\s+(\d+|one|two|three|four|five|six)\s+([a-z-]+)",
+            first_sentence,
+        ))
+        if "requires" not in first_sentence and not spend_matches:
+            return True, ""
+
+        for match in spend_matches:
+            verb = match.group(1)
+            amount = self._parse_count_token(match.group(2))
+            resource_key, resource_singular, resource_plural = self._normalize_resource_name(match.group(3))
+            if amount <= 0 or not resource_key:
+                continue
+            have = self._resource_amount_available(state, resource_key)
+            if have >= amount:
+                continue
+            verb_ru = "потерять" if verb == "lose" else "потратить"
+            resource_label = resource_singular if amount == 1 else resource_plural
+            return False, f"Нужно {verb_ru} {amount} {resource_label} (сейчас {have})"
+
+        return True, ""
 
     def _check_placement(self, name: str, state) -> tuple[bool, str]:
         desc = self.get_description(name).lower()
@@ -158,11 +370,21 @@ class RequirementsChecker:
 
         delta = 0
         unmet_parts = 0
-        for part in parts:
+        closed_window = False
+        part_statuses = None
+        if parts:
             req_offset, venus_req_offset = self._get_requirement_offsets(state)
-            part_ok, _ = self._check_single(part, state, req_offset, venus_req_offset)
+            part_statuses = self._compound_part_statuses(parts, state, req_offset, venus_req_offset, name)
+        for part in parts:
+            if part_statuses is not None:
+                part_ok = next((ok for p, ok, _reason in part_statuses if p == part), True)
+            else:
+                req_offset, venus_req_offset = self._get_requirement_offsets(state)
+                part_ok, _ = self._check_single(part, state, req_offset, venus_req_offset, name)
             if not part_ok:
                 unmet_parts += 1
+                if self._is_closed_window_part(part.lower(), state):
+                    closed_window = True
             delta += self._score_delta_for_part(part.lower(), state, part_ok)
 
         if "city tile" in req_reason.lower():
@@ -172,12 +394,28 @@ class RequirementsChecker:
         if unmet_parts >= 2:
             delta -= unmet_parts * 2
 
-        return max(0, score + delta), req_ok, req_reason
+        adjusted = max(0, score + delta)
+        if closed_window and adjusted > 54:
+            adjusted = 54
+
+        return adjusted, req_ok, req_reason
 
     def _score_delta_for_part(self, req_l: str, state, req_ok: bool) -> int:
         delta = 0
         gen = getattr(state, "generation", 1) or 1
         late_req_penalty = 4 if gen >= 8 else 2 if gen >= 5 else 0
+
+        max_tm = re.search(r'max\s+(-?\d+)\s*°c', req_l)
+        if max_tm and not req_ok:
+            temp_limit = int(max_tm.group(1))
+            over_temp = max(0, state.temperature - temp_limit)
+            over_steps = (over_temp + 1) // 2 if over_temp > 0 else 0
+            if over_steps >= 4:
+                delta -= 20 + late_req_penalty
+            elif over_steps >= 2:
+                delta -= 16 + late_req_penalty
+            elif over_steps >= 1:
+                delta -= 12 + late_req_penalty
 
         tm = re.search(r'(-?\d+)\s*°c', req_l)
         if tm and 'max' not in req_l:
@@ -193,6 +431,17 @@ class RequirementsChecker:
                 delta -= 5 + (1 if gen >= 6 else 0)
             else:
                 delta -= 2
+
+        max_om = re.search(r'max\s+(\d+)%\s*oxygen', req_l)
+        if max_om and not req_ok:
+            oxy_limit = int(max_om.group(1))
+            oxy_over = max(0, state.oxygen - oxy_limit)
+            if oxy_over >= 5:
+                delta -= 18 + late_req_penalty
+            elif oxy_over >= 2:
+                delta -= 14 + late_req_penalty
+            elif oxy_over >= 1:
+                delta -= 10 + late_req_penalty
 
         om = re.search(r'(\d+)%\s*oxygen', req_l)
         if om and 'max' not in req_l:
@@ -213,7 +462,7 @@ class RequirementsChecker:
         if ttm:
             tag_need = int(ttm.group(1))
             tag_name = ttm.group(2).lower()
-            have_t = (state.tags or {}).get(tag_name, 0)
+            have_t = self._count_requirement_tags(state.tags or {}, tag_name)
             tag_gap = tag_need - have_t
             if req_ok:
                 delta += 5 if tag_need >= 3 else 3 if tag_need >= 2 else 0
@@ -225,6 +474,18 @@ class RequirementsChecker:
                 delta -= 8 + (1 if gen >= 5 else 0)
             elif tag_gap > 0:
                 delta -= 4 if tag_need == 1 else 6
+
+        max_vm = re.search(r'max\s+(\d+)%\s*venus', req_l)
+        if max_vm and not req_ok:
+            v_limit = int(max_vm.group(1))
+            v_over = max(0, state.venus - v_limit)
+            v_over_steps = (v_over + 1) // 2 if v_over > 0 else 0
+            if v_over_steps >= 4:
+                delta -= 18 + late_req_penalty
+            elif v_over_steps >= 2:
+                delta -= 14 + late_req_penalty
+            elif v_over_steps >= 1:
+                delta -= 10 + late_req_penalty
 
         vm = re.search(r'(\d+)%\s*venus', req_l)
         if vm and 'max' not in req_l:
@@ -239,14 +500,59 @@ class RequirementsChecker:
             elif v_gap > 0:
                 delta -= 4
 
+        max_ocm = re.search(r'max\s+(\d+)\s+oceans?', req_l)
+        if max_ocm and not req_ok:
+            oc_limit = int(max_ocm.group(1))
+            oc_over = max(0, state.oceans - oc_limit)
+            if oc_over >= 3:
+                delta -= 16 + late_req_penalty
+            elif oc_over >= 2:
+                delta -= 12 + late_req_penalty
+            elif oc_over >= 1:
+                delta -= 8 + late_req_penalty
+
         ocm = re.search(r'(\d+)\s+oceans?', req_l)
-        if ocm and 'max' not in req_l and req_ok:
+        if ocm and 'max' not in req_l:
             oc_need = int(ocm.group(1))
-            delta += 3 if oc_need <= 3 else 1 if oc_need <= 5 else 0
+            oc_gap = oc_need - state.oceans
+            if req_ok:
+                delta += 3 if oc_need <= 3 else 1 if oc_need <= 5 else 0
+            elif oc_gap >= 5:
+                delta -= 8 + late_req_penalty
+            elif oc_gap >= 3:
+                delta -= 5 + late_req_penalty
+            elif oc_gap > 0:
+                delta -= 2
 
         return delta
 
-    def _check_single(self, r: str, state, req_offset: int = 0, venus_req_offset: int = 0) -> tuple[bool, str]:
+    def _is_closed_window_part(self, req_l: str, state) -> bool:
+        max_tm = re.search(r'max\s+(-?\d+)\s*°c', req_l)
+        if max_tm and state.temperature > int(max_tm.group(1)):
+            return True
+
+        max_om = re.search(r'max\s+(\d+)%\s*oxygen', req_l)
+        if max_om and state.oxygen > int(max_om.group(1)):
+            return True
+
+        max_vm = re.search(r'max\s+(\d+)%\s*venus', req_l)
+        if max_vm and state.venus > int(max_vm.group(1)):
+            return True
+
+        max_ocm = re.search(r'max\s+(\d+)\s+oceans?', req_l)
+        if max_ocm and state.oceans > int(max_ocm.group(1)):
+            return True
+
+        return False
+
+    def _check_single(
+        self,
+        r: str,
+        state,
+        req_offset: int = 0,
+        venus_req_offset: int = 0,
+        card_name: str = "",
+    ) -> tuple[bool, str]:
         """Check a single requirement condition. req_offset = Inventrix bonus, venus_req_offset = Morning Star bonus."""
         I = re.IGNORECASE
         global_note = " [Inventrix -2]" if req_offset else ""
@@ -336,7 +642,7 @@ class RequirementsChecker:
             need = int(m.group(1))
             tag_name = m.group(2).lower()
             tags = state.tags if hasattr(state, 'tags') else {}
-            have = tags.get(tag_name, 0)
+            have = self._count_requirement_tags(tags, tag_name)
             if have < need:
                 return False, f"Нужно {need} {tag_name} tag (есть {have})"
             return True, ""
@@ -345,9 +651,11 @@ class RequirementsChecker:
         m = re.match(r"(\d+) cit(?:y|ies)", r, I)
         if m:
             need = int(m.group(1))
-            have = state.me.cities if hasattr(state, 'me') else 0
+            uses_all_cities = self._city_requirement_uses_all_cities(card_name)
+            have = self._count_cities_in_play(state) if uses_all_cities else (state.me.cities if hasattr(state, 'me') else 0)
             if have < need:
-                return False, f"Нужно {need} city (есть {have})"
+                scope = " in play" if uses_all_cities else ""
+                return False, f"Нужно {need} city{scope} (есть {have})"
             return True, ""
 
         # --- Colonies ---

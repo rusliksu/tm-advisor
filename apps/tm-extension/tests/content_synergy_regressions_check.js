@@ -30,6 +30,8 @@ function extractFunctionSource(fileSource, functionName) {
 }
 
 const getFxSource = extractFunctionSource(source, 'getFx');
+const cardPlacesCityTileByNameSource = extractFunctionSource(source, 'cardPlacesCityTileByName');
+const cardPlacesMapTileByNameSource = extractFunctionSource(source, 'cardPlacesMapTileByName');
 const getCardTypeByNameSource = extractFunctionSource(source, 'getCardTypeByName');
 const isPreludeOrCorpNameSource = extractFunctionSource(source, 'isPreludeOrCorpName');
 const getCardNameSource = extractFunctionSource(source, 'getCardName');
@@ -38,7 +40,12 @@ const yNameSource = extractFunctionSource(source, 'yName');
 const yWeightSource = extractFunctionSource(source, 'yWeight');
 const reasonCardLabelSource = extractFunctionSource(source, 'reasonCardLabel');
 const describeNamedSynergySource = extractFunctionSource(source, 'describeNamedSynergy');
+const describeCorpBoostReasonSource = extractFunctionSource(source, 'describeCorpBoostReason');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
+const pushStructuredReasonSource = extractFunctionSource(source, 'pushStructuredReason');
+const getProductionFloorStatusSource = extractFunctionSource(source, 'getProductionFloorStatus');
+const scoreTurmoilSynergySource = extractFunctionSource(source, 'scoreTurmoilSynergy');
+const scoreBoardStateModifiersSource = extractFunctionSource(source, 'scoreBoardStateModifiers');
 const getCardCostSource = extractFunctionSource(source, 'getCardCost');
 const isPlantEngineCardByFxSource = extractFunctionSource(source, 'isPlantEngineCardByFx');
 const isMeltworksLastGenCashoutSource = extractFunctionSource(source, 'isMeltworksLastGenCashout');
@@ -48,6 +55,10 @@ const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTablea
 const scoreTableauSynergySource = extractFunctionSource(source, 'scoreTableauSynergy');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
+const isOpeningHandContextSource = extractFunctionSource(source, 'isOpeningHandContext');
+const normalizeOpeningHandBiasSource = extractFunctionSource(source, 'normalizeOpeningHandBias');
+const getOpeningHandBiasSource = extractFunctionSource(source, 'getOpeningHandBias');
+const getInitialDraftRatingScoreSource = extractFunctionSource(source, 'getInitialDraftRatingScore');
 
 const positionalScoring = new Proxy({
   drawEarlyBonus: 5,
@@ -55,6 +66,14 @@ const positionalScoring = new Proxy({
   drawLatePenalty: 4,
   tableauSynergyPer: 3,
   tableauSynergyMax: 4,
+  delegateFew: 3,
+  delegateMid: 2,
+  delegateMany: 1,
+  delegateMulti: 1,
+  influenceCap: 2,
+  energyDeficitPenalty: 3,
+  energyDeepDeficit: 8,
+  ppUnplayable: 30,
 }, {
   get(target, prop) {
     return Object.prototype.hasOwnProperty.call(target, prop) ? target[prop] : 0;
@@ -64,15 +83,20 @@ const positionalScoring = new Proxy({
 const sandbox = {
   console,
   Set,
+  TM_CONTENT_PLAY_PRIORITY: null,
   TM_CARD_EFFECTS: {},
   TM_CARD_DATA: {},
   TM_CARD_TAGS: {},
   TM_CARD_TAG_REQS: {},
   TM_RATINGS: {},
+  _TM_RATINGS_RAW: {},
   TM_CORPS: {},
   kebabLookup: {},
   lowerLookup: {},
   resolveCorpName(name) {
+    return name;
+  },
+  _baseCardName(name) {
     return name;
   },
   _getRatingByCardName(name) {
@@ -112,6 +136,8 @@ sandbox.globalThis = sandbox;
 vm.runInNewContext(
   [
     getFxSource,
+    cardPlacesCityTileByNameSource,
+    cardPlacesMapTileByNameSource,
     getCardTypeByNameSource,
     isPreludeOrCorpNameSource,
     getCardNameSource,
@@ -120,7 +146,12 @@ vm.runInNewContext(
     yWeightSource,
     reasonCardLabelSource,
     describeNamedSynergySource,
+    describeCorpBoostReasonSource,
     getCorpBoostSource,
+    pushStructuredReasonSource,
+    getProductionFloorStatusSource,
+    scoreTurmoilSynergySource,
+    scoreBoardStateModifiersSource,
     getCardCostSource,
     isPlantEngineCardByFxSource,
     isMeltworksLastGenCashoutSource,
@@ -130,7 +161,15 @@ vm.runInNewContext(
     scoreTableauSynergySource,
     getNamedRequirementDelayProfileSource,
     scorePositionalFactorsSource,
+    isOpeningHandContextSource,
+    normalizeOpeningHandBiasSource,
+    getOpeningHandBiasSource,
+    getInitialDraftRatingScoreSource,
+    'globalThis.__tm_test_describeCorpBoostReason = describeCorpBoostReason;',
     'globalThis.__tm_test_getCorpBoost = getCorpBoost;',
+    'globalThis.__tm_test_getProductionFloorStatus = getProductionFloorStatus;',
+    'globalThis.__tm_test_scoreTurmoilSynergy = scoreTurmoilSynergy;',
+    'globalThis.__tm_test_scoreBoardStateModifiers = scoreBoardStateModifiers;',
     'globalThis.__tm_test_getCardCost = getCardCost;',
     'globalThis.__tm_test_isPlantEngineCardByFx = isPlantEngineCardByFx;',
     'globalThis.__tm_test_isMeltworksLastGenCashout = isMeltworksLastGenCashout;',
@@ -138,12 +177,18 @@ vm.runInNewContext(
     'globalThis.__tm_test_scoreTableauSynergy = scoreTableauSynergy;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
     'globalThis.__tm_test_scorePositionalFactors = scorePositionalFactors;',
+    'globalThis.__tm_test_getOpeningHandBias = getOpeningHandBias;',
+    'globalThis.__tm_test_getInitialDraftRatingScore = getInitialDraftRatingScore;',
   ].join('\n\n'),
   sandbox,
   {filename: sourcePath}
 );
 
+const describeCorpBoostReason = sandbox.__tm_test_describeCorpBoostReason;
 const getCorpBoost = sandbox.__tm_test_getCorpBoost;
+const getProductionFloorStatus = sandbox.__tm_test_getProductionFloorStatus;
+const scoreTurmoilSynergy = sandbox.__tm_test_scoreTurmoilSynergy;
+const scoreBoardStateModifiers = sandbox.__tm_test_scoreBoardStateModifiers;
 const getCardCost = sandbox.__tm_test_getCardCost;
 const isPlantEngineCardByFx = sandbox.__tm_test_isPlantEngineCardByFx;
 const isMeltworksLastGenCashout = sandbox.__tm_test_isMeltworksLastGenCashout;
@@ -151,13 +196,21 @@ const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
 const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
 const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
+const getOpeningHandBias = sandbox.__tm_test_getOpeningHandBias;
+const getInitialDraftRatingScore = sandbox.__tm_test_getInitialDraftRatingScore;
 
+assert.strictEqual(typeof describeCorpBoostReason, 'function', 'describeCorpBoostReason should be exposed');
 assert.strictEqual(typeof getCorpBoost, 'function', 'getCorpBoost should be exposed');
+assert.strictEqual(typeof getProductionFloorStatus, 'function', 'getProductionFloorStatus should be exposed');
+assert.strictEqual(typeof scoreTurmoilSynergy, 'function', 'scoreTurmoilSynergy should be exposed');
+assert.strictEqual(typeof scoreBoardStateModifiers, 'function', 'scoreBoardStateModifiers should be exposed');
 assert.strictEqual(typeof getCardCost, 'function', 'getCardCost should be exposed');
 assert.strictEqual(typeof isPlantEngineCardByFx, 'function', 'isPlantEngineCardByFx should be exposed');
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
+assert.strictEqual(typeof getOpeningHandBias, 'function', 'getOpeningHandBias should be exposed');
+assert.strictEqual(typeof getInitialDraftRatingScore, 'function', 'getInitialDraftRatingScore should be exposed');
 
 function corpBoost(corpName, opts) {
   return getCorpBoost(corpName, Object.assign({
@@ -200,6 +253,51 @@ assert.strictEqual(
   3,
   'Robinson should keep the explicit Suitable Infrastructure bonus'
 );
+
+sandbox.TM_CARD_EFFECTS['Prefabrication of Human Habitats'] = {c: 8, disc: {amount: 2, tag: 'city'}};
+const prefabCityDiscountText = 'cards with a city tag cost 2 m€ less. the city standard project costs 2 m€ less.';
+for (const corpName of ['Tharsis Republic', 'Arcadian Communities', 'Philares', 'Gagarin Mobile Base']) {
+  assert.strictEqual(
+    corpBoost(corpName, {
+      cardName: 'Prefabrication of Human Habitats',
+      eLower: prefabCityDiscountText,
+      cardTags: new Set(['building', 'city']),
+    }),
+    0,
+    `${corpName} should not treat Prefabrication as placing a city/tile`,
+  );
+}
+
+sandbox.TM_CARD_EFFECTS['Real City Project'] = {c: 18, city: 1};
+assert.strictEqual(
+  corpBoost('Tharsis Republic', {
+    cardName: 'Real City Project',
+    eLower: 'place a city tile.',
+    cardTags: new Set(['city', 'building']),
+  }),
+  3,
+  'Tharsis should still boost cards that actually place a city tile'
+);
+
+sandbox.TM_RATINGS['Colonial Representation'] = {
+  e: '13 MC for a one-time colony rebate',
+  w: '',
+  dr: 'У вас +1 влияние. Получите 3 M€ за каждую вашу колонию.',
+};
+assert.strictEqual(
+  describeCorpBoostReason('Septem Tribus', 'Colonial Representation', 2),
+  'Septem Tribus: influence +2',
+  'Septem Tribus reason should identify influence, not print an opaque corp bonus',
+);
+
+const influenceOnlyTurmoil = scoreTurmoilSynergy(
+  'you have +1 influence. gain 3 m€ per colony you have.',
+  {e: '13 MC for permanent +1 influence'},
+  new Set(),
+  {turmoilActive: true, myDelegates: 0},
+);
+assert(influenceOnlyTurmoil.reasons.includes('Влияние +2 (0 дел.)'), 'influence-only cards should be labeled as influence');
+assert(!influenceOnlyTurmoil.reasons.some((reason) => reason.startsWith('Делегаты')), 'influence-only cards should not be labeled as delegates');
 
 sandbox.TM_CARD_EFFECTS['Lunar Exports'] = { c: 19, mp: 5 };
 assert.strictEqual(
@@ -289,6 +387,25 @@ const baseCtx = {
   gen: 1,
 };
 
+const prefabPositionalScore = scorePositionalFactors(
+  new Set(['building', 'city']),
+  'green',
+  'Prefabrication of Human Habitats',
+  8,
+  1,
+  prefabCityDiscountText,
+  {e: prefabCityDiscountText},
+  Object.assign({}, baseCtx, {prod: {plants: 4}, globalParams: {}}),
+  74,
+  true,
+  false,
+  false
+);
+assert(
+  !prefabPositionalScore.reasons.some((reason) => reason.includes('Город+озелен') || reason.includes('Мало озелен')),
+  'Prefabrication should not receive city adjacency positional reasons without fx.city'
+);
+
 const mergerScore = scorePositionalFactors(
   new Set(),
   'green',
@@ -368,5 +485,117 @@ const fishDelay = getNamedRequirementDelayProfile('Fish', {
 assert.strictEqual(fishDelay.penalty, -10, 'Fish should get a heavy opener temp penalty at -30C');
 assert.strictEqual(fishDelay.suppressAccumulatorBonus, true, 'Fish should suppress accumulator bonus while far from +2C');
 assert.strictEqual(fishDelay.selfResourceFactor, 0.15, 'Fish should sharply discount self-resource VP projection while locked');
+
+const treesDelay = getNamedRequirementDelayProfile('Trees', {
+  globalParams: {temperature: -30, oxy: 0},
+});
+assert.strictEqual(treesDelay.penalty, -8, 'Trees should get a meaningful opener temp penalty at -30C');
+assert.strictEqual(treesDelay.reason, 'Trees ждут temp −8', 'Trees delay reason should stay explicit in the tooltip');
+
+sandbox.TM_CARD_DATA['Acquired Space Agency'] = {type: 'prelude'};
+sandbox.TM_CARD_DATA['EcoLine'] = {type: 'corporation'};
+sandbox.TM_RATINGS['Acquired Space Agency'] = {s: 72, o: 7};
+sandbox.TM_RATINGS['EcoLine'] = {s: 85, o: 5};
+
+assert.strictEqual(
+  getOpeningHandBias('Acquired Space Agency', sandbox.TM_RATINGS['Acquired Space Agency'], {_openingHand: true}),
+  0,
+  'Prelude cards should not receive a separate opening-hand bias'
+);
+assert.strictEqual(
+  getInitialDraftRatingScore('Acquired Space Agency', 55),
+  72,
+  'Prelude initial draft score should stay at base rating without a separate opening-hand uplift'
+);
+assert.strictEqual(
+  getOpeningHandBias('EcoLine', sandbox.TM_RATINGS['EcoLine'], {_openingHand: true}),
+  3,
+  'Corps should keep their opening-hand bias'
+);
+assert.strictEqual(
+  getInitialDraftRatingScore('EcoLine', 55),
+  88,
+  'Corp initial draft score should still include normalized opening-hand bias'
+);
+
+sandbox.TM_CARD_EFFECTS['Business Empire'] = {c: 6, mp: 6};
+const businessCtx = {
+  prod: {energy: 0, steel: 0, ti: 0, plants: 0, heat: 0},
+  tableauNames: [],
+  coloniesOwned: 0,
+};
+const businessFloor = getProductionFloorStatus('Business Empire', businessCtx);
+assert.strictEqual(businessFloor.unplayable, false, 'Business Empire should not require energy production');
+assert.strictEqual(businessFloor.reasons.length, 0, 'Business Empire should not emit production-floor reasons');
+const businessBoard = scoreBoardStateModifiers(
+  'Business Empire',
+  {e: 'Increase your M€ production 6 steps. Pay 6 M€.'},
+  'increase your m€ production 6 steps. pay 6 m€.',
+  businessCtx,
+);
+assert(
+  !businessBoard.reasons.some((reason) => /energy|энерг/i.test(reason)),
+  'Business Empire should not show energy deficit reasons',
+);
+
+assert(
+  source.includes("'Unity': ['venus', 'jovian']"),
+  'Unity hand-cluster should stay focused on venus/jovian instead of generic earth stacking'
+);
+
+assert(
+  source.includes("if (htTag === 'earth' && htCount < 3) continue;"),
+  'Earth hand-affinity should ignore generic x2 clustering and wait for a real earth stack'
+);
+
+assert(
+  source.includes("var premiumColonies = new Set(['Luna', 'Pluto', 'Triton', 'Ceres']);"),
+  'Established Methods should treat Triton as a premium colony shell instead of older Titan/Europa heuristics'
+);
+
+assert(
+  source.includes("reasons.push('Poseidon colony SP +3');"),
+  'Established Methods should keep a stronger dedicated Poseidon opener bonus'
+);
+
+assert(
+  source.includes("descs.push('Planetary Alliance unlocks req +6');"),
+  'Solarnet should surface Planetary Alliance as a direct opener unlock'
+);
+
+assert(
+  source.includes("if (cardName === 'High Circles') {"),
+  'High Circles should have explicit Turmoil-shell opener logic'
+);
+
+assert(
+  source.includes("reasons.push('Septem Tribus politics +3');"),
+  'High Circles should explicitly reward Septem Tribus in opener scoring'
+);
+
+assert(
+  source.includes("reasons.push('Corridors leader race +2');"),
+  'High Circles should explicitly reward Corridors of Power in opener scoring'
+);
+
+assert(
+  source.includes("reasons.push('Rise To Power delegates +2');"),
+  'High Circles should explicitly reward Rise To Power in opener scoring'
+);
+
+assert(
+  source.includes("pushStructuredReason(reasons, reasonRows, 'Океанов 1 −14', -14);"),
+  'Arctic Algae should get a hard near-dead penalty when only one ocean remains'
+);
+
+assert(
+  source.includes("if (cardName === 'Arctic Algae' && ctx && ctx.globalParams) {"),
+  'Arctic Algae should have dedicated dead-window guards in runtime scoring'
+);
+
+assert(
+  source.includes("if (!decompTargetDead && ['plant', 'animal', 'microbe'].some"),
+  'Dead conditional bio cards should not receive generic Decomposers reverse synergy'
+);
 
 console.log('content synergy regressions: OK');

@@ -5,8 +5,7 @@ const TM_CARD_EFFECTS = {
  },
  "Business Empire": {
   "c": 6,
-  "mp": 6,
-  "ep": -1
+  "mp": 6
  },
  "Acquired Company": {
   "c": 10,
@@ -612,20 +611,14 @@ const TM_CARD_EFFECTS = {
  },
  "Regolith Eaters": {
   "c": 13,
-  "actTR": 0.33,
-  "res": "microbe",
-  "actO2": 1
+  "res": "microbe"
  },
  "GHG Producing Bacteria": {
   "c": 8,
-  "actTR": 0.33,
-  "res": "microbe",
-  "actTmp": 1
+  "res": "microbe"
  },
  "Nitrite Reducing Bacteria": {
   "c": 11,
-  "tr": 1,
-  "actTR": 1,
   "res": "microbe"
  },
  "Electro Catapult": {
@@ -682,7 +675,6 @@ const TM_CARD_EFFECTS = {
  },
  "Dirigibles": {
   "c": 11,
-  "actMC": 1.5,
   "res": "floater",
   "tg": "venus"
  },
@@ -694,7 +686,6 @@ const TM_CARD_EFFECTS = {
  },
  "Aerial Mappers": {
   "c": 11,
-  "actCD": 1,
   "res": "floater",
   "tg": "venus",
   "vp": 1
@@ -849,7 +840,8 @@ const TM_CARD_EFFECTS = {
  "Ice Moon Colony": {
   "c": 23,
   "mp": 0,
-  "colony": {}
+  "colony": {},
+  "oc": 1
  },
  "Pioneer Settlement": {
   "c": 13,
@@ -958,14 +950,11 @@ const TM_CARD_EFFECTS = {
  },
  "Sulphur-Eating Bacteria": {
   "c": 6,
-  "actMC": 3,
   "res": "microbe"
  },
  "Thermophiles": {
   "c": 9,
-  "actTR": 0.33,
-  "res": "microbe",
-  "actVn": 1
+  "res": "microbe"
  },
  "Venusian Insects": {
   "c": 5,
@@ -1045,7 +1034,6 @@ const TM_CARD_EFFECTS = {
  },
  "Forced Precipitation": {
   "c": 8,
-  "actMC": 0.4,
   "res": "floater",
   "tg": "venus"
  },
@@ -1360,7 +1348,8 @@ const TM_CARD_EFFECTS = {
  },
  "High Circles": {
   "c": 0,
-  "tr": 1
+  "tr": 1,
+  "infl": 1
  },
  "Great Aquifer": {
   "c": 0,
@@ -1925,15 +1914,11 @@ const TM_CARD_EFFECTS = {
  },
  "Extractor Balloons": {
   "c": 21,
-  "actTR": 0.5,
   "res": "floater",
-  "tg": "venus",
-  "vn": 1,
-  "actVn": 1
+  "tg": "venus"
  },
  "Jet Stream Microscrappers": {
   "c": 12,
-  "actTR": 0.5,
   "res": "floater",
   "tg": "venus"
  },
@@ -1950,7 +1935,6 @@ const TM_CARD_EFFECTS = {
  },
  "Atmo Collectors": {
   "c": 15,
-  "actMC": 3,
   "res": "floater",
   "tg": "venus"
  },
@@ -2328,9 +2312,7 @@ const TM_CARD_EFFECTS = {
   "c": 17,
   "sp": 1,
   "tp": 1,
-  "vp": 1,
-  "st": 2,
-  "ti": 1
+  "vp": 1
  },
  "Flat Mars Theory": {
   "c": 8,
@@ -2359,8 +2341,6 @@ const TM_CARD_EFFECTS = {
  },
  "Prefabrication of Human Habitats": {
   "c": 8,
-  "city": 1,
-  "mp": 1,
   "disc": {
    "amount": 2,
    "tag": "city"
@@ -2559,7 +2539,6 @@ const TM_CARD_EFFECTS = {
  "Jupiter Floating Station": {
   "c": 9,
   "vp": 1,
-  "actMC": 4,
   "res": "floater",
   "tg": "jovian"
  },
@@ -2704,8 +2683,7 @@ const TM_CARD_EFFECTS = {
   "vp": 1
  },
  "Floating Refinery": {
-  "c": 7,
-  "actMC": 2
+  "c": 7
  },
  "Weather Balloons": {
   "c": 11,
@@ -2720,10 +2698,8 @@ const TM_CARD_EFFECTS = {
  },
  "Deuterium Export": {
   "c": 11,
-  "actTR": 0.33,
   "res": "floater",
-  "tg": "venus",
-  "act_ep": 1
+  "tg": "venus"
  },
  "GHG Import From Venus": {
   "c": 23,
@@ -2885,9 +2861,7 @@ const TM_CARD_EFFECTS = {
   "pl": 2
  },
  "Comet Aiming": {
-  "c": 17,
-  "actTR": 0.5,
-  "res": "floater"
+  "c": 17
  },
  "Comet for Venus": {
   "c": 11,
@@ -2900,10 +2874,8 @@ const TM_CARD_EFFECTS = {
  },
  "Local Shading": {
   "c": 4,
-  "actTR": 0.33,
   "res": "floater",
-  "tg": "venus",
-  "act_mp": 1
+  "tg": "venus"
  },
  "Stanford Torus": {
   "c": 12,
@@ -3306,14 +3278,15 @@ const TM_CARD_EFFECTS = {
   "cd": 2
  },
  "Event Analysts": {
-  "c": 5
+  "c": 5,
+  "infl": 1
  },
  "Research Coordination": {
   "c": 4
  },
  "Colonial Representation": {
   "c": 10,
-  "mp": 3
+  "infl": 1
  },
  "Hermetic Order of Mars": {
   "c": 10,
@@ -3516,7 +3489,6 @@ const TM_CARD_EFFECTS = {
  },
  "Copernicus Tower": {
   "c": 36,
-  "actTR": 1,
   "res": "science",
   "vpTag": {
    "tag": "moon",
@@ -3790,7 +3762,8 @@ const TM_CARD_EFFECTS = {
   "vp": -1
  },
  "Deepwater Dome": {
-  "pp": 1
+  "pp": 1,
+  "oc": 1
  },
  "Demetron Labs": {
   "res": "data"
@@ -4424,7 +4397,8 @@ const TM_CARD_EFFECTS = {
   "mc": -4
  },
  "Election Sponsorship": {
-  "c": 0
+  "c": 0,
+  "infl": 1
  },
  "Butterfly Effect": {
   "c": 8,

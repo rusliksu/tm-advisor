@@ -451,7 +451,7 @@
   var remainingSteps = (TM_BRAIN_CORE && TM_BRAIN_CORE.remainingStepsWithOptions)
     ? function(state) {
       return TM_BRAIN_CORE.remainingStepsWithOptions(state, {
-        venusWeight: 0.5,
+        venusWeight: 0,
         zeroWhenCoreDone: true,
       });
     }
@@ -460,16 +460,12 @@
       var temp   = typeof g.temperature  === 'number' ? g.temperature  : -30;
       var o2     = typeof g.oxygenLevel  === 'number' ? g.oxygenLevel  : 0;
       var oceans = typeof g.oceans       === 'number' ? g.oceans       : 0;
-      var venus  = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30; // 30 = maxed/not in game
       var tempSteps  = Math.max(0, Math.round((8 - temp) / 2));
       var oxySteps   = Math.max(0, 14 - o2);
       var oceanSteps = Math.max(0, 9 - oceans);
       var coreSteps  = tempSteps + oxySteps + oceanSteps;
       // Game ends when temp+oxy+oceans all maxed — Venus doesn't affect game end
-      if (coreSteps === 0) return 0;
-      var venusSteps = Math.max(0, Math.round((30 - venus) / 2));
-      // Venus steps weighted 0.5x: WGT doesn't raise Venus, so it doesn't end the game
-      return coreSteps + Math.round(venusSteps * 0.5);
+      return coreSteps;
     };
 
   var estimateGensLeft = sharedEstimateGensLeftFromState
@@ -924,6 +920,27 @@
       return tradeValue;
     };
 
+  function countOwnColonies(state, tp) {
+    if (tp && typeof tp.coloniesCount === 'number') return tp.coloniesCount;
+    var colonies = state && state.game && state.game.colonies;
+    var color = tp && tp.color;
+    if (!Array.isArray(colonies) || !color) return 0;
+    var count = 0;
+    for (var ci = 0; ci < colonies.length; ci++) {
+      var slots = colonies[ci] && colonies[ci].colonies;
+      if (!Array.isArray(slots)) continue;
+      for (var si = 0; si < slots.length; si++) {
+        var slot = slots[si];
+        if (slot === color) {
+          count++;
+        } else if (slot && (slot.player === color || slot.playerColor === color || slot.color === color)) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
   var hasVPCard = (TM_BRAIN_CORE && TM_BRAIN_CORE.hasVPCard) || function(tableauNames, vpSet) {
     var arr = [];
     vpSet.forEach(function(c) { arr.push(c); });
@@ -1107,7 +1124,6 @@
 
     // === Colony / trade modifiers ===
     'Trading Colony':          { perGen: 2 },   // +2 resources per trade (~2 trades left, ~4 MC/trade bonus)
-    'Colonial Representation': { perGen: 1.5 }, // +1 influence permanent + colony rebate
     'L1 Trade Terminal':       { perGen: 2 },   // no energy/MC for trade, +1 VP
     'Cryo-Sleep':              { perGen: 1 },   // +1 trade income
 
@@ -1550,16 +1566,19 @@
       for (var trk in tagReqs) {
         var needed = tagReqs[trk];
         var have = myTags[trk] || 0;
+        var wildHave = trk !== 'wild' ? (myTags.wild || 0) : 0;
         // Count self-tag: playing this card adds its own tags
         var selfTagCount = 0;
         for (var sti = 0; sti < tags.length; sti++) {
           if (tags[sti] === trk) selfTagCount++;
         }
-        var totalAfter = have + selfTagCount;
+        var totalAfter = have + wildHave + selfTagCount;
         if (totalAfter < needed) {
           var gap = needed - totalAfter;
           // Reduce gap by hand tags (partial credit: hand cards likely to be played)
-          var handHelp = Math.min(gap, handTagCounts[trk] || 0);
+          var exactHandHelp = handTagCounts[trk] || 0;
+          var wildHandHelp = trk !== 'wild' ? (handTagCounts.wild || 0) : 0;
+          var handHelp = Math.min(gap, exactHandHelp + wildHandHelp);
           var effectiveGap = gap - handHelp * 0.6; // 60% credit for hand tags
           reqPenalty += Math.max(0, effectiveGap) * 8;
         }
@@ -1680,6 +1699,9 @@
         var sVal = STOCK_MC[sk] || 1;
         ev += stock[sk] * sVal;
       }
+    }
+    if (name === 'Colonial Representation') {
+      ev += countOwnColonies(state, tp) * 3;
     }
 
     // ── GLOBAL PARAMETER RAISES ──
@@ -2478,14 +2500,17 @@
     else dangerZone = 'green';
 
     var g = (state && state.game) || {};
+    var temp = typeof g.temperature === 'number' ? g.temperature : -30;
+    var oxy = typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0;
+    var oceans = typeof g.oceans === 'number' ? g.oceans : 0;
     var venus = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30;
     var breakdown = {
-      temp: typeof g.temperature === 'number' ? g.temperature : -30,
-      tempSteps: Math.max(0, Math.round((8 - (g.temperature || -30)) / 2)),
-      oxy: typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0,
-      oxySteps: Math.max(0, 14 - (g.oxygenLevel || 0)),
-      oceans: typeof g.oceans === 'number' ? g.oceans : 0,
-      oceanSteps: Math.max(0, 9 - (g.oceans || 0)),
+      temp: temp,
+      tempSteps: Math.max(0, Math.round((8 - temp) / 2)),
+      oxy: oxy,
+      oxySteps: Math.max(0, 14 - oxy),
+      oceans: oceans,
+      oceanSteps: Math.max(0, 9 - oceans),
       venus: venus,
       venusSteps: Math.max(0, Math.round((30 - venus) / 2)),
     };
@@ -3294,10 +3319,13 @@
         autoVP[cardName] = { type: 'static', vp: e.vp };
       }
     }
+    var cardTags = typeof root.TM_CARD_TAGS !== 'undefined' ? root.TM_CARD_TAGS : null;
+    var cardVP = typeof root.TM_CARD_VP !== 'undefined' ? root.TM_CARD_VP : autoVP;
+    var cardData = typeof root.TM_CARD_DATA !== 'undefined' ? root.TM_CARD_DATA : null;
     var globalReqs = typeof root.TM_CARD_GLOBAL_REQS !== 'undefined' ? root.TM_CARD_GLOBAL_REQS : null;
     var tagReqs = typeof root.TM_CARD_TAG_REQS !== 'undefined' ? root.TM_CARD_TAG_REQS : null;
     var cardEffects = typeof root.TM_CARD_EFFECTS !== 'undefined' ? root.TM_CARD_EFFECTS : null;
-    setCardData(null, autoVP, null, globalReqs, tagReqs, cardEffects);
+    setCardData(cardTags, cardVP, cardData, globalReqs, tagReqs, cardEffects);
   }
 
   // UMD export

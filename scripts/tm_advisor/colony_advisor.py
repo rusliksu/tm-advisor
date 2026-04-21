@@ -4,27 +4,20 @@ import re
 
 from .constants import (
     COLONY_TRADE_DATA,
-    TRADE_DISCOUNT_CARDS,
-    TRADE_TRACK_BOOST_CARDS,
-    TRADE_MC_BONUS_CARDS,
     FREE_TRADE_CARDS,
-    COLONY_SYNERGY_CARDS,
     COLONY_STANDARD_PROJECT_COST,
     COLONY_TIERS,
     COLONY_BUILD_THRESHOLDS,
 )
 from .economy import resource_values
 from .analysis import _estimate_remaining_gens
-from .shared_data import load_data_json
+from .shared_data import load_data_json, load_generated_extension_object
 
 
 # ── Resource MC conversion ──
 
 def _resource_mc_value(resource: str, rv: dict, gens_left: int) -> float:
     """Конвертация единицы ресурса колонии в MC-эквивалент.
-
-    Для MC+Ocean (Europa): returns 1.0 per unit — ocean добавляется отдельно
-    через _ocean_bonus_value() в colony_trade_value_at().
     """
     mapping = {
         "MC": 1.0,
@@ -37,9 +30,23 @@ def _resource_mc_value(resource: str, rv: dict, gens_left: int) -> float:
         "Animals": 5.0,
         "Floaters": 3.0,
         "Microbes": 2.5,
-        "MC+Ocean": 1.0,  # Europa: N MC (ocean added separately)
     }
     return mapping.get(resource, 1.0)
+
+
+def _production_trade_value(track_entry, rv: dict) -> tuple[int, str, float] | None:
+    """Return normalized amount, label, and MC value for production-track colonies."""
+    if not isinstance(track_entry, str):
+        return None
+
+    key = track_entry.strip().lower().replace(" production", "-prod")
+    if key in {"mc-prod", "mc prod"}:
+        return 1, "MC-prod", rv["mc_prod"]
+    if key in {"energy-prod", "energy prod"}:
+        return 1, "energy-prod", rv["energy_prod"]
+    if key in {"plant-prod", "plant prod"}:
+        return 1, "plant-prod", rv["plant_prod"]
+    return None
 
 
 def _parse_bonus_mc(bonus_str: str, rv: dict) -> float:
@@ -137,6 +144,7 @@ _ALL_CARD_DATA = {
     for entry in load_data_json("all_cards.json")
     if isinstance(entry, dict) and entry.get("name")
 }
+_GENERATED_CARD_DATA = load_generated_extension_object("card_data.js", "TM_CARD_DATA")
 
 
 def _strip_variant(name: str) -> str:
@@ -145,6 +153,19 @@ def _strip_variant(name: str) -> str:
 
 def _lookup_card_info(name: str) -> dict:
     return _ALL_CARD_DATA.get(_strip_variant(name), {})
+
+
+def _lookup_generated_card_behavior(name: str) -> dict:
+    entry = _GENERATED_CARD_DATA.get(_strip_variant(name), {})
+    if not isinstance(entry, dict):
+        return {}
+    behavior = entry.get("behavior", {})
+    return behavior if isinstance(behavior, dict) else {}
+
+
+def _lookup_colony_behavior(name: str) -> dict:
+    colonies = _lookup_generated_card_behavior(name).get("colonies", {})
+    return colonies if isinstance(colonies, dict) else {}
 
 
 def _resource_colony_support_context(state, colony_name: str) -> dict:
@@ -344,15 +365,16 @@ def colony_trade_value_at(colony_name: str, effective_track: int,
 
     track = cdata["track"]
     pos = min(max(effective_track, 0), len(track) - 1)
-    raw_amount = track[pos]
+    raw_track_entry = track[pos]
 
     res_type = cdata["resource"]
-    mc_per_unit = _resource_mc_value(res_type, rv, gens_left)
-    trade_mc = raw_amount * mc_per_unit
-
-    # MC+Ocean: add ocean value once (Europa gives N MC + 1 ocean per trade)
-    if res_type == "MC+Ocean":
-        trade_mc += rv["ocean"]
+    production_trade = _production_trade_value(raw_track_entry, rv)
+    if production_trade:
+        raw_amount, res_type, trade_mc = production_trade
+    else:
+        raw_amount = raw_track_entry
+        mc_per_unit = _resource_mc_value(res_type, rv, gens_left)
+        trade_mc = raw_amount * mc_per_unit
 
     # Settler bonus
     colony_bonus = cdata.get("colony_bonus", "")
@@ -376,8 +398,8 @@ def _get_trade_methods(me, rv: dict) -> list[dict]:
     methods = []
 
     # Check for trade modifiers (energy discount)
-    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
-    energy_discount = sum(1 for card in TRADE_DISCOUNT_CARDS if card in tableau_names)
+    modifiers = _get_trade_modifiers(me)
+    energy_discount = modifiers.get("energy_discount", 0)
     energy_cost = max(1, 3 - energy_discount)
 
     # Standard: energy
@@ -393,7 +415,7 @@ def _get_trade_methods(me, rv: dict) -> list[dict]:
     if me.mc >= 9:
         methods.append({"method": "mc", "cost_mc": 9.0, "cost_desc": "9 MC"})
 
-    # Titan Floating Launch-Pad: spend 1 floater -> free trade
+    # Titan Floating Launch-pad: spend 1 floater -> free trade
     for card in (me.tableau or []):
         if card.get("name") in FREE_TRADE_CARDS and card.get("resources", 0) >= 1:
             methods.append({
@@ -409,8 +431,8 @@ def _get_trade_methods(me, rv: dict) -> list[dict]:
 def _get_trade_methods_after_build(me, rv: dict, build_bonus: str) -> list[dict]:
     """Trade methods available after building a colony and taking build bonus."""
     methods = []
-    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
-    energy_discount = sum(1 for card in TRADE_DISCOUNT_CARDS if card in tableau_names)
+    modifiers = _get_trade_modifiers(me)
+    energy_discount = modifiers.get("energy_discount", 0)
     energy_cost = max(1, 3 - energy_discount)
     build_energy = _parse_bonus_amount(build_bonus, ("energy",))
     energy_after_build = (me.energy or 0) + build_energy
@@ -440,30 +462,31 @@ def _get_trade_methods_after_build(me, rv: dict, build_bonus: str) -> list[dict]
 
 def _get_trade_modifiers(me) -> dict:
     """Считает торговые модификаторы из tableau."""
-    tableau_names = {c.get("name", "") for c in me.tableau} if me.tableau else set()
-
     track_boost = 0
-    for card_name, boost in TRADE_TRACK_BOOST_CARDS.items():
-        if card_name in tableau_names:
-            track_boost += boost
-
     mc_bonus = 0
-    for card_name, bonus in TRADE_MC_BONUS_CARDS.items():
-        if card_name in tableau_names:
-            mc_bonus += bonus
-
-    energy_discount = sum(1 for card in TRADE_DISCOUNT_CARDS if card in tableau_names)
-
+    energy_discount = 0
     modifier_names = []
-    if energy_discount:
-        cards = [c for c in TRADE_DISCOUNT_CARDS if c in tableau_names]
-        modifier_names.extend(f"{c} (-1 energy)" for c in cards)
-    if track_boost:
-        cards = [c for c in TRADE_TRACK_BOOST_CARDS if c in tableau_names]
-        modifier_names.extend(f"{c} (+{TRADE_TRACK_BOOST_CARDS[c]} track)" for c in cards)
-    if mc_bonus:
-        cards = [c for c in TRADE_MC_BONUS_CARDS if c in tableau_names]
-        modifier_names.extend(f"{c} (+{TRADE_MC_BONUS_CARDS[c]} MC)" for c in cards)
+    for card in (me.tableau or []):
+        card_name = card.get("name", "")
+        if not card_name:
+            continue
+        colony_behavior = _lookup_colony_behavior(card_name)
+        raw_discount = colony_behavior.get("tradeDiscount")
+        raw_offset = colony_behavior.get("tradeOffset")
+        raw_mc = colony_behavior.get("tradeMC")
+
+        if isinstance(raw_discount, (int, float)) and raw_discount > 0:
+            discount = int(raw_discount)
+            energy_discount += discount
+            modifier_names.append(f"{card_name} (-{discount} energy)")
+        if isinstance(raw_offset, (int, float)) and raw_offset > 0:
+            offset = int(raw_offset)
+            track_boost += offset
+            modifier_names.append(f"{card_name} (+{offset} track)")
+        if isinstance(raw_mc, (int, float)) and raw_mc > 0:
+            mc = int(raw_mc)
+            mc_bonus += mc
+            modifier_names.append(f"{card_name} (+{mc} MC)")
 
     return {
         "track_boost": track_boost,
@@ -716,6 +739,10 @@ def analyze_trade_options(state) -> dict:
             for col in state.colonies_data
             if col.get("isActive", True)
         }
+        tableau_names = {c.get("name", "") for c in (state.me.tableau or [])}
+        hand_names = {c.get("name", "") for c in (state.cards_in_hand or [])}
+        hand_names |= {c.get("name", "") for c in (getattr(state, "drafted_cards", None) or [])}
+        europa_ocean_shell = _has_europa_ocean_shell(tableau_names, hand_names)
         engine_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
 
         # Early-game MC trades should only alert when the upside is clearly real.
@@ -726,7 +753,9 @@ def analyze_trade_options(state) -> dict:
         if (
             entry["name"] == "Europa"
             and generation <= 2
-            and entry["net_profit"] < 3
+            and entry["best_cost"] >= 9
+            and not europa_ocean_shell
+            and entry["net_profit"] < 6
             and len(active_colonies & engine_colonies) >= 2
         ):
             return False
@@ -1072,7 +1101,9 @@ def colony_strategy_advice(state) -> list[str]:
             if build_hint.lower().startswith("place "):
                 build_hint = build_hint[6:]
 
-            if build_hint and colony_bonus and "prod" in colony_bonus.lower() and future_value >= 30:
+            if col_name == "Europa" and europa_ocean_shell and build_hint:
+                hint += f" — place {build_hint}; owner bonus grows with trades"
+            elif build_hint and colony_bonus and "prod" in colony_bonus.lower() and future_value >= 30:
                 hint += f" — place {build_hint}; owner bonus grows with trades"
             elif build_hint:
                 hint += f" — place {build_hint} + future owner bonus ~{future_value} MC"

@@ -2237,7 +2237,7 @@ function handleInput(wf, state, depth = 0) {
     const standaloneCardFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
     const requiredCardEV = Math.max(adjustedSpEV, standaloneCardFloor > -900 ? standaloneCardFloor + 1 : -999);
     dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${bestSpCard?.name||'none'}=${adjustedSpEV.toFixed(0)}) spAdj=${spAdjustment}`);
-    const lateCoreNonProgressCardFloor = coreSteps <= 5 ? 50 : 36;
+    const lateCoreNonProgressCardFloor = coreSteps <= 5 ? 50 : (gen11OceanLagCompletion ? 24 : 36);
     if (
       lateCoreCompletionSp &&
       (

@@ -76,6 +76,31 @@ function testCoreHelpers() {
     2,
     'late 3P WGT closeout should estimate two generations, not three'
   );
+  const gen6CloseState = {
+    game: {
+      generation: 6,
+      temperature: 0,
+      oxygenLevel: 8,
+      oceans: 8,
+      venusScaleLevel: 10,
+      gameOptions: {solarPhaseOption: true},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+  };
+  const gen6Breakdown = core.buildGlobalProgressBreakdown(gen6CloseState);
+  assert.strictEqual(gen6Breakdown.tempSteps, 4, '0C should count as 4 temperature steps, not default to -30C');
+  assert.strictEqual(gen6Breakdown.oxySteps, 6, '8 oxygen should count as 6 oxygen steps');
+  assert.strictEqual(gen6Breakdown.oceanSteps, 1, '8 oceans should count as 1 ocean step');
+  assert.strictEqual(
+    core.remainingStepsWithOptions(gen6CloseState, {venusWeight: 0, zeroWhenCoreDone: true}),
+    11,
+    'endgame step display should count game-ending temp+oxygen+ocean steps only'
+  );
+  assert.strictEqual(
+    core.estimateGensLeftFromState(gen6CloseState),
+    3,
+    'Gen 6 with 4+6+1 core steps left should estimate three generations, not six'
+  );
   const closeoutInterpolated = core.estimateScoreCardTimingInterpolated({
     state: closeoutState,
     steps: 20,

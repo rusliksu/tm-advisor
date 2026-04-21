@@ -18,6 +18,10 @@ from tm_advisor.combo import ComboDetector  # noqa: E402
 from tm_advisor.synergy import SynergyEngine  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 from tm_advisor.shared_data import resolve_data_path  # noqa: E402
+from tm_advisor.colony_advisor import analyze_trade_options, colony_trade_value_at  # noqa: E402
+from tm_advisor.draft_play_advisor import play_hold_advice  # noqa: E402
+from tm_advisor.economy import resource_values  # noqa: E402
+from tm_advisor.requirements import RequirementsChecker  # noqa: E402
 
 
 def build_state(*, generation: int, temperature: int, oxygen: int, oceans: int) -> GameState:
@@ -88,6 +92,7 @@ def main() -> None:
     parser = CardEffectParser(db)
     combo = ComboDetector(parser, db)
     engine = SynergyEngine(db, combo)
+    req_checker = RequirementsChecker()
 
     early = build_state(generation=3, temperature=-20, oxygen=3, oceans=2)
     late = build_state(generation=10, temperature=4, oxygen=12, oceans=9)
@@ -109,6 +114,36 @@ def main() -> None:
     port_late = adjusted_score(engine, db, late, "Space Port Colony")
     assert port_late <= port_early - 4, (port_early, port_late)
     assert port_late <= 86, port_late
+
+    rv = resource_values(1)
+    europa_track_5 = colony_trade_value_at("Europa", 5, 0, rv, 1)
+    assert europa_track_5["resource"] == "plant-prod", europa_track_5
+    assert europa_track_5["raw_amount"] == 1, europa_track_5
+    assert europa_track_5["trade_mc"] == round(rv["plant_prod"], 1), europa_track_5
+    assert europa_track_5["trade_mc"] < rv["ocean"], europa_track_5
+
+    maxed_oceans = build_state(generation=7, temperature=8, oxygen=14, oceans=9)
+    maxed_oceans.me.mc = 20
+    maxed_oceans.me.fleet_size = 2
+    maxed_oceans.me.trades_this_gen = 1
+    trade = analyze_trade_options(maxed_oceans)
+    europa = next(t for t in trade["trades"] if t["name"] == "Europa")
+    assert europa["resource"] == "plant-prod", europa
+    assert europa["net_profit"] < 0, europa
+    assert "Europa" not in (trade.get("best_hint") or ""), trade
+
+    full_fleet = build_state(generation=7, temperature=8, oxygen=14, oceans=9)
+    full_fleet.me.mc = 7
+    full_fleet.me.energy = 5
+    full_fleet.me.fleet_size = 1
+    full_fleet.me.trades_this_gen = 1
+    advice = play_hold_advice(
+        [{"name": "Project Inspection", "calculatedCost": 0}],
+        full_fleet,
+        engine,
+        req_checker,
+    )
+    assert not any("trade выгоднее" in (entry.get("reason") or "") for entry in advice), advice
 
     print("advisor late-colony regression checks: OK")
 

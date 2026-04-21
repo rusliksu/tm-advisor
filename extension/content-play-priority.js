@@ -3,9 +3,19 @@
   'use strict';
 
   var lastPriorityMap = {};
+  var offeredCorpsCache = { documentObj: null, at: 0, names: null };
+  var visiblePreludeNamesCache = { documentObj: null, at: 0, names: null };
+  var OFFERED_CORPS_CACHE_MS = 300;
+  var VISIBLE_PRELUDE_NAMES_CACHE_MS = 300;
 
   function formatCorpBoostReason(corpName, cardName, boost) {
     var sign = boost > 0 ? '+' : '';
+    if (corpName === 'Septem Tribus') {
+      var data = typeof TM_RATINGS !== 'undefined' ? TM_RATINGS[cardName] : null;
+      var text = data ? [data.e || '', data.w || '', data.dr || ''].join(' ').toLowerCase() : '';
+      if (text.includes('influence') || text.includes('влия')) return 'Septem: influence ' + sign + boost;
+      if (text.includes('delegate') || text.includes('делегат')) return 'Septem: delegates ' + sign + boost;
+    }
     if (cardName === 'Heat Trappers') {
       if (corpName === 'Thorgate') return 'Thorgate: cheap power ' + sign + boost;
       if (corpName === 'Cheung Shing MARS') return 'Cheung: cheap building ' + sign + boost;
@@ -15,6 +25,34 @@
       if (corpName === 'Manutech') return 'Manutech: prod cashout ' + sign + boost;
     }
     return corpName.split(' ')[0] + ' ' + sign + boost;
+  }
+
+  function formatShortReasonName(name) {
+    var label = (name || '').trim();
+    if (!label) return '';
+    if (label.length <= 28) return label;
+    return label.substring(0, 27) + '…';
+  }
+
+  function formatCorpProjectReason(count, value) {
+    var absCount = Math.abs(count);
+    var mod10 = absCount % 10;
+    var mod100 = absCount % 100;
+    var noun = (mod10 === 1 && mod100 !== 11)
+      ? 'проект под корпу'
+      : (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
+        ? 'проекта под корпу'
+        : 'проектов под корпу';
+    return count + ' ' + noun + ' ' + (value >= 0 ? '+' : '') + value;
+  }
+
+  function reasonsMentionName(reasons, name) {
+    if (!Array.isArray(reasons) || !name) return false;
+    var exact = String(name);
+    var short = formatShortReasonName(exact);
+    return reasons.some(function(reason) {
+      return reason.indexOf(exact) !== -1 || (short && reason.indexOf(short) !== -1);
+    });
   }
 
   function scoreToTier(score) {
@@ -62,32 +100,40 @@
     var offeredCorps = [];
     if (!documentObj) return offeredCorps;
 
+    var now = Date.now();
+    if (offeredCorpsCache.names &&
+        offeredCorpsCache.documentObj === documentObj &&
+        now - offeredCorpsCache.at < OFFERED_CORPS_CACHE_MS) {
+      return offeredCorpsCache.names.slice();
+    }
+
+    var level1 = [];
+    var level2 = [];
+    var level3 = [];
     documentObj.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
       var cn = el.getAttribute('data-tm-card');
       if (!cn) return;
       if (el.querySelector('.card-title.is-corporation, .card-corporation-logo, .corporation-label') ||
           (el.closest('.select-corporation') || el.closest('[class*="corporation"]'))) {
-        offeredCorps.push(cn);
+        level1.push(cn);
       }
-    });
-    if (offeredCorps.length > 0) return offeredCorps;
 
-    documentObj.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-      var cn = el.getAttribute('data-tm-card');
-      if (!cn) return;
       var d = ratings ? ratings[cn] : null;
       if (d && d.e && (d.e.includes('Корп') || d.e.includes('Corp') || d.e.includes('Стартовый') || d.e.includes('Start'))) {
-        offeredCorps.push(cn);
+        level2.push(cn);
       }
-    });
-    if (offeredCorps.length > 0) return offeredCorps;
 
-    documentObj.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
-      var cn = el.getAttribute('data-tm-card');
       if (cn && ((tagTriggers && tagTriggers[cn]) || (corpDiscounts && corpDiscounts[cn]))) {
-        offeredCorps.push(cn);
+        level3.push(cn);
       }
     });
+
+    offeredCorps = level1.length > 0 ? level1 : (level2.length > 0 ? level2 : level3);
+    offeredCorpsCache = {
+      documentObj: documentObj,
+      at: now,
+      names: offeredCorps.slice()
+    };
     return offeredCorps;
   }
 
@@ -96,8 +142,23 @@
     var cardN = input && input.cardN;
     var documentObj = input && input.documentObj;
 
+    var now = Date.now();
+    if (visiblePreludeNamesCache.names &&
+        visiblePreludeNamesCache.documentObj === documentObj &&
+        now - visiblePreludeNamesCache.at < VISIBLE_PRELUDE_NAMES_CACHE_MS) {
+      return visiblePreludeNamesCache.names.slice();
+    }
+
     var preludes = [];
     var seen = new Set();
+    function finish() {
+      visiblePreludeNamesCache = {
+        documentObj: documentObj || null,
+        at: now,
+        names: preludes.slice()
+      };
+      return preludes;
+    }
     function remember(name) {
       if (!name || seen.has(name)) return;
       seen.add(name);
@@ -113,16 +174,24 @@
       rememberList(pv.dealtPreludeCards);
       rememberList(pv.preludeCardsInHand);
     }
-    if (preludes.length > 0) return preludes;
+    if (preludes.length > 0) return finish();
 
     if (documentObj) {
-      documentObj.querySelectorAll('.wf-component--select-prelude .card-container[data-tm-card], .cardbox .card-container[data-tm-card]').forEach(function(el) {
-        var name = el.getAttribute('data-tm-card');
-        if (!name) return;
-        if (el.closest('.wf-component--select-prelude') || el.querySelector('.prelude-label')) remember(name);
-      });
+      var preludeRoot = typeof documentObj.querySelector === 'function'
+        ? documentObj.querySelector('.wf-component--select-prelude')
+        : null;
+      if (preludeRoot) {
+        preludeRoot.querySelectorAll('.card-container[data-tm-card]').forEach(function(el) {
+          remember(el.getAttribute('data-tm-card'));
+        });
+      } else {
+        documentObj.querySelectorAll('.prelude-label').forEach(function(label) {
+          var el = label.closest ? label.closest('.card-container[data-tm-card]') : null;
+          if (el) remember(el.getAttribute('data-tm-card'));
+        });
+      }
     }
-    return preludes;
+    return finish();
   }
 
   function rewriteCaretakerRequirementReason(reasons, penalty) {
@@ -342,8 +411,16 @@
       if (tagReqM) {
         var tagReqCount = parseInt(tagReqM[1]);
         var tagReqName = tagReqM[2].toLowerCase();
-        var realCount = (ctx && ctx.tagsWithHand) ? (ctx.tagsWithHand[tagReqName] || 0) : ((ctx && ctx.tags) ? (ctx.tags[tagReqName] || 0) : 0);
-        var projCount = (ctx && ctx.tagsProjected) ? (ctx.tagsProjected[tagReqName] || 0) : realCount;
+        var realExact = (ctx && ctx.tagsWithHand) ? (ctx.tagsWithHand[tagReqName] || 0) : ((ctx && ctx.tags) ? (ctx.tags[tagReqName] || 0) : 0);
+        var realWild = tagReqName !== 'wild' && ctx
+          ? (ctx.tagsWithHand ? (ctx.tagsWithHand.wild || 0) : (ctx.tags ? (ctx.tags.wild || 0) : 0))
+          : 0;
+        var realCount = realExact + realWild;
+        var projExact = (ctx && ctx.tagsProjected) ? (ctx.tagsProjected[tagReqName] || 0) : realExact;
+        var projWild = tagReqName !== 'wild' && ctx
+          ? (ctx.tagsProjected ? (ctx.tagsProjected.wild || 0) : realWild)
+          : 0;
+        var projCount = projExact + projWild;
         var tagGap = tagReqCount - realCount;
         if (tagGap > 0) {
           var projGap = Math.max(0, tagReqCount - projCount);
@@ -674,8 +751,7 @@
     if (projectBoostTotal !== 0) {
       var scaledProjectBoost = Math.round(Math.max(-10, Math.min(12, projectBoostTotal)));
       bonus += scaledProjectBoost;
-      if (scaledProjectBoost > 0) reasons.push(projectHitCount + ' карт к драфту +' + scaledProjectBoost);
-      else reasons.push(projectHitCount + ' карт к драфту ' + scaledProjectBoost);
+      reasons.push(formatCorpProjectReason(projectHitCount, scaledProjectBoost));
     }
 
     if (preludeEntries.length > 0) {
@@ -687,12 +763,17 @@
       var scaledPreludeBonus = Math.round(Math.max(-6, Math.min(10, preludeBonus)));
       bonus += scaledPreludeBonus;
 
-      var topPreludeName = ((typeof ruName === 'function' ? ruName(topPrelude.name) : topPrelude.name) || topPrelude.name).split(' ')[0];
-      reasons.push('лучшая прел. ' + topPreludeName + ' ' + (Math.round(topPrelude.weighted) >= 0 ? '+' : '') + Math.round(topPrelude.weighted));
-      if (secondPrelude && Math.abs(secondPrelude.weighted) >= 1) {
-        var secondPreludeName = ((typeof ruName === 'function' ? ruName(secondPrelude.name) : secondPrelude.name) || secondPrelude.name).split(' ')[0];
+      var topShown = Math.round(topPrelude.weighted);
+      if (topShown !== 0) {
+        var topPreludeName = formatShortReasonName((typeof ruName === 'function' ? ruName(topPrelude.name) : topPrelude.name) || topPrelude.name);
+        reasons.push('лучшая прел. ' + topPreludeName + ' ' + (topShown >= 0 ? '+' : '') + topShown);
+      }
+      if (secondPrelude) {
         var secondShown = Math.round(secondPrelude.weighted * (secondPrelude.weighted >= 0 ? 0.4 : 0.15));
-        reasons.push('2-я прел. ' + secondPreludeName + ' ' + (secondShown >= 0 ? '+' : '') + secondShown);
+        if (secondShown !== 0) {
+          var secondPreludeName = formatShortReasonName((typeof ruName === 'function' ? ruName(secondPrelude.name) : secondPrelude.name) || secondPrelude.name);
+          reasons.push('2-я прел. ' + secondPreludeName + ' ' + (secondShown >= 0 ? '+' : '') + secondShown);
+        }
       }
     }
 
@@ -716,6 +797,11 @@
       var nirgalPenalty = hasWGT ? 2 : 3;
       bonus -= nirgalPenalty;
       reasons.push(playerCount + 'P M&A race −' + nirgalPenalty);
+    }
+
+    if (corpName === 'Septem Tribus' && bonus > 5) {
+      bonus = 5;
+      reasons.push('political shell cap +5');
     }
 
     return { total: (synergyData ? synergyData.s : 0) + bonus, reasons: reasons };
@@ -788,14 +874,12 @@
         reasons: best.result.reasons.slice()
       };
       if (best.corp && bestRank >= baseRank + 3) {
-        var corpShort = best.corp.split(' ')[0];
-        if (!result.reasons.some(function(r) { return r.indexOf(corpShort) !== -1; })) {
+        if (!reasonsMentionName(result.reasons, best.corp)) {
           result.reasons.push('лучше с ' + best.corp);
         }
       }
       if (secondLabel) {
-        var secondShort = secondLabel.split(' ')[0];
-        if (!result.reasons.some(function(r) { return r.indexOf(secondShort) !== -1; })) {
+        if (!reasonsMentionName(result.reasons, secondLabel)) {
           result.reasons.push('ещё ок с ' + secondLabel);
         }
       }
@@ -1034,7 +1118,7 @@
 
       if (typeof applyResult === 'function') bonus = applyResult(scoreTagSynergies(cardName, cardTags, cardType, cardCost, tagDecay, eLower, data, myCorps, ctx, pv), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreColonySynergy(eLower, data, ctx), bonus, reasons);
-      if (typeof applyResult === 'function') bonus = applyResult(scoreTurmoilSynergy(eLower, data, cardTags, ctx), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreTurmoilSynergy(eLower, data, cardTags, ctx, cardName), bonus, reasons);
 
       var isPreludeOrCorp = typeof isPreludeOrCorpCard === 'function' ? isPreludeOrCorpCard(cardEl) : false;
       var ftnResult = scoreFTNTiming(cardName, ctx, { isPreludeOrCorp: !!isPreludeOrCorp });
@@ -1042,7 +1126,7 @@
       var skipCrudeTiming = ftnResult.skipCrudeTiming;
 
       if (!skipCrudeTiming && typeof applyResult === 'function') bonus = applyResult(scoreCrudeTiming(cardName, eLower, data, ctx), bonus, reasons);
-      if (typeof applyResult === 'function') bonus = applyResult(scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx, cardName), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreResourceSynergies(eLower, data, cardTags, ctx, cardName), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreCardEconomyInContext(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, skipCrudeTiming), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreOpponentAwareness(cardName, eLower, data, cardTags, ctx), bonus, reasons);
@@ -1099,7 +1183,7 @@
         }
       }
 
-      if (typeof applyResult === 'function') bonus = applyResult(scoreMapMA(data, cardTags, cardCost, ctx, sc), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreMapMA(data, cardTags, cardCost, ctx, sc, cardName), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreTerraformRate(ctx, eLower, data), bonus, reasons);
     }
 

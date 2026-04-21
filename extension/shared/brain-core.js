@@ -337,14 +337,17 @@
 
   function buildGlobalProgressBreakdown(state) {
     var g = (state && state.game) || {};
+    var temp = typeof g.temperature === 'number' ? g.temperature : -30;
+    var oxy = typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0;
+    var oceans = typeof g.oceans === 'number' ? g.oceans : 0;
     var venus = typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 30;
     return {
-      temp: typeof g.temperature === 'number' ? g.temperature : -30,
-      tempSteps: Math.max(0, Math.round((8 - (g.temperature || -30)) / 2)),
-      oxy: typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0,
-      oxySteps: Math.max(0, 14 - (g.oxygenLevel || 0)),
-      oceans: typeof g.oceans === 'number' ? g.oceans : 0,
-      oceanSteps: Math.max(0, 9 - (g.oceans || 0)),
+      temp: temp,
+      tempSteps: Math.max(0, Math.round((8 - temp) / 2)),
+      oxy: oxy,
+      oxySteps: Math.max(0, 14 - oxy),
+      oceans: oceans,
+      oceanSteps: Math.max(0, 9 - oceans),
       venus: venus,
       venusSteps: Math.max(0, Math.round((30 - venus) / 2)),
     };

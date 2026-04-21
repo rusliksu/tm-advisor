@@ -1,7 +1,8 @@
 """Все dict-константы и конфигурационные данные TM Advisor."""
 
 import os
-from colorama import Fore, Style
+
+from .colorama_compat import Fore, Style
 
 
 BASE_URL = os.getenv("TM_BASE_URL", "https://tm.knightbyte.win")
@@ -85,7 +86,7 @@ TABLEAU_DISCOUNT_CARDS: dict[str, dict] = {
 TABLEAU_SYNERGIES: dict[str, list[tuple[str, int, str]]] = {
     "Dirigibles": [
         ("has:Floater Technology", 5, "double floater placement"),
-        ("has:Titan Floating Launch-Pad", 4, "floater source"),
+        ("has:Titan Floating Launch-pad", 4, "floater source"),
         ("has:Stratospheric Birds", 4, "floater engine"),
     ],
     "Floater Technology": [
@@ -263,11 +264,11 @@ TABLEAU_SYNERGIES: dict[str, list[tuple[str, int, str]]] = {
 
     # Floater combos
     "Stratopolis": [
-        ("has:Forced Precipitation", 6, "1 free TR/gen + VP engine"),
+        ("has:Forced Precipitation", 6, "Venus step via floaters"),
         ("has:Floating Habs", 5, "1.5 VP/gen (0.5 VP/floater)"),
     ],
     "Forced Precipitation": [
-        ("has:Stratopolis", 6, "1 free TR/gen + VP engine"),
+        ("has:Stratopolis", 6, "Venus step via floaters"),
         ("has:Jovian Lanterns", 4, "floater → VP"),
     ],
     "Floating Habs": [
@@ -378,48 +379,134 @@ GLOBAL_EVENTS = {
     "Microgravity Health Problems": {"desc": "-3 MC/colony (max 5, -influence)", "good": False},
 }
 
+PARTY_ICONS = {
+    "Mars First": "🔴",
+    "Scientists": "🔬",
+    "Unity": "🌍",
+    "Greens": "🌿",
+    "Reds": "⛔",
+    "Kelvinists": "🔥",
+}
+
+PARTY_POLICY_DESCRIPTIONS_BY_ID = {
+    "mp01": {"party": "Mars First", "policy": "When you place a tile ON MARS, gain 1 steel", "actionable": False},
+    "mp02": {"party": "Mars First", "policy": "When you play a Building tag, gain 2 MC", "actionable": False},
+    "mp03": {"party": "Mars First", "policy": "Your steel resources are worth 1 MC extra", "actionable": False},
+    "mp04": {"party": "Mars First", "policy": "Spend 4 MC to draw a Building card", "actionable": True},
+    "sp01": {"party": "Scientists", "policy": "Pay 10 MC to draw 3 cards", "actionable": True},
+    "sp02": {"party": "Scientists", "policy": "Your global requirements are +/- 2 steps", "actionable": False},
+    "sp03": {"party": "Scientists", "policy": "When you raise a global parameter, draw a card per step raised", "actionable": False},
+    "sp04": {"party": "Scientists", "policy": "Science tag requirements need 1 fewer Science tag", "actionable": False},
+    "up01": {"party": "Unity", "policy": "Your titanium resources are worth 1 MC extra", "actionable": False},
+    "up02": {"party": "Unity", "policy": "Spend 4 MC to gain 2 titanium or add 2 floaters", "actionable": True},
+    "up03": {"party": "Unity", "policy": "Spend 4 MC to draw a Space card", "actionable": True},
+    "up04": {"party": "Unity", "policy": "Cards with Space tags cost 2 MC less to play", "actionable": False},
+    "gp01": {"party": "Greens", "policy": "When you place a greenery tile, gain 4 MC", "actionable": False},
+    "gp02": {"party": "Greens", "policy": "When you place a tile, gain 1 plant", "actionable": False},
+    "gp03": {"party": "Greens", "policy": "When you play an Animal, Plant, or Microbe tag, gain 2 MC", "actionable": False},
+    "gp04": {"party": "Greens", "policy": "Spend 5 MC to gain 3 plants or add 2 microbes", "actionable": True},
+    "rp01": {"party": "Reds", "policy": "When you take an action that raises TR, pay 3 MC per step raised", "actionable": False},
+    "rp02": {"party": "Reds", "policy": "When you place a tile, pay 3 MC or as much as possible", "actionable": False},
+    "rp03": {"party": "Reds", "policy": "Spend 4 MC to decrease a non-maxed global parameter", "actionable": True},
+    "rp04": {"party": "Reds", "policy": "When you raise a global parameter, decrease MC production 1 step", "actionable": False},
+    "kp01": {"party": "Kelvinists", "policy": "Pay 10 MC to increase energy and heat production 1 step", "actionable": True},
+    "kp02": {"party": "Kelvinists", "policy": "When you raise temperature, gain 3 MC per step raised", "actionable": False},
+    "kp03": {"party": "Kelvinists", "policy": "Convert 6 heat into temperature", "actionable": True},
+    "kp04": {"party": "Kelvinists", "policy": "When you place a tile, gain 2 heat", "actionable": False},
+}
+
 PARTY_POLICIES = {
-    "Mars First": {"policy": "Action: -2 MC cost for cards with Mars tag", "icon": "🔴"},
-    "Scientists": {"policy": "Action: +1 MC per Science tag when playing card", "icon": "🔬"},
-    "Unity": {"policy": "Action: +1 MC per Venus/Earth/Jovian tag when playing card", "icon": "🌍"},
-    "Greens": {"policy": "Action: +1 MC per Plant/Microbe/Animal tag when playing card", "icon": "🌿"},
-    "Reds": {"policy": "-1 TR when raising any global parameter (penalty!)", "icon": "⛔"},
-    "Kelvinists": {"policy": "Action: +1 MC when increasing heat production", "icon": "🔥"},
+    party: {"policy": "See current policyId-specific agenda", "icon": icon}
+    for party, icon in PARTY_ICONS.items()
+}
+
+# Concrete Turmoil policy actions keyed by server policyId. Many policy ids are
+# passive hooks; only these ids should become actionable allocation items.
+PARTY_POLICY_ACTIONS_BY_ID = {
+    "mp04": {
+        "party": "Mars First",
+        "policy": "Spend 4 MC to draw a Building card",
+        "cost": 4,
+        "value_mc": 8,
+    },
+    "sp01": {
+        "party": "Scientists",
+        "policy": "Spend 10 MC to draw 3 cards",
+        "cost": 10,
+        "value_mc": 9,
+    },
+    "up02": {
+        "party": "Unity",
+        "policy": "Spend 4 MC to gain 2 titanium or add 2 floaters",
+        "cost": 4,
+        "value_mc": 8,
+    },
+    "up03": {
+        "party": "Unity",
+        "policy": "Spend 4 MC to draw a Space card",
+        "cost": 4,
+        "value_mc": 5,
+    },
+    "gp04": {
+        "party": "Greens",
+        "policy": "Spend 5 MC to gain 3 plants or add 2 microbes",
+        "cost": 5,
+        "value_mc": 6,
+    },
+    "kp01": {
+        "party": "Kelvinists",
+        "policy": "Spend 10 MC to raise energy and heat production",
+        "cost": 10,
+        "value_mc": 18,
+    },
+    "kp03": {
+        "party": "Kelvinists",
+        "policy": "Spend 6 heat to raise temperature",
+        "cost": 0,
+        "heat_cost": 6,
+        "value_mc": 7,
+    },
+    "rp03": {
+        "party": "Reds",
+        "policy": "Spend 4 MC to decrease a global parameter",
+        "cost": 4,
+        "value_mc": 0,
+    },
 }
 
 # Party strategy advice for delegate placement and policy usage
 PARTY_STRATEGY: dict[str, dict] = {
     "Mars First": {
         "ruling_bonus": "+1 MC per Building tag (max 5, +influence)",
-        "policy": "Action: spend 2 MC to gain Mars tag discount on next card",
+        "policy": "Policy varies by policyId: tile steel, building rebate, steel value, or draw Building",
         "good_for": ["Building-heavy", "Mining Guild", "IC", "Standard Technology"],
         "bad_for": ["Space-heavy", "Venus-focused"],
         "delegate_value": "high_if_building",
-        "ruling_tip": "Отличная для Building стратегии. Влияние даёт +1 MC/building tag сверху",
+        "ruling_tip": "Отличная для Building стратегии. Точную policy смотри по текущему policyId.",
     },
     "Scientists": {
         "ruling_bonus": "+1 MC per Science tag (max 5, +influence)",
-        "policy": "Action: spend 10 MC to draw 3 cards",
+        "policy": "Policy varies by policyId: draw cards, requirements flex, parameter draw, or science requirement discount",
         "good_for": ["Science-heavy", "card draw strategy", "AI Central"],
         "bad_for": ["no Science tags"],
         "delegate_value": "high_if_science",
-        "ruling_tip": "Draw 3 за 10 MC — хорошая сделка mid-game. Science теги кормят бонус",
+        "ruling_tip": "Science теги кормят ruling-бонус; точная policy зависит от текущего policyId.",
     },
     "Unity": {
         "ruling_bonus": "+1 MC per Venus/Earth/Jovian tag (max 5, +influence)",
-        "policy": "Action: spend 2 MC to gain Space/Venus tag discount on next card",
+        "policy": "Policy varies by policyId: titanium value, titanium/floater action, Space draw, or Space discount",
         "good_for": ["Multi-planetary", "Point Luna", "Morning Star Inc", "Phobolog"],
         "bad_for": ["pure Building/Plant strategy"],
         "delegate_value": "medium",
-        "ruling_tip": "Широкий бонус — Venus+Earth+Jovian теги. Хороша для разносторонних стратегий",
+        "ruling_tip": "Широкий бонус — Venus+Earth+Jovian теги. Точную policy смотри по текущему policyId.",
     },
     "Greens": {
         "ruling_bonus": "+1 MC per Plant/Microbe/Animal tag (max 5, +influence)",
-        "policy": "Action: spend 5 MC to gain greenery placement bonus (2 plants)",
+        "policy": "Policy varies by policyId: greenery rebate, tile plant, bio tag rebate, or plants/microbes action",
         "good_for": ["Bio strategy", "Ecoline", "Arklight", "Splice"],
         "bad_for": ["no green tags"],
         "delegate_value": "medium",
-        "ruling_tip": "Хороша для bio engine. Policy даёт 2 plants за 5 MC — средне, но теги кормят",
+        "ruling_tip": "Хороша для bio engine. Теги кормят ruling-бонус, а точная policy зависит от policyId.",
     },
     "Reds": {
         "ruling_bonus": "-1 TR per parameter raise (PENALTY!)",
@@ -431,13 +518,32 @@ PARTY_STRATEGY: dict[str, dict] = {
     },
     "Kelvinists": {
         "ruling_bonus": "+1 MC per heat production (max 5, +influence)",
-        "policy": "Action: spend 2 MC to gain 1 heat production",
+        "policy": "Policy varies by policyId: energy+heat production action, temperature rebate, 6-heat conversion, or tile heat",
         "good_for": ["Heat strategy", "Helion", "temperature rush"],
         "bad_for": ["temperature already maxed"],
         "delegate_value": "medium_if_heat",
-        "ruling_tip": "Policy даёт heat-prod за 2 MC — отлично для Helion. Бесполезна после max temp",
+        "ruling_tip": "Heat production кормит ruling-бонус. Точную policy смотри по текущему policyId.",
     },
 }
+
+
+def party_policy_info(turmoil: dict | None, party_name: str) -> dict:
+    """Return current policy text for a party using the live policyId."""
+    policy_id = ""
+    if turmoil:
+        policy_id = (turmoil.get("policy_ids") or {}).get(party_name, "")
+    info = dict(PARTY_POLICY_DESCRIPTIONS_BY_ID.get(policy_id, {}))
+    if not info:
+        return {
+            "party": party_name,
+            "policy": "",
+            "icon": PARTY_ICONS.get(party_name, ""),
+            "policy_id": policy_id,
+            "actionable": False,
+        }
+    info["icon"] = PARTY_ICONS.get(party_name, "")
+    info["policy_id"] = policy_id
+    return info
 
 # Global Event preparation advice — what to do when you see these coming
 GLOBAL_EVENT_ADVICE: dict[str, str] = {
@@ -447,7 +553,7 @@ GLOBAL_EVENT_ADVICE: dict[str, str] = {
     "Pandemic": "-3 MC/building tag. Если много Building — копи MC или набирай influence",
     "Riots": "-4 MC/city. Если много городов — готовь MC резерв или influence",
     "Mud Slides": "-4 MC/tile adj. to ocean. Проверь сколько тайлов у тебя рядом с океаном",
-    "Miners On Strike": "-1 ti/Jovian tag. Потрать titanium ДО события",
+    "Miners On Strike": "-1 ti/Jovian tag после influence. Если influence уже закрывает твои Jovian, не overreact; иначе трать titanium ДО события",
     "Sabotage": "-1 steel-prod, -1 energy-prod. Больно для Building engine",
     "Revolution": "Кто с наибольшим Earth+influence теряет 2 TR. Следи за Earth тегами",
     "Dry Deserts": "1st player removes ocean! Готовься к потере TR",
@@ -488,7 +594,12 @@ COLONY_TRADE_DATA = {
     "Ganymede": {"resource": "Plants", "track": [0, 1, 2, 3, 4, 5, 6], "colony_bonus": "1 plant", "build": "+1 plant-prod"},
     "Callisto": {"resource": "Energy", "track": [0, 2, 3, 5, 7, 10, 13], "colony_bonus": "3 energy", "build": "+3 energy"},
     "Triton": {"resource": "Titanium", "track": [0, 1, 1, 2, 3, 4, 5], "colony_bonus": "1 ti", "build": "+3 ti"},
-    "Europa": {"resource": "MC+Ocean", "track": [1, 1, 2, 3, 4, 6, 8], "colony_bonus": "1 MC-prod", "build": "Place ocean"},
+    "Europa": {
+        "resource": "Production",
+        "track": ["MC-prod", "MC-prod", "energy-prod", "energy-prod", "plant-prod", "plant-prod", "plant-prod"],
+        "colony_bonus": "1 MC",
+        "build": "Place ocean",
+    },
     "Miranda": {"resource": "Animals", "track": [0, 0, 1, 1, 2, 2, 3], "colony_bonus": "1 animal", "build": "+1 animal to card"},
     "Titan": {"resource": "Floaters", "track": [0, 1, 1, 2, 3, 3, 4], "colony_bonus": "1 floater", "build": "+3 floaters"},
     "Io": {"resource": "Heat", "track": [2, 3, 4, 6, 8, 10, 13], "colony_bonus": "2 heat", "build": "+2 heat-prod"},
@@ -500,16 +611,13 @@ COLONY_TRADE_DATA = {
 
 # ── Colony Trade Modifiers ──
 
-TRADE_DISCOUNT_CARDS = {"Cryo-Sleep", "Rim Freighters"}  # -1 energy/ti cost to trade
-TRADE_TRACK_BOOST_CARDS = {"Trade Envoys": 1, "Trading Colony": 1, "L1 Trade Terminal": 2}
-TRADE_MC_BONUS_CARDS = {"Venus Trade Hub": 3}
-FREE_TRADE_CARDS = {"Titan Floating Launch-Pad"}  # spend 1 floater -> free trade
+FREE_TRADE_CARDS = {"Titan Floating Launch-pad"}  # spend 1 floater -> free trade
 
 COLONY_SYNERGY_CARDS = {
     "Ecology Research": {"type": "plant_prod_per_colony", "per": 1},
     "Quantum Communications": {"type": "mc_prod_per_colony", "per": 1},
     "Molecular Printing": {"type": "mc_per_city_colony", "per": 1},
-    "Colonial Representation": {"type": "influence_plus_rebate", "per": 3},
+    "Colonial Representation": {"type": "mc_rebate_per_colony", "per": 3},
     "Productive Outpost": {"type": "free_colony_bonus", "per": 0},
 }
 
@@ -569,7 +677,7 @@ COLONY_TIERS: dict[str, dict] = {
     },
     "Europa": {
         "tier": "B", "score": 68,
-        "why": "Ocean placement + MC prod. Energy cheaper here (9 vs 11). Decent all-rounder",
+        "why": "Ocean build bonus + production trades. Decent early if ocean still matters",
         "build_priority": 2,
         "best_with": ["Arctic Algae", "Lakefront Resorts"],
         "trade_value": "medium",

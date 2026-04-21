@@ -46,33 +46,13 @@ var TM_CARD_VP = {
   "type": "per_resource",
   "per": 2
  },
- "Regolith Eaters": {
-  "type": "per_resource",
-  "per": 3
- },
- "GHG Producing Bacteria": {
-  "type": "per_resource",
-  "per": 3
- },
- "Nitrite Reducing Bacteria": {
-  "type": "per_resource",
-  "per": 3
- },
  "Extremophiles": {
-  "type": "per_resource",
-  "per": 3
- },
- "Dirigibles": {
   "type": "per_resource",
   "per": 3
  },
  "Floating Habs": {
   "type": "per_resource",
   "per": 2
- },
- "Atmo Collectors": {
-  "type": "per_resource",
-  "per": 3
  },
  "Jovian Lanterns": {
   "type": "per_resource",

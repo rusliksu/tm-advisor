@@ -28,6 +28,33 @@ console.log('Existing effects:', Object.keys(effects).length);
 const PROD_MAP = { megacredits: 'mp', steel: 'sp', titanium: 'tp', plants: 'pp', energy: 'ep', heat: 'hp' };
 const STOCK_MAP = { megacredits: 'mc', steel: 'st', titanium: 'ti', plants: 'pl', energy: 'en', heat: 'he' };
 const GLOBAL_MAP = { temperature: 'tmp', oxygen: 'o2', venus: 'vn' };
+const STALE_EFFECT_KEYS = {
+  // These cards use delayed/action resource conversion, not immediate global/TR effects.
+  'Darkside Observatory': ['tr'],
+  // Stateful OR-actions: add a resource now, or spend stored resources for a
+  // payoff. Do not expose both branches as one recurring static action.
+  'Aerial Mappers': ['actCD'],
+  'Atmo Collectors': ['actMC'],
+  'Comet Aiming': ['actTR', 'res'],
+  'Copernicus Tower': ['actTR'],
+  'Deuterium Export': ['actTR', 'act_ep'],
+  'Dirigibles': ['actMC'],
+  'Extractor Balloons': ['vn', 'actTR', 'actVn'],
+  'Floating Refinery': ['actMC'],
+  'Forced Precipitation': ['actMC'],
+  'GHG Producing Bacteria': ['actTR', 'actTmp'],
+  'Jet Stream Microscrappers': ['actTR'],
+  'Jupiter Floating Station': ['actMC'],
+  'Local Shading': ['actTR', 'act_mp'],
+  'Nitrite Reducing Bacteria': ['tr', 'actTR'],
+  'Regolith Eaters': ['actTR', 'actO2'],
+  'Sulphur-Eating Bacteria': ['actMC'],
+  'Thermophiles': ['actTR', 'actVn'],
+  // Either production OR ocean+stock; do not merge both branches into one value.
+  'Asteroid Resources': ['st', 'ti', 'oc'],
+  // Discount/enabler only: parser used render symbols as real MC production + city placement.
+  'Prefabrication of Human Habitats': ['mp', 'city'],
+};
 
 const inEffects = new Set(Object.keys(effects));
 const inCatalog = new Set(allCards.map((card) => card.name).concat(Object.keys(effects)));
@@ -43,6 +70,9 @@ for (const name of Object.keys(extracted)) {
   const beh = card.behavior || {};
   const act = card.action || {};
   const entry = Object.assign({}, effects[name] || {});
+  for (const staleKey of STALE_EFFECT_KEYS[name] || []) {
+    delete entry[staleKey];
+  }
   const before = JSON.stringify(entry);
 
   // Production
@@ -71,6 +101,11 @@ for (const name of Object.keys(extracted)) {
 
   // TR
   if (beh.tr) entry.tr = beh.tr;
+
+  // Turmoil
+  if (beh.turmoil && typeof beh.turmoil.influenceBonus === 'number') {
+    entry.infl = beh.turmoil.influenceBonus;
+  }
 
   // Oceans
   if (beh.ocean) entry.oc = beh.ocean;
