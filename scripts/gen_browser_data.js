@@ -17,6 +17,7 @@ const EXT_DATA = path.join(ROOT, 'extension', 'data');
 // ── Load sources ──
 
 const allCards = JSON.parse(fs.readFileSync(path.join(DATA, 'all_cards.json'), 'utf8'));
+const allCardsByName = Object.fromEntries(allCards.map((card) => [card.name, card]));
 
 // Load existing card_tags.js for tag fallback (has more cards than all_cards.json)
 let existingCardTags = {};
@@ -53,6 +54,25 @@ for (const card of allCards) {
 
 const cardVP = {};
 
+function parseResourceVP(victoryPoints) {
+  if (!victoryPoints) return null;
+  const text = String(victoryPoints).trim();
+  const match = text.match(/^(\d+)\s*\/\s*(?:(\d+)\s+)?resources?$/i);
+  if (!match) return null;
+  const numerator = Number(match[1]);
+  const denominator = match[2] ? Number(match[2]) : 1;
+  if (!Number.isFinite(numerator) || numerator <= 0 || !Number.isFinite(denominator) || denominator <= 0) {
+    return null;
+  }
+  return denominator / numerator;
+}
+
+function normalizeResourceType(resourceType) {
+  const text = String(resourceType || '').trim().toLowerCase();
+  if (!text) return '';
+  return text.replace(/[\s-]+/g, '_');
+}
+
 // From vp_multipliers
 for (const [name, info] of Object.entries(vpMult)) {
   if (info.vpPer === 'self_resource') {
@@ -72,7 +92,7 @@ for (const [name, e] of Object.entries(effects)) {
     cardVP[name] = { type: 'static', vp: e.vp };
   } else if (e.vpAcc) {
     // VP per resource on card (e.g. 1 VP per animal, or 1 VP per 2 microbes)
-    cardVP[name] = { type: 'per_resource', per: e.vpAcc };
+    cardVP[name] = { type: 'per_resource', per: e.vpPer || e.vpAcc };
   } else if (e.vpTag) {
     // VP per tag (e.g. 1 VP per Jovian tag)
     cardVP[name] = { type: 'per_tag', tag: e.vpTag.tag, per: e.vpTag.per || 1 };
@@ -81,6 +101,11 @@ for (const [name, e] of Object.entries(effects)) {
 
 // From all_cards.json (static VP not in effects)
 for (const card of allCards) {
+  const resourceVP = parseResourceVP(card.victoryPoints);
+  if (resourceVP !== null) {
+    cardVP[card.name] = { type: 'per_resource', per: resourceVP };
+    continue;
+  }
   if (cardVP[card.name]) continue;
   if (card.victoryPoints) {
     const vp = parseInt(card.victoryPoints);
@@ -732,26 +757,30 @@ for (const [name, e] of Object.entries(effects)) {
 
   // ── action (blue card recurring) ──
   const act = {};
-  if (e.actCD) act.drawCard = e.actCD;
-  if (e.actTR) act.tr = e.actTR;
-  const actStock = {};
-  for (const [k, longKey] of Object.entries(ACTION_STOCK_MAP)) {
-    if (typeof e[k] === 'number') actStock[longKey] = e[k];
+  const catalogCard = allCardsByName[name];
+  const canExposeStaticAction = !catalogCard || catalogCard.hasAction === true;
+  if (canExposeStaticAction) {
+    if (e.actCD) act.drawCard = e.actCD;
+    if (e.actTR) act.tr = e.actTR;
+    const actStock = {};
+    for (const [k, longKey] of Object.entries(ACTION_STOCK_MAP)) {
+      if (typeof e[k] === 'number') actStock[longKey] = e[k];
+    }
+    if (Object.keys(actStock).length > 0) act.stock = actStock;
+    const actGlobal = {};
+    if (e.actTmp) actGlobal.temperature = e.actTmp;
+    if (e.actO2) actGlobal.oxygen = e.actO2;
+    if (e.actOc) actGlobal.ocean = e.actOc;
+    if (e.actVn) actGlobal.venus = e.actVn;
+    if (Object.keys(actGlobal).length > 0) act.global = actGlobal;
+    const actProduction = {};
+    for (const [k, longKey] of Object.entries(PROD_MAP)) {
+      const actionProd = e['act_' + k];
+      if (typeof actionProd === 'number') actProduction[longKey] = actionProd;
+    }
+    if (Object.keys(actProduction).length > 0) act.production = actProduction;
+    if ((e.vpAcc || e.res) && !NO_STATIC_RESOURCE_ACTION.has(name)) act.addResources = 1;
   }
-  if (Object.keys(actStock).length > 0) act.stock = actStock;
-  const actGlobal = {};
-  if (e.actTmp) actGlobal.temperature = e.actTmp;
-  if (e.actO2) actGlobal.oxygen = e.actO2;
-  if (e.actOc) actGlobal.ocean = e.actOc;
-  if (e.actVn) actGlobal.venus = e.actVn;
-  if (Object.keys(actGlobal).length > 0) act.global = actGlobal;
-  const actProduction = {};
-  for (const [k, longKey] of Object.entries(PROD_MAP)) {
-    const actionProd = e['act_' + k];
-    if (typeof actionProd === 'number') actProduction[longKey] = actionProd;
-  }
-  if (Object.keys(actProduction).length > 0) act.production = actProduction;
-  if ((e.vpAcc || e.res) && !NO_STATIC_RESOURCE_ACTION.has(name)) act.addResources = 1;
   if (Object.keys(act).length > 0) entry.action = act;
   if (ACTION_CHOICES[name]) entry.actionChoices = ACTION_CHOICES[name];
 
@@ -761,6 +790,9 @@ for (const [name, e] of Object.entries(effects)) {
   // ── Resource type ──
   if (e.res) entry.resourceType = e.res;
   else if (RESOURCE_TYPE_OVERRIDES[name]) entry.resourceType = RESOURCE_TYPE_OVERRIDES[name];
+  else if (allCardsByName[name] && allCardsByName[name].resourceType) {
+    entry.resourceType = normalizeResourceType(allCardsByName[name].resourceType);
+  }
 
   // ── Card discount ──
   if (e.disc) {

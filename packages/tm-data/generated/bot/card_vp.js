@@ -21,8 +21,7 @@ var TM_CARD_VP = {
   "per": 1
  },
  "Venusian Animals": {
-  "type": "per_tag",
-  "tag": "science",
+  "type": "per_resource",
   "per": 1
  },
  "Search For Life": {
@@ -185,11 +184,11 @@ var TM_CARD_VP = {
  },
  "Decomposers": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Ants": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Security Fleet": {
   "type": "per_resource",
@@ -229,7 +228,7 @@ var TM_CARD_VP = {
  },
  "Stratopolis": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Dawn City": {
   "type": "static",
@@ -358,7 +357,7 @@ var TM_CARD_VP = {
  },
  "Arklight": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Pristar": {
   "type": "per_resource",
@@ -366,11 +365,11 @@ var TM_CARD_VP = {
  },
  "Celestic": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Main Belt Asteroids": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Nobel Prize": {
   "type": "static",
@@ -426,7 +425,7 @@ var TM_CARD_VP = {
  },
  "Asteroid Hollowing": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "St. Joseph of Cupertino Mission": {
   "type": "per_resource",
@@ -698,7 +697,7 @@ var TM_CARD_VP = {
  },
  "Cloud Tourism": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Phobos Space Haven": {
   "type": "static",
@@ -890,7 +889,7 @@ var TM_CARD_VP = {
  },
  "Aeron Genomics": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Anti-trust Crackdown": {
   "type": "static",
@@ -914,7 +913,7 @@ var TM_CARD_VP = {
  },
  "Henkei Genetics": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Infrastructure Overload": {
   "type": "static",
@@ -946,7 +945,7 @@ var TM_CARD_VP = {
  },
  "Research & Development Hub": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Space Wargames": {
   "type": "per_tag",
@@ -955,7 +954,7 @@ var TM_CARD_VP = {
  },
  "Thiolava Vents": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Underground Amusement Park": {
   "type": "static",
@@ -1035,7 +1034,7 @@ var TM_CARD_VP = {
  },
  "Ecological Zone:ares": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Great Dam:ares": {
   "type": "static",

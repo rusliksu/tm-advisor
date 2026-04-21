@@ -1208,9 +1208,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Ecological Zone": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 2
@@ -1308,12 +1305,9 @@ var TM_CARD_DATA = {
   ]
  },
  "Decomposers": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
   "resourceType": "microbe",
   "tags": [
@@ -1326,7 +1320,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
   "resourceType": "microbe",
   "tags": [
@@ -1339,9 +1333,6 @@ var TM_CARD_DATA = {
     "count": 1
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 2
@@ -1352,9 +1343,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Pets": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 2
@@ -1468,13 +1456,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Olympus Conference": {
-  "action": {
-   "drawCard": 0.5
-  },
   "vp": {
    "type": "static",
    "vp": 1
   },
+  "resourceType": "science",
   "tags": [
    "science",
    "earth",
@@ -1482,9 +1468,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Mars University": {
-  "action": {
-   "drawCard": 0.3
-  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -1685,7 +1668,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
   "resourceType": "floater",
   "tags": [
@@ -2145,6 +2128,7 @@ var TM_CARD_DATA = {
     }
    }
   ],
+  "resourceType": "asteroid",
   "tags": [
    "space"
   ]
@@ -2171,6 +2155,7 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 2
   },
+  "resourceType": "floater",
   "tags": [
    "jovian"
   ]
@@ -2265,12 +2250,8 @@ var TM_CARD_DATA = {
   ]
  },
  "Venusian Animals": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
-   "type": "per_tag",
-   "tag": "science",
+   "type": "per_resource",
    "per": 1
   },
   "resourceType": "animal",
@@ -2810,13 +2791,11 @@ var TM_CARD_DATA = {
     "megacredits": 2
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
+  "resourceType": "animal",
   "tags": [
    "animal"
   ]
@@ -2825,13 +2804,11 @@ var TM_CARD_DATA = {
   "behavior": {
    "tr": -2
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
-  }
+  },
+  "resourceType": "preservation"
  },
  "Factorum": {
   "behavior": {
@@ -2912,6 +2889,7 @@ var TM_CARD_DATA = {
     "target": "this"
    }
   ],
+  "resourceType": "asteroid",
   "tags": [
    "space",
    "space"
@@ -2922,9 +2900,6 @@ var TM_CARD_DATA = {
    "production": {
     "steel": 1
    }
-  },
-  "action": {
-   "addResources": 1
   },
   "resourceType": "microbe",
   "tags": [
@@ -3128,6 +3103,7 @@ var TM_CARD_DATA = {
     "target": "any"
    }
   ],
+  "resourceType": "floater",
   "tags": [
    "jovian"
   ]
@@ -3144,8 +3120,9 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
+  "resourceType": "floater",
   "tags": [
    "venus"
   ]
@@ -3591,8 +3568,9 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
+  "resourceType": "asteroid",
   "tags": [
    "space"
   ]
@@ -4204,6 +4182,7 @@ var TM_CARD_DATA = {
     "standardResourceChoice": true
    }
   ],
+  "resourceType": "floater",
   "tags": [
    "space"
   ]
@@ -4263,6 +4242,7 @@ var TM_CARD_DATA = {
    "type": "per_resource",
    "per": 1
   },
+  "resourceType": "hydroelectric_resource",
   "tags": [
    "power"
   ]
@@ -4696,6 +4676,7 @@ var TM_CARD_DATA = {
     "firstPlayerPlaces": true
    }
   ],
+  "resourceType": "asteroid",
   "tags": [
    "space"
   ]
@@ -4712,7 +4693,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
   "resourceType": "asteroid",
   "tags": [
@@ -5025,6 +5006,7 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 2
   },
+  "resourceType": "floater",
   "tags": [
    "jovian",
    "science"
@@ -5304,6 +5286,7 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 1
   },
+  "resourceType": "graphene",
   "tags": [
    "science",
    "building"
@@ -5762,6 +5745,7 @@ var TM_CARD_DATA = {
    "type": "static",
    "vp": 1
   },
+  "resourceType": "floater",
   "tags": [
    "jovian",
    "space"
@@ -5773,9 +5757,6 @@ var TM_CARD_DATA = {
     "cards": 1
    },
    "drawCard": 1
-  },
-  "action": {
-   "addResources": 1
   },
   "resourceType": "microbe",
   "tags": [
@@ -6345,6 +6326,7 @@ var TM_CARD_DATA = {
     }
    }
   ],
+  "resourceType": "floater",
   "tags": [
    "venus"
   ]
@@ -6718,7 +6700,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
   "resourceType": "floater",
   "tags": [
@@ -6843,6 +6825,7 @@ var TM_CARD_DATA = {
     }
    }
   ],
+  "resourceType": "asteroid",
   "tags": [
    "space"
   ]
@@ -6878,6 +6861,7 @@ var TM_CARD_DATA = {
     }
    }
   ],
+  "resourceType": "asteroid",
   "tags": [
    "space"
   ]
@@ -7072,7 +7056,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
   "resourceType": "animal"
  },
@@ -7124,7 +7108,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   }
  },
  "Martian Monuments": {
@@ -7321,6 +7305,7 @@ var TM_CARD_DATA = {
    },
    "drawCard": 1
   },
+  "resourceType": "science",
   "tags": [
    "city",
    "earth"
@@ -7448,6 +7433,7 @@ var TM_CARD_DATA = {
   "behavior": {
    "tr": -4
   },
+  "resourceType": "disease",
   "tags": [
    "microbe",
    "microbe"
@@ -7696,9 +7682,6 @@ var TM_CARD_DATA = {
   }
  },
  "Microgravity Nutrition": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -7909,9 +7892,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Ocean Sanctuary": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -8436,7 +8416,7 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
   "resourceType": "animal",
   "tags": [
@@ -8469,6 +8449,7 @@ var TM_CARD_DATA = {
     "plants": 1
    }
   },
+  "resourceType": "activist",
   "tags": [
    "plant"
   ]
@@ -8684,9 +8665,6 @@ var TM_CARD_DATA = {
     "addTradeFleet": 1
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "resourceType": "supply_chain",
   "tags": [
    "earth",
@@ -8699,8 +8677,9 @@ var TM_CARD_DATA = {
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
+  "resourceType": "microbe",
   "tags": [
    "microbe"
   ]
@@ -8774,6 +8753,7 @@ var TM_CARD_DATA = {
     "titanium": -1
    }
   },
+  "resourceType": "fighter",
   "tags": [
    "jovian",
    "space"
@@ -8844,6 +8824,7 @@ var TM_CARD_DATA = {
   "action": {
    "drawCard": 1
   },
+  "resourceType": "data",
   "tags": [
    "earth"
   ]
@@ -8967,13 +8948,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Research & Development Hub": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
+  "resourceType": "data",
   "tags": [
    "science",
    "building"
@@ -9046,12 +9025,9 @@ var TM_CARD_DATA = {
     "heat": 2
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 3
   },
   "resourceType": "microbe",
   "tags": [
@@ -9124,13 +9100,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Whales": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
   },
+  "resourceType": "animal",
   "tags": [
    "animal"
   ]
@@ -9768,7 +9742,8 @@ var TM_CARD_DATA = {
   "vp": {
    "type": "static",
    "vp": 1
-  }
+  },
+  "resourceType": "ware"
  },
  "Detective TV Series": {
   "tags": [
@@ -10075,13 +10050,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Ecological Zone:ares": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 2
   },
+  "resourceType": "animal",
   "tags": [
    "animal",
    "plant"

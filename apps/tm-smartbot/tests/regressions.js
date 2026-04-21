@@ -332,6 +332,40 @@ function testStatefulOrActionsDoNotSumChoiceBranches() {
     assert.strictEqual(Object.prototype.hasOwnProperty.call(action, 'stock'), false, name + ' should not sum stock gains with resource accumulation');
     assert.strictEqual(Object.prototype.hasOwnProperty.call(action, 'production'), false, name + ' should not sum production gains with resource accumulation');
   }
+  for (const name of [
+    'Arklight',
+    'Bactoviral Research',
+    'Decomposers',
+    'Ecological Zone',
+    'Ecological Zone:ares',
+    'Hecate Speditions',
+    'Herbivores',
+    'Mars University',
+    'Microgravity Nutrition',
+    'Ocean Sanctuary',
+    'Olympus Conference',
+    'Pets',
+    'Pristar',
+    'Recyclon',
+    'Research & Development Hub',
+    'Thiolava Vents',
+    'Venusian Animals',
+    'Whales',
+  ]) {
+    const data = SMARTBOT.CARD_DATA[name] || {};
+    assert.strictEqual(Object.prototype.hasOwnProperty.call(data, 'action'), false, name + ' should not expose trigger-only resources as recurring actions');
+  }
+  for (const [name, per] of Object.entries({
+    'Ants': 2,
+    'Decomposers': 3,
+    'Stratopolis': 3,
+    'Venusian Animals': 1,
+  })) {
+    assert.strictEqual(SMARTBOT.CARD_DATA[name].vp.type, 'per_resource', name + ' should score VP from resources');
+    assert.strictEqual(SMARTBOT.CARD_DATA[name].vp.per, per, name + ' should preserve canonical VP/resource divisor');
+  }
+  assert.strictEqual(String(SMARTBOT.CARD_DATA['Arklight'].resourceType || '').toLowerCase(), 'animal', 'Arklight should keep animal resource metadata from canonical card data');
+  assert.strictEqual(String(SMARTBOT.CARD_DATA['Research & Development Hub'].resourceType || '').toLowerCase(), 'data', 'Research & Development Hub should keep data resource metadata from canonical card data');
   assert.strictEqual(SMARTBOT.CARD_DATA['Physics Complex'].vp.per, 0.5, 'Physics Complex should score 2 VP per science resource');
 }
 

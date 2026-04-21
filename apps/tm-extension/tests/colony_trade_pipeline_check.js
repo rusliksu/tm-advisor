@@ -230,6 +230,26 @@ const noStaticResourceActionCards = new Set([
   'Neptunian Power Consultants',
   'Rotator Impacts',
 ]);
+const triggerOnlyNoStaticActionCards = [
+  'Arklight',
+  'Bactoviral Research',
+  'Decomposers',
+  'Ecological Zone',
+  'Ecological Zone:ares',
+  'Hecate Speditions',
+  'Herbivores',
+  'Mars University',
+  'Microgravity Nutrition',
+  'Ocean Sanctuary',
+  'Olympus Conference',
+  'Pets',
+  'Pristar',
+  'Recyclon',
+  'Research & Development Hub',
+  'Thiolava Vents',
+  'Venusian Animals',
+  'Whales',
+];
 for (const [name, staleKeys] of Object.entries(statefulOrActionStaleKeys)) {
   for (const staleKey of staleKeys) {
     assert.strictEqual(hasOwn(effects[name], staleKey), false, name + ' effects should not expose stale ' + staleKey);
@@ -298,6 +318,37 @@ for (const [name, staleKeys] of Object.entries(statefulOrActionStaleKeys)) {
     continue;
   }
   assertResourceOnlyAction(name);
+}
+for (const name of triggerOnlyNoStaticActionCards) {
+  assert.strictEqual(hasOwn(cardData[name] || {}, 'action'), false, name + ' should not expose trigger-only resources as recurring actions');
+}
+assert.strictEqual(hasOwn(effects['Olympus Conference'], 'actCD'), false, 'Olympus Conference science trigger should not be a blue-card draw action');
+assert.strictEqual(hasOwn(effects['Mars University'], 'actCD'), false, 'Mars University science trigger should not be a blue-card draw action');
+assert.strictEqual(cardData['Decomposers'].resourceType, 'microbe', 'Decomposers should keep resource metadata after dropping fake action');
+assert.strictEqual(cardData['Decomposers'].vp.per, 3, 'Decomposers should keep VP/resource metadata after dropping fake action');
+assert.strictEqual(cardData['Pets'].resourceType, 'animal', 'Pets should keep animal resource metadata after dropping fake action');
+assert.strictEqual(cardData['Arklight'].resourceType, 'animal', 'Arklight should keep animal resource metadata from canonical card data');
+assert.strictEqual(cardData['Research & Development Hub'].resourceType, 'data', 'Research & Development Hub should keep data resource metadata from canonical card data');
+assert.strictEqual(cardData['Whales'].resourceType, 'animal', 'Whales should keep animal resource metadata from canonical card data');
+for (const [name, per] of Object.entries({
+  'Aeron Genomics': 3,
+  'Ants': 2,
+  'Arklight': 2,
+  'Asteroid Hollowing': 2,
+  'Celestic': 3,
+  'Cloud Tourism': 3,
+  'Decomposers': 3,
+  'Ecological Zone:ares': 2,
+  'Henkei Genetics': 3,
+  'Main Belt Asteroids': 2,
+  'Physics Complex': 0.5,
+  'Research & Development Hub': 3,
+  'Stratopolis': 3,
+  'Thiolava Vents': 3,
+  'Venusian Animals': 1,
+})) {
+  assert.strictEqual(cardData[name].vp.type, 'per_resource', name + ' should score VP from resources, not tags/static VP');
+  assert.strictEqual(cardData[name].vp.per, per, name + ' should preserve canonical VP/resource divisor');
 }
 assertResourceOnlyAction('Weather Balloons');
 assert.strictEqual(hasOwn(effects['Ore Processor'], 'tp'), false, 'Ore Processor should not expose a fake immediate titanium production value');

@@ -29,13 +29,8 @@ const TM_VP_MULTIPLIERS = {
   "Tardigrades":                 { vpPer: "self_resource", divisor: 4, selfTags: ["microbe"] },
   "Venusian Insects":            { vpPer: "self_resource", divisor: 2, selfTags: ["venus","microbe"] },
   "Sub-zero Salt Fish":          { vpPer: "self_resource", divisor: 2, selfTags: ["animal"] },
-  "Regolith Eaters":             { vpPer: "self_resource", divisor: 3, selfTags: ["science","microbe"] },
-  "GHG Producing Bacteria":     { vpPer: "self_resource", divisor: 3, selfTags: ["science","microbe"] },
-  "Nitrite Reducing Bacteria":   { vpPer: "self_resource", divisor: 3, selfTags: ["microbe"] },
   "Extremophiles":               { vpPer: "self_resource", divisor: 3, selfTags: ["venus","microbe"] },
-  "Dirigibles":                  { vpPer: "self_resource", divisor: 3, selfTags: ["venus"] },
   "Floating Habs":               { vpPer: "self_resource", divisor: 2, selfTags: ["venus"] },
-  "Atmo Collectors":             { vpPer: "self_resource", divisor: 3, selfTags: [] },
   "Jovian Lanterns":             { vpPer: "self_resource", divisor: 2, selfTags: ["jovian"] },
 
   // ══════════════════════════════════════════════════════════════
