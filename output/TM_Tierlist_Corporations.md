@@ -2,7 +2,7 @@
 
 **Формат:** 3P / WGT / Все дополнения
 
-**Всего оценено:** 79 корпораций
+**Всего оценено:** 90 корпораций
 
 ---
 
@@ -10,113 +10,124 @@
 
 | Корпорация | Score | Старт MC | Теги | Ключевое |
 |------------|-------|----------|------|----------|
-| Point Luna | 90 | 38 | Space, Earth | Card draw от Earth тегов решает фундаментальную проблему engine: economy + card  |
+| Point Luna | 90 | 38 | Space, Earth | Earth-tag draw solves the core engine problem: economy and card flow at the same |
 
 ---
 
-## A-Tier (11) — Почти всегда берём
+## A-Tier (10) — Почти всегда берём
 
 | Корпорация | Score | Старт MC | Теги | Ключевое |
 |------------|-------|----------|------|----------|
-| CrediCor | 88 | 57 | — | Топ-тир по единогласному мнению сообщества |
-| Manutech | 88 | 35 | Building | Сломанная корпорация, которую многие банят |
-| Polaris | 86 | ? | Space | Полярис — машина для MC production |
-| EcoLine | 85 | 36 | Plant | Машина для ground game |
-| Vitor | 85 | 48 | Earth | +3 MC на VP карты абсурдно хорош — VP карты и так лучшие в игре, Vitor делает их |
-| Ringcom | 85 | ? | Jovian | PDF показывает A-tier (rank 16, 40% winrate) — одна из лучших PF корпораций в ст |
-| Tharsis Republic | 83 | 40 | Building | Passive MC-prod от ВСЕХ cities (свои + opponents') отлична в 3P |
-| Lakefront Resorts | 82 | 54 | Building | Одна из сильнейших корпораций |
-| Poseidon | 82 | 45 | — | Free colony + MC-prod от всех colony placements = огромный economic advantage |
-| Philares | 80 | 47 | Building | Free greenery ценнее чем free city (Tharsis Republic) |
-| SolBank | 80 | ? | — | Механика SolBank вознаграждает частые траты |
+| CrediCor | 88 | 57 | — | One of the safest top-tier corps |
+| Manutech | 88 | 35 | Building | Borderline broken |
+| Polaris | 86 | ? | — | Ocean-economy machine with a brutally low start |
+| EcoLine | 85 | 36 | Plant | Ground-game monster |
+| Vitor | 85 | 48 | Earth | The +3 MC rebate on VP cards is absurdly efficient because VP cards are already  |
+| Ringcom | 85 | ? | — | One of the strongest Pathfinder corps when Colonies matter |
+| Lakefront Resorts | 82 | 54 | Building | One of the strongest generic corps |
+| Anubis Securities | 81 | 42 | Earth | Одна из лучших underworld-корпораций: сочетает tempo, деньги и управляемую корру |
+| Philares | 80 | 47 | Building | Very strong board corp |
+| SolBank | 80 | ? | — | SolBank rewards frequent spending |
 
 ---
 
-## B-Tier (22) — Хорош с синергией
+## B-Tier (27) — Хорош с синергией
 
 | Корпорация | Score | Старт MC | Теги | Ключевое |
 |------------|-------|----------|------|----------|
-| Teractor | 78 | 60 | Earth | 60 MC стартовый капитал = огромная flexibility gen 1 |
-| Habitat Marte | 78 | ? | Mars | Статистика показывает 20% winrate (E-tier в PDF) |
-| Spire | 77 | 50 | City, Earth | Сильный старт (50 MC) + отличная card filtering |
-| Collegium Copernicus | 76 | ? | Science, Earth | Очень низкий стартовый капитал (33 MC), но два отличных тега (Science + Earth) и |
-| Eris | 76 | ? | Building | Ares-специфичная корпорация (Community, не Pathfinders) |
-| Curiosity II | 75 | ? | Science, Building | Tile-heavy стратегия |
-| Helion | 75 | 42 | Space | Надёжная B-tier корпорация с хорошим floor |
-| Valley Trust | 75 | 37 | Earth | Extra prelude — мощный gen 1 boost |
-| Interplanetary Cinematics | 74 | 30 | Building | Высокий ceiling (70 MC effective), но ужасный floor (30 MC без building-карт) |
-| Cheung Shing MARS | 74 | 44 | Building | Стабильная, надёжная корпорация |
-| PolderTECH Dutch | 74 | 35 | Earth | Сильный first-action: 2 TR от ocean + oxygen + placement bonuses |
-| PhoboLog | 74 | 23 | Space | Одна из лучших корпораций в игре |
-| Odyssey | 74 | ? | — | Уникальная корпорация с высоким ceiling и низким floor |
-| Luna Trade Federation | 74 | ? | Earth, Jovian | Colony + Earth dual synergy |
-| Robinson Industries | 72 | 47 | — | Action генерирует огромную value, особенно gen 1 (ti-prod за 4 MC = лучшая сделк |
-| Playwrights | 70 | ? | Power | Уникальный action: replay events любого игрока за MC (скидки работают) |
-| Morning Star Inc. | 70 | 50 | Venus | Solid Venus-корпорация с хорошим стартовым капиталом (50 MC — выше среднего) |
-| Inventrix | 70 | 45 | Science | Универсальная корпорация: ±2 requirements открывает карты, которые иначе были бы |
-| Aurorai | 70 | ? | Mars | Несмотря на ужасный старт (33 MC, -30 от среднего), ability очень мощная |
-| Gagarin Mobile Base | 70 | ? | Science | PDF показывает B-tier (rank 32, 30% winrate) — значительно лучше нашей старой D  |
-| Steelaris | 70 | ? | Building, City | Пассивный income от ВСЕХ city/special tile placements — неплохо в 3P |
-| Nanotech Industries | 70 | ? | Science | Science engine corp: рисуешь карту при каждом Science теге + 1 VP per 2 Science  |
+| Teractor | 78 | 60 | Earth | Sixty starting MC is enormous flexibility for gen 1, and the Earth discount rema |
+| Habitat Marte | 78 | ? | — | Specialized Pathfinders corp with real ceiling in dedicated Mars-tag shells |
+| Demetron Labs | 78 | 45 | Science | Сильная научная корпорация underworld-формата: не сломанная, но даёт и картовый  |
+| Spire | 77 | 50 | City, Earth | Strong start with excellent filtering |
+| Poseidon | 76 | 45 | — | Free colony plus MC production from every colony placement is an enormous econom |
+| PhoboLog | 76 | 23 | Space | One of the highest-ceiling corporations in the game, but very hand-dependent |
+| Eris | 76 | ? | — | Strong Ares-specific corp with a good start |
+| Curiosity II | 75 | ? | — | Flexible tile-and-science corp |
+| Helion | 75 | 42 | Space | Reliable B-tier corp with a strong floor |
+| Arborist Collective | 75 | 40 | Plant | Одна из самых прямолинейно сильных underworld-корпораций: хороший immediate floo |
+| Interplanetary Cinematics | 74 | 30 | Building | Huge ceiling, ugly floor |
+| Cheung Shing MARS | 74 | 44 | Building | Stable, reliable economy corp |
+| PolderTECH Dutch | 74 | 35 | Earth | Very strong first action: free ocean, free greenery, immediate oxygen, and two T |
+| Morning Star Inc. | 74 | 50 | Venus | Best of the Venus-focused corps, largely because the 50 MC start is genuinely go |
+| Odyssey | 74 | ? | — | Unique corp with a very high ceiling and a very low floor |
+| Luna Trade Federation | 74 | ? | — | Colony plus Earth is a very real package |
+| Hadesphere | 73 | 40 | Building | Одна из самых надёжных underworld-корпораций: хороший старт и встроенный доступ  |
+| Saturn Systems | 72 | 42 | Jovian | Solid Jovian economy corp, but not a generic auto-pick |
+| Tycho Magnetics | 72 | 42 | Power, Science | Powerful card-filtration corp |
+| Keplertec | 72 | 33 | Jovian, Space | Классическая space-corp с сильным ceiling и рискованным стартом; в all-expansion |
+| Aridor | 71 | 40 | — | High upside economy corp, but the low start makes gen 1-2 painful |
+| Valley Trust | 70 | 37 | Earth | An extra prelude is a major gen 1 boost, and choosing one from three usually mea |
+| Playwrights | 70 | ? | — | Unique event-replay corp with a huge ceiling |
+| Aurorai | 70 | ? | — | Despite the terrible 33 MC start, the ability is powerful |
+| Gagarin Mobile Base | 70 | ? | — | Board-flexibility corp whose ability is stronger in practice than it first reads |
+| Steelaris | 70 | ? | — | Decent passive-income corp for board-heavy games |
+| Nanotech Industries | 70 | ? | — | Real science-engine corp |
 
 ---
 
-## C-Tier (29) — Ситуативный
+## C-Tier (40) — Ситуативный
 
 | Корпорация | Score | Старт MC | Теги | Ключевое |
 |------------|-------|----------|------|----------|
-| Tycho Magnetics | 68 | 42 | Power, Science | Приличная корпорация с двумя хорошими тегами |
-| Soylent Seedling Systems | 68 | ? | Science, Plant | Корпорация для plant/greenery стратегии |
-| Nirgal Enterprises | 67 | 30 | Power, Plant, Building | Ужасный старт (30 MC) с потенциально мощной способностью |
-| Septem Tribus | 66 | 36 | Wild | 12 MC/turn ceiling сильный, но требует значительных delegate инвестиций |
-| Martian Insurance Group | 66 | ? | Mars | PDF показывает D-tier (rank 59, 16 |
-| Saturn Systems | 65 | 42 | Jovian | Ti-prod и Jovian тег — main value |
-| Thorgate | 65 | 48 | Power | Energy-discount корпорация |
-| Ambient | 65 | ? | Venus | Стартовый капитал катастрофически низкий (38 MC) |
-| Mars Direct | 65 | ? | Mars | PDF показывает C-tier (rank 52, 16 |
-| Incite | 65 | ? | Science | Turmoil-focused корпорация |
-| EcoTec | 64 | 42 | Microbe, Plant | Viral Enhancers на корпорации |
-| Viron | 64 | 48 | Microbe | Extreme variance |
-| Mons Insurance | 63 | 48 | — | Сильный стартовый пакет, но payouts и отсутствие тегов компенсируют |
-| Sagitta Frontier Services | 63 | 31 | — | Mild discount — 1 MC per single-tag card play |
-| Arklight | 62 | 45 | Animal | Приличный стартовый капитал с MC-prod, но способность — только VP, никакой помощ |
-| Mind Set Mars | 62 | ? | — | Идея корпорации — конвертировать building теги в политическое влияние или города |
-| Athena | 62 | ? | Science | При Science-heavy руке |
-| Aridor | 61 | 40 | — | Сильный потенциал MC-prod, но низкий старт делает gen 1-2 болезненными |
-| Mining Guild | 60 | 30 | Building, Building | Объективно слабая корпорация |
-| Pristar | 60 | 53 | — | Требует fundamentally другой playstyle |
-| United Nations Mission One | 60 | ? | Earth | Turmoil-ориентированная корпорация: 40 MC + 2 MC-prod + Earth тег + delegate |
-| Factorum | 58 | 37 | Power, Building | Низкий стартовый капитал (37 MC) — серьёзный минус |
-| Palladin Shipping | 58 | 36 | Space | Низкий стартовый капитал (36 MC) компенсируется 5 ti для space карт gen 1 |
-| Mars Maths | 58 | ? | Science | PDF F-tier (rank 83) |
-| Utopia Invest | 55 | 40 | Building | Приличный production start, но 40 MC tight |
-| Chimera | 55 | ? | Wild, Wild | PDF F-tier (rank 87, 23% WR — ниже среднего 33%) |
-| Robin Haulings | 55 | ? | Mars, Venus | Описание эффекта было ошибочным (описывалась attack-reward) |
-| Project Workshop | 55 | ? | Building | Только с 3+ дешёвыми blue картами |
-| Agricola Inc | 55 | ? | Plant | Plant production корпорация: 40 MC + 1 plant-prod + Earth тег + action: pay X MC |
+| Jenson-Boyle & Co | 69 | 46 | Crime | Гибкая, но не бесплатная корпорация: corruption реально надо уметь обслуживать,  |
+| Tharsis Republic | 68 | 40 | Building | Still playable, but much worse than its old reputation |
+| Soylent Seedling Systems | 68 | ? | — | Plant-focused corp with a real niche but limited flexibility |
+| Hecate Speditions | 68 | 38 | Earth, Space | В своём столе хороша, но слишком узко завязана на colonу-game, чтобы быть универ |
+| Nirgal Enterprises | 67 | 30 | Power, Plant, Building | Low-cash corp with a useful production spread and good milestone or award postur |
+| Inventrix | 67 | 45 | Science | Interesting corp with a floor that is still below average on raw cash, so this i |
+| Septem Tribus | 66 | 36 | Wild | High ceiling, awkward start |
+| Pharmacy Union | 66 | 54 | Microbe, Microbe | Extremely swingy corp |
+| Martian Insurance Group | 66 | ? | — | Meta-dependent corp |
+| Ambient | 65 | ? | — | Venus-specialist corp with a real engine but a punishing opener |
+| Mars Direct | 65 | ? | — | Narrow Pathfinders corp |
+| Incite | 65 | ? | — | Real Turmoil corp, but almost blank outside that module |
+| EcoTec | 64 | 42 | Microbe, Plant | Viral Enhancers stapled to a corp is real value, and the double tag helps severa |
+| Thorgate | 64 | 48 | Power | Energy-discount corp with a narrower use case than it first appears |
+| Mons Insurance | 63 | 48 | — | Solid raw start, but the corp is less reliable than it first looks |
+| Sagitta Frontier Services | 63 | 31 | — | Serviceable rebate corp, not a splashy one |
+| Voltagon | 63 | 38 | Power | Рабочая, но не особенно надёжная корпорация: слишком много value спрятано в усло |
+| Arklight | 62 | 45 | Animal | Reasonable cash-and-production opener attached to a slow VP ability |
+| Collegium Copernicus | 62 | ? | — | Interesting payoff, but the opener is brutally weak |
+| Mind Set Mars | 62 | ? | — | Turmoil-specific building corp with a real idea but weak conversion rates |
+| Athena | 62 | ? | — | Niche science corp that is mostly about requirement manipulation and denial |
+| Henkei Genetics | 61 | 47 | Microbe | Корпорация с понятной нишей и слабой универсальностью; без микробного движка val |
+| Viron | 60 | 48 | Microbe | Extreme-variance corp |
+| Mining Guild | 60 | 30 | Building, Building | Weak corp with a very punishing 30 MC opener |
+| Pristar | 60 | 53 | — | Engine-only corp with real upside in slow games: each non-terraform gen is effec |
+| United Nations Mission One | 60 | ? | — | Turmoil-focused corporation with a decent political package but a tight opener |
+| Aeron Genomics | 60 | 35 | Animal | Нормальная нишевая animal-корпорация, но не универсальный first-pick |
+| Robinson Industries | 58 | 47 | — | Slow-burn generalist with decent floor, not a premium opener |
+| Factorum | 58 | 37 | Power, Building | The 37 MC start is the main weakness, but Colonies can patch it |
+| Palladin Shipping | 58 | 36 | Space | A serviceable titanium opener that rarely turns into a great corp |
+| Mars Maths | 58 | ? | — | The extra action each generation and the improved card filtering look attractive |
+| Kingdom of Tauraro | 58 | 50 | City | Очень swingy корпорация: свой старт сильный, но ты заметно ускоряешь и стол |
+| Arcadian Communities | 57 | 40 | — | Area-denial corp with real board-control upside, not just a gimmick |
+| Astrodrill | 57 | 35 | Space | Still below average as a generic opener, but not true dumpster tier |
+| Utopia Invest | 55 | 40 | Building | Reasonable production package attached to a fairly tight 40 MC opener |
+| Splice | 55 | 44 | Microbe | The floor is still low because opponents also gain value from every microbe tag, |
+| Chimera | 55 | ? | — | Flexible in theory, poor in practice |
+| Robin Haulings | 55 | ? | — | Weak Venus or floater corp |
+| Project Workshop | 55 | ? | — | Very niche corporation built around blue-card churn |
+| Agricola Inc | 55 | ? | — | Plant-focused corporation with decent control over greenery timing, but an under |
 
 ---
 
-## D-Tier (16) — Очень слабый
+## D-Tier (12) — Очень слабый
 
 | Корпорация | Score | Старт MC | Теги | Ключевое |
 |------------|-------|----------|------|----------|
-| Arcadian Communities | 54 | 40 | — | Зависит от tile placement карт |
-| Stormcraft Incorporated | 54 | 48 | Jovian | По COTD: icehawk84 — 'mediocre, effect very weak, like 2 heat prod' |
-| Celestic | 52 | 42 | Venus | Floater-стратегия — trap в большинстве игр |
-| Pharmacy Union | 52 | 54 | Microbe, Microbe | Best case: быстро cure с science тегами |
-| Junk Ventures | 52 | ? | — | Recycle из discard pile — ceiling высокий, floor низкий |
-| Aphrodite | 50 | 47 | Plant, Venus | Способность почти не контролируется — зависит от того, поднимают ли оппоненты Ve |
-| Midas | 50 | ? | — | High-risk high-reward |
-| Bio-Sol | 50 | ? | Microbe | PDF показывает F-tier (rank 89, 16 |
-| Kuiper Cooperative | 48 | 33 | Space, Space | Слабая корпорация с ужасным стартом (33 MC) |
-| Recyclon | 48 | 38 | Microbe, Building | По COTD: Krazyguy75 — 'buildings didn't show up in expansions' |
-| Adhai High Orbit Constructions | 48 | ? | Space | PDF показывает F-tier (rank 93, 10% winrate) |
-| Astrodrill | 45 | 35 | Space | Крайне низкий старт (35 MC) |
-| Splice | 44 | 44 | Microbe | Power даёт 2 MC per microbe tag но ТАКЖЕ даёт оппоненту 2 MC/microbes |
-| United Nations Mars Initiative | 42 | 40 | Earth | По COTD: Krazyguy75 — 'TR is an awful source of VP and MC production' |
-| Polyphemos | 40 | 50 | — | По COTD: Krazyguy75 — 'one of the worst corporations in the entire game' |
-| Terralabs Research | 38 | 14 | Science, Earth | По COTD: Krazyguy75 — mathematical takedown показывает corp mispriced |
+| Stormcraft Incorporated | 54 | 48 | Jovian | Mostly a weak floater corp whose best feature is often just the Jovian tag |
+| Celestic | 52 | 42 | Venus | One of the classic floater traps |
+| Junk Ventures | 52 | ? | — | Discard-recursion corp with a high ceiling and a very low floor |
+| Aphrodite | 50 | 47 | Plant, Venus | Weak Venus corp with an ability you do not control well |
+| Midas | 50 | ? | — | High-risk, high-variance corporation |
+| Bio-Sol | 50 | ? | — | Slow bio-themed corp with a poor tempo profile |
+| Kuiper Cooperative | 48 | 33 | Space, Space | Very weak corp with a brutal 33 MC opener |
+| Recyclon | 48 | 38 | Microbe, Building | Slow and awkward corporation |
+| Adhai High Orbit Constructions | 48 | ? | — | Very slow VP engine |
+| United Nations Mars Initiative | 42 | 40 | Earth | Weak corporation built around an inefficient loop |
+| Polyphemos | 40 | 50 | — | One of the harshest anti-engine corporations in the pool |
+| Terralabs Research | 38 | 14 | Science, Earth | Bottom-tier corporation with a catastrophically weak opener |
 
 ---
 
@@ -126,13 +137,13 @@
 
 Старт: 38 MC | Теги: Space, Earth | Дополнение: Prelude
 
-**Экономика:** 38 MC + 1 ti-prod (12.5 MC). Space + Earth теги. Effect: draw card per Earth tag. 5-10 Earth тегов = 15-40 MC free card draw.
+**Экономика:** 38 MC + 1 titanium production (12.5 MC). Space + Earth tags. Effect: draw 1 card per Earth tag. 5-10 Earth tags = 15-40 MC in free card draw.
 
-**Почему S (90):** Card draw от Earth тегов решает фундаментальную проблему engine: economy + card draw одновременно. Earth теги распространённые и хорошие карты. По COTD: shai_aus — 'one of the best engine corps', benbever — 'one of the best'.
+**Почему S (90):** Earth-tag draw solves the core engine problem: economy and card flow at the same time. Earth tags are common, many of them are already strong cards, and this corp turns a normal draft into a steady snowball. One of the safest and strongest engine corps in the game.
 
-**Синергии:** Earth Office, Luna Governor, Earth tag cards, Science tag cards
+**Синергии:** Earth Office, Luna Governor, Sponsors, Interplanetary Trade, Research
 
-**Когда брать:** Почти всегда pick. Только пропускай если 0 Earth тегов в стартовых 10 (очень редко). S-tier.
+**Когда брать:** Almost always pick. Only pass if the opening 10 are somehow nearly empty of playable Earth tags, which is rare.
 
 ---
 
@@ -140,13 +151,13 @@
 
 Старт: 57 MC | Теги: — | Дополнение: Base
 
-**Экономика:** 57 MC — один из лучших стартов. +4 MC при покупке карт за 20+ MC и SP Greenery/City. 3-5 триггеров за игру = 12-20 MC бонус.
+**Экономика:** 57 MC, one of the richest starts. +4 MC when buying cards costing 20+ MC and on SP Greenery or City. 3-5 triggers in a game = 12-20 MC bonus.
 
-**Почему A (88):** Топ-тир по единогласному мнению сообщества. Высокий старт позволяет покупать лучшие карты gen 1. Работает с любой стратегией. По COTD: shai_aus — 'one of the best', benbever — 'Top tier in all settings'.
+**Почему A (88):** One of the safest top-tier corps. The huge starting cash lets you buy and play the best gen 1 cards, and the 4 MC rebate on expensive cards and standard cities or greeneries stays relevant all game. Strong with almost any strategy.
 
-**Синергии:** Earth Catapult, дорогие карты (20+ MC), SP Greenery/City, любая стратегия
+**Синергии:** Earth Catapult, Deimos Down, Terraforming Ganymede, Large Convoy
 
-**Когда брать:** Почти всегда. Один из самых безопасных picks в игре.
+**Когда брать:** Almost always. One of the safest corp picks in the game.
 
 ---
 
@@ -154,27 +165,27 @@
 
 Старт: 35 MC | Теги: Building | Дополнение: Venus Next
 
-**Экономика:** 35 MC + 1 steel-prod. Эффект: при поднятии production получи ресурсы немедленно. За 8-9 gen = 30-50+ MC в immediate value. Strip Mine = 2 steel + 1 ti сразу.
+**Экономика:** 35 MC + 1 steel production. Effect: whenever you raise production, gain the resources immediately. Over 8-9 generations = 30-50+ MC in immediate value. Strip Mine = 2 steel + 1 titanium right away.
 
-**Почему A (88):** Сломанная корпорация, которую многие банят. Превращает каждую production-карту в огромную скидку. Низкий старт (35 MC) — единственный сдерживающий фактор. По COTD: 'absolutely top tier', 'on my ban list', 'genuinely broken'.
+**Почему A (88):** Borderline broken. It turns production cards into immediate discounts and snowballs almost any economic hand. The low 35 MC start is the only real brake, but even average starts become strong once the first production cards land.
 
-**Синергии:** Strip Mine, Business Empire, Insects, Cartel, Fuel Factory, любая production prelude
+**Синергии:** Strip Mine, Business Empire, Insects, Cartel, Fuel Factory
 
-**Когда брать:** Почти всегда. Даже средний хенд с Manutech лучше хорошего с большинством корпораций.
+**Когда брать:** Almost always. Even an average hand with Manutech is often better than a strong hand with most other corps.
 
 ---
 
-### Polaris (#PfC1) — 86/A
+### Polaris (#?) — 86/A
 
-Старт: ? MC | Теги: Space | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 32 MC — очень низкий. Space тег. First action: place ocean (12-14 MC + placement bonus). +1 MC-prod за КАЖДЫЙ ocean tile (всех игроков). +4 MC за свой ocean. 9 oceans в игре × 1 MC-prod = 9 MC-prod total = ~50 MC production value. Свои 2-3 oceans × 4 MC = 8-12 MC immediate. Start value: 32 + 14 + bonus ≈ 50 MC.
+**Экономика:** 32 MC, extremely low. Space tag. First action: place an ocean for 12-14 MC plus placement bonus. +1 MC production for every ocean tile placed by any player. +4 MC when you place your own ocean. With 9 oceans in a game, that can become 9 MC production total, roughly 50 MC of production value. Your own 2-3 oceans also refund 8-12 MC immediately. Total starting package is roughly 50 MC effective.
 
-**Почему A (86):** Полярис — машина для MC production. +1 MC-prod за КАЖДЫЙ ocean placement (включая чужие) — в 3P это 9 океанов = 9 MC-prod к концу игры. В раннем game когда ocean tiles размещаются активнее всего, production нарастает быстро. +4 MC бонус за свои oceans мотивирует играть ocean cards. Проблема: 32 MC start — один из самых низких в игре. Без океанных прелюдий gen 1 критически слабый. Space тег приятен. Корпорация похожа на Lakefront Resorts но с +4 MC bonus вместо flat MC-prod. Сильная при компенсации слабого старта прелюдиями.
+**Почему A (86):** Ocean-economy machine with a brutally low start. The upside is huge: every ocean placement grows MC production, and your own oceans also refund cash, so the corp can snowball hard in ocean-heavy games. The risk is gen 1: without ocean preludes or early ocean cards, 32 MC is painfully thin.
 
 **Синергии:** Arctic Algae, Ice Asteroid, Kelp Farming
 
-**Когда брать:** Берём с ocean-прелюдиями или ocean-картами в руке. Прелюдии ОБЯЗАТЕЛЬНО должны компенсировать 32 MC start. Без них — рискованно.
+**Когда брать:** Pick with ocean preludes or clear ocean cards in hand. The preludes need to cover the weak 32 MC start; without that support it is risky.
 
 ---
 
@@ -182,13 +193,13 @@
 
 Старт: 36 MC | Теги: Plant | Дополнение: Base
 
-**Экономика:** 36 MC — низкий старт. 2 plant-prod (16 MC) + 3 plants. 7 plants/greenery (экономия 1 plant/greenery). Ground game powerhouse.
+**Экономика:** 36 MC, a low cash start. 2 plant production (16 MC) + 3 plants. 7 plants per greenery effectively saves 1 plant per greenery. Ground-game powerhouse.
 
-**Почему A (85):** Машина для ground game. 7 plants/greenery + 2 plant-prod = быстрые greeneries. На Tharsis (Gardener, Landlord) — одна из лучших. По COTD: benbever и shai_aus — top-tier с правильной рукой.
+**Почему A (85):** Ground-game monster. Seven plants per greenery plus 2 plant production means very fast greeneries, and on Tharsis the corp naturally pressures Gardener, Landlord, and board control. The main nuance is that explosive plant starts usually want a cleaner rush plan, not a greedy engine with too many keeps.
 
-**Синергии:** Ecology Experts, Kelp Farming, Nitrophilic Moss, Farming, Gardener, NRA
+**Синергии:** Ecology Experts, Kelp Farming, Nitrophilic Moss, Farming, Gardener
 
-**Когда брать:** Plant production карты в руке. Лучше на Tharsis/Elysium. Осторожно на Hellas.
+**Когда брать:** Best with plant support and especially good on Tharsis or Elysium. In explosive starts, favor a clean rush line: faster greeneries, oceans, and heat, fewer greedy engine keeps.
 
 ---
 
@@ -196,41 +207,27 @@
 
 Старт: 48 MC | Теги: Earth | Дополнение: Prelude
 
-**Экономика:** 48 MC + free award (8-20 MC saved). Earth тег. +3 MC per VP card played. 5-10 VP cards = 15-30 MC.
+**Экономика:** 48 MC + a free award (8-20 MC saved). Earth tag. +3 MC per VP card played. 5-10 VP cards = 15-30 MC.
 
-**Почему A (85):** +3 MC на VP карты абсурдно хорош — VP карты и так лучшие в игре, Vitor делает их ещё лучше. Free award = strategic advantage. По COTD: shai_aus — 'absolutely top tier', icehawk84 — 'insane how much money you can save'.
+**Почему A (85):** The +3 MC rebate on VP cards is absurdly efficient because VP cards are already some of the best sinks in the game. The free award is immediate strategic leverage and often saves a large amount of money. Strong, flexible, and naturally pointed toward winning lines.
 
-**Синергии:** VP cards (большинство сильных карт), Awards strategy, Dust Seals, Earth tag synergies
+**Синергии:** Dust Seals, Birds, Colonizer Training Camp, Pets
 
-**Когда брать:** Почти всегда. Особенно с VP-heavy рукой. Top 5 corp overall.
+**Когда брать:** Almost always. Especially strong with a VP-heavy opening hand.
 
 ---
 
-### Ringcom (#PfC4) — 85/A
+### Ringcom (#?) — 85/A
 
-Старт: ? MC | Теги: Jovian | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 40 MC + 3 trade fleets. Effect: когда торгуешь, получаешь +1 MC per Earth тег. Trade fleets = colony engine. Но 40 MC старт очень низкий (-23 MC vs avg).
+**Экономика:** 40 MC + 3 trade fleets. Effect: whenever you trade, gain +1 MC per Earth tag. The trade fleets create a real colony engine, but 40 MC is still a very low cash start, about 23 MC below average.
 
-**Почему A (85):** PDF показывает A-tier (rank 16, 40% winrate) — одна из лучших PF корпораций в статистике. 3 trade fleets дают массивный colony engine с gen 1. Earth-тег бонус при торговле масштабируется. Поднимаем — статистика убедительная (40% WR при 30 играх).
+**Почему A (85):** One of the strongest Pathfinder corps when Colonies matter. Three trade fleets create a real colony engine from gen 1, and the Earth-tag trading bonus scales naturally as the game develops. On strong colony boards the corp snowballs fast; without Colonies it drops sharply.
 
 **Синергии:** Productive Outpost, Mining Colony
 
-**Когда брать:** Colony games с хорошими колониями. Earth теги в руке усиливают trade бонус. Без Colonies — значительно слабее.
-
----
-
-### Tharsis Republic (#R31) — 83/A
-
-Старт: 40 MC | Теги: Building | Дополнение: Base
-
-**Экономика:** 40 MC + free city (placement bonus + ~2 MC-prod from city + 1 MC-prod from effect = ~18-22 MC). Building тег. +1 MC-prod per city. В 3P 8-12 cities = 40-60 MC.
-
-**Почему A (83):** Passive MC-prod от ВСЕХ cities (свои + opponents') отлична в 3P. Free city gen 1 = immediate value. По COTD: benbever — top-tier на Tharsis map. icehawk84 — between 'overrated' (beginners) и 'underrated' (competitive).
-
-**Синергии:** Immigrant City, City cards, Mayor milestone, Landlord award
-
-**Когда брать:** Сильный generic pick. Особенно на Tharsis. С city-картами и production strategy.
+**Когда брать:** Best in Colonies games with strong colony boards. Earth tags in hand improve the trade bonus; without Colonies it is much weaker.
 
 ---
 
@@ -238,27 +235,27 @@
 
 Старт: 54 MC | Теги: Building | Дополнение: Turmoil
 
-**Экономика:** 54 MC + passive income от океанов. 9 океанов = до 9 MC-prod. С прелюдиями 2-3 океана gen 1 = 2-3 MC-prod сразу. Building тег.
+**Экономика:** 54 MC + passive income from oceans. 9 oceans = up to 9 MC production. With preludes, 2-3 oceans on gen 1 can mean 2-3 MC production immediately. Building tag.
 
-**Почему A (82):** Одна из сильнейших корпораций. 54 MC — высокий старт. Пассивная income от океанов гарантирована. По COTD: Krazyguy75, shai_aus — 'one of the strongest', 'generically strong'.
+**Почему A (82):** One of the strongest generic corps. The 54 MC start is already excellent, and the ocean income is reliable enough to matter in almost every game. Ocean-heavy preludes or rush lines push it even higher, but the floor is strong even without them.
 
 **Синергии:** Great Aquifer prelude, Ice Asteroid, Arctic Algae, Kelp Farming, Aquifer Pumping, Penguins
 
-**Когда брать:** Почти всегда. Особенно с ocean-прелюдиями. Работает на любой карте.
+**Когда брать:** Almost always. Especially strong with ocean preludes, but good on any map.
 
 ---
 
-### Poseidon (#R02) — 82/A
+### Anubis Securities (#UC11) — 81/A
 
-Старт: 45 MC | Теги: — | Дополнение: Colonies
+Старт: 42 MC | Теги: Earth | Дополнение: Underworld
 
-**Экономика:** 45 MC + 1 MC-prod + free colony (~15-20 MC). Нет тегов. +1 MC-prod per colony placed by anyone = 3-6 MC-prod за игру.
+**Экономика:** 42 MC + free initial play ignoring requirements. Позже монетизирует низкую corruption и умеет cash out corruption по 6 MC.
 
-**Почему A (82):** Free colony + MC-prod от всех colony placements = огромный economic advantage. По COTD: jaminfine — 'one of the absolute best', rekenner — 'devs did not understand Colonies'. No-tag penalty — единственная слабость. Colony-dependent.
+**Почему A (81):** Одна из лучших underworld-корпораций: сочетает tempo, деньги и управляемую коррупцию без тяжёлого downside.
 
-**Синергии:** Luna colony, Pluto colony, Ceres colony, Colony-placing cards, Trade Fleet
+**Синергии:** Big Asteroid, Kelp Farming, Strip Mine
 
-**Когда брать:** Когда strong colonies in play. Одна из лучших в colony games.
+**Когда брать:** Когда в стартовой руке есть мощная карта с жёстким global requirement или ты хочешь агрессивно играть в tempo. Почти всегда сильный выбор.
 
 ---
 
@@ -266,27 +263,27 @@
 
 Старт: 47 MC | Теги: Building | Дополнение: Promo
 
-**Экономика:** 47 MC + free greenery (19 MC: 1 TR + O2 + placement bonus). Building тег. Effect: при adjacent tile placement gain resource = 5-10+ triggers = 15-30 MC.
+**Экономика:** 47 MC + a free greenery (~19 MC: 1 TR + oxygen + placement bonus). Building tag. Effect: gain a resource when an adjacent tile is placed = 5-10+ triggers = 15-30 MC.
 
-**Почему A (80):** Free greenery ценнее чем free city (Tharsis Republic). Adjacency effect rewards board presence. В 3P больше tile placements = больше triggers. По COTD: benbever — 'really strong (top tier)', shai_aus — 'great'.
+**Почему A (80):** Very strong board corp. The free greenery is often better than a free city because it gives immediate TR, oxygen tempo, placement value, and board presence. The adjacency effect rewards any tile-heavy game and scales well in multiplayer.
 
-**Синергии:** Special tiles, City cards, Greenery cards, Board presence strategy, Builder milestone
+**Синергии:** Open City, Capital, Urbanized Area, Mohole Area, Lava Flows
 
-**Когда брать:** Почти всегда сильна. Особенно с tile-placing картами.
+**Когда брать:** Almost always strong, especially with tile-placement cards or board-heavy starts.
 
 ---
 
-### SolBank (#PfC13) — 80/A
+### SolBank (#?) — 80/A
 
-Старт: ? MC | Теги: — | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 40 MC. NO TAGS — штраф -3 to -5. Effect: +1 data за КАЖДУЮ трату MC/steel/titanium. Production phase: convert all data → MC. За ход тратишь ~15-30 MC = 15-30 data = 15-30 MC rebate? НЕТ — 1 data за каждую ТРАНЗАКЦИЮ (каждый раз когда тратишь), не за каждый MC. Типично 3-6 транзакций за gen = 3-6 MC rebate. За 8-9 gen = 24-54 MC. No-tag penalty: -3 to -5.
+**Экономика:** 40 MC. No tags, which is effectively a 3-5 MC penalty. Effect: gain 1 data for each separate spend of MC, steel, or titanium, then convert all data to MC in production. The important detail is that you gain 1 data per transaction, not per MC spent. Typical games see 3-6 transactions per generation, so the rebate is more like 3-6 MC per generation, or roughly 24-54 MC over 8-9 generations.
 
-**Почему A (80):** Механика SolBank вознаграждает частые траты. Каждая покупка карты, розыгрыш карты, SP, trade, milestone/award claim = +1 data = +1 MC. При активной игре (5-7 транзакций/gen) это 40-63 MC за игру. Это фактически ~5-7 MC-prod, что огромно. Проблема: NO TAGS теряет все корпоративные синергии. Но recurring MC rebate настолько стабилен и мощен, что компенсирует. Одна из лучших generic корпораций — работает с любой стратегией. Sims показывают что SolBank consistently перформит.
+**Почему A (80):** SolBank rewards frequent spending. Every card buy, card play, standard project, trade, and milestone or award claim turns into a small MC rebate, and in active games that adds up to enormous value. The no-tag start does lose many corporate synergies, but the recurring economy is stable and strong enough to compensate. One of the best generic corps when you expect to keep spending aggressively.
 
 **Синергии:** Productive Outpost, Mining Colony
 
-**Когда брать:** Берём почти всегда. Универсальная корпорация. Слабее только при passive/low-spending стратегии (редко).
+**Когда брать:** Almost always pick. Universally strong and only noticeably worse in unusually passive, low-spending starts.
 
 ---
 
@@ -294,27 +291,41 @@
 
 Старт: 60 MC | Теги: Earth | Дополнение: Corporate Era
 
-**Экономика:** 60 MC — высший non-resource старт. Earth тег. -3 MC на Earth tags. 5-8 Earth тегов за игру = 15-24 MC экономии.
+**Экономика:** 60 MC, the highest non-resource start. Earth tag. -3 MC on Earth tags. 5-8 Earth tags over a game = 15-24 MC saved.
 
-**Почему B (78):** 60 MC стартовый капитал = огромная flexibility gen 1. Earth tag discount стекается с Earth Office. По COTD: shai_aus — 'slightly below Credicor', но всё равно great. Safe, reliable, strong.
+**Почему B (78):** Sixty starting MC is enormous flexibility for gen 1, and the Earth discount remains relevant all game. It stacks naturally with Earth Office and other Earth shells, but even without synergy the raw opener quality is excellent. Safe, reliable, and consistently strong.
 
-**Синергии:** Earth Office, Luna Governor, Earth tag cards, любая expensive стратегия
+**Синергии:** Earth Office, Luna Governor, Sponsors, Sky Docks, Interplanetary Trade
 
-**Когда брать:** Почти всегда safe pick. Особенно с Earth тегами в руке.
+**Когда брать:** Almost always a safe pick, especially with Earth tags in the opening hand.
 
 ---
 
-### Habitat Marte (#PfC22) — 78/B
+### Habitat Marte (#?) — 78/B
 
-Старт: ? MC | Теги: Mars | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 40 MC — ниже среднего на 23 MC. Mars тег. Effect: Mars теги считаются как Science теги. Проблема: Mars тег существует ТОЛЬКО в Pathfinders (40 карт из ~700). В средней игре через руки проходит 5-8 Mars карт, из них сыграешь 2-4. Science-синергии (Mars University, Olympus Conference) срабатывают только на Mars-тегах, которых в пуле мало. Value ability: ~10-15 MC за игру при удачном стечении.
+**Экономика:** 40 MC, about 23 MC below average. Mars tag. Effect: Mars tags count as Science tags. The problem is density: Mars tags exist only in Pathfinders, about 40 cards out of roughly 700. In an average game you might see 5-8 Mars cards and play only 2-4. Science synergies like Mars University or Olympus Conference work only when those Mars tags actually appear. Ability value is roughly 10-15 MC in a favorable game.
 
-**Почему B (78):** Статистика показывает 20% winrate (E-tier в PDF). Ability теоретически мощная, но Mars тегов слишком мало — они есть только в Pathfinders. В пуле из ~700 карт всего 40 Mars-тегов, и большинство конкурируют за место в руке. 40 MC старт усугубляет проблему — не хватает денег на покупку Mars карт в первых поколениях. Mars University combo работает, но нестабильно.
+**Почему B (78):** Specialized Pathfinders corp with real ceiling in dedicated Mars-tag shells. The problem is density: Mars tags only exist in Pathfinders and the pool is small, so even with 40 MC you cannot assume the engine will assemble itself. Mars University and Olympus Conference shells are the real reason to take it; outside those starts the corp is too inconsistent for a true top-tier grade.
 
 **Синергии:** Lava Flows, Nuclear Zone
 
-**Когда брать:** Когда Mars University или Olympus Conference в стартовых + несколько Mars-тег карт. На Tharsis (Scientist milestone) чуть лучше. Без Mars-синергий в руке — пропускай.
+**Когда брать:** Pick when the opener already includes Mars University or Olympus Conference plus several Mars-tag cards. Slightly better on Tharsis for Scientist pressure; without Mars support, pass.
+
+---
+
+### Demetron Labs (#UC02) — 78/B
+
+Старт: 45 MC | Теги: Science | Дополнение: Underworld
+
+**Экономика:** 45 MC + 2 data. На каждом science теге получает ещё data и конвертирует их в identify+claim пакет.
+
+**Почему B (78):** Сильная научная корпорация underworld-формата: не сломанная, но даёт и картовый темп, и доступ к токенам.
+
+**Синергии:** Research, Mars University, Geological Expertise
+
+**Когда брать:** Когда стартовая рука и прелюдии поддерживают science-line. Без science density action на data становится слишком медленным.
 
 ---
 
@@ -322,55 +333,69 @@
 
 Старт: 50 MC | Теги: City, Earth | Дополнение: Prelude 2
 
-**Экономика:** 50 MC + draw 4 keep 1 (filtering). City + Earth теги. Effect: +1 science per 2+ tag card. Sciences = 2 MC each на SP. 8-12 science = 16-24 MC.
+**Экономика:** 50 MC + draw 4 keep 1 for strong filtering. City + Earth tags. Effect: gain 1 science for each card with 2+ tags. Sciences are worth 2 MC each for standard projects. 8-12 science = 16-24 MC.
 
-**Почему B (77):** Сильный старт (50 MC) + отличная card filtering. Science accumulation для SP discounts consistent. По COTD: icehawk84 — 'decent corp', benbever — 'strong and fun', fuzzyplastic — 'really fun and powerful'.
+**Почему B (77):** Strong start with excellent filtering. Fifty MC plus draw 4 keep 1 helps you turn awkward openers into coherent plans, and the science accumulation gives real value in standard-project lines. Flexible, solid, and easier to pilot than many corps in its band.
 
-**Синергии:** Multi-tag cards, Standard projects, Earth tag synergies, Science cards
+**Синергии:** Soil Studies, Stratospheric Expedition, Research, Sponsored Academies
 
-**Когда брать:** Хороший generic pick. Лучше когда ожидаешь SP использование.
-
----
-
-### Collegium Copernicus (#PfC16) — 76/B
-
-Старт: ? MC | Теги: Science, Earth | Дополнение: Pathfinders
-
-**Экономика:** 33 MC — очень низкий старт. Science + Earth теги (оба ценны, ~5-6 MC value). First action: draw 2 science карты (~7 MC). +1 data за каждый Science тег (~5-8 science tags = 5-8 data). Action: spend 3 data для free trade (~9 MC value per trade). 2-3 free trades за игру = 18-27 MC. Start value: 33 + 7 (draw) + 5 (tags) ≈ 45 MC.
-
-**Почему B (76):** Очень низкий стартовый капитал (33 MC), но два отличных тега (Science + Earth) и мощная ability. Free trades через data — огромная ценность, особенно на Pluto/Luna/Titan колониях. Science + Earth теги с gen 1 помогают Point Luna (если другой игрок), Scientist award, Earth track, planetary tracks. Проблема: нужны и Science карты, и Colonies в игре. Без Colonies — способность корпорации мертва. С Colonies — сильная B+/A- корпорация.
-
-**Синергии:** Research
-
-**Когда брать:** Обязательно Colonies в игре. С Science картами в руке + хорошие колонии = отличный pick. Без Colonies — пропускай.
+**Когда брать:** Good generic pick. Better when you expect to use standard projects or can leverage the science-resource line.
 
 ---
 
-### Eris (#NEW) — 76/B
+### Poseidon (#R02) — 76/B
 
-Старт: ? MC | Теги: Building | Дополнение: Community
+Старт: 45 MC | Теги: — | Дополнение: Colonies
 
-**Экономика:** 46 MC start (не 42 как было). Building тег. First action: draw Ares card. Action: place hazard tile (без соседей) OR remove hazard tile → 1 TR. Remove hazard = 7 MC/action (хорошо). Нужны hazard tiles на доске — зависит от Ares setup. С Ares expansion — потенциально 2-4 TR за игру.
+**Экономика:** 45 MC + 1 MC production + a free colony (~15-20 MC). No tags. +1 MC production per colony placed by anyone = about 3-6 MC production over a game.
 
-**Почему B (76):** Ares-специфичная корпорация (Community, не Pathfinders). 46 MC старт приличный. Building тег для steel discount. Draw Ares card first action — бонусная карта. Основная сила: remove hazard → TR за action, это 7 MC/action без cost — отличный rate. Но зависит от Ares (hazard tiles должны быть на доске). PDF: S-tier (36.8% WR, 19 games) — малая выборка но показательная. B76 — консервативная оценка, в Ares играх потенциально A-tier.
+**Почему B (76):** Free colony plus MC production from every colony placement is an enormous economic edge in Colonies games. The no-tag start is the one real drawback, but the raw colony tempo and scaling income are powerful enough to overcome it when the colony board is good, especially when the row offers premium trade colonies instead of slow utility ones.
+
+**Синергии:** Luna colony, Pluto colony, Ceres colony, Triton colony, Trade Fleet, Mining Colony
+
+**Когда брать:** Pick when the colony pool is strong, especially with Luna, Pluto, Ceres, or Triton. Ganymede and Callisto are thinner but still real positives, especially in 4-player games.
+
+---
+
+### PhoboLog (#R09) — 76/B
+
+Старт: 23 MC | Теги: Space | Дополнение: Base
+
+**Экономика:** 23 MC + 10 titanium (40 MC at +1 titanium value) + 1 titanium production (4 MC per generation x 7 generations = 28 MC). Space tag. Effective gen 1 start is about 63 MC, roughly average, but the titanium production adds another 28 MC over a game. Total value is about 91 MC.
+
+**Почему B (76):** One of the highest-ceiling corporations in the game, but very hand-dependent. +1 titanium value means 10 starting titanium is an enormous burst only if the opener already contains big space payoffs or ways to snowball titanium. Without that support, the 23 MC cash start feels miserable. Strong B-tier ceiling, but not a generic A-tier baseline.
+
+**Синергии:** Io Mining Industries, Titanium Mine, Asteroid Mining, Deimos Down, Optimal Aerobraking, Acquired Space Agency, Ice Asteroid, Giant Ice Asteroid, Restricted Area
+
+**Когда брать:** Only with 2+ real titanium payoffs or with Optimal Aerobraking plus big space event. If the hand is just 'some space cards' and no tempo, skip.
+
+---
+
+### Eris (#?) — 76/B
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 46 MC start. Building tag. First action: draw an Ares card. Action: place a hazard tile with no adjacent tiles, or remove a hazard tile to gain 1 TR. Removing hazards is worth about 7 MC per use, but the board must actually supply hazards, so value depends on Ares setup. With Ares active, 2-4 TR over a game is realistic.
+
+**Почему B (76):** Strong Ares-specific corp with a good start. The Building tag matters, the free Ares card improves opener quality, and the hazard-removal action converts board control into repeatable TR at an excellent rate. The dependency on Ares hazards is real, but in actual Ares games the corp can feel closer to A than mid-B.
 
 **Синергии:** Media Group, Ants, Virus, Sabotage, Spin-off Department
 
-**Когда брать:** Event-heavy hand. С Space events (ti-payable) особенно хорош. PDF статистика: S-tier в группе опытных игроков.
+**Когда брать:** Best in Ares games with event-heavy or space-event hands. Much stronger when the board is likely to keep feeding hazards.
 
 ---
 
-### Curiosity II (#NEW) — 75/B
+### Curiosity II (#?) — 75/B
 
-Старт: ? MC | Теги: Science, Building | Дополнение: Community
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 40 MC + 2 steel-prod (16 MC) = ~56 MC. Эффект: 2 MC → draw при тайле на бонус. 5-10 триггеров за игру = +5-15 MC net
+**Экономика:** 40 MC + 2 steel production (16 MC) = about 56 MC. Effect: pay 2 MC to draw when placing on bonuses. 5-10 triggers in a game = about 5-15 MC net.
 
-**Почему B (75):** Tile-heavy стратегия. 2 steel-prod + card draw с бонусных тайлов. Science+Building теги. Merger с Philares — top combo. 40 MC старт компенсируется steel.
+**Почему B (75):** Flexible tile-and-science corp. Two steel production is a real economic cushion, and the bonus-tile draw turns board control into card flow. Science and Building tags open strong engine shells, while merger and tile-heavy lines raise the ceiling further. Good when the board will stay active.
 
 **Синергии:** Philares, Immigrant City, Robotic Workforce, Strip Mine
 
-**Когда брать:** Берём при Science-heavy руке и планах на Science engine. С AI Central, Olympus Conference — strong. Без Science тегов — пропускай.
+**Когда брать:** Pick with science-heavy hands or clear tile plans, especially into AI Central or Olympus Conference. Without science support it is still playable, but less exciting.
 
 ---
 
@@ -378,27 +403,27 @@
 
 Старт: 42 MC | Теги: Space | Дополнение: Base
 
-**Экономика:** 42 MC + 3 heat-prod. Heat=MC для Helion — огромная flexibility. Space тег. Ловушка: нельзя постоянно конвертировать heat, это убивает TR.
+**Экономика:** 42 MC + 3 heat production. Heat counts as MC for Helion, which is huge flexibility. Space tag. Trap: converting heat too aggressively can kill your TR tempo.
 
-**Почему B (75):** Надёжная B-tier корпорация с хорошим floor. 3 heat-prod — встроенная GHG Factories. В 3P WGT temp поднимается быстро, но Helion всё равно получает value от конвертации. По COTD: shai_aus — 'real ability is starting with 3 heat production'.
+**Почему B (75):** Reliable B-tier corp with a strong floor. Three heat production is effectively a built-in economy prelude, and the ability to spend heat as MC adds flexibility even in games where temperature rises quickly. Not flashy, but consistently useful.
 
 **Синергии:** Soletta, GHG Factories, Heat Trappers, Caretaker Contract, Miranda colony
 
-**Когда брать:** Почти всегда хорош. Особенно с heat/energy прелюдиями. Лучше на Hellas.
+**Когда брать:** Almost always fine, especially with heat or energy support. Better on Hellas.
 
 ---
 
-### Valley Trust (#R34) — 75/B
+### Arborist Collective (#UC05) — 75/B
 
-Старт: 37 MC | Теги: Earth | Дополнение: Prelude
+Старт: 40 MC | Теги: Plant | Дополнение: Underworld
 
-**Экономика:** 37 MC + extra prelude (~28-32 MC при выборе из 3). Earth тег. -2 MC на science cards = 6-10 MC saved.
+**Экономика:** 40 MC + 2 plants + 2 plant-prod. Честный сильный растительный старт.
 
-**Почему B (75):** Extra prelude — мощный gen 1 boost. Выбор из 3 = обычно 25-30+ MC value. Science discount consistently useful. По COTD: shai_aus — 'quite strong'. Solid but not amazing.
+**Почему B (75):** Одна из самых прямолинейно сильных underworld-корпораций: хороший immediate floor и ясный план игры.
 
-**Синергии:** Science tag cards, Research, Strong prelude pool, Earth tag synergies
+**Синергии:** EcoLine, Kelp Farming, Insects
 
-**Когда брать:** Почти всегда safe pick. Extra prelude = flexibility и power. На Hellas (Scientist award) чуть лучше.
+**Когда брать:** Когда есть план на ground game и зелень, особенно на картах где plants реально конвертируются в очки. В быстрых space-гонках чуть хуже.
 
 ---
 
@@ -406,13 +431,13 @@
 
 Старт: 30 MC | Теги: Building | Дополнение: Base
 
-**Экономика:** 30 MC + 20 steel (40 MC при 2 MC/steel). Building тег. +2 MC per event = 8-16 MC за игру. Но если нет building-карт, фактический старт = 30 MC.
+**Экономика:** 30 MC + 20 steel (40 MC at 2 MC per steel). Building tag. +2 MC per event = 8-16 MC over a game. If the hand lacks building cards, the practical start is still only 30 MC.
 
-**Почему B (74):** Высокий ceiling (70 MC effective), но ужасный floor (30 MC без building-карт). По COTD: benbever — великолепен с steel-dump, плох без. Крайне зависим от стартовой руки.
+**Почему B (74):** Huge ceiling, ugly floor. Twenty steel can be explosive if the start already contains real steel sinks, and the corp also has a legitimate event line when Media Group, Optimal Aerobraking, and space events are already visible. Without either shell, 30 MC is painfully weak.
 
-**Синергии:** Advanced Alloys, Rego Plastics, Space Elevator, Electro Catapult, Strip Mine, Media Group
+**Синергии:** Advanced Alloys, Rego Plastics, Space Elevator, Electro Catapult, Strip Mine, Media Group, Optimal Aerobraking
 
-**Когда брать:** ТОЛЬКО если в руке 2+ building-карт для сброса steel gen 1. Без steel-targets — слабая.
+**Когда брать:** Pick when the start already offers 2+ real building sinks for steel tempo or a real event shell with Media Group or Optimal Aerobraking. Without steel targets or event payoffs, it is weak.
 
 ---
 
@@ -420,13 +445,13 @@
 
 Старт: 44 MC | Теги: Building | Дополнение: Prelude
 
-**Экономика:** 44 MC + 3 MC-prod (15-18 MC) = ~62 MC. Building тег. -2 MC на building tag карты. 5-8 building тегов за игру = 10-16 MC экономии.
+**Экономика:** 44 MC + 3 MC production (15-18 MC) = about 62 MC. Building tag. -2 MC on building-tag cards. 5-8 building tags in a game = 10-16 MC saved.
 
-**Почему B (74):** Стабильная, надёжная корпорация. 3 MC-prod = отличный ранний income. Building тег для Builder milestone. По COTD: shai_aus и benbever оценивают солидно.
+**Почему B (74):** Stable, reliable economy corp. Three MC production is excellent early income, the Building tag helps Builder lines, and the start is strong enough to support almost any fair hand. It is not flashy, but the floor is high and the threshold for a good opener is low.
 
-**Синергии:** Steel-heavy прелюдии, Mining Guild, Building-карты, Builder milestone, Earth Catapult
+**Синергии:** Mining Guild, Earth Catapult, Smelting Plant, Mining Operations, Electro Catapult
 
-**Когда брать:** Универсальный pick. Хорош с building-рукой. Не выбирай если рука Space/ti heavy.
+**Когда брать:** Good generic pick. Better with Building-heavy hands and worse when the opener is mostly Space or titanium-focused.
 
 ---
 
@@ -434,195 +459,265 @@
 
 Старт: 35 MC | Теги: Earth | Дополнение: Promo
 
-**Экономика:** 35 MC + free ocean (12-14 MC) + free greenery (19 MC) = ~66-68 MC. Earth тег. 2 TR + placement bonuses gen 1.
+**Экономика:** 35 MC + a free ocean (12-14 MC) + a free greenery (about 19 MC) = about 66-68 MC. Earth tag. 2 TR plus placement bonuses on gen 1.
 
-**Почему B (74):** Сильный first-action: 2 TR от ocean + oxygen + placement bonuses. 35 MC стартовый низкий, но компенсируется free tiles. Earth тег полезен. Без COTD данных, математика ставит на solid B-tier.
+**Почему B (74):** Very strong first action: free ocean, free greenery, immediate oxygen, and two TR worth of parameter tempo plus placement bonuses. The 35 MC start is low, but the free tiles repay it quickly, and the Earth tag is useful in common Earth shells. Honest, efficient, and easy to convert into board pressure.
 
-**Синергии:** Arctic Algae, Ocean synergy cards, Earth tag cards
+**Синергии:** Arctic Algae, Kelp Farming, Luna Governor, Sponsors, Lakefront Resorts
 
-**Когда брать:** Хороший generic pick. Immediate TR и tiles сильны gen 1.
-
----
-
-### PhoboLog (#R09) — 74/B
-
-Старт: 23 MC | Теги: Space | Дополнение: Base
-
-**Экономика:** 23 MC + 10 titanium (40 MC при +1 ti value) + 1 ti-prod (4 MC/gen × 7 gens = 28 MC). Space тег. Effective gen 1 start: ~63 MC (на уровне среднего), но ti-prod даёт +28 MC за игру. Суммарный value: ~91 MC.
-
-**Почему B (74):** Одна из лучших корпораций в игре. +1 ti value превращает каждый титан в 4 MC — лучший ti-exchange в игре. 10 ti на старте = 2-3 дорогие Space карты gen 1 бесплатно. Ti-prod даёт ongoing income. Space тег для ti payment. В All Expansions много Space карт, что повышает ceiling. Слабый floor при плохой раздаче Space карт, но strong average. Стабильная B+/A- корпорация.
-
-**Синергии:** Io Mining Industries, Space events, Titanium production cards, Space preludes
-
-**Когда брать:** ТОЛЬКО с Io Mining Industries или 2+ дорогих space карт И ti-prod. Иначе пропускай.
+**Когда брать:** Good generic pick. Immediate TR and tiles are strong from gen 1, especially when the board bonuses matter.
 
 ---
 
-### Odyssey (#PfC18) — 74/B
-
-Старт: ? MC | Теги: — | Дополнение: Pathfinders
-
-**Экономика:** 33 MC — очень низкий старт. NO TAGS — штраф -3 to -5. Events stay face up (теги активны). Replay events ≤16 MC. Каждый event replay = повторная value. Replay 3-4 events за игру ≈ 20-40 MC extra value (зависит от events). No-tag penalty: -3 to -5.
-
-**Почему B (74):** Уникальная корпорация с высоким ceiling и низким floor. Events face-up = их теги всегда активны (для milestones, awards, discounts) — это огромно. Replay events ≤16 MC: Virus дважды, дешёвые TR events, draw events — каждый replay = extra действие за стоимость карты. Проблема: 33 MC start катастрофически низкий, и NO TAGS убивает корпоративные синергии. Нужны правильные дешёвые events в руке. При хорошем драфте (cheap powerful events) — A-tier potential. При плохом — D-tier.
-
-**Синергии:** Virus, Asteroid Mining, Subterranean Reservoir
-
-**Когда брать:** Берём ТОЛЬКО с хорошими дешёвыми events в руке. Без events — 33 MC no-tag корпорация = катастрофа. Не паровать с другими engine-корпами (Point Luna) — утонешь в картах без tempo.
-
----
-
-### Luna Trade Federation (#NEW) — 74/B
-
-Старт: ? MC | Теги: Earth, Jovian | Дополнение: Pathfinders
-
-**Экономика:** 20+3=23 MC, ti payable. Earth+Jovian теги. Colony trade bonus ~3 MC/trade
-
-**Почему B (74):** Colony + Earth dual synergy. 27 MC start + 2 ti (6 MC) + colony бонус при trade. Earth тег = Point Luna combo (рисовать карты). С развитыми колониями trade bonus аккумулируется. В colony games — strong. Без колоний — средняя корпорация с низким стартом.
-
-**Синергии:** Point Luna, Luna Governor, Earth Office
-
-**Когда брать:** Берём в colony-heavy играх. С Poseidon traits (built colonies) — excellent. Без колоний — средний pick.
-
----
-
-### Robinson Industries (#R27) — 72/B
-
-Старт: 47 MC | Теги: — | Дополнение: Prelude
-
-**Экономика:** 47 MC + action: increase lowest production by 1 for 4 MC. Gen 1 ti-prod за 4 MC (value 12.5 MC) = +8.5 MC profit. Gen 2 energy-prod за 4 MC (7.5 MC) = +3.5 MC. За 5 gens actions = ~30 MC net profit. Total ~77 MC effective.
-
-**Почему B (72):** Action генерирует огромную value, особенно gen 1 (ti-prod за 4 MC = лучшая сделка в игре). Каждый gen покупаешь самый дефицитный production по фиксированной цене. 47 MC start — приличный. В long games value аккумулируется. Слабость: только 1 action/gen, нет тегов на корпорации для combo. Но стабильность и flexibility делают её надёжным B-tier pick.
-
-**Синергии:** Diverse production strategy, Diversifier milestone
-
-**Когда брать:** Decent generic pick. Ранний ti/energy prod за 4 MC хорош gens 1-2.
-
----
-
-### Playwrights (#NEW) — 70/B
-
-Старт: ? MC | Теги: Power | Дополнение: Community
-
-**Экономика:** 38 MC + 1 energy-prod (7.5 MC) = ~45.5 MC. Action: replay event за его MC cost. С E-Catapult/Credicor скидки стакаются
-
-**Почему B (70):** Уникальный action: replay events любого игрока за MC (скидки работают). Ceiling очень высокий (replay дорогих events = огромный swing). Floor плохой: 38 MC старт + если нет хороших events в сбросе. Power тег слабый.
-
-**Синергии:** Earth Catapult, Credicor, Asteroid Mining
-
-**Когда брать:** Берём когда есть сильные Blue карты, которые хочется переиграть (Decomposers, Standard Technology). Без Blue карт для replay — не берём.
-
----
-
-### Morning Star Inc. (#R06) — 70/B
+### Morning Star Inc. (#R06) — 74/B
 
 Старт: 50 MC | Теги: Venus | Дополнение: Venus Next
 
-**Экономика:** 50 MC + 3 Venus карты из колоды (~12-15 MC card value) + Venus тег (~2 MC). Ability: Venus requirements -2 steps = ускоряет Venus-карты на 1-2 поколения, экономия ~5-10 MC за игру. Итого ~69-77 MC effective.
+**Экономика:** 50 MC + 3 Venus cards from the deck (~12-15 MC of card value) + a Venus tag (~2 MC). Ability: Venus requirements are reduced by 2 steps, often accelerating Venus cards by 1-2 generations and saving about 5-10 MC over a game. Total effective value is about 69-77 MC.
 
-**Почему B (70):** Solid Venus-корпорация с хорошим стартовым капиталом (50 MC — выше среднего). 3 Venus карты из колоды — гарантированный доступ к Venus-стратегии, не зависящий от драфта. Ability -2 steps на Venus requirements позволяет играть Stratospheric Birds, Maxwell Base раньше. Основная проблема: Venus-стратегия нишевая, не всегда есть хорошие Venus-карты в колоде, и Venus TR менее ценен чем temp/O2. По COTD: icehawk84 считает все Venus-корпы кроме Manutech слабыми, но Morning Star — лучшая из них.
+**Почему B (74):** Best of the Venus-focused corps, largely because the 50 MC start is genuinely good. Revealing three Venus cards guarantees access to the module instead of hoping to draft it, and the requirement reduction helps cards like Stratospheric Birds and Maxwell Base arrive earlier. The weakness is that Venus remains a niche axis and Venus TR is still less efficient than the main parameters, so the corp is good but not dominant.
 
 **Синергии:** Stratospheric Birds, Maxwell Base, Venus Governor, Dirigibles, Atmospheric Enhancers, Venus L1 Shade
 
-**Когда брать:** Когда хотите Venus-стратегию. Лучше когда Venus L1 Shade или Atmospheric Enhancers в прелюдиях. 50 MC позволяет гибко реагировать gen 1. Без Venus-синергии — пропускай.
+**Когда брать:** Pick when you actually want a Venus line, especially with Venus L1 Shade or Atmospheric Enhancers in preludes. The rich start keeps it playable, but without Venus support it is only a middling choice.
 
 ---
 
-### Inventrix (#R43) — 70/B
+### Odyssey (#?) — 74/B
 
-Старт: 45 MC | Теги: Science | Дополнение: Base
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 45 MC + 3 cards (~10 MC) + Science тег (3-5 MC). ±2 requirement steps = расширяет окно playability на 2 поколения в обе стороны. Hard to quantify, but ~5-10 MC per game in unlocked cards. Total ~63-70 MC effective.
+**Экономика:** 33 MC, a very low start. No tags, which is effectively a 3-5 MC penalty. Events stay face up so their tags remain active. You can replay events costing 16 MC or less. Replaying 3-4 events in a game can mean 20-40 MC of extra value depending on the events. No-tag penalty remains meaningful.
 
-**Почему B (70):** Универсальная корпорация: ±2 requirements открывает карты, которые иначе были бы unplayable — можно играть high-O2 карты раньше и low-temp карты позже. 3 карты на старте = лучшая фильтрация gen 1 hand. Science тег для AI Central, Olympus Conference, Scientist award. Не spectacular но стабильно good. В All Expansions больше requirement карт = больше value от ability.
+**Почему B (74):** Unique corp with a very high ceiling and a very low floor. Keeping replayed events face up means their tags stay active for milestones, awards, and discounts, which is a real advantage. Replaying cheap but powerful events can create huge swings, but 33 MC and no tags make the opener fragile. With the right event shell it can feel like an A-tier corp; without it the floor is ugly.
 
-**Синергии:** Science cards, Cards с strict requirements, Mars University, Olympus Conference
+**Синергии:** Virus, Asteroid Mining, Subterranean Reservoir
 
-**Когда брать:** Нужен Science тег или карты с жёсткими requirements. На Hellas (Scientist award) чуть лучше.
-
----
-
-### Aurorai (#PfC15) — 70/B
-
-Старт: ? MC | Теги: Mars | Дополнение: Pathfinders
-
-**Экономика:** 33 MC — один из самых низких стартов. Mars тег. 2 data на старте. +1 data за каждый TR raise → за 8-9 gen типичные 15-20 TR raises = 15-20 data. Data на корпорации = 3 MC каждая для SP. 15-20 data = 45-60 MC на SP (greenery 23→20, city 25→22, etc.). Mars тег для planetary track — бонус.
-
-**Почему B (70):** Несмотря на ужасный старт (33 MC, -30 от среднего), ability очень мощная. Каждый TR raise генерирует 3 MC для Standard Projects — это эффективно делает терраформирование дешевле. Проблема: data можно тратить ТОЛЬКО на SP, а не на карты. SP Greenery (23-3=20 MC) и SP City (25-3=22 MC) — хорошие, но не великолепные сделки. Сильная mid-to-late game корпорация, но gen 1 критически слаб из-за 33 MC. Нужны сильные прелюдии для компенсации.
-
-**Синергии:** Standard Technology
-
-**Когда брать:** Берём с прелюдиями, дающими MC/production (компенсация низкого старта). Хороша с Standard Technology. Пропускай если прелюдии слабые.
+**Когда брать:** Pick only with good cheap events already in hand or a very clear event shell. Without events, a 33 MC no-tag corp is a disaster. Avoid pairing it with other overly greedy engine starts.
 
 ---
 
-### Gagarin Mobile Base (#PfC19) — 70/B
+### Luna Trade Federation (#?) — 74/B
 
-Старт: ? MC | Теги: Science | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 36 MC + мобильная база (city tile). Effect: можно передвигать city tile раз в поколение. Placement bonuses + adjacency re-optimization. 36 MC + city = ~48 MC effective.
+**Экономика:** About 23 MC of base value and titanium-payable. Earth + Jovian tags. Colony trade bonus is roughly 3 MC per trade.
 
-**Почему B (70):** PDF показывает B-tier (rank 32, 30% winrate) — значительно лучше нашей старой D оценки. Мобильная база даёт гибкость в placement bonuses и adjacency. Можно двигать city к новым greenery/ocean для бонусов. Ability недооценена в теории — на практике flexibility в placement стоит больше чем кажется.
+**Почему B (74):** Colony plus Earth is a very real package. The 27 MC start is low, but the extra titanium, immediate colony presence, and trade bonus can snowball well on strong colony boards. Earth synergy is a nice bonus in Point Luna style shells. Without Colonies, though, the corp falls toward average.
 
-**Синергии:** Immigrant City, Urbanized Area, Capital, Strip Mine
+**Синергии:** Point Luna, Luna Governor, Earth Office
 
-**Когда брать:** Когда город-стратегия жизнеспособна. Mayor milestone goal. Adjacency bonuses на карте хорошие. Мобильный город = гибкость placement.
-
----
-
-### Steelaris (#PfC9) — 70/B
-
-Старт: ? MC | Теги: Building, City | Дополнение: Pathfinders
-
-**Экономика:** 42 MC. Building + City теги (оба полезны, ~3-4 MC). Effect: +1 steel + 1 plant за каждый city/special tile размещённый на Mars (всех игроков). В 3P ~8-12 city/special tiles = 8-12 steel (16-24 MC) + 8-12 plants (1-1.5 greeneries). Start value: 42 + tags ≈ 46 MC, ability: ~30-40 MC за игру.
-
-**Почему B (70):** Пассивный income от ВСЕХ city/special tile placements — неплохо в 3P. 1 steel + 1 plant = ~4 MC per trigger. В среднем 8-12 triggers = 32-48 MC, но распределённые неравномерно (много triggers late game когда cities размещаются). Building + City теги полезны для Builder milestone. Проблема: 42 MC start не компенсирует отсутствие MC-prod или recurring discount. Steel полезен только если есть building карты. Средняя корпорация с приличным passive income.
-
-**Синергии:** Strip Mine, Space Elevator, Electro Catapult
-
-**Когда брать:** Берём с building картами в руке. В играх с ожидаемым множеством city placements — лучше. Generic pick средней силы.
+**Когда брать:** Pick in colony-heavy games, especially with strong boards or other trade support. Better with Poseidon-style colony pressure; without Colonies it is only average.
 
 ---
 
-### Nanotech Industries (#NEW) — 70/B
+### Hadesphere (#UC01) — 73/B
 
-Старт: ? MC | Теги: Science | Дополнение: Pathfinders
+Старт: 40 MC | Теги: Building | Дополнение: Underworld
 
-**Экономика:** 16+3=19 MC. Science тег. 1 card per Science tag played (~3-4 MC each)
+**Экономика:** 40 MC + 5 steel + first action identify 3. Action excavate каждый ген даёт реальный long-game value.
 
-**Почему B (70):** Science engine corp: рисуешь карту при каждом Science теге + 1 VP per 2 Science ресурса на этой карте. С Science-heavy стратегией (AI Central, Olympus Conference, Research) это 2-3 карты/gen + scaling VP. Слабый старт (40 MC) компенсируется card advantage. Science тег сам по себе ценен.
+**Почему B (73):** Одна из самых надёжных underworld-корпораций: хороший старт и встроенный доступ к главной механике допа без перекоса в коррупцию.
 
-**Синергии:** Research, AI Central, Physics Complex
+**Синергии:** Tunneling Operation, Tunnel Boring Machine, Underground Railway
 
-**Когда брать:** Берём с Science-heavy рукой (3+ Science тегов в стартовой руке). С AI Central, Mars University — snowball. Без Science карт — не окупится.
+**Когда брать:** Когда хочешь стабильно играть через excavation board engine и есть карты, монетизирующие токены. Без follow-up карт просто нормальная корпорация.
 
 ---
 
-### Tycho Magnetics (#XC02) — 68/C
+### Saturn Systems (#R03) — 72/B
+
+Старт: 42 MC | Теги: Jovian | Дополнение: Corporate Era
+
+**Экономика:** 42 MC + 1 titanium production (12.5 MC) + a Jovian tag (3-5 MC). +1 MC production per Jovian tag played. In 3P, 3-6 Jovian tags is a realistic range = 15-30 MC.
+
+**Почему B (72):** Solid Jovian economy corp, but not a generic auto-pick. Titanium production is always useful, and the Jovian tag gets better with Colonies, Hellas, and more players at the table. The catch is practical ceiling: even a tempting Jovian or titanium opener can still lose to a competing corp that simply offers a broken rush line. Good value, real upside, but still hand-dependent.
+
+**Синергии:** Io Mining Industries, Ganymede colony, Titan colony
+
+**Когда брать:** Pick with Jovian cards in hand or a titanium-production prelude. Better with fewer players. Still only passable if there is not a clearly stronger rush line competing for the corp slot.
+
+---
+
+### Tycho Magnetics (#XC02) — 72/B
 
 Старт: 42 MC | Теги: Power, Science | Дополнение: Promo
 
-**Экономика:** 42 MC + 1 energy-prod (~7.5 MC) + Power тег (~1 MC) + Science тег (~3-5 MC). Action: gain 1 wild resource to any card. Wild resource = ~3-5 MC/gen (flexible VP gen или floater/microbe/animal). Итого ~57-62 MC + ~24-40 MC wild resource value за 8 gen.
+**Экономика:** 42 MC + 1 energy production (~7.5 MC) + Power + Science tags (~5 MC). Action: spend X energy to draw X cards and keep 1. At 3 energy production, seeing 3 cards per generation is worth about 3-4 MC per generation in filtering value. Total is about a 53 MC start plus 24-32 MC of ability value over 8 generations = about 77-85 MC.
 
-**Почему C (68):** Приличная корпорация с двумя хорошими тегами. Science тег — один из самых ценных в игре (Olympus Conference, Mars University, Scientist award). Wild resource action — гибкий VP generator: кладёшь animal на Predators/Fish (+1 VP), science на Physics Complex, floater на Dirigibles. 42 MC — средний старт. 1 energy-prod полезна с Colonies. Основная слабость: action ценна только с хорошими target-картами. Без VP-карт с ресурсами — action даёт ~2 MC/gen (как heat). Solid mid-tier корпорация.
+**Почему B (72):** Powerful card-filtration corp. Converting energy into repeated card selection is excellent once the energy supply is built, and the Science plus Power tags fit naturally into real engine shells. The weak point is the 42 MC start and the need for more energy to unlock the ceiling. With strong energy support it is very good; without it the ability is merely fair.
 
-**Синергии:** Predators, Fish, Livestock, Physics Complex, Dirigibles, Symbiotic Fungus, AI Central, Mars University
+**Синергии:** Olympus Conference, Mars University, Nuclear Power, Quantum Extractor
 
-**Когда брать:** С animal/microbe/floater VP картами в руке. Science тег ценен на Hellas (Scientist award). Energy полезна с Colonies. Без resource targets — проходная.
+**Когда брать:** Best with energy-heavy preludes like Power Generation or Mohole Excavation. Science engines raise the ceiling further. Without extra energy production it is noticeably weaker.
 
 ---
 
-### Soylent Seedling Systems (#PfC8) — 68/C
+### Keplertec (#UC08) — 72/B
 
-Старт: ? MC | Теги: Science, Plant | Дополнение: Pathfinders
+Старт: 33 MC | Теги: Jovian, Space | Дополнение: Underworld
 
-**Экономика:** 38 MC — низкий старт. Science + Plant теги (оба хорошие, ~5 MC). 2 seeds на старте (= 10 MC для plant cards / greenery SP). +1 seed при размещении greenery. Seeds = 5 MC each для plant карт и greenery SP. За 3-5 greeneries = 3-5 seeds × 5 MC = 15-25 MC saved. Start value: 38 + 10 (seeds) + tags ≈ 53 MC.
+**Экономика:** 33 MC + 3 titanium + 1 titanium-prod. Потолок высокий в правильной space-руке.
 
-**Почему C (68):** Корпорация для plant/greenery стратегии. Seeds дают 5 MC discount на plant карты и greenery SP — приличная экономия. Проблема: нужна plant стратегия для value, а plant стратегия не всегда оптимальна. 38 MC start низкий. EcoLine делает plant стратегию лучше (7 plants/greenery вместо 8). Science + Plant теги полезны. Корпорация рабочая для niche стратегии но не универсальна.
+**Почему B (72):** Классическая space-corp с сильным ceiling и рискованным стартом; в all-expansions формате обычно достаточно материалов, чтобы быть выше среднего.
+
+**Синергии:** Io Mining Industries, Saturn Systems, Titanium Mine
+
+**Когда брать:** Когда в руке есть space/jovian план и titanium реально конвертируется сразу. Без этого низкий старт становится болезненным.
+
+---
+
+### Aridor (#R20) — 71/B
+
+Старт: 40 MC | Теги: — | Дополнение: Colonies
+
+**Экономика:** 40 MC, a low cash start. Extra colony is worth about 10 MC. Ability: +1 MC production for each new tag type you play. Realistically this can become 6-8 MC production over a game = 30-40 MC total, though spread out over time.
+
+**Почему B (71):** High upside economy corp, but the low start makes gen 1-2 painful. The production ability can snowball hard with the right preludes, especially when strong colonies like Pluto or Luna are in the game, and it also changes draft behavior by making tag density more valuable. In shorter 3P WGT games, though, the delayed production value matters less than it looks.
+
+**Синергии:** Olympus Conference, Deuterium Export, Pluto colony, Luna colony
+
+**Когда брать:** Pick when the opening hand contains many cheap cards with different tags. Better with Venus in the game because the 11th tag matters. Avoid it if the hand is expensive and slow.
+
+---
+
+### Valley Trust (#R34) — 70/B
+
+Старт: 37 MC | Теги: Earth | Дополнение: Prelude
+
+**Экономика:** 37 MC + an extra prelude (~28-32 MC when choosing 1 of 3). Earth tag. -2 MC on science cards = 6-10 MC saved.
+
+**Почему B (70):** An extra prelude is a major gen 1 boost, and choosing one from three usually means a real 25-30+ MC swing in setup quality. The science discount stays relevant often enough to matter, but the main strength is opener flexibility rather than raw economic power. Strong, consistent, and rarely bad.
+
+**Синергии:** Research, Mars University, Olympus Conference, Merger
+
+**Когда брать:** Almost always a safe pick. The extra prelude gives both flexibility and real opener power, and the corp gets a little better on Hellas where Scientist pressure matters.
+
+---
+
+### Playwrights (#?) — 70/B
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 38 MC + 1 energy production (7.5 MC) = about 45.5 MC. Action: replay an event for its MC cost. Discounts from E-Catapult or CrediCor stack.
+
+**Почему B (70):** Unique event-replay corp with a huge ceiling. Replaying a strong event from any player for only MC can create enormous swings, especially once discounts and rebates apply. The weakness is the floor: 38 MC is not rich, the Energy tag is only modestly useful, and the corp needs real events in play before the action matters.
+
+**Синергии:** Earth Catapult, Credicor, Asteroid Mining
+
+**Когда брать:** Pick when the opener already supports an event-heavy game or when you expect strong events to hit play early. Without meaningful replay targets, the corp is too slow.
+
+---
+
+### Aurorai (#?) — 70/B
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 33 MC, one of the lowest starts in the pool. Mars tag. 2 data at setup. +1 data for each TR raise; over 8-9 generations, 15-20 TR raises is typical, so 15-20 data is realistic. Data on the corp is worth 3 MC each for standard projects, so 15-20 data can mean 45-60 MC of SP value. Mars tag is also a bonus for planetary tracks.
+
+**Почему B (70):** Despite the terrible 33 MC start, the ability is powerful. Every TR raise creates 3 MC for standard projects, which effectively discounts terraforming and turns the corp into a serious mid-to-late game economy engine. The catch is that the resources only pay for standard projects, not cards, so gen 1 is critically weak unless the preludes cover the start.
+
+**Синергии:** Standard Technology
+
+**Когда брать:** Pick with preludes that add cash or production to patch the weak start. Very good with Standard Technology. Pass if the preludes are weak.
+
+---
+
+### Gagarin Mobile Base (#?) — 70/B
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 36 MC + a mobile base, effectively a city tile. Effect: you may move the city tile once per generation. This creates placement bonuses and adjacency re-optimization. 36 MC plus the city is about 48 MC effective.
+
+**Почему B (70):** Board-flexibility corp whose ability is stronger in practice than it first reads. Moving the city lets you re-open placement bonuses, improve adjacencies, and keep extracting value from new greeneries and oceans. The payoff is subtle rather than explosive, but in real board games that flexibility is worth a lot more than pure theory suggests.
+
+**Синергии:** Immigrant City, Urbanized Area, Capital, Strip Mine
+
+**Когда брать:** Pick when city play is viable, Mayor pressure matters, or the map has strong adjacency and placement bonuses. The mobile city is all about flexibility.
+
+---
+
+### Steelaris (#?) — 70/B
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 42 MC. Building + City tags are both useful, together worth about 3-4 MC. Effect: gain 1 steel and 1 plant whenever any city or special tile is placed on Mars. In 3P, about 8-12 such tiles is realistic, which means 8-12 steel (16-24 MC) plus 8-12 plants, roughly 1-1.5 greeneries. Start value is about 46 MC, and the ability can add roughly 30-40 MC over a game.
+
+**Почему B (70):** Decent passive-income corp for board-heavy games. Gaining steel and plants from all city and special-tile placements can add up to real value over time, and the Building plus City tags are useful on their own. The downside is pace: 42 MC is only average, many triggers arrive later than you want, and the corp does not have the raw economic push of stronger board corps.
+
+**Синергии:** Strip Mine, Space Elevator, Electro Catapult
+
+**Когда брать:** Pick with building cards in hand or in games where many city and special tiles are likely to appear. Otherwise it is just a medium-strength generic corp.
+
+---
+
+### Nanotech Industries (#?) — 70/B
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** About 19 MC of base value. Science tag. Draw 1 card per Science tag played, often worth about 3-4 MC each.
+
+**Почему B (70):** Real science-engine corp. Drawing a card on each science tag plus scaling VP from stored science resources creates both card flow and scoring in the same shell. With AI Central, Olympus Conference, Research, and similar cards, the corp can snowball hard. The 40 MC start is not rich, but the card advantage is strong enough to compensate in the right science opener.
+
+**Синергии:** Research, AI Central, Physics Complex
+
+**Когда брать:** Pick with a science-heavy hand, especially 3+ science tags in the opener. AI Central and Mars University style shells raise the ceiling sharply. Without science support, it will not pay off.
+
+---
+
+### Jenson-Boyle & Co (#UC03) — 69/C
+
+Старт: 46 MC | Теги: Crime | Дополнение: Underworld
+
+**Экономика:** 46 MC + 2 corruption. Action меняет 1 corruption на пакет ресурсов по ситуации.
+
+**Почему C (69):** Гибкая, но не бесплатная корпорация: corruption реально надо уметь обслуживать, иначе старт начинает течь.
+
+**Синергии:** Old World Mafia, Racketeering, Gas Trust
+
+**Когда брать:** Когда готов играть через controlled corruption и быстро превращать её в нужный ресурс. Без коррупционных payoff карт легко застрять.
+
+---
+
+### Tharsis Republic (#R31) — 68/C
+
+Старт: 40 MC | Теги: Building | Дополнение: Base
+
+**Экономика:** 40 MC start (about 23 MC below the 63 MC average). Free city is worth about 10 MC. +1 MC production per city; in 3P this is often only 1-2 own cities = about 2-3 MC production total.
+
+**Почему C (68):** Still playable, but much worse than its old reputation. The free city matters, yet 40 MC is a real opener tax and the city-income engine is weaker in fast 3P/WGT all-expansions games than it looks on paper. Better on Tharsis or with strong city support, but no longer a generic premium corp.
+
+**Синергии:** Immigrant City, Open City, Stanford Torus, Capital, Urbanized Area
+
+**Когда брать:** Pick with city cards, production support, or on Tharsis where Mayor pressure matters. Pass as a generic flex pick if another corp offers cleaner economy.
+
+---
+
+### Soylent Seedling Systems (#?) — 68/C
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 38 MC, a low start. Science + Plant tags are both useful, together worth about 5 MC. 2 seeds at setup are worth about 10 MC for plant cards or SP Greenery. +1 seed whenever you place a greenery. Seeds are worth 5 MC each on plant cards or SP Greenery, so 3-5 greeneries often means 15-25 MC saved. Total starting package is roughly 53 MC.
+
+**Почему C (68):** Plant-focused corp with a real niche but limited flexibility. The seed discount on plant cards and standard greeneries can save a solid amount, yet the 38 MC start is light and the whole package depends on already wanting a greenery game. Good when the opener is clearly plant-centric; mediocre as a generic corp.
 
 **Синергии:** Kelp Farming, Farming
 
-**Когда брать:** Берём с plant-heavy рукой и plant прелюдиями. На Tharsis (Gardener milestone) лучше. Без plant strategy — пропускай.
+**Когда брать:** Pick with plant-heavy hands and plant preludes, especially on Tharsis where Gardener pressure matters. Without a real plant plan, pass.
+
+---
+
+### Hecate Speditions (#UC12) — 68/C
+
+Старт: 38 MC | Теги: Earth, Space | Дополнение: Underworld
+
+**Экономика:** 38 MC + extra trade fleet + supply-chain ресурсы. Чисто колониальная корпорация.
+
+**Почему C (68):** В своём столе хороша, но слишком узко завязана на colonу-game, чтобы быть универсально сильной.
+
+**Синергии:** Poseidon, Trade Fleet, Luna colony
+
+**Когда брать:** Только с Colonies и хорошими колониями. Без колоний или без trade-focused руки value резко падает.
 
 ---
 
@@ -630,13 +725,27 @@
 
 Старт: 30 MC | Теги: Power, Plant, Building | Дополнение: Prelude 2
 
-**Экономика:** 30 MC + 1 energy + 1 plant + 1 steel prod. 3 тега. Free milestones (8 MC) + free awards (8/14/20 MC). Реально 20-30 MC savings в 3P.
+**Экономика:** 30 MC + 1 energy, 1 plant, and 1 steel production. 3 tags. In 3P there is real milestone and award equity, but in 4P that part gets much weaker because the race is tighter and the bonus converts worse.
 
-**Почему C (67):** Ужасный старт (30 MC) с потенциально мощной способностью. Бесплатные milestones/awards ценны, но нужно ВЫПОЛНИТЬ условия. По COTD: Krazyguy75 — 'strong but boring', SoupsBane — 'really bad'.
+**Почему C (67):** Low-cash corp with a useful production spread and good milestone or award posture. In 3P the tag mix and early production can convert into real board pressure, but the 30 MC start is still fragile and the upside falls in crowded 4P games. Good when preludes patch the opener; ordinary otherwise.
 
-**Синергии:** Production preludes, Ecologist milestone, Builder milestone, Diversifier milestone
+**Синергии:** Strip Mine, Business Empire, Insects, Cartel
 
-**Когда брать:** Прелюдии компенсируют низкий старт И есть путь к 1-2 milestones.
+**Когда брать:** Pick when preludes repair the cash start and the hand has a believable milestone or award line. Grade it more cautiously in 4P, especially without WGT.
+
+---
+
+### Inventrix (#R43) — 67/C
+
+Старт: 45 MC | Теги: Science | Дополнение: Base
+
+**Экономика:** 45 MC + 3 cards (~10 MC) + a Science tag (3-5 MC). The +/-2 requirement ability expands playability windows by about 2 generations in either direction. Hard to price exactly, but often worth about 5-10 MC per game in unlocked cards. Total effective value is about 63-70 MC.
+
+**Почему C (67):** Interesting corp with a floor that is still below average on raw cash, so this is not a generic A-tier pick. It gets much better when the extra draw and ±2 requirement ability convert directly into tempo: science starts, Kelp or Flooding rush lines, or other early requirement payoffs. In the right hand it is clearly above average; without those payoffs it is just a modest science corp.
+
+**Синергии:** Mars University, Olympus Conference, Research, Adaptation Technology, Special Design, AI Central, Kelp Farming, Flooding, Mohole Area, Snow Algae, Search For Life, Penguins, Livestock
+
+**Когда брать:** Pick when the opener already contains two or more real payoffs for science, requirement manipulation, or rush. The science tag and extra cards alone are not enough.
 
 ---
 
@@ -644,97 +753,83 @@
 
 Старт: 36 MC | Теги: Wild | Дополнение: Turmoil
 
-**Экономика:** 36 MC + Wild тег. Action: +2 MC per party с вашим delegate. Max 12 MC/action. Но delegates стоят 5 MC each. Net ~30-50 MC.
+**Экономика:** 36 MC + a wild tag. Action: +2 MC per party with your delegate, up to 12 MC per action. Delegates cost 5 MC each, so the net value is roughly 30-50 MC over a game.
 
-**Почему C (66):** 12 MC/turn ceiling сильный, но требует значительных delegate инвестиций. 36 MC старт низкий. Wild тег полезен. По COTD: benbever — 'pretty strong' при setup, SonicN — 'spread delegates thin'.
+**Почему C (66):** High ceiling, awkward start. The action can become a huge money engine, but only after real delegate investment, and 36 MC leaves little room for a slow setup. Strong in Turmoil hands that can exploit politics early; average otherwise.
 
-**Синергии:** Delegate cards, Turmoil parties, Wild tag для milestones
+**Синергии:** Corridors of Power, Rise To Power, Cultural Metropolis, Banned Delegate
 
-**Когда брать:** С Turmoil и возможностью инвестировать в delegates рано.
+**Когда брать:** Pick with Turmoil and a plan to invest in delegates early. Without a political shell, the opener is too thin.
 
 ---
 
-### Martian Insurance Group (#PfC12) — 66/C
+### Pharmacy Union (#R39) — 66/C
 
-Старт: ? MC | Теги: Mars | Дополнение: Pathfinders
+Старт: 54 MC | Теги: Microbe, Microbe | Дополнение: Promo
 
-**Экономика:** 42 MC + Mars тег. Effect: когда оппонент понижает чью-либо production, получи 3 MC. Passive income от чужих attacks. В 3P больше attacks = больше income.
+**Экономика:** 54 MC + a Science card. -4 MC whenever any player plays a microbe tag. In 3P, opponents may play 6-10 microbe tags, which can mean a 24-40 MC drain. Flipping the corp grants 3 TR = 21 MC.
 
-**Почему C (66):** PDF показывает D-tier (rank 59, 16.7% winrate). Passive income от attacks звучит хорошо, но attacks в 3P/WGT не так часты как кажется. Опытные игроки избегают take-that. Mars тег ценен только с Pathfinders. 42 MC стартовый — средний, но ability слишком зависит от мета-игры.
+**Почему C (66):** Extremely swingy corp. Fast science into an early cure can turn it into a real engine, but many games never line up and the downside of giving opponents money is severe. Worth taking only when the opener already shows a credible science-heavy cure line.
+
+**Синергии:** Research, Mars University, Lagrange Observatory, Physics Complex
+
+**Когда брать:** Only with three or more near-term science tags or preludes that accelerate the cure quickly. Much riskier in 3P if the setup is slow.
+
+---
+
+### Martian Insurance Group (#?) — 66/C
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 42 MC + a Mars tag. Effect: whenever an opponent lowers any player's production, gain 3 MC. Passive income from attack cards; in 3P, more attacks means more income.
+
+**Почему C (66):** Meta-dependent corp. The payoff for other players' attacks can add up, but attack cards are less frequent than people imagine in disciplined 3P/WGT games, and the 42 MC start is only average. Fine against aggressive tables, weak as a generic pick.
 
 **Синергии:** Protected Habitats, Mons Insurance
 
-**Когда брать:** Meta с агрессивными игроками (много attack карт). Иначе ability почти не тригерится.
+**Когда брать:** Pick in aggressive metas where production attacks are common. If the table rarely plays take-that cards, pass.
 
 ---
 
-### Saturn Systems (#R03) — 65/C
+### Ambient (#?) — 65/C
 
-Старт: 42 MC | Теги: Jovian | Дополнение: Corporate Era
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 42 MC + 1 ti-prod (12.5 MC) + Jovian тег (3-5 MC). +1 MC-prod per Jovian tag played. В 3P реально 3-6 Jovian тегов = 15-30 MC.
+**Экономика:** 38 MC, a very low start and about 25 MC below average. Venus tag. First action: +2 on Venus = 2 TR, about 14 MC of value. +1 heat production for each Venus tag, so 4-6 Venus tags can mean 4-6 heat production, about 16-24 MC. Action: 8 heat for 1 TR once temperature is maxed, effectively a repeatable Caretaker Contract. Total starting package is roughly 60 MC of effective value.
 
-**Почему C (65):** Ti-prod и Jovian тег — main value. MC-prod от Jovian decent но Jovian тегов мало и дороги. По COTD: shai_aus — 'going heavy Jovian usually a trap'. Susceptible к hate-drafting.
-
-**Синергии:** Io Mining Industries, Jovian multipliers, Ganymede colony, Titan colony
-
-**Когда брать:** Jovian карты в руке и ti-prod prelude. Лучше с меньшим количеством игроков.
-
----
-
-### Thorgate (#R13) — 65/C
-
-Старт: 48 MC | Теги: Power | Дополнение: Base
-
-**Экономика:** 48 MC + 1 energy-prod (7.5 MC) + Power тег (1-2 MC). -3 MC на energy SP и energy/Power tag карты. Energy SP: 11→8 MC. При 3-5 energy purchases = 9-15 MC savings. Total ~66-72 MC effective.
-
-**Почему C (65):** Energy-discount корпорация. -3 MC на power plant SP (8 MC вместо 11) — одна из лучших сделок для раннего energy. Скидка на Power tag карты тоже полезна (Lightning Harvester, Advanced Power Grid, etc). Но discount узко специализирован — только energy-related. 48 MC start average. Power тег нишевый. В All Expansions больше power cards, что помогает. Solid C+ но не дотягивает до B — в 3P/WGT energy стратегия не всегда оптимальна.
-
-**Синергии:** Standard Technologies, Power Infrastructure, Colonies, Energy-consuming cards
-
-**Когда брать:** С Colonies и Standard Technologies. Без них — ниже среднего.
-
----
-
-### Ambient (#PfC3) — 65/C
-
-Старт: ? MC | Теги: Venus | Дополнение: Pathfinders
-
-**Экономика:** 38 MC — очень низкий старт (-25 от среднего). Venus тег. First action: +2 Venus scale = 2 TR (14 MC value). +1 heat-prod за каждый Venus тег (~4-6 Venus tags = 4-6 heat-prod = 16-24 MC). Action: 8 heat → 1 TR (когда temp maxed) = repeatable Caretaker Contract. Суммарный start value: 38 + 14 (2 TR) + ~8 MC (2 heat-prod от первых тегов gen 1) ≈ 60 MC.
-
-**Почему C (65):** Стартовый капитал катастрофически низкий (38 MC). 2 Venus scale первым действием — неплохо, но Venus TR менее ценен чем temperature/oxygen. Heat-prod от Venus тегов копится стабильно, но heat-prod — самая слабая production (4 MC/unit). Repeatable heat→TR action полезен только после max temperature — часто это gen 6-7+, к тому моменту осталось 2-3 gen. Venus стратегия в all-expansions нестабильна. Корпорация функциональная но слабая.
+**Почему C (65):** Venus-specialist corp with a real engine but a punishing opener. The free Venus bump and scaling heat production do add up, yet 38 MC is brutal and the payoff leans on a module that is often weaker than standard terraforming lines. Functional in Venus-heavy games, but not a generic corp.
 
 **Синергии:** Sulphur Exports, Venus Governor, CrediCor
 
-**Когда брать:** С Venus в игре (стандарт) heat-engine реально силён — heatProd 10+ к gen 6-7 реалистичен. 38 MC старт компенсируется если Venus-карты есть. С CrediCor — убийственная комба (106 VP observed).
+**Когда брать:** Pick when Venus is active and the opener already supports a real Venus or heat plan. Pass if you are just hoping the module shows up later.
 
 ---
 
-### Mars Direct (#PFC11) — 65/C
+### Mars Direct (#?) — 65/C
 
-Старт: ? MC | Теги: Mars | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 44 MC + Mars тег. Effect: карты с Mars тегом стоят на 3 MC дешевле. Mars тег только в Pathfinders (40 карт). Discount: ~3 MC x 3-4 Mars карты за игру = 9-12 MC бонус.
+**Экономика:** 44 MC + a Mars tag. Effect: Mars-tag cards cost 3 MC less. Mars tags exist only in Pathfinders, about 40 cards total. A realistic range is 3-4 Mars cards over a game, so the discount is often around 9-12 MC.
 
-**Почему C (65):** PDF показывает C-tier (rank 52, 16.7% winrate). Discount работает только на Mars-тег карты, которые есть только в Pathfinders. В пуле из ~700 карт всего 40 Mars — вероятность увидеть их ограничена. 44 MC стартовый ниже среднего. Discount ~9-12 MC за игру — нормально, но не outstanding.
+**Почему C (65):** Narrow Pathfinders corp. A 3 MC discount on Mars tags is respectable, but the tag pool is still small, so the corp is only good when the opening hand already contains Mars cards or when a Mars engine is clearly on the table. Otherwise the 44 MC start is just middling.
 
 **Синергии:** Lava Flows, Nuclear Zone
 
-**Когда брать:** Mars-тег карты в стартовой руке. Без Mars карт discount бесполезен.
+**Когда брать:** Pick with Mars-tag cards already in hand or with a clear Pathfinders Mars shell. Without Mars density, pass.
 
 ---
 
-### Incite (#NEW) — 65/C
+### Incite (#?) — 65/C
 
-Старт: ? MC | Теги: Science | Дополнение: Turmoil
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 32 MC + Science тег (~4-5 MC). First action: 2 delegates в одну партию (~6-8 MC). Effect: permanent +1 influence (защита от Turmoil penalties, ~5-8 MC/game). Delegates стоят на 2 MC дешевле (3 MC вместо 5, при 3-4 lobby actions = 6-8 MC saved). Total: 32 + 5 + 7 + 7 + 7 = ~58 MC effective.
+**Экономика:** 32 MC + a Science tag worth about 4-5 MC. First action: place 2 delegates in one party, worth roughly 6-8 MC. Effect: permanent +1 influence, often worth about 5-8 MC over a game by offsetting Turmoil penalties and improving outcomes. Delegates cost 2 MC less, so 3-4 lobby actions often save 6-8 MC. Total effective value is around 58 MC.
 
-**Почему C (65):** Turmoil-focused корпорация. 32 MC — очень низкий старт (-31 от среднего). НЕ имеет 5 MC-prod (старое описание было ошибочным). Реальные преимущества: +1 influence (negates Turmoil penalties), delegate discount (-2 MC per lobby = дешёвое политическое влияние), Science тег полезен. С Turmoil module — реально сильный political control: дешёвые delegates + influence = можно доминировать в партиях. Без Turmoil — бесполезна.
+**Почему C (65):** Real Turmoil corp, but almost blank outside that module. The extra influence and cheaper delegates create strong political control, yet 32 MC is a severe start penalty and the corp needs a table where lobbying matters. Strong in committed Turmoil games, dead elsewhere.
 
 **Синергии:** Corridors of Power, Septem Tribus, Cultural Metropolis
 
-**Когда брать:** Только с Turmoil. Хороша с Corridors of Power, Septem Tribus. Delegate-based стратегия окупается если активно пользуешься lobby. 32 MC старт — нужны MC-heavy прелюдии.
+**Когда брать:** Only pick with Turmoil and preludes that patch the cash start. Best when you expect to buy delegates aggressively.
 
 ---
 
@@ -742,27 +837,27 @@
 
 Старт: 42 MC | Теги: Microbe, Plant | Дополнение: Prelude 2
 
-**Экономика:** 42 MC + 1 plant-prod (8 MC) = ~50 MC. Microbe+Plant теги. Effect: при plant/microbe/animal теге +2 plants или +2 microbes.
+**Экономика:** 42 MC + 1 plant production (8 MC) = about 50 MC. Microbe + Plant tags. Effect: whenever you play a plant, microbe, or animal tag, gain either 2 plants or 2 microbes.
 
-**Почему C (64):** Viral Enhancers на корпорации. Двойной тег (Microbe+Plant) полезен для Splice, Decomposers, Ecologist. Но 42 MC + 1 plant-prod — слабый старт. VP passive.
+**Почему C (64):** Viral Enhancers stapled to a corp is real value, and the double tag helps several bio payoffs. The problem is the opener: 42 MC plus plant production is still light, and the corp does little if the game does not actually turn into microbes, plants, or animals. Fine in bio shells, weak as a generic economy corp.
 
-**Синергии:** Decomposers, Ants, Splice, Ecologist milestone, NRA
+**Синергии:** Decomposers, Ants, Splice, Viral Enhancers
 
-**Когда брать:** Bio-heavy рука с microbe targets. На Elysium (Ecologist).
+**Когда брать:** Pick with bio-heavy hands, good microbe targets, or on Elysium where Ecologist pressure matters. Without a real bio plan, pass.
 
 ---
 
-### Viron (#R12) — 64/C
+### Thorgate (#R13) — 64/C
 
-Старт: 48 MC | Теги: Microbe | Дополнение: Venus Next
+Старт: 48 MC | Теги: Power | Дополнение: Base
 
-**Экономика:** 48 MC + Microbe тег. Action: use blue card action again this gen. Value = 0 MC без targets, broken с AI Central.
+**Экономика:** 48 MC + 1 energy production (7.5 MC) + a Power tag (1-2 MC). -3 MC on SP Power and on energy or Power-tag cards. SP Power drops from 11 to 8 MC. Over 3-5 energy purchases, that is about 9-15 MC saved. Total effective value is about 66-72 MC.
 
-**Почему C (64):** Extreme variance. С AI Central / Electro Catapult = amazing. Без targets = 48 MC с microbe тегом и нет ability. По COTD: shai_aus — 'beastly with right blue cards', icehawk84 — 'on average, one of the weaker corps'.
+**Почему C (64):** Energy-discount corp with a narrower use case than it first appears. Discounting power cards and SP Power is useful, but by itself it does not fix a weak baseline. The corp becomes real when the start already promises Colonies trade, AI Central or Mass Converter thresholds, or multiple power payoffs. Without those hooks it is simply too situational to rate higher than C.
 
-**Синергии:** AI Central, Electro Catapult, Animal VP cards, Extreme Cold Fungus
+**Синергии:** Standard Technologies, Power Infrastructure, Electro Catapult, AI Central, Mass Converter, Trading Colony, Space Station
 
-**Когда брать:** ТОЛЬКО с AI Central или premium action card в стартовой руке. Не надеяться найти позже.
+**Когда брать:** Only when the start already promises early trade, energy thresholds, or multiple power payoffs. Otherwise one of the weaker corp options.
 
 ---
 
@@ -770,13 +865,13 @@
 
 Старт: 48 MC | Теги: — | Дополнение: Promo
 
-**Экономика:** 48 MC + 4 MC-prod. Оппоненты -2 MC-prod each. Но insurance payouts -3 MC per attack. Нет тегов.
+**Экономика:** 48 MC + 4 MC production. Opponents each lose 2 MC production. Insurance payouts are reduced by 3 MC per attack. No tags.
 
-**Почему C (63):** Сильный стартовый пакет, но payouts и отсутствие тегов компенсируют. В 3P меньше атак чем в 4-5P. Ants — recurring nightmare. По COTD: 'very good in 2P, average in 3P'.
+**Почему C (63):** Solid raw start, but the corp is less reliable than it first looks. The insurance payouts partly offset the strong MC package, attack frequency is lower in typical 3P games, and having no tags hurts flexibility. Playable, but not something to force.
 
-**Синергии:** High MC production cards
+**Синергии:** Business Empire, Cartel, Sponsors, Acquired Company
 
-**Когда брать:** При отсутствии лучших альтернатив. Избегай если видишь Ants у оппонентов.
+**Когда брать:** Pick when the alternatives are weak or when you expect more attacks than usual. Downgrade it if the table looks disciplined or Ants is likely to matter.
 
 ---
 
@@ -786,11 +881,25 @@
 
 **Экономика:** 31 MC + 1 energy + 2 MC-prod. Effect: +1 MC per missing tag on played cards. Single-tag cards +1 MC. No-tag cards +4 MC.
 
-**Почему C (63):** Mild discount — 1 MC per single-tag card play. No-tag cards (4 MC bonus) редки. 31 MC стартовый низкий. Energy-prod полезна с Colonies. По COTD: warpspeed100 — 1 MC rebate на single-tag — main value.
+**Почему C (63):** Serviceable rebate corp, not a splashy one. Most of the value comes from turning single-tag cards into slight discounts, while the flashy no-tag payouts happen too rarely to carry the corp. The 31 MC start is the real problem, so it needs help from preludes or colonies.
 
-**Синергии:** No-tag cards, Community Services, Black Polar Dust, Single-tag cards
+**Синергии:** Community Services, Black Polar Dust, Acquired Company, Directed Heat Usage, Caretaker Contract
 
-**Когда брать:** С production прелюдиями. Energy помогает с Colonies.
+**Когда брать:** Pick with production-heavy preludes or colony setups where the extra energy matters. Without opener support, the start is too thin.
+
+---
+
+### Voltagon (#UC09) — 63/C
+
+Старт: 38 MC | Теги: Power | Дополнение: Underworld
+
+**Экономика:** 38 MC + 1 energy-prod. Дополнительная ценность сидит в активной способности, а не в старте.
+
+**Почему C (63):** Рабочая, но не особенно надёжная корпорация: слишком много value спрятано в условном action-движке.
+
+**Синергии:** Thorgate, Power Infrastructure, Dirigibles
+
+**Когда брать:** Когда есть power/venus support и ты реально будешь использовать её action. Без питания и floater/venus плана карта средняя.
 
 ---
 
@@ -798,55 +907,83 @@
 
 Старт: 45 MC | Теги: Animal | Дополнение: Colonies
 
-**Экономика:** 45 MC + 2 MC-prod (10-12 MC) = ~57 MC. Animal тег. VP: +1 animal за plant/animal тег → 1 VP/2 animals. Реально 2-3 VP за игру.
+**Экономика:** 45 MC + 2 MC production (10-12 MC) = about 57 MC. Animal tag. VP engine: gain 1 animal when you play a plant or animal tag, and score 1 VP per 2 animals. Realistically this is often 2-3 VP over a game.
 
-**Почему C (62):** Приличный стартовый капитал с MC-prod, но способность — только VP, никакой помощи ранней экономике. В 3P WGT с короткими играми 2-3 VP от способности это скромная добавка. По COTD: 'ok but boring'.
+**Почему C (62):** Reasonable cash-and-production opener attached to a slow VP ability. The animal trickle does convert into points, but usually not fast enough to change the first half of the game, so the corp feels fine rather than exciting. Better in hands that already want plants or animals.
 
 **Синергии:** Large Convoy, Imported Nitrogen, Ecological Zone, Miranda colony, Fish, Splice
 
-**Когда брать:** Рука с plant/animal картами. На Elysium (Ecologist milestone).
+**Когда брать:** Pick with plant or animal support, especially on Elysium where Ecologist matters. In fast 3P/WGT games it is usually just a middling option.
 
 ---
 
-### Mind Set Mars (#PfC21) — 62/C
+### Collegium Copernicus (#?) — 62/C
 
-Старт: ? MC | Теги: — | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 44 MC — чуть ниже среднего. NO TAGS — штраф -3 to -5 MC. 1 agenda на старте. +1 agenda за building тег. Spend 2 agenda → 1 delegate. Spend 5 agenda → city на Марсе. За 8-9 gen ~6-10 building тегов = 6-10 agenda. 3-5 delegates ИЛИ 1-2 cities. Delegate value: ~3-4 MC each. City value: ~15-20 MC. No-tag penalty: -3 to -5.
+**Экономика:** 33 MC, one of the weakest cash starts. Science + Earth tags are worth about 5 MC. First action: draw 2 science cards, roughly 7 MC of value. Action: spend 3 data for a free trade; 2-3 uses in a game can mean about 18-27 MC. Overall the start is roughly 45 MC effective.
 
-**Почему C (62):** Идея корпорации — конвертировать building теги в политическое влияние или города. Agenda копятся от building тегов (распространённых), но conversion rates слабые: 2 agenda → 1 delegate (6-8 MC building тегов → 3-4 MC delegate value). City за 5 agenda — лучше, но требует 5 building тегов. Главный минус: NO TAGS. Потеря всех корпоративных синергий (Point Luna, Splice, discounts) — огромный штраф в all-expansions формате. Turmoil-зависимость. Функциональная но ниже среднего.
+**Почему C (62):** Interesting payoff, but the opener is brutally weak. The science and Earth tags are useful, yet 33 MC means the corp usually spends its first generations trying to stabilize before the free-trade engine comes online. Playable with strong colony and science support, but worse than most corps with normal starts.
+
+**Синергии:** Research
+
+**Когда брать:** Pick with science cards already in hand and strong colonies like Pluto or Luna. The 33 MC start is heavy enough that it usually needs cash-rich preludes.
+
+---
+
+### Mind Set Mars (#?) — 62/C
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 44 MC, slightly below average. No tags, which is effectively a 3-5 MC penalty. Start with 1 agenda. Gain 1 agenda for each building tag played. Spend 2 agenda for 1 delegate, or spend 5 agenda for a city on Mars. Over 8-9 generations, 6-10 building tags is a reasonable range, which converts into 3-5 delegates or 1-2 cities. Delegates are worth about 3-4 MC each, and a city is worth about 15-20 MC.
+
+**Почему C (62):** Turmoil-specific building corp with a real idea but weak conversion rates. Building tags are common enough, yet turning agendas into delegates or cities is slower and less efficient than it first appears, and the no-tag start is a serious cost in all-expansions games. Functional when politics matter, below average as a generic corporation.
 
 **Синергии:** Cheung Shing MARS
 
-**Когда брать:** Только с Turmoil в игре + building-heavy рукой. No-tag penalty делает корпорацию слабой в generic ситуациях.
+**Когда брать:** Only pick with Turmoil active and a genuinely building-heavy opener. The no-tag start makes it weak in generic games.
 
 ---
 
-### Athena (#NEW) — 62/C
+### Athena (#?) — 62/C
 
-Старт: ? MC | Теги: Science | Дополнение: Community
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 45 MC + Science тег (3-5 MC) + blocking ability (~5-10 MC conditional)
+**Экономика:** 45 MC + a Science tag worth about 3-5 MC + a conditional blocking ability worth roughly 5-10 MC when relevant.
 
-**Почему C (62):** При Science-heavy руке. Ability блокирует оппонентов от requirement карт при повышении параметров. Ситуативно полезна.
+**Почему C (62):** Niche science corp that is mostly about requirement manipulation and denial. The ability can create awkward timing for opponents and modest savings for your own requirement-heavy hand, but 45 MC and a science tag alone are not enough to carry weak starts. Only good when the opener already contains several relevant payoff cards.
 
 **Синергии:** Anti-Gravity Technology, Research
 
-**Когда брать:** Берём если планируешь много requirement карт (3+). В requirement-heavy руке экономит 6-9 MC. Без requirement карт — пустая корпорация.
+**Когда брать:** Pick when your opener contains multiple important requirement cards and you expect the blocking ability to matter. Without that shell, it is close to blank.
 
 ---
 
-### Aridor (#R20) — 61/C
+### Henkei Genetics (#UC04) — 61/C
 
-Старт: 40 MC | Теги: — | Дополнение: Colonies
+Старт: 47 MC | Теги: Microbe | Дополнение: Underworld
 
-**Экономика:** 40 MC — низкий старт. Дополнительная колония (~10 MC). Способность: +1 MC-prod за новый тип тега. Реально 6-8 MC-prod за игру = 30-40 MC total, но растянуто во времени.
+**Экономика:** 47 MC + 1 corruption + 2 microbe cards. VP scaling на микробах, но payoff узкий.
 
-**Почему C (61):** Сильный потенциал MC-prod, но низкий старт делает gen 1-2 болезненными. В 3P WGT игры короче (8-9 gen), production value снижается. Нет тегов. Высокая вариативность.
+**Почему C (61):** Корпорация с понятной нишей и слабой универсальностью; без микробного движка value быстро осыпается.
 
-**Синергии:** Olympus Conference, Deuterium Export, Pluto colony, Luna colony, diverse tag карты
+**Синергии:** Splice, Decomposers, Microbe cards
 
-**Когда брать:** Много дешёвых карт с разными тегами в стартовой руке. Лучше с Venus (11-й тег). Не брать если рука дорогая.
+**Когда брать:** Только с microbe-heavy рукой или сильными микробными прелюдиями. В generic столе слишком честная.
+
+---
+
+### Viron (#R12) — 60/C
+
+Старт: 48 MC | Теги: Microbe | Дополнение: Venus Next
+
+**Экономика:** 48 MC + a Microbe tag. Action: use a blue-card action again this generation. Value ranges from 0 MC with no targets to absurd with AI Central.
+
+**Почему C (60):** Extreme-variance corp. With AI Central, Electro Catapult, or another premium action card, the ability becomes excellent; without real targets, this is mostly 48 MC plus a microbe tag and very little else. Powerful in the right opener, weak as a blind generic pick.
+
+**Синергии:** AI Central, Electro Catapult, Extreme Cold Fungus, Birds, Fish
+
+**Когда брать:** Only pick with AI Central or another premium action card already in the opener. Do not take it on the hope of finding targets later.
 
 ---
 
@@ -854,13 +991,13 @@
 
 Старт: 30 MC | Теги: Building, Building | Дополнение: Base
 
-**Экономика:** 30 MC + 5 steel + 1 steel-prod. Эффект: +1 steel-prod за steel/ti бонус на карте. Steel overflow — серьёзная проблема. 2 Building тега.
+**Экономика:** 30 MC + 5 steel + 1 steel production. Effect: +1 steel production whenever you place on a steel or titanium bonus. Steel overflow is a serious issue. 2 Building tags.
 
-**Почему C (60):** Объективно слабая корпорация. 30 MC — мало. Steel overflow: производишь больше steel чем тратишь. По COTD: 'low tier', 'expansions weakened it'. Лучше на Tharsis (Builder + Miner).
+**Почему C (60):** Weak corp with a very punishing 30 MC opener. The steel income looks attractive, but in practice it often creates more steel than your hand can spend efficiently, especially in expansion-heavy games where stronger engines crowd it out. Best on Tharsis, but still below average.
 
-**Синергии:** Space Elevator, Electro Catapult, Advanced Alloys, Builder milestone, Miner award
+**Синергии:** Space Elevator, Electro Catapult, Advanced Alloys, Strip Mine, Mining Area
 
-**Когда брать:** На Tharsis с ocean-прелюдиями и steel-dump картами.
+**Когда брать:** Pick on Tharsis with steel dumps, strong building payoffs, or ocean preludes that let the free steel bump matter immediately. Otherwise pass.
 
 ---
 
@@ -870,25 +1007,53 @@
 
 **Экономика:** 53 MC - 2 TR penalty (~16 MC lost). +6 MC/gen when not terraforming. 5-6 non-terraform gens = 30-36 MC + 5-6 VP.
 
-**Почему C (60):** Требует fundamentally другой playstyle. -2 TR серьёзный penalty. В 3P WGT игры быстрее, меньше non-terraform gens. По COTD: benbever — 'can be strong with right preludes', FieldMouse007 — 'weak'. High skill cap.
+**Почему C (60):** Engine-only corp with real upside in slow games: each non-terraform gen is effectively +6 MC and +1 VP. In 2P / Colonies / slow engine tables that can snowball hard. The cost is inflexibility: -2 TR at start, awkward pivot into rush, and in 3P+ WGT fast tables you often lose too many preservation triggers. Latest COTD consensus is close to that: strong in engine meta, mediocre when the table pushes tempo.
 
-**Синергии:** Reds party, VP cards without TR, Non-terraforming production, Late-game mass terraform
+**Синергии:** Research Network, Applied Science, Board of Directors, Birds, Predators
 
-**Когда брать:** Strong production прелюдии и VP карты без TR. Очень специфичный playstyle.
+**Когда брать:** Slow engine tables, especially 2P / Colonies, or openings with strong production, card-flow, and VP cards that do not force TR. Avoid when the hand already wants to rush or the table likely ends fast.
 
 ---
 
-### United Nations Mission One (#NEW) — 60/C
+### United Nations Mission One (#?) — 60/C
 
-Старт: ? MC | Теги: Earth | Дополнение: Community
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 43 MC + 1 TR (7 MC) + delegate (~3 MC) + Earth тег (~2 MC) = ~55 MC
+**Экономика:** 43 MC + 1 TR (7 MC) + a delegate (~3 MC) + an Earth tag (~2 MC) = about 55 MC.
 
-**Почему C (60):** Turmoil-ориентированная корпорация: 40 MC + 2 MC-prod + Earth тег + delegate. Ongoing: платишь 3 MC за дополнительный delegate при размещении. Cheap delegates = Turmoil control, но 40 MC start очень низкий. Приемлемый generic pick если Turmoil важна в партии.
+**Почему C (60):** Turmoil-focused corporation with a decent political package but a tight opener. The Earth tag, delegate, and extra-political leverage are all useful, yet 40 MC still leaves the early game fragile and the whole corp loses much of its identity when party control is unimportant. Playable in politics-heavy games, mediocre otherwise.
 
 **Синергии:** UNMI Contractor, Bribed Committee
 
-**Когда брать:** Берём когда Turmoil control важна (Reds threatening, ключевые party bonuses). Без Turmoil фокуса — 40 MC start слишком низкий.
+**Когда брать:** Pick when Turmoil control really matters, such as Reds pressure or important party bonuses. Without a political focus, the 40 MC start is too weak.
+
+---
+
+### Aeron Genomics (#UC07) — 60/C
+
+Старт: 35 MC | Теги: Animal | Дополнение: Underworld
+
+**Экономика:** 35 MC + 5 steel + 2 animals. Animal VP scaling хороший только при реальном animal plan.
+
+**Почему C (60):** Нормальная нишевая animal-корпорация, но не универсальный first-pick.
+
+**Синергии:** Birds, Fish, Large Convoy
+
+**Когда брать:** Когда стартовая рука поддерживает animal-game. Иначе стартовая сталь и 2 животных не вытягивают корпорацию сами по себе.
+
+---
+
+### Robinson Industries (#R27) — 58/C
+
+Старт: 47 MC | Теги: — | Дополнение: Prelude
+
+**Экономика:** 47 MC + an action: increase your lowest production by 1 for 4 MC. Gen 1 titanium production for 4 MC (worth 12.5 MC) = about 8.5 MC profit. Gen 2 energy production for 4 MC (7.5 MC) = about 3.5 MC. Over 5 generations, these actions can be about 30 MC net profit. Total effective value is around 77 MC.
+
+**Почему C (58):** Slow-burn generalist with decent floor, not a premium opener. Paying 4 MC for any production is excellent when it unlocks titanium or energy early, but the corp is tempo-light and can feel clunky without a concrete sink. Better in longer games and lower player counts, especially in colony setups that reward flexible production more than immediate burst.
+
+**Синергии:** Strip Mine, Business Empire, Cartel, Fuel Factory, Advanced Alloys, Artificial Photosynthesis, Phobos Space Haven
+
+**Когда брать:** Decent generic pick only when early ti or energy bumps unlock trade or expensive cards. Better in slower games and colony-heavy setups.
 
 ---
 
@@ -896,13 +1061,13 @@
 
 Старт: 37 MC | Теги: Power, Building | Дополнение: Promo
 
-**Экономика:** 37 MC + 1 steel-prod (8 MC) = ~45 MC. Action: +1 energy-prod ИЛИ pay 3 MC → draw card. Power + Building теги.
+**Экономика:** 37 MC + 1 steel production (8 MC) = about 45 MC. Action: +1 energy production or pay 3 MC to draw 1 card. Power + Building tags.
 
-**Почему C (58):** Низкий стартовый капитал (37 MC) — серьёзный минус. Energy gen 1 полезна с Колониями. Без Колоний — действие на cards слабое. По COTD: icehawk84 — лучше с Colonies но средняя.
+**Почему C (58):** The 37 MC start is the main weakness, but Colonies can patch it. Early energy matters a lot when it unlocks colony tempo, and the action becomes much better when the opener already contains building payoffs or a reason to dig for more of them. Clearly stronger with Colonies; without that module it is just a mediocre building corp.
 
-**Синергии:** Colonies (trade), AI Central, Power Infrastructure, Strip Mine
+**Синергии:** Development Center, House Printing, Power Infrastructure, AI Central, Steelworks
 
-**Когда брать:** С Colonies и energy-картами. Без Colonies — ниже среднего.
+**Когда брать:** Pick with Colonies, early colony access, and real building or energy payoffs. Early Luna or Ceres tempo is a big part of its best starts. Without Colonies, downgrade it heavily.
 
 ---
 
@@ -910,27 +1075,69 @@
 
 Старт: 36 MC | Теги: Space | Дополнение: Prelude 2
 
-**Экономика:** 36 MC + 5 ti (~15 MC) + Space тег (~1 MC). Action: gain 1 ti/gen ИЛИ spend 6 ti → raise planetary track 1 step. 1 ti/gen = ~3 MC/gen. Planetary track raise = ~7 MC (1 TR equivalent), но cost 6 ti = 18 MC. Net negative на raise action. Итого ~55-60 MC за 8 gen.
+**Экономика:** 36 MC + 5 titanium (~15 MC) + a Space tag (~1 MC). Action: gain 1 titanium per generation or spend 6 titanium to raise a planetary track 1 step. 1 titanium per generation is about 3 MC per generation. A planetary-track raise is about 7 MC, but 6 titanium is about 18 MC, so that branch is net negative. Total value is about 55-60 MC over 8 generations.
 
-**Почему C (58):** Низкий стартовый капитал (36 MC) компенсируется 5 ti для space карт gen 1. Action на 1 ti/gen — это по сути слабый ti-prod. Action на planetary track raise стоит 6 ti (18 MC) за ~7 MC value — невыгодная сделка. Space тег полезен. В целом корпорация без сильного engine — ни мощного старта, ни мощной ability. Стабильно ниже среднего, но не провальная.
+**Почему C (58):** A serviceable titanium opener that rarely turns into a great corp. The start is acceptable if the hand can spend 5 titanium immediately, but the core tension is real: good space cards want the titanium, while the corp ability asks you to burn that same resource on temperature. Usually below average and notably less flexible than Phobolog.
 
-**Синергии:** Space cards, Io Mining Industries, Titan colony, Pathfinder planetary tracks
+**Синергии:** Io Mining Industries, Titan colony, Titan Shuttles, Saturn Surfing
 
-**Когда брать:** С space-heavy рукой где 5 ti пригодятся gen 1. Не лучший pick, но приемлемый если альтернативы хуже. Action на planetary track — trap, предпочитай 1 ti/gen.
+**Когда брать:** Pick with a genuinely space-heavy opener where the 5 titanium matters on gen 1. Usually prefer spending titanium on cards rather than forcing the planetary-track action every generation.
 
 ---
 
-### Mars Maths (#PfC10) — 58/C
+### Mars Maths (#?) — 58/C
 
-Старт: ? MC | Теги: Science | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 40 MC — один из худших стартов (-23 от среднего). Science тег. First action: draw 2 cards (~7 MC). Research phase: draw 5 buy 4 = фильтрация (видишь на 1 карту больше, но не бесплатно). Draft: keep 2 первыми (лучше выбор, но за карту всё равно платишь 3 MC). Action: take 2 more actions (= net +1 action/gen, ~5-6 MC/gen). Total ability: ~40-48 MC за 8 gens. С 40 MC стартом — чуть ниже среднего.
+**Экономика:** 40 MC, one of the weaker starts and about 23 MC below average. Science tag. First action: draw 2 cards, about 7 MC of value. Research phase becomes draw 5 and buy 4, which improves filtering but does not save money. Drafting lets you keep 2 cards first, which improves choice but still costs 3 MC per card. The extra action is roughly 5-6 MC per generation, so total ability value is about 40-48 MC over 8 generations. Even so, the 40 MC start keeps the package only slightly below average.
 
-**Почему C (58):** PDF F-tier (rank 83). Основная способность — +1 action per gen (spend 1 to get 2). На бумаге неплохо (~5-6 MC/action × 8 gens), но 40 MC старт означает что gen 1-2 нечем заполнять эти действия. Фильтрация draw 5/buy 4 даёт лучший выбор, но не экономит MC. Draft advantage (keep 2) тоже не бесплатный — карту покупаешь за 3 MC. В итоге: ability value не компенсирует -23 MC дефицит старта.
+**Почему C (58):** The extra action each generation and the improved card filtering look attractive, but the 40 MC opener gives this corp too little fuel to exploit them cleanly. Seeing more cards helps, yet it does not actually save money, and the action advantage is much weaker when the early game is starved for playable lines. Usually too clunky to justify as a generic pick.
 
-**Синергии:** Research, Optimal Aerobraking, Science tag cards, Standard Technology
+**Синергии:** Research, Optimal Aerobraking, Standard Technology, Physics Complex, AI Central
 
-**Когда брать:** Слабый pick. 40 MC старт без production = gen 1-2 провал. Только с MC-heavy прелюдиями. В большинстве случаев — пропускай.
+**Когда брать:** Only consider it with cash-rich preludes or an opener that already has enough cheap, playable cards to use the extra actions. In most games, pass.
+
+---
+
+### Kingdom of Tauraro (#UC06) — 58/C
+
+Старт: 50 MC | Теги: City | Дополнение: Underworld
+
+**Экономика:** 50 MC + 6 MC-prod + free city, но каждый оппонент тоже получает 2 MC-prod.
+
+**Почему C (58):** Очень swingy корпорация: свой старт сильный, но ты заметно ускоряешь и стол. Это убирает её из верхних тиров.
+
+**Синергии:** Immigrant City, Capital, Mayor
+
+**Когда брать:** Когда город и tempo на доске критичны, а ты готов пережить ускорение экономики оппонентов. В engine-heavy столах штраф заметнее.
+
+---
+
+### Arcadian Communities (#R44) — 57/C
+
+Старт: 40 MC | Теги: — | Дополнение: Promo
+
+**Экономика:** 40 MC + 10 steel (~20 MC) = about 60 MC. Ability: gain 3 MC when a tile is placed next to a reservation marker. No tags, which is effectively a 3-5 MC penalty.
+
+**Почему C (57):** Area-denial corp with real board-control upside, not just a gimmick. It is strongest when reserved spaces immediately convert into cards, steel, titanium, or ocean-walk tempo. Elysium remains the best map, but good tile-heavy hands on Hellas and Tharsis can still justify it. The ability does little without concrete placement follow-up, so the hand dependence is real.
+
+**Синергии:** Immigrant City, Research Outpost, Lava Flows, Nuclear Zone, Commercial District, Arctic Algae, Mining Area
+
+**Когда брать:** Pick when the hand can convert reserved spaces into cards, resources, or immediate rush tempo. Elysium is still the best map, but strong tile-heavy starts can justify it elsewhere too.
+
+---
+
+### Astrodrill (#R21) — 57/C
+
+Старт: 35 MC | Теги: Space | Дополнение: Promo
+
+**Экономика:** 35 MC + 3 asteroid resources (~9 MC) = an effective start closer to 44 MC. The cash floor is still weak, but not total trash. The action is slow, yet it creates a self-sustaining asteroid engine and a real titanium sink when the payoffs are present.
+
+**Почему C (57):** Still below average as a generic opener, but not true dumpster tier. The three starting asteroid resources plus the built-in action create a real shell for asteroid and titanium payoffs, so the corp does have a coherent plan when the opener supports it. Weak without those payoffs, but no longer a pure auto-pass.
+
+**Синергии:** Main Belt Asteroids, Comet Aiming, Asteroid Deflection System, Asteroid Mining, Asteroid Rights
+
+**Когда брать:** Pick when the opener already offers asteroid or titanium payoffs, or a real long-game resource sink. Without that support it is still mediocre, just not automatic trash.
 
 ---
 
@@ -938,83 +1145,83 @@
 
 Старт: 40 MC | Теги: Building | Дополнение: Turmoil
 
-**Экономика:** 40 MC + 1 steel-prod + 1 ti-prod = ~60.5 MC. Building тег. Action: decrease any production → gain 4 of that resource.
+**Экономика:** 40 MC + 1 steel production + 1 titanium production = about 60.5 MC. Building tag. Action: decrease any production to gain 4 of that resource.
 
-**Почему C (55):** Приличный production start, но 40 MC tight. Action на конвертацию production в ресурсы — нишевая, полезна late game. По COTD: warpspeed100 — можно в минус по MC-prod; shai_aus — 'interesting but situational'.
+**Почему C (55):** Reasonable production package attached to a fairly tight 40 MC opener. The action is useful, but mostly as a later-game tool for converting excess production into the resource you actually need, not as an early engine. Interesting and playable, yet too situational to rate as a strong generic corp.
 
-**Синергии:** Robinson Industries (Merger), Steel and titanium cards, Late-game resource conversion
+**Синергии:** Strip Mine, Advanced Alloys, Merger, Space Elevator
 
-**Когда брать:** Building/space карты для steel и titanium. Action — nice late-game option.
+**Когда брать:** Pick with building or space cards that already value the steel and titanium production. Treat the action as a useful late-game option, not the main reason to choose the corp.
 
 ---
 
-### Chimera (#PfC5) — 55/C
+### Splice (#R28) — 55/C
 
-Старт: ? MC | Теги: Wild, Wild | Дополнение: Pathfinders
+Старт: 44 MC | Теги: Microbe | Дополнение: Promo
 
-**Экономика:** 36 MC + 1 steel (~2 MC) + 1 ti (~3 MC) = ~41 MC effective (-22 от среднего). 2 Wild тега: при розыгрыше считаются за любые (triggers corp effects), но для milestones/awards: 2 wild = 1 тег. Нет production, нет action, нет immediate value кроме гибкости тегов. Theoretical tag value: ~15-25 MC за игру. Реальный: значительно меньше.
+**Экономика:** 44 MC + 1 Microbe card. Whenever a microbe tag is played, choose +2 MC or +2 microbes, but an opponent also gets the same choice. Microbe tags are relatively sparse.
 
-**Почему C (55):** PDF F-tier (rank 87, 23% WR — ниже среднего 33%). Wild теги звучат мощно, но на практике: 36 MC start убийственный, wild теги не генерируют ресурсы сами по себе, для milestones считаются как 1 тег вместо 2. Ни production, ни action — корпорация не делает ничего кроме "быть гибкой". В быстром 3P/WGT формате гибкость тегов не компенсирует -22 MC дефицит. Хуже большинства базовых корпораций.
+**Почему C (55):** The floor is still low because opponents also gain value from every microbe tag, but the corp is no longer a pure auto-pass when the opener is genuinely microbe-dense. Two or three keepable microbe cards, Enceladus, or a real microbe placer can turn the ability into meaningful tempo. Weak generically, playable in a real microbe shell.
+
+**Синергии:** Decomposers, Viral Enhancers, Symbiotic Fungus, Extreme-Cold Fungus, Tardigrades, Vermin, Enceladus colony
+
+**Когда брать:** Pick when the opener is truly microbe-heavy or already shows Enceladus or a strong microbe placer. Without a dense microbe shell it remains weak.
+
+---
+
+### Chimera (#?) — 55/C
+
+Старт: ? MC | Теги: — | Дополнение: ?
+
+**Экономика:** 36 MC + 1 steel (~2 MC) + 1 titanium (~3 MC) = about 41 MC effective, roughly 22 MC below average. 2 wild tags count as any tag for card effects, but for milestones or awards, 2 wild tags count only as 1. No production, no action, and no immediate value beyond tag flexibility. Theoretical tag value is around 15-25 MC over a game, but practical value is much lower.
+
+**Почему C (55):** Flexible in theory, poor in practice. The wild tags can unlock milestone or requirement tricks, but 36 MC is a brutal opener and the corp provides no production, no action, and no immediate tempo beyond that flexibility. In fast 3P/WGT games the tag tricks rarely compensate for the cash deficit.
 
 **Синергии:** GMO Contract
 
-**Когда брать:** Очень ситуативный. Только если wild теги открывают конкретную milestone (Diversifier на Hellas) или critical tag requirement. В остальных случаях — пропускай.
+**Когда брать:** Very situational. Only keep it when the wild tags immediately unlock a key milestone or a critical requirement line. Otherwise pass.
 
 ---
 
-### Robin Haulings (#PfC17) — 55/C
+### Robin Haulings (#?) — 55/C
 
-Старт: ? MC | Теги: Mars, Venus | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 39 MC — низкий старт. Mars + Venus теги (оба хорошие, ~5 MC). Effect: Venus tag played → +1 floater на любую карту. Action: 3 floaters → raise Venus 1 step OR raise O2 1 step (= 1 TR). Конвертация: 3 Venus тега → 1 TR = медленно. За игру реалистично 1-2 TR от ability.
+**Экономика:** 39 MC, a low start. Mars + Venus tags are both useful, together worth roughly 5 MC. Effect: whenever you play a Venus tag, add 1 floater to any card. Action: spend 3 floaters to raise Venus 1 step or raise oxygen 1 step, effectively 1 TR. In practice this usually means only 1-2 TR from the ability over a game.
 
-**Почему C (55):** Описание эффекта было ошибочным (описывалась attack-reward). Реальная способность: Venus tag → floater accumulation → TR. Конвертация 3 floaters → 1 TR медленная, Venus тегов обычно 4-6 за игру. Mars + Venus теги приятны для planetary tracks. 39 MC старт слабый. PDF показывает F-tier (rank 91, 6.7% WR). Корпорация функциональная но слабая — floater trap pattern.
+**Почему C (55):** Weak Venus or floater corp. Turning Venus tags into floaters and eventually TR is functional, but three floaters per TR is slow, the 39 MC start is light, and the whole package depends on a module and support cards that often underperform. The tags are nice, yet the corp still feels like a floater trap more often than not.
 
 **Синергии:** Dirigibles, Celestic, Stratospheric Birds, Venus Governor, Sulphur Exports
 
-**Когда брать:** Только с Venus-heavy рукой И floater карты. Без Venus стратегии — бесполезна. Хуже чем Ambient для Venus стратегии.
+**Когда брать:** Only pick with a Venus-heavy opener plus real floater support. Without an actual Venus plan, pass.
 
 ---
 
-### Project Workshop (#NEW) — 55/C
+### Project Workshop (#?) — 55/C
 
-Старт: ? MC | Теги: Building | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 15+3=18 MC за action: flip blue card → 3 MC + 1 TR + draw 1
+**Экономика:** Effectively 18 MC of action value: flip a blue card to gain 3 MC, 1 TR, and draw 1 card.
 
-**Почему C (55):** Только с 3+ дешёвыми blue картами. Flip даёт 3 MC + 1 TR + 1 карта, но теряешь карту. Не берём без массы blue.
+**Почему C (55):** Very niche corporation built around blue-card churn. The upside is fine when the opener already contains several cheap blue cards to feed the engine, but otherwise the corp does too little and pays too much in hand quality to get moving. The science tag helps a bit, yet it is not enough to rescue empty starts.
 
 **Синергии:** Robotic Workforce
 
-**Когда брать:** Берём с запасом Blue карт для discard action. Без Blue карт — мёртвая корпорация. Science тег сам по себе ценен.
+**Когда брать:** Pick with multiple cheap blue cards already in the opener. Without a real blue-card shell, it is close to dead.
 
 ---
 
-### Agricola Inc (#NEW) — 55/C
+### Agricola Inc (#?) — 55/C
 
-Старт: ? MC | Теги: Plant | Дополнение: Community
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 40 MC + 1 plant-prod (8 MC) + Earth тег (~2 MC) = ~50 MC
+**Экономика:** 40 MC + 1 plant production (8 MC) + an Earth tag (~2 MC) = about 50 MC.
 
-**Почему C (55):** Plant production корпорация: 40 MC + 1 plant-prod + Earth тег + action: pay X MC → gain X plants. Action полезна для точного набора greenery threshold. Но 40 MC start низкий, plant-prod ценнее в early game. Earth тег для Point Luna. Нуждается в plant support для окупаемости.
+**Почему C (55):** Plant-focused corporation with decent control over greenery timing, but an underwhelming opener. The Earth tag is welcome and the action does help convert money into exact greenery thresholds, yet 40 MC plus plant production is still a light start and the corp needs real plant support to pay off. Fine in dedicated greenery lines, weak outside them.
 
 **Синергии:** Farming, Kelp Farming, EcoLine
 
-**Когда брать:** Берём с plant-heavy прелюдиями и plant strategy планом. Без plant support — слабый старт не окупится.
-
----
-
-### Arcadian Communities (#R44) — 54/D
-
-Старт: 40 MC | Теги: — | Дополнение: Promo
-
-**Экономика:** 40 MC + 10 steel (~20 MC) = ~60 MC. Способность: +3 MC за тайл рядом с маркером. Нет тегов — штраф -3 to -5 MC.
-
-**Почему D (54):** Зависит от tile placement карт. В 3P area denial менее ценна. Без тегов теряются все corp-синергии. Нишевая — сильна на Elysium, но в целом ненадёжна.
-
-**Синергии:** Immigrant City, Research Outpost, Lava Flows, Nuclear Zone
-
-**Когда брать:** Elysium с city-тяжёлой рукой. На Tharsis/Hellas — почти никогда.
+**Когда брать:** Pick with plant-heavy preludes and a clear greenery plan. Without plant support, the weak start is not worth it.
 
 ---
 
@@ -1022,13 +1229,13 @@
 
 Старт: 48 MC | Теги: Jovian | Дополнение: Colonies
 
-**Экономика:** 48 MC + Jovian тег. Action: +1 floater. Floaters = 2 heat each. По сути ~2 heat-prod. Медленно.
+**Экономика:** 48 MC + a Jovian tag. Action: gain 1 floater. Floaters convert into 2 heat each, which is roughly like 2 heat production. Slow overall.
 
-**Почему D (54):** По COTD: icehawk84 — 'mediocre, effect very weak, like 2 heat prod'. Floater-to-heat конвертация плохая. Jovian тег — самая ценная часть. Floater карты обычно слабые.
+**Почему D (54):** Mostly a weak floater corp whose best feature is often just the Jovian tag. The floater-to-heat conversion is underpowered, floater support cards are inconsistent, and the overall package rarely creates enough tempo to justify the pick. Usually below average unless the opener is unusually kind.
 
-**Синергии:** Floater cards, Titan Floating Launch-pad, Jovian multipliers, Titan colony
+**Синергии:** Titan Floating Launch-pad, Titan colony, Dirigibles, Stratospheric Birds, Atmoscoop
 
-**Когда брать:** Хорошие Jovian multipliers и floater targets. Jovian тег — главный аргумент.
+**Когда брать:** Only consider it with strong Jovian payoffs plus real floater targets. In many games the Jovian tag is the main reason to keep it at all.
 
 ---
 
@@ -1036,41 +1243,27 @@
 
 Старт: 42 MC | Теги: Venus | Дополнение: Venus Next
 
-**Экономика:** 42 MC + 2 floater-карты (~6-8 MC). Venus тег. Action: +1 floater, 1 VP/3 floaters. За 7 gen = ~2 VP.
+**Экономика:** 42 MC + 2 floater cards (~6-8 MC). Venus tag. Action: gain 1 floater, and score 1 VP per 3 floaters. Over 7 generations this is often only about 2 VP.
 
-**Почему D (52):** Floater-стратегия — trap в большинстве игр. Хороших floater-карт мало. 42 MC ниже среднего. По COTD: icehawk84 — все Venus-корпорации кроме Manutech 'pretty bad'.
+**Почему D (52):** One of the classic floater traps. The 42 MC start is only mediocre, strong floater cards are scarce, and the corp asks for a Venus shell that often underperforms compared with standard terraforming lines. Functional in the right niche, but weak on average.
 
-**Синергии:** Dirigibles, Titan Floating Launch-Pad, Stratospheric Birds, Hoverlord milestone
+**Синергии:** Dirigibles, Titan Floating Launch-pad, Stratospheric Birds, Atmo Collectors
 
-**Когда брать:** Venus-тяжёлая рука с хорошими floater targets.
-
----
-
-### Pharmacy Union (#R39) — 52/D
-
-Старт: 54 MC | Теги: Microbe, Microbe | Дополнение: Promo
-
-**Экономика:** 54 MC + Science card. -4 MC per microbe tag played by anyone. В 3P оппоненты играют 6-10 microbe тегов = -24 to -40 MC drain! Flip даёт 3 TR = 21 MC.
-
-**Почему D (52):** Best case: быстро cure с science тегами. Worst case: opponents drain ваши деньги. В 3P много microbe тегов в колоде. По COTD: shai_aus — 'complete disaster every time'. Вариативность слишком высока.
-
-**Синергии:** Science tag cards, Research, Mars University, Quick flip strategy
-
-**Когда брать:** Только с 3+ science тегами для быстрого cure gen 1-2. Очень рискованно в 3P.
+**Когда брать:** Only pick with a Venus-heavy opener and genuinely good floater targets. Without both, pass.
 
 ---
 
-### Junk Ventures (#NEW) — 52/D
+### Junk Ventures (#?) — 52/D
 
-Старт: ? MC | Теги: — | Дополнение: Community
+Старт: ? MC | Теги: — | Дополнение: ?
 
 **Экономика:** 40 MC + action: draw from discard. Value depends on discard quality
 
-**Почему D (52):** Recycle из discard pile — ceiling высокий, floor низкий. Нужен discard flow для окупаемости. Очень inconsistent.
+**Почему D (52):** Discard-recursion corp with a high ceiling and a very low floor. When the game produces a steady discard flow it can recycle real value, but many openings never give it enough targets and the result is an inconsistent, slow corporation. Usually weaker than cleaner economy options.
 
 **Синергии:** Decomposers, Recyclon
 
-**Когда брать:** Берём в long-game стратегиях где будет много discard. С большой рукой карт — OK. В быстрых играх — слишком медленно.
+**Когда брать:** Pick in slower games where discard flow is likely to be heavy and your hand size can support it. In fast games it is usually too slow.
 
 ---
 
@@ -1078,41 +1271,41 @@
 
 Старт: 47 MC | Теги: Plant, Venus | Дополнение: Venus Next
 
-**Экономика:** 47 MC + 1 plant-prod (8 MC) = ~55 MC. Способность +2 MC за каждый Venus raise — в 3P Venus поднимается 4-6 раз за игру = 8-12 MC бонус за всю игру, пассивно.
+**Экономика:** 47 MC + 1 plant production (8 MC) = about 55 MC. Ability: +2 MC whenever Venus is raised. In 3P, Venus is often raised 4-6 times in a game = about 8-12 MC total passive bonus.
 
-**Почему D (50):** Способность почти не контролируется — зависит от того, поднимают ли оппоненты Venus. Plant-prod не синергирует с Venus. По данным COTD: icehawk84 считает все Venus-корпорации кроме Manutech слабыми.
+**Почему D (50):** Weak Venus corp with an ability you do not control well. The payoff depends too much on other players raising Venus, while the plant production does not naturally support the same game plan. Usually too passive and too dependent on the table to be worth much.
 
-**Синергии:** Stratospheric Birds, Venus Governor, Dirigibles, Morning Star Inc (Merger)
+**Синергии:** Stratospheric Birds, Venus Governor, Dirigibles, Merger
 
-**Когда брать:** Почти никогда. Только если обе альтернативы хуже и в руке Venus-карты.
+**Когда брать:** Almost never. Only keep it if the alternatives are worse and the opener already contains real Venus support.
 
 ---
 
-### Midas (#NEW) — 50/D
+### Midas (#?) — 50/D
 
-Старт: ? MC | Теги: — | Дополнение: Community
+Старт: ? MC | Теги: — | Дополнение: ?
 
 **Экономика:** 120 MC - 7 TR (~49 MC value + 56 MC income) = net negative ~40 MC vs avg corp
 
-**Почему D (50):** High-risk high-reward. 120 MC gen 1 = купить все карты + сыграть 2-3 дорогих. Но -7 TR = -56 MC income за 8 gen + -7 VP. Только с premium engine картами в руке.
+**Почему D (50):** High-risk, high-variance corporation. The 120 MC opener can buy almost everything you want, but the TR hit is enormous and leaves very little margin for a mediocre hand. Only worth considering with truly premium engine cards already in the opener.
 
 **Синергии:** Research, AI Central, Standard Technology
 
-**Когда брать:** Не берём. Потеря 5 TR start (-35 MC value) не компенсируется 120 MC. Один из худших CEO.
+**Когда брать:** Almost never. Only consider it when the opening hand is absurdly strong and clearly converts the cash burst into a dominant engine. One of the weakest corporation options.
 
 ---
 
-### Bio-Sol (#PfC14) — 50/D
+### Bio-Sol (#?) — 50/D
 
-Старт: ? MC | Теги: Microbe | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 42 MC + Microbe тег. Effect: когда играешь Animal или Plant тег, добавь microbe на эту карту. 2 microbes = 1 TR (remove). Conversion rate: 2 тега → 1 TR = 7 MC, но теги стоят действий и карт.
+**Экономика:** 42 MC + a Microbe tag. Effect: whenever you play an Animal or Plant tag, add 1 microbe to this card. Remove 2 microbes to gain 1 TR. The conversion rate is effectively 2 bio tags into 1 TR, about 7 MC, but those tags still cost cards and actions to deploy.
 
-**Почему D (50):** PDF показывает F-tier (rank 89, 16.7% winrate). Conversion 2 bio-тега → 1 TR медленная. Animal и Plant тегов нужно много, а они часто дорогие. 42 MC средний, но ability не помогает с economy. В быстрых 3P/WGT играх не успевает раскачаться.
+**Почему D (50):** Slow bio-themed corp with a poor tempo profile. Converting two bio tags into one TR takes too much setup, many relevant plant and animal cards are expensive, and the ability does almost nothing to fix the opener economy. In fast 3P/WGT games it usually comes online too late to matter.
 
 **Синергии:** Decomposers, Advanced Ecosystems
 
-**Когда брать:** Bio-heavy стартовая рука с дешёвыми Plant/Animal картами. Splice combo. Без bio тегов — пропускай.
+**Когда брать:** Pick only with a genuinely bio-heavy opener full of cheap plant or animal cards, or a very clear Splice-style shell. Without bio density, pass.
 
 ---
 
@@ -1120,13 +1313,13 @@
 
 Старт: 33 MC | Теги: Space, Space | Дополнение: Promo
 
-**Экономика:** 33 MC + 1 ti-prod (12.5 MC) = ~45.5 MC. Астероиды тратятся ТОЛЬКО на temperature/ocean SP. Ивенты НЕ считаются.
+**Экономика:** 33 MC + 1 titanium production (12.5 MC) = about 45.5 MC. Asteroids can be spent only on temperature or ocean standard projects. Events do not count.
 
-**Почему D (48):** Слабая корпорация с ужасным стартом (33 MC). Ивенты не триггерят ability. Астероиды ограничены 2 SP. По COTD: 'weakest of the Prelude 2 KS pack'.
+**Почему D (48):** Very weak corp with a brutal 33 MC opener. The asteroid ability is narrower than it first appears, events do not help enough, and the standard-project cap keeps the upside low even when the setup looks promising. One of the weakest corps in the pool.
 
-**Синергии:** Non-event Space cards, Titan Shuttles, Space Station
+**Синергии:** Titan Shuttles, Space Station, Saturn Surfing, Satellites
 
-**Когда брать:** Почти никогда. Одна из самых слабых корпораций.
+**Когда брать:** Almost never. Treat it as one of the weakest corporation options unless an extremely specific asteroid setup appears.
 
 ---
 
@@ -1134,55 +1327,27 @@
 
 Старт: 38 MC | Теги: Microbe, Building | Дополнение: Promo
 
-**Экономика:** 38 MC + 1 steel-prod. Microbe + Building теги. 3 building тега → 1 plant prod. Glacially slow.
+**Экономика:** 38 MC + 1 steel production. Microbe + Building tags. Every 3 building tags convert into 1 plant production. Glacially slow.
 
-**Почему D (48):** По COTD: Krazyguy75 — 'buildings didn't show up in expansions'. shai_aus — 'locks into cards you don't want'. jaminfine — 'no greeneries until mid/late game'. Slow conversion rate.
+**Почему D (48):** Slow and awkward corporation. The building-to-plant conversion takes too long, often pushes you toward cards you would not otherwise want, and usually does not produce meaningful greenery pressure until mid or late game. Too clunky for most fast all-expansions tables.
 
-**Синергии:** Building tag cards, Advanced Alloys, Building tag preludes
+**Синергии:** Advanced Alloys, Electro Catapult, Medical Lab, Smelting Plant
 
-**Когда брать:** Только с 2+ building preludes И хорошими building картами. Обычно outclassed.
+**Когда брать:** Only pick with two or more building preludes plus genuinely strong building payoffs. Usually outclassed by cleaner economy corps.
 
 ---
 
-### Adhai High Orbit Constructions (#PfC23) — 48/D
+### Adhai High Orbit Constructions (#?) — 48/D
 
-Старт: ? MC | Теги: Space | Дополнение: Pathfinders
+Старт: ? MC | Теги: — | Дополнение: ?
 
-**Экономика:** 43 MC + Space тег. Effect: когда играешь карту с Space тегом, можешь положить ресурс science на эту карту. 1 ресурс = 1 VP при 3+ ресурсах на карте. Медленный VP engine.
+**Экономика:** 43 MC + a Space tag. Effect: whenever you play a Space tag, you may add a science resource to this card. 1 VP per resource once the card has 3+ resources. Slow VP engine.
 
-**Почему D (48):** PDF показывает F-tier (rank 93, 10% winrate). VP accumulation через Science ресурсы слишком медленная: нужно 3+ ресурса на карте для VP, а Space карты не всегда в руке. 43 MC средний старт, но ability почти не даёт value в первых 5 gen. Late-game VP engine в 8-gen game = trap.
+**Почему D (48):** Very slow VP engine. The space-tag trigger is inconsistent, the point conversion takes too long, and the ability gives almost no relevant tempo in the early half of the game. A middling cash start cannot rescue such a delayed payoff, so the corp usually underperforms badly.
 
 **Синергии:** Orbital Cleanup
 
-**Когда брать:** Почти никогда. VP engine слишком медленный для 3P/WGT формата.
-
----
-
-### Astrodrill (#R21) — 45/D
-
-Старт: 35 MC | Теги: Space | Дополнение: Promo
-
-**Экономика:** 35 MC + 3 asteroid resources (~9 MC). Action медленная: 2 действия на 3 titanium. Asteroid-карт в колоде мало.
-
-**Почему D (45):** Крайне низкий старт (35 MC). Ability медленная и non-synergistic. По COTD: Krazyguy75 и shai_aus — 'non-interactive, non-synergistic, slow', 'it has never won'.
-
-**Синергии:** Mining Area, Asteroid Mining, Space-тег карты
-
-**Когда брать:** Практически никогда.
-
----
-
-### Splice (#R28) — 44/D
-
-Старт: 44 MC | Теги: Microbe | Дополнение: Promo
-
-**Экономика:** 44 MC + 1 Microbe card. При microbe теге: +2 MC или +2 microbes — но оппонент тоже получает выбор! Microbe тегов мало.
-
-**Почему D (44):** Power даёт 2 MC per microbe tag но ТАКЖЕ даёт оппоненту 2 MC/microbes. Microbe тегов мало. По COTD: Krazyguy75 — 'very weak', icehawk84 — 'awful and unfun'.
-
-**Синергии:** Microbe cards, Decomposers, Viral Enhancers
-
-**Когда брать:** Только с microbe-heavy рукой. Очень редко лучший pick.
+**Когда брать:** Almost never. The VP engine is too slow for typical 3P/WGT tempo.
 
 ---
 
@@ -1190,13 +1355,13 @@
 
 Старт: 40 MC | Теги: Earth | Дополнение: Base
 
-**Экономика:** 40 MC + Earth тег. Action: pay 3 MC → +1 TR (if already raised TR this gen). 4 MC net profit per use. Но 40 MC и 3 MC/gen cost — tight.
+**Экономика:** 40 MC + an Earth tag. Action: pay 3 MC to gain 1 TR if you already raised TR this generation. That is about 4 MC net profit per use, but 40 MC plus a recurring 3 MC cost is still tight.
 
-**Почему D (42):** По COTD: Krazyguy75 — 'TR is an awful source of VP and MC production'. shai_aus — 'not good'. Нужно уже поднять TR чтобы использовать — double spending. 40 MC start мало.
+**Почему D (42):** Weak corporation built around an inefficient loop. Paying to raise TR and then paying again to exploit the corp ability is too much tempo loss, and the 40 MC opener is not strong enough to compensate. Usually one of the worst corporation choices unless the hand is unusually TR-efficient.
 
-**Синергии:** Terraforming-focused cards, Terraformer milestone
+**Синергии:** Terraforming Contract, Terraforming Deal, Nitrogen-Rich Asteroid, Giant Ice Asteroid
 
-**Когда брать:** Почти никогда. Только с очень эффективными TR-raising картами.
+**Когда брать:** Almost never. Only consider it with an opener full of extremely efficient TR-raising cards.
 
 ---
 
@@ -1204,13 +1369,13 @@
 
 Старт: 50 MC | Теги: — | Дополнение: Colonies
 
-**Экономика:** 50 MC + 5 MC-prod + 5 titanium. НО +2 MC cost per card = ~48 MC penalty за игру! Нет тегов.
+**Экономика:** 50 MC + 5 MC production + 5 titanium. The catch is +2 MC cost per card, which can become roughly a 48 MC penalty over a game. No tags.
 
-**Почему D (40):** По COTD: Krazyguy75 — 'one of the worst corporations in the entire game'. +2 MC per card purchase devastates engine building. shai_aus — 'once you burn through resources, crippling downside'. В 3P WGT нельзя не покупать карты.
+**Почему D (40):** One of the harshest anti-engine corporations in the pool. Paying extra for every card purchase is devastating in a format where card flow matters constantly, and once the early resources are gone the downside becomes crippling. Usually among the worst corp choices in real games.
 
-**Синергии:** AI Central, Mars University, Standard projects
+**Синергии:** AI Central, Mars University
 
-**Когда брать:** Почти никогда. Только с alternative card draw И ti-heavy картами.
+**Когда брать:** Almost never. Only keep it with alternate card draw already secured and a hand that can exploit the titanium immediately.
 
 ---
 
@@ -1218,12 +1383,12 @@
 
 Старт: 14 MC | Теги: Science, Earth | Дополнение: Turmoil
 
-**Экономика:** 14 MC - 1 TR penalty. Keep all 10 cards free. -1 MC card purchase. Science + Earth теги. Но 14 MC старт = нельзя играть карты gen 1.
+**Экономика:** 14 MC with a 1 TR penalty. Keep all 10 cards for free. -1 MC on card purchases. Science + Earth tags. The problem is that a 14 MC start often means you cannot actually play meaningful cards on gen 1.
 
-**Почему D (38):** По COTD: Krazyguy75 — mathematical takedown показывает corp mispriced. benbever — 'bottom tier, extremely low starting funds'. 14 MC gen 1 = fatal в 3P WGT.
+**Почему D (38):** Bottom-tier corporation with a catastrophically weak opener. The free cards look tempting, but the starting cash is so low that many games are effectively lost on tempo before the corp can stabilize. In fast 3P/WGT tables that risk is usually fatal.
 
-**Синергии:** Mars University, Science tag cards, Earth tag discounts
+**Синергии:** Mars University, Research, Olympus Conference, Earth Office
 
-**Когда брать:** Почти никогда. Даже с incredible free картами — слишком рискованно.
+**Когда брать:** Almost never. Even with excellent free cards, the opening cash is usually too risky to justify.
 
 ---
