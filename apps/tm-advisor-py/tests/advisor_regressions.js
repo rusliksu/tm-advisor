@@ -89,6 +89,7 @@ function run() {
   runPythonScript('summary_selection_regressions.py');
   runPythonScript('turmoil_policy_regressions.py');
   runPythonScript('colorama_fallback_regressions.py');
+  runPythonScript('arctic_algae_regressions.py');
   runPythonScript('action_ordering_regressions.py');
   runPythonScript('late_scoring_regressions.py');
   runPythonScript('late_colony_regressions.py');
