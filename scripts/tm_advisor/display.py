@@ -5,7 +5,7 @@ import os
 from .colorama_compat import Fore, Style
 
 from .constants import (
-    TIER_COLORS, COLOR_MAP, PARTY_POLICIES, GLOBAL_EVENTS,
+    TIER_COLORS, COLOR_MAP, GLOBAL_EVENTS, party_policy_info,
     COLONY_TRADE_DATA, STANDARD_PROJECTS,
 )
 from .analysis import _estimate_vp, _detect_strategy
@@ -287,7 +287,7 @@ class AdvisorDisplay:
         chairman_color = t["chairman"] or "?"
         chairman_name = cn.get(chairman_color, chairman_color)
         cc = COLOR_MAP.get(chairman_color, "")
-        policy = PARTY_POLICIES.get(ruling, {})
+        policy = party_policy_info(t, ruling)
         icon = policy.get("icon", "")
         policy_text = policy.get("policy", "")
         ruling_is_reds = "Reds" in str(ruling)
