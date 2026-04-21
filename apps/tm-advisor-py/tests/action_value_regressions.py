@@ -706,6 +706,74 @@ def main() -> int:
     assert tycho_eff.actions == [{"cost": "any energy", "effect": "draw that many cards and keep 1"}], tycho_eff.actions
     assert {"cost": "free", "effect": "add 1 asteroid here per space tag", "conditional": True} in kuiper_eff.actions, kuiper_eff.actions
     assert {"cost": "2 titanium", "effect": "raise temperature 1 step", "conditional": True} in palladin_eff.actions, palladin_eff.actions
+    septem_eff = bot.effect_parser.get("Septem Tribus")
+    robots_eff = bot.effect_parser.get("Self-replicating Robots")
+    orbital_eff = bot.effect_parser.get("Orbital Cleanup")
+    mohole_lake_eff = bot.effect_parser.get("Mohole Lake")
+    saturn_surfing_eff = bot.effect_parser.get("Saturn Surfing")
+    mars_nomads_eff = bot.effect_parser.get("Mars Nomads")
+    teslaract_eff = bot.effect_parser.get("Teslaract")
+    hospitals_eff = bot.effect_parser.get("Hospitals")
+    maxwell_eff = bot.effect_parser.get("Maxwell Base")
+    geologist_eff = bot.effect_parser.get("Geologist Team")
+    sflu_eff = bot.effect_parser.get("Search for Life Underground")
+    assert septem_eff is not None
+    assert robots_eff is not None
+    assert orbital_eff is not None
+    assert mohole_lake_eff is not None
+    assert saturn_surfing_eff is not None
+    assert mars_nomads_eff is not None
+    assert teslaract_eff is not None
+    assert hospitals_eff is not None
+    assert maxwell_eff is not None
+    assert geologist_eff is not None
+    assert sflu_eff is not None
+    assert septem_eff.actions == [{"cost": "free", "effect": "wild tag counts as any tag for this action", "conditional": True}], septem_eff.actions
+    assert {"cost": "free", "effect": "link a Space or Building card from hand with 2 resources", "conditional": True} in robots_eff.actions, robots_eff.actions
+    assert orbital_eff.actions == [{"cost": "free", "effect": "gain 1 MC per science tag"}], orbital_eff.actions
+    assert "space tags x 2" not in str(orbital_eff.actions), orbital_eff.actions
+    assert mohole_lake_eff.actions == [{"cost": "free", "effect": "add 1 microbe or animal to another card", "conditional": True}], mohole_lake_eff.actions
+    assert saturn_surfing_eff.resource_type == "Floater", saturn_surfing_eff.resource_type
+    assert saturn_surfing_eff.actions == [{"cost": "1 floater", "effect": "gain 1 MC per floater here max 5", "conditional": True}], saturn_surfing_eff.actions
+    assert mars_nomads_eff.actions == [{"cost": "free", "effect": "move Nomads and collect placement bonus", "conditional": True}], mars_nomads_eff.actions
+    assert teslaract_eff.actions == [{"cost": "1 energy production", "effect": "increase plant production 1 step", "conditional": True}], teslaract_eff.actions
+    assert hospitals_eff.resource_type == "Disease", hospitals_eff.resource_type
+    assert hospitals_eff.actions == [{"cost": "1 disease", "effect": "gain 1 MC per city in play", "conditional": True}], hospitals_eff.actions
+    assert maxwell_eff.actions == [{"cost": "free", "effect": "add 1 resource to another Venus card", "conditional": True}], maxwell_eff.actions
+    assert geologist_eff.actions == [{"cost": "free", "effect": "identify 1 underground resource", "conditional": True}], geologist_eff.actions
+    assert sflu_eff.resource_type == "Science", sflu_eff.resource_type
+    assert sflu_eff.vp_per == {"amount": 0, "per": "special"}, sflu_eff.vp_per
+    assert sflu_eff.actions == [{"cost": "1 MC", "effect": "identify 1 underground resource; if microbe add 1 science resource here", "conditional": True}], sflu_eff.actions
+    chemical_eff = bot.effect_parser.get("Chemical Factory")
+    theft_eff = bot.effect_parser.get("Corporate Theft")
+    deep_foundations_eff = bot.effect_parser.get("Deep Foundations")
+    monopoly_eff = bot.effect_parser.get("Monopoly")
+    privateers_eff = bot.effect_parser.get("Space Privateers")
+    stem_eff = bot.effect_parser.get("Stem Field Subsidies")
+    titan_manufacturing_eff = bot.effect_parser.get("Titan Manufacturing Colony")
+    shelters_eff = bot.effect_parser.get("Underground Shelters")
+    voltaic_eff = bot.effect_parser.get("Voltaic Metallurgy")
+    assert chemical_eff is not None
+    assert theft_eff is not None
+    assert deep_foundations_eff is not None
+    assert monopoly_eff is not None
+    assert privateers_eff is not None
+    assert stem_eff is not None
+    assert titan_manufacturing_eff is not None
+    assert shelters_eff is not None
+    assert voltaic_eff is not None
+    assert chemical_eff.actions == [{"cost": "1 plant", "effect": "excavate 1 underground resource", "conditional": True}], chemical_eff.actions
+    assert theft_eff.actions == [{"cost": "5 MC", "effect": "steal any 1 resource from another player", "conditional": True}], theft_eff.actions
+    assert deep_foundations_eff.actions == [{"cost": "20 MC", "effect": "excavate a valid city space if possible and place a city", "conditional": True}], deep_foundations_eff.actions
+    assert monopoly_eff.actions == [{"cost": "1 corruption", "effect": "increase any production 1 step", "conditional": True}], monopoly_eff.actions
+    assert privateers_eff.resource_type == "Fighter", privateers_eff.resource_type
+    assert privateers_eff.actions == [{"cost": "free", "effect": "steal up to 1 MC per fighter here from each other player", "conditional": True}], privateers_eff.actions
+    assert stem_eff.resource_type == "Data", stem_eff.resource_type
+    assert stem_eff.actions == [{"cost": "2 data", "effect": "identify 3 underground resources and claim 1", "conditional": True}], stem_eff.actions
+    assert titan_manufacturing_eff.resource_type == "Tool", titan_manufacturing_eff.resource_type
+    assert titan_manufacturing_eff.actions == [{"cost": "1 tool", "effect": "excavate 1 underground resource", "conditional": True}], titan_manufacturing_eff.actions
+    assert shelters_eff.actions == [{"cost": "free", "effect": "place a cube on one claimed underground resource token", "conditional": True}], shelters_eff.actions
+    assert voltaic_eff.actions == [{"cost": "any steel", "effect": "gain that many titanium max power tags", "conditional": True}], voltaic_eff.actions
 
     venus_eff = bot.effect_parser.get("Venus Trade Hub")
     assert venus_eff is not None
