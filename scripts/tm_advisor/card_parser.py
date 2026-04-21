@@ -64,10 +64,17 @@ class CardEffectParser:
         # Action costs are not immediate production changes.
         "Equatorial Magnetizer": {"energy"},
         "Venus Magnetizer": {"energy"},
+        # Corporation actions are not starting production.
+        "Robinson Industries": {"mc"},
+        "Stormcraft Incorporated": {"heat"},
     }
     _GENERATED_TR_EXCLUDES = {
         # Action-only TR bumps must not inflate on-play value.
         "Equatorial Magnetizer",
+    }
+    _GENERATED_DRAW_EXCLUDES = {
+        # Render icons near the action text leak as fake on-play card draw.
+        "Floyd Continuum",
     }
 
     def __init__(self, db):
@@ -102,7 +109,17 @@ class CardEffectParser:
         "Atmo Collectors": [{"cost": "free", "effect": "add 1 floater to this card"},
                              {"cost": "1 floater", "effect": "gain 2 titanium / 3 energy / 4 heat"}],
         "Celestic": [{"cost": "free", "effect": "add 1 floater to this card (or draw card)"}],
+        "United Nations Mars Initiative": [{"cost": "3 MC", "effect": "raise TR 1 step if TR was raised this generation", "conditional": True}],
+        "Factorum": [{"cost": "no energy resources", "effect": "increase energy production 1 step", "conditional": True},
+                      {"cost": "3 MC", "effect": "draw 1 building card"}],
+        "Tycho Magnetics": [{"cost": "any energy", "effect": "draw that many cards and keep 1"}],
+        "Kuiper Cooperative": [{"cost": "free", "effect": "add 1 asteroid here per space tag", "conditional": True}],
         "Stormcraft Incorporated": [{"cost": "free", "effect": "add 1 floater to this card"}],
+        "Robinson Industries": [{"cost": "4 MC", "effect": "increase one lowest production 1 step", "conditional": True}],
+        "Palladin Shipping": [{"cost": "2 titanium", "effect": "raise temperature 1 step", "conditional": True}],
+        "Utopia Invest": [{"cost": "1 production", "effect": "gain 4 resources of that kind", "conditional": True}],
+        "Arcadian Communities": [{"cost": "free", "effect": "place a community marker", "conditional": True}],
+        "Hadesphere": [{"cost": "free", "effect": "excavate an underground resource", "conditional": True}],
         "Titan Floating Launch-pad": [{"cost": "free", "effect": "add 1 floater to a Jovian card"},
                                        {"cost": "1 floater", "effect": "trade for free"}],
         "Titan Air-scrapping": [{"cost": "1 titanium", "effect": "add 2 floaters to this card"},
@@ -122,6 +139,10 @@ class CardEffectParser:
         "Local Shading": [{"cost": "free", "effect": "add 1 floater to this card"},
                            {"cost": "1 floater", "effect": "+1 MC-prod"}],
         "Orbital Cleanup": [{"cost": "free", "effect": "gain MC = space tags x 2"}],
+        "Power Infrastructure": [{"cost": "any energy", "effect": "gain that many MC"}],
+        "Floyd Continuum": [{"cost": "free", "effect": "gain 3 MC per completed terraforming parameter"}],
+        "Focused Organization": [{"cost": "1 card and 1 standard resource", "effect": "draw 1 card and gain 1 standard resource", "conditional": True}],
+        "World Government Advisor": [{"cost": "free", "effect": "raise 1 global parameter without TR or bonuses", "conditional": True}],
         "Electro Catapult": [{"cost": "1 plant/steel", "effect": "gain 7 MC"}],
         "Development Center": [{"cost": "1 energy", "effect": "draw 1 card"}],
         "Water Splitting Plant": [{"cost": "3 energy", "effect": "raise oxygen 1 step"}],
@@ -270,7 +291,13 @@ class CardEffectParser:
                 eff.placement.append(tile_name)
 
         raw_draws = generated.get("cd")
-        if eff.draws_cards == 0 and isinstance(raw_draws, (int, float)) and raw_draws >= 1 and float(raw_draws).is_integer():
+        if (
+            eff.name not in self._GENERATED_DRAW_EXCLUDES
+            and eff.draws_cards == 0
+            and isinstance(raw_draws, (int, float))
+            and raw_draws >= 1
+            and float(raw_draws).is_integer()
+        ):
             eff.draws_cards = int(raw_draws)
 
         for gen_key, res_name in self._GENERATED_GAIN_KEYS.items():

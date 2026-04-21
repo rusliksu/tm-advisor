@@ -672,6 +672,41 @@ def main() -> int:
     assert energy_eff.gains_resources == {}, energy_eff.gains_resources
     assert len(energy_eff.actions) == 2, energy_eff.actions
 
+    floyd_eff = bot.effect_parser.get("Floyd Continuum")
+    assert floyd_eff is not None
+    assert floyd_eff.draws_cards == 0, floyd_eff.draws_cards
+    assert floyd_eff.actions == [
+        {"cost": "free", "effect": "gain 3 MC per completed terraforming parameter"}
+    ], floyd_eff.actions
+
+    power_infra_eff = bot.effect_parser.get("Power Infrastructure")
+    assert power_infra_eff is not None
+    assert power_infra_eff.actions == [
+        {"cost": "any energy", "effect": "gain that many MC"}
+    ], power_infra_eff.actions
+
+    stormcraft_eff = bot.effect_parser.get("Stormcraft Incorporated")
+    robinson_eff = bot.effect_parser.get("Robinson Industries")
+    factorum_eff = bot.effect_parser.get("Factorum")
+    unmi_eff = bot.effect_parser.get("United Nations Mars Initiative")
+    tycho_eff = bot.effect_parser.get("Tycho Magnetics")
+    kuiper_eff = bot.effect_parser.get("Kuiper Cooperative")
+    palladin_eff = bot.effect_parser.get("Palladin Shipping")
+    assert stormcraft_eff is not None
+    assert robinson_eff is not None
+    assert factorum_eff is not None
+    assert unmi_eff is not None
+    assert tycho_eff is not None
+    assert kuiper_eff is not None
+    assert palladin_eff is not None
+    assert stormcraft_eff.production_change == {}, stormcraft_eff.production_change
+    assert robinson_eff.production_change == {}, robinson_eff.production_change
+    assert {"cost": "3 MC", "effect": "draw 1 building card"} in factorum_eff.actions, factorum_eff.actions
+    assert {"cost": "3 MC", "effect": "raise TR 1 step if TR was raised this generation", "conditional": True} in unmi_eff.actions, unmi_eff.actions
+    assert tycho_eff.actions == [{"cost": "any energy", "effect": "draw that many cards and keep 1"}], tycho_eff.actions
+    assert {"cost": "free", "effect": "add 1 asteroid here per space tag", "conditional": True} in kuiper_eff.actions, kuiper_eff.actions
+    assert {"cost": "2 titanium", "effect": "raise temperature 1 step", "conditional": True} in palladin_eff.actions, palladin_eff.actions
+
     venus_eff = bot.effect_parser.get("Venus Trade Hub")
     assert venus_eff is not None
     assert venus_eff.gains_resources == {}, venus_eff.gains_resources
