@@ -104,6 +104,8 @@ def plan_sequence(state, synergy, req_checker, effect_parser, db,
                 effect_parser=effect_parser, db=db,
                 corp_name=getattr(me, "corp", ""),
                 tableau_tags=proj_tags,
+                me=me,
+                hand_cards=hand,
             )
             b_surplus_after = b_value_after - b_eff_after
             combined = a["surplus"] + b_surplus_after
@@ -168,6 +170,8 @@ def _score_candidates(hand, state, me, base_discounts, base_tags, mc_now,
             effect_parser=effect_parser, db=db,
             corp_name=getattr(me, "corp", ""),
             tableau_tags=base_tags,
+            me=me,
+            hand_cards=hand,
         )
         out.append({
             "name": name, "cost": cost, "tags": tags,
@@ -219,6 +223,8 @@ def _unlock_tag_blocked(tag_locked, a_tags, base_tags, proj_tags, state,
             effect_parser=effect_parser, db=db,
             corp_name=getattr(me, "corp", ""),
             tableau_tags=proj_tags,
+            me=me,
+            hand_cards=state.cards_in_hand,
         )
         unlocked.append({
             "name": name, "cost": entry["cost"], "tags": tags,
