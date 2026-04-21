@@ -1,0 +1,52 @@
+name: Data Checks
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'data/**'
+      - 'extension/data/**'
+      - 'packages/tm-data/generated/**'
+      - 'scripts/lib/**'
+      - 'tools/data/**'
+      - '.github/workflows/data-checks.yml'
+      - 'package.json'
+      - 'package-lock.json'
+  pull_request:
+    paths:
+      - 'data/**'
+      - 'extension/data/**'
+      - 'packages/tm-data/generated/**'
+      - 'scripts/lib/**'
+      - 'tools/data/**'
+      - '.github/workflows/data-checks.yml'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  data:
+    name: Canonical data integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check canonical evaluations and ratings
+        run: npm run data:check-canonical
+
+      - name: Check generated extension data
+        run: npm run data:check-extension-generated
+
+      - name: Check generated smartbot data
+        run: npm run data:check-bot-generated
+
+      - name: Check TFMStats report freshness
+        run: |
+          npm run data:report-tfmstats
+          git diff --exit-code -- data/reports
+
+      - name: Run synergy rule tests
+        run: npm test
