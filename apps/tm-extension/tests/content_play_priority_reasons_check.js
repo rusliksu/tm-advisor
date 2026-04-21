@@ -24,6 +24,9 @@ function makeCardEl(cardName) {
     querySelector() {
       return null;
     },
+    closest() {
+      return null;
+    },
   };
 }
 
@@ -226,10 +229,184 @@ function testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement() {
   assert(!result.reasons.includes('Skip'), 'soft one-tag requirements should not be marked as skip');
 }
 
+function testSeptemPoliticalShellDoesNotJumpTo75() {
+  const ratingsRaw = {
+    'Septem Tribus': {
+      s: 66,
+      t: 'C',
+      y: ['Corridors of Power', 'Rise To Power', 'Cultural Metropolis', 'Banned Delegate'],
+    },
+    'Corridors of Power': {s: 74, t: 'B'},
+    'Rise To Power': {s: 66, t: 'C'},
+    'Cultural Metropolis': {s: 73, t: 'B'},
+    'Banned Delegate': {s: 70, t: 'B'},
+    'Colonial Representation': {s: 72, t: 'B'},
+  };
+  const visibleCardEls = [
+    'Septem Tribus',
+    'Corridors of Power',
+    'Rise To Power',
+    'Cultural Metropolis',
+    'Banned Delegate',
+    'Colonial Representation',
+  ].map(makeCardEl);
+
+  const result = playPriority.scoreCorpByVisibleCards({
+    corpName: 'Septem Tribus',
+    visibleCardEls,
+    ctx: {globalParams: {}},
+    ratingsRaw,
+    baseCardName(name) {
+      return name;
+    },
+    getVisiblePreludeNames() {
+      return ['Corridors of Power', 'Rise To Power'];
+    },
+    knownCorps: new Set(['Septem Tribus']),
+    resolveCorpName(name) {
+      return name;
+    },
+    getCachedCardTags() {
+      return new Set();
+    },
+    getCardCost() {
+      return 0;
+    },
+    isSpliceOpeningPlacer() {
+      return false;
+    },
+    getCorpBoost(corpName, opts) {
+      return corpName === 'Septem Tribus' && opts.cardName === 'Colonial Representation' ? 2 : 0;
+    },
+    getInitialDraftRatingScore(name, fallback) {
+      return ratingsRaw[name] && typeof ratingsRaw[name].s === 'number' ? ratingsRaw[name].s : fallback;
+    },
+    getInitialDraftInfluence(score, minWeight, maxWeight) {
+      const clamped = Math.max(45, Math.min(85, score));
+      return minWeight + (maxWeight - minWeight) * ((clamped - 45) / 40);
+    },
+    ruName(name) {
+      return name;
+    },
+    getVisibleColonyNames() {
+      return [];
+    },
+    getPlayerVueData() {
+      return {game: {players: [{}, {}, {}], gameOptions: {solarPhaseOption: true}}};
+    },
+  });
+
+  assert.strictEqual(result.total, 71, 'Septem political support should raise the score modestly, not to 75+');
+}
+
+function testAridorInitialDraftReasonLabelsAreActionable() {
+  const projectNames = ['Project A', 'Project B', 'Project C', 'Project D', 'Project E'];
+  const ratingsRaw = {
+    'Aridor': {
+      s: 61,
+      t: 'C',
+      y: projectNames,
+    },
+    'Applied Science': {s: 70, t: 'B'},
+    'Ecology Experts': {s: 55, t: 'C'},
+  };
+  for (const name of projectNames) ratingsRaw[name] = {s: 65, t: 'C'};
+  const visibleCardEls = ['Aridor', ...projectNames, 'Applied Science', 'Ecology Experts'].map(makeCardEl);
+
+  const result = playPriority.scoreCorpByVisibleCards({
+    corpName: 'Aridor',
+    visibleCardEls,
+    ctx: {tags: {}, globalParams: {}},
+    ratingsRaw,
+    baseCardName(name) {
+      return name;
+    },
+    getVisiblePreludeNames() {
+      return ['Applied Science', 'Ecology Experts'];
+    },
+    knownCorps: new Set(['Aridor']),
+    resolveCorpName(name) {
+      return name;
+    },
+    getCachedCardTags(el) {
+      const name = el.getAttribute('data-tm-card');
+      if (name === 'Applied Science') return new Set(['wild']);
+      if (name === 'Ecology Experts') return new Set(['plant', 'microbe']);
+      return new Set();
+    },
+    getCardCost() {
+      return 0;
+    },
+    isSpliceOpeningPlacer() {
+      return false;
+    },
+    getCorpBoost(corpName, opts) {
+      if (corpName !== 'Aridor') return 0;
+      return opts.cardName === 'Applied Science' || opts.cardName === 'Ecology Experts' ? 3 : 0;
+    },
+    getInitialDraftRatingScore(name, fallback) {
+      return ratingsRaw[name] && typeof ratingsRaw[name].s === 'number' ? ratingsRaw[name].s : fallback;
+    },
+    getInitialDraftInfluence(score, minWeight, maxWeight) {
+      const clamped = Math.max(45, Math.min(85, score));
+      return minWeight + (maxWeight - minWeight) * ((clamped - 45) / 40);
+    },
+    ruName(name) {
+      return {
+        'Applied Science': 'Научный подход',
+        'Ecology Experts': 'Эксперты-экологи',
+      }[name] || name;
+    },
+    getVisibleColonyNames() {
+      return [];
+    },
+    getPlayerVueData() {
+      return {game: {players: [{}, {}, {}], gameOptions: {solarPhaseOption: true}}};
+    },
+  });
+
+  assert(result.reasons.includes('5 проектов под корпу +7'), 'project-card context should not be labelled as draft cards');
+  assert(result.reasons.includes('лучшая прел. Научный подход +2'), 'prelude reason should keep the full short card label');
+  assert(!result.reasons.some((reason) => reason.includes('к драфту')), 'corp context reasons should not use the old draft-card label');
+  assert(!result.reasons.some((reason) => reason.includes('прел.') && reason.endsWith('+0')), 'rounded zero prelude context should be hidden');
+}
+
+function testCardAgainstCorpDoesNotDedupeOnFirstWordOnly() {
+  const result = playPriority.scoreCardAgainstCorps({
+    name: 'Earth Office',
+    el: makeCardEl('Earth Office'),
+    myTableau: [],
+    myHand: [],
+    offeredCorps: ['Point Luna'],
+    myCorp: '',
+    ctx: {},
+    scoreDraftCard(cardName, myTableau, myHand, corpName) {
+      if (corpName === 'Point Luna') {
+        return {total: 62, uncappedTotal: 62, reasons: ['Point scoring context +2']};
+      }
+      return {total: 50, uncappedTotal: 50, reasons: []};
+    },
+    withForcedCorpContext(ctx) {
+      return ctx;
+    },
+    getInitialDraftRatingScore() {
+      return 80;
+    },
+    getInitialDraftInfluence() {
+      return 1;
+    },
+  });
+
+  assert(result.reasons.includes('лучше с Point Luna'), 'corp-context dedupe should require the full corp label, not just the first word');
+}
+
 testAdjustForResearchTreatsStepRequirementAsHardBlock();
 testScoreDraftCardMarksSpecificReqAsPenaltyForPositionalFactors();
 testScoreDraftCardDropsGenericFarFallbackWhenSpecificReasonExists();
 testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists();
 testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement();
+testSeptemPoliticalShellDoesNotJumpTo75();
+testAridorInitialDraftReasonLabelsAreActionable();
+testCardAgainstCorpDoesNotDedupeOnFirstWordOnly();
 
 console.log('content-play-priority reason checks: OK');
