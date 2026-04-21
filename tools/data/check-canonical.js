@@ -9,9 +9,11 @@ const {
   getLegacyGeneratedExtensionPath,
 } = require(path.join(__dirname, '..', '..', 'scripts', 'lib', 'generated-extension-data'));
 const {
-  buildRatingsFromEvaluations,
   serializeJsVariable,
 } = require(path.join(__dirname, 'build-ratings-data'));
+const {
+  buildSyncedRatings,
+} = require(path.join(__dirname, 'sync-ratings'));
 
 const VALID_TIERS = new Set(['S', 'A', 'B', 'C', 'D', 'F']);
 const evaluationsPath = path.join(ROOT, 'data', 'evaluations.json');
@@ -137,7 +139,7 @@ function main() {
   const cotdLookup = loadJson(cotdLookupPath);
   const {errors, warnings} = validateEvaluations(evaluations, cotdLookup);
 
-  const expectedRatings = buildRatingsFromEvaluations(evaluations);
+  const expectedRatings = buildSyncedRatings(evaluations);
   const expectedRatingsJs = serializeJsVariable('TM_RATINGS', expectedRatings);
   const canonicalRatingsPath = getCanonicalGeneratedExtensionPath('ratings.json.js');
   const legacyRatingsPath = getLegacyGeneratedExtensionPath('ratings.json.js');
