@@ -10,7 +10,7 @@ from itertools import combinations
 from types import SimpleNamespace
 
 import requests
-from colorama import Fore, Style
+from .colorama_compat import Fore, Style
 
 from .constants import (
     POLL_INTERVAL, STANDARD_PROJECTS, TIER_COLORS,

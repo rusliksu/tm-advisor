@@ -3,7 +3,7 @@
 import argparse
 import sys
 
-from colorama import Fore, Style
+from .colorama_compat import Fore, Style
 
 from .client import TMClient
 from .spy import SpyMode
