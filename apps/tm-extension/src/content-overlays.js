@@ -185,7 +185,12 @@
     }
 
     var rData28 = ratings ? ratings[item.name] : null;
-    if (rData28 && rData28.y && rData28.y.length > 0 && typeof yName === 'function') {
+    var overlayNote28 = rData28 && typeof rData28.nr === 'string' ? rData28.nr : '';
+    if (overlayNote28) {
+      overlayNote28 = overlayNote28.replace(/\s+/g, ' ').trim();
+      if (overlayNote28.length > 52) overlayNote28 = overlayNote28.substring(0, 52) + '\u2026';
+      ovHTML += '<div class="tm-iov-reason tm-iov-note">' + overlayNote28 + '</div>';
+    } else if (rData28 && rData28.y && rData28.y.length > 0 && typeof yName === 'function') {
       var synName28 = yName(rData28.y[0]);
       var synShort28 = synName28.split(' ')[0];
       var alreadyInReasons28 = Array.isArray(item.reasons) && item.reasons.some(function(r) { return r.indexOf(synShort28) !== -1; });

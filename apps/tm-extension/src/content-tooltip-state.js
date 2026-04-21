@@ -56,7 +56,9 @@
     var data = input && input.data;
     var localizedName = input && typeof input.ruName === 'function' ? (input.ruName(name) || name) : name;
     var localizedDesc = data && data.dr ? data.dr : '';
-    var fallbackDesc = descriptions && descriptions[name] ? descriptions[name] : '';
+    var fallbackDesc = (!localizedDesc && descriptions && name && typeof descriptions[name] === 'string')
+      ? descriptions[name]
+      : '';
     var isInHand = !!(cardEl && cardEl.closest('.cards-in-hand, [class*="hand"]'));
 
     return {
@@ -227,10 +229,11 @@
   function resolveTooltipAnalysisState(input) {
     var data = input && input.data;
     var isInHand = !!(input && input.isInHand);
+    var localizedNote = data && data.nr ? data.nr : '';
     return {
-      analysisText: data && data.e ? data.e : '',
+      analysisText: localizedNote || (data && data.e ? data.e : ''),
       isInHand: isInHand,
-      whenText: data && data.w ? data.w : ''
+      whenText: localizedNote ? '' : (data && data.w ? data.w : '')
     };
   }
 

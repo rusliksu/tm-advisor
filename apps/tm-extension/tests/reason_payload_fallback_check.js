@@ -23,6 +23,15 @@ assert(tooltip, 'TM_CONTENT_TOOLTIP should be loaded');
 assert(draftRecommendations, 'TM_CONTENT_DRAFT_RECOMMENDATIONS should be loaded');
 assert(overlays, 'TM_CONTENT_OVERLAYS should be loaded');
 
+global.document = {
+  createElement() {
+    return {
+      className: '',
+      innerHTML: '',
+    };
+  },
+};
+
 function makeAttrsTarget(baseAttrs = {}) {
   const attrs = {...baseAttrs};
   return {
@@ -145,7 +154,33 @@ function testOverlayFallbackKeepsToneInferred() {
   assert.strictEqual(parsedRows[0].tone, 'negative', 'tooltip should infer negative tone from fallback overlay reason');
 }
 
+function testRenderCardOverlayPrefersRuNoteOverSynergyFallback() {
+  const overlay = overlays.renderCardOverlay({
+    item: {
+      el: makeCardEl('Established Methods', makeBadge('C 66')),
+      name: 'Established Methods',
+      total: 66,
+      reasons: [],
+    },
+    scored: [],
+    ratings: {
+      'Established Methods': {
+        nr: 'Гибкая prelude под точный setup',
+        y: ['Poseidon'],
+      },
+    },
+    yName(name) {
+      return name;
+    },
+  });
+
+  assert(overlay, 'renderCardOverlay should return an overlay element');
+  assert(overlay.innerHTML.includes('Гибкая prelude'), 'overlay should surface the RU note');
+  assert(!overlay.innerHTML.includes('tm-iov-syn'), 'overlay should not fall back to synergy when RU note exists');
+}
+
 testDraftRecommendationFallbackKeepsToneInferred();
 testOverlayFallbackKeepsToneInferred();
+testRenderCardOverlayPrefersRuNoteOverSynergyFallback();
 
 console.log('reason payload fallback checks: OK');

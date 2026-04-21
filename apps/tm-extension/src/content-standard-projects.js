@@ -851,7 +851,7 @@
           ? spScore(spType, net, sc)
           : (cls.indexOf('good') !== -1 ? 68 : (cls.indexOf('ok') !== -1 ? 58 : 42));
         var tipTier = typeof externalScoreToTier === 'function' ? externalScoreToTier(tipScore) : 'C';
-        var tipData = { s: tipScore, t: tipTier, dr: 'Standard project' };
+        var tipData = { s: tipScore, t: tipTier, dr: 'Стандартный проект' };
         cardEl.setAttribute('data-tm-tip', '1');
         cardEl.addEventListener('mouseenter', function(e) { externalShowTooltip(e, tipName, tipData); });
         cardEl.addEventListener('mouseleave', externalHideTooltip);

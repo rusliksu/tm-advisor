@@ -261,7 +261,7 @@
     if (!input || !input.escHtml) return '';
     var description = input.localizedDesc || input.fallbackDesc || '';
     if (!description) return '';
-    return '<div class="tm-tip-row tm-tip-row--desc">' + input.escHtml(description) + '</div>';
+    return '<div class="tm-tip-row tm-tip-row--desc"><b>Описание:</b> ' + input.escHtml(description) + '</div>';
   }
 
   function buildAnalysisHtml(input) {
