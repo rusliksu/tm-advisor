@@ -6221,7 +6221,12 @@
     "tags": [
       "power"
     ],
-    "behavior": {}
+    "behavior": {
+      "ocean": 1,
+      "production": {
+        "energy": 2
+      }
+    }
   },
   "Biofuels": {
     "tags": [
@@ -6267,7 +6272,11 @@
     "tags": [
       "earth"
     ],
-    "behavior": {}
+    "behavior": {
+      "production": {
+        "megacredits": 6
+      }
+    }
   },
   "Cheung Shing MARS": {
     "tags": [

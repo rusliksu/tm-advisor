@@ -57,6 +57,25 @@ def test_is_prelude_false_for_project():
     assert not sc.is_prelude("Magnetic Shield"), "Magnetic Shield is project card"
 
 
+def test_opening_hand_bias_not_applied_to_prelude():
+    assert db().get_opening_hand_bias("Acquired Space Agency") == 0
+
+
+def test_opening_hand_bias_still_applies_to_corp():
+    assert db().get_opening_hand_bias("EcoLine") == 3
+
+
+def test_preludes_do_not_store_opener_metadata_in_canonical_evals():
+    bad = []
+    for name, data in db().cards.items():
+        info = db().get_info(name)
+        if not info or str(info.get("type", "")).lower() != "prelude":
+            continue
+        if "opening_hand_bias" in data or "opening_hand_note" in data:
+            bad.append(name)
+    assert not bad, f"Prelude entries still contain opener metadata: {bad}"
+
+
 def test_corporate_archives_stock_13mc():
     """Corporate Archives: +13 MC flat + science tag."""
     sc = PreludeScorer(db())
@@ -96,6 +115,15 @@ def test_giant_solar_collector_energy_prod_venus_step():
     mc, _ = sc.immediate_value("Giant Solar Collector")
     # 2*7.5 + 1*7 + power 1.5 + space 1.5 = 25
     assert 22 <= mc <= 28, f"expected 22-28 MC, got {mc}"
+
+
+def test_aquifer_turbines_counts_ocean_and_energy_prod():
+    """Aquifer Turbines must not be treated as empty behavior."""
+    sc = PreludeScorer(db())
+    mc, reason = sc.immediate_value("Aquifer Turbines")
+    assert mc >= 28, f"expected ocean + energy-prod value, got {mc} ({reason!r})"
+    assert "+1ocean" in reason, reason
+    assert "+2enep" in reason, reason
 
 
 def test_aridor_prelude_tag_bonus():
@@ -149,11 +177,14 @@ def test_empty_behavior_prelude_falls_back_to_base():
     assert result == base
 
 
-def test_empty_behavior_prelude_not_diluted():
-    """Business Empire (A-tier base 80, empty behavior) stays in A range."""
+def test_business_empire_production_behavior_not_empty():
+    """Business Empire must score from +6 MC production, not empty-behavior fallback."""
     sc = PreludeScorer(db())
+    mc, reason = sc.immediate_value("Business Empire")
+    assert mc >= 35, f"expected +6 MC-prod value, got {mc} ({reason!r})"
+    assert "+6megp" in reason, reason
     result = sc.score("Business Empire")
-    assert result >= 75, f"expected A-range, got {result}"
+    assert result >= 82, f"expected A-range production score, got {result}"
 
 
 def test_override_still_wins_over_empty_behavior_path():

@@ -36,6 +36,7 @@ _TAG_MC = {
     "animal": 1.5, "power": 1.5, "city": 1.0, "mars": 1.0, "wild": 4.0,
 }
 _TR_VALUE = 7.0
+_OCEAN_VALUE = 12.0
 _CARD_DRAW_MC = 3.5
 _NO_TAG_PENALTY = -3.0
 
@@ -128,6 +129,11 @@ class PreludeScorer:
             total += v
             parts.append(f"+{beh['tr']}TR={v:.0f}")
 
+        if beh.get("ocean"):
+            v = float(beh["ocean"]) * _OCEAN_VALUE
+            total += v
+            parts.append(f"+{beh['ocean']}ocean={v:.0f}")
+
         draws = beh.get("drawCard") or 0
         if isinstance(draws, dict):
             draws = draws.get("count", 0)
@@ -194,7 +200,7 @@ class PreludeScorer:
         if not isinstance(beh, dict):
             return True
         for key in ("production", "stock", "global", "tr", "drawCard",
-                    "greenery", "city"):
+                    "ocean", "greenery", "city"):
             if beh.get(key):
                 return False
         return True
