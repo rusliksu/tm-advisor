@@ -86,10 +86,12 @@ function run() {
   testCollectWorkflowCardNamesIgnoresEmptyNodes();
   runPythonScript('opening_regressions.py');
   runPythonScript('snapshot_output_regressions.py');
+  runPythonScript('summary_selection_regressions.py');
+  runPythonScript('turmoil_policy_regressions.py');
+  runPythonScript('colorama_fallback_regressions.py');
   runPythonScript('action_ordering_regressions.py');
   runPythonScript('late_scoring_regressions.py');
   runPythonScript('late_colony_regressions.py');
-  runPythonScript('colorama_fallback_regressions.py');
   runPythonScript('late_draw_regressions.py');
   runPythonScript('astra_consistency_regressions.py');
   console.log('advisor regression checks: OK');

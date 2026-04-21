@@ -1,0 +1,103 @@
+{
+  "thisPlayer": {
+    "color": "red",
+    "name": "player-red",
+    "megaCredits": 44,
+    "terraformRating": 24,
+    "titanium": 1,
+    "titaniumValue": 3,
+    "megaCreditProduction": 3,
+    "steelProduction": 1,
+    "cardsInHandNbr": 1,
+    "tableau": [
+      {"name": "Mars Maths", "resources": 0, "isDisabled": false},
+      {"name": "Merger", "resources": 0, "isDisabled": false},
+      {"name": "Hermetic Order of Mars", "resources": 0, "isDisabled": false}
+    ],
+    "tags": {
+      "building": 1,
+      "science": 1,
+      "earth": 2,
+      "jovian": 1,
+      "microbe": 3,
+      "city": 1
+    }
+  },
+  "players": [
+    {
+      "color": "red",
+      "name": "player-red",
+      "megaCredits": 44,
+      "terraformRating": 24,
+      "cardsInHandNbr": 1,
+      "tableau": []
+    },
+    {
+      "color": "blue",
+      "name": "player-blue",
+      "megaCredits": 31,
+      "terraformRating": 26,
+      "cardsInHandNbr": 9,
+      "tableau": []
+    },
+    {
+      "color": "green",
+      "name": "player-green",
+      "megaCredits": 30,
+      "terraformRating": 24,
+      "cardsInHandNbr": 9,
+      "tableau": []
+    }
+  ],
+  "cardsInHand": [
+    {"name": "Ceres Spaceport", "calculatedCost": 33, "tags": []}
+  ],
+  "game": {
+    "generation": 2,
+    "phase": "action",
+    "oxygenLevel": 1,
+    "temperature": -12,
+    "oceans": 2,
+    "venusScaleLevel": 4,
+    "milestones": [],
+    "awards": [],
+    "colonies": [],
+    "spaces": [],
+    "gameOptions": {
+      "expansions": {
+        "corpera": true,
+        "venus": true,
+        "colonies": true,
+        "prelude": true,
+        "prelude2": true,
+        "turmoil": true,
+        "pathfinders": true,
+        "ceo": true
+      }
+    },
+    "turmoil": {
+      "chairman": "blue",
+      "ruling": "Mars First",
+      "dominant": "Unity",
+      "parties": [
+        {"name": "Mars First", "delegates": []},
+        {"name": "Unity", "partyLeader": "red", "delegates": [{"color": "red", "number": 3}]},
+        {"name": "Kelvinists", "partyLeader": "green", "delegates": [{"color": "green", "number": 2}]}
+      ],
+      "lobby": [],
+      "politicalAgendas": {
+        "marsFirst": {"bonusId": "mb01", "policyId": "mp01"},
+        "scientists": {"bonusId": "sb01", "policyId": "sp01"},
+        "unity": {"bonusId": "ub01", "policyId": "up01"},
+        "greens": {"bonusId": "gb01", "policyId": "gp01"},
+        "reds": {"bonusId": "rb01", "policyId": "rp01"},
+        "kelvinists": {"bonusId": "kb01", "policyId": "kp01"}
+      },
+      "policyActionUsers": [
+        {"color": "red", "turmoilPolicyActionUsed": false},
+        {"color": "blue", "turmoilPolicyActionUsed": false},
+        {"color": "green", "turmoilPolicyActionUsed": false}
+      ]
+    }
+  }
+}

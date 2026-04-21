@@ -1086,7 +1086,8 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             act_cost_str = act.get("cost", "")
             act_effect_str = act.get("effect", "")
             mc_cost, mc_value = _estimate_action_value(
-                act_cost_str, act_effect_str, me, rv, gens_left, source_eff=eff)
+                act_cost_str, act_effect_str, me, rv, gens_left, source_eff=eff,
+                action=act)
             if mc_value > 0:
                 action_count += 1
                 stall_note = ""
@@ -2012,11 +2013,14 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
     return remaining, pay_hint
 
 
-def _estimate_action_value(cost_str, effect_str, me, rv, gens_left, source_eff=None):
+def _estimate_action_value(cost_str, effect_str, me, rv, gens_left, source_eff=None, action=None):
     """Estimate MC cost and value of a blue card action.
 
     Returns (mc_cost, mc_value).
     """
+    if isinstance(action, dict) and action.get("conditional"):
+        return 0, 0
+
     cost_str = str(cost_str).lower()
     effect_str = str(effect_str).lower()
     mc_cost = 0
@@ -2027,11 +2031,21 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left, source_eff=N
     mc_m = re.search(r'(\d+)\s*(?:mc|m€|megacredit)', cost_str)
     if mc_m:
         mc_cost = int(mc_m.group(1))
-    if "energy" in cost_str:
+    if "energy" in cost_str and "production" in cost_str:
+        en_m = re.search(r'(\d+)\s*energy', cost_str)
+        en_needed = int(en_m.group(1)) if en_m else 1
+        if getattr(me, "energy_prod", 0) < en_needed:
+            return 0, 0
+    elif "energy" in cost_str:
         en_m = re.search(r'(\d+)\s*energy', cost_str)
         en_needed = int(en_m.group(1)) if en_m else 1
         if me.energy < en_needed:
             return 0, 0  # can't afford
+    if "heat" in cost_str:
+        heat_m = re.search(r'(\d+)\s*heat', cost_str)
+        heat_needed = int(heat_m.group(1)) if heat_m else 1
+        if getattr(me, "heat", 0) < heat_needed:
+            return 0, 0
     if "titanium" in cost_str:
         return 0, 0  # too rare to recommend spending
 
@@ -2043,6 +2057,9 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left, source_eff=N
         has_direct_payoff = True
 
     if "tr" in effect_str and "raise" in effect_str:
+        mc_value += rv["tr"]
+        has_direct_payoff = True
+    if "raise" in effect_str and any(track in effect_str for track in ("oxygen", "temperature", "venus")):
         mc_value += rv["tr"]
         has_direct_payoff = True
 
@@ -2545,6 +2562,8 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
             "heat": "heat_prod",
         }
         for act in eff.actions:
+            if act.get("conditional"):
+                continue
             act_eff = act.get("effect", "").lower()
             act_cost = act.get("cost", "free").lower()
             # Some cards have mangled cost/effect split — combine for pattern matching
@@ -2668,6 +2687,16 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
                 draw_match = _re.search(r'draw\s+(\d+)', act_eff)
                 draws = int(draw_match.group(1)) if draw_match else 1
                 value += draws * rv["card"] * action_gens * 0.6
+                continue
+
+            # Global/TR bump actions (Water Splitting Plant, Venus Magnetizer,
+            # Caretaker Contract). Keep this conservative; action costs are
+            # already represented by the source action text and availability.
+            if _re.search(r'\b(?:raise|increase)\s+(?:your\s+)?(?:tr|oxygen|temperature|venus)\b', act_full):
+                act_mc_cost = explicit_mc_cost if explicit_mc_cost is not None else 0
+                net = rv["tr"] - act_mc_cost
+                if net > 0:
+                    value += net * action_gens * 0.5
                 continue
 
             # Generic action with no clear MC value: estimate ~2 MC/gen
