@@ -7536,13 +7536,13 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Gain 3 M€ per colony you have.",
+    "description": "You have +1 influence. Gain 3 M€ per colony you have.",
     "hasAction": false,
     "compatibility": [
       "colonies",
       "turmoil"
     ],
-    "description_ru": "Получите 3 M€ за каждую вашу колонию."
+    "description_ru": "У вас +1 влияние. Получите 3 M€ за каждую вашу колонию."
   },
   "Envoys From Venus": {
     "name": "Envoys From Venus",

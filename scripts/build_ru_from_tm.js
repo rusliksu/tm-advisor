@@ -19,10 +19,10 @@ const OUT = path.join(BASE, 'data', 'card_names_ru.json');
 const enumText = fs.readFileSync(path.join(LOCALES, 'CardName.ts'), 'utf8');
 const cardNames = new Set();
 // Match: ENUM_KEY = 'Card Name',
-const re = /=\s*'([^']+)'/g;
+const re = /=\s*'((?:\\'|[^'])*)'/g;
 let m;
 while ((m = re.exec(enumText)) !== null) {
-  cardNames.add(m[1]);
+  cardNames.add(m[1].replace(/\\'/g, "'"));
 }
 console.log('CardName enum entries:', cardNames.size);
 

@@ -14,9 +14,9 @@ const ENUM_FILE = path.resolve(__dirname, '../../terraforming-mars/src/common/ca
 // 1. Parse CardName enum → { ENUM_KEY: 'Display Name' }
 var enumSrc = fs.readFileSync(ENUM_FILE, 'utf8');
 var enumMap = {};
-var re = /(\w+)\s*=\s*'([^']+)'/g;
+var re = /(\w+)\s*=\s*'((?:\\'|[^'])*)'/g;
 var m;
-while ((m = re.exec(enumSrc)) !== null) enumMap[m[1]] = m[2];
+while ((m = re.exec(enumSrc)) !== null) enumMap[m[1]] = m[2].replace(/\\'/g, "'");
 console.log('CardName enum entries: ' + Object.keys(enumMap).length);
 
 // 2. Recursively find all .ts card files

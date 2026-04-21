@@ -20,9 +20,9 @@ const OUTPUT = resolveGeneratedExtensionPath('card_tags.js');
 // 1. Parse CardName enum
 var enumSrc = fs.readFileSync(ENUM_FILE, 'utf8');
 var cardNameMap = {};
-var re = /(\w+)\s*=\s*'([^']+)'/g;
+var re = /(\w+)\s*=\s*'((?:\\'|[^'])*)'/g;
 var m;
-while ((m = re.exec(enumSrc)) !== null) cardNameMap[m[1]] = m[2];
+while ((m = re.exec(enumSrc)) !== null) cardNameMap[m[1]] = m[2].replace(/\\'/g, "'");
 console.log('CardName entries: ' + Object.keys(cardNameMap).length);
 
 // 2. Parse Tag enum → lowercase display names
@@ -39,6 +39,9 @@ var existingSrc = fs.readFileSync(OUTPUT, 'utf8');
 eval(existingSrc.replace(/\bconst\b/g, 'var'));
 var existingCount = Object.keys(TM_CARD_TAGS).length;
 console.log('Existing card_tags entries: ' + existingCount);
+for (var staleName of Object.keys(TM_CARD_TAGS)) {
+  if (staleName.indexOf('\\') !== -1) delete TM_CARD_TAGS[staleName];
+}
 
 // 4. Recursively find all .ts card files
 function findTsFiles(dir) {

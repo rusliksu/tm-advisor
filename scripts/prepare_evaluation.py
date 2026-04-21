@@ -104,7 +104,7 @@ EXISTING_EVALUATIONS = {
     'Open City': {'score': 74, 'tier': 'B'},
     'Sponsoring Nation': {'score': 74, 'tier': 'B'},
     'Atmoscoop': {'score': 72, 'tier': 'B'},
-    'Colonial Representation': {'score': 72, 'tier': 'B'},
+    'Colonial Representation': {'score': 60, 'tier': 'C'},
     'Hermetic Order of Mars': {'score': 72, 'tier': 'B'},
     'Stratospheric Expedition': {'score': 72, 'tier': 'B'},
     'Static Harvesting': {'score': 72, 'tier': 'B'},

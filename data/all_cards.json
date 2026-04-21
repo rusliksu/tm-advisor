@@ -7187,7 +7187,7 @@
     "tags": [],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Gain 3 M€ per colony you have.",
+    "description": "You have +1 influence. Gain 3 M€ per colony you have.",
     "hasAction": false,
     "compatibility": [
       "colonies",

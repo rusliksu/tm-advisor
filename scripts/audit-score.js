@@ -124,7 +124,7 @@ var MANUAL_SUPPLEMENTS_OK = {
   'Homeostasis Bureau': 'manual models city trigger value on top of parsed heat prod',
   'Solar Reflectors': 'manual models extra tempo/TR value on top of parsed heat production',
   'Trading Colony': 'manual models trade bonus on top of parsed MC prod',
-  'Colonial Representation': 'manual models influence/colony bonus on top of parsed MC prod'
+  'Colonial Representation': 'manual models one-time MC per own colony; parser must not treat it as MC production'
 };
 
 // ── Extract constants from tm-brain source ──
