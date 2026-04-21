@@ -265,7 +265,24 @@ class GameState:
             "parties": {},
             "lobby": t.get("lobby", []),
             "policy_used": {},
+            "policy_ids": {},
+            "bonus_ids": {},
         }
+        party_keys = {
+            "marsFirst": "Mars First",
+            "scientists": "Scientists",
+            "unity": "Unity",
+            "greens": "Greens",
+            "reds": "Reds",
+            "kelvinists": "Kelvinists",
+        }
+        for key, agenda in (t.get("politicalAgendas") or {}).items():
+            party_name = party_keys.get(key, key)
+            if isinstance(agenda, dict):
+                if agenda.get("policyId"):
+                    result["policy_ids"][party_name] = agenda.get("policyId")
+                if agenda.get("bonusId"):
+                    result["bonus_ids"][party_name] = agenda.get("bonusId")
         # Parse parties
         for p in t.get("parties", []):
             name = p.get("name", "?")
@@ -287,11 +304,19 @@ class GameState:
         result = []
         for c in card_list:
             if isinstance(c, dict):
-                result.append({
+                calculated_cost = c.get("calculatedCost")
+                printed_cost = c.get("cost")
+                row = {
                     "name": _strip_ares(c.get("name", "???")),
                     "tags": c.get("tags", []),
-                    "cost": c.get("calculatedCost", c.get("cost", 0)),
-                })
+                    "cost": calculated_cost if calculated_cost is not None else (printed_cost or 0),
+                }
+                if printed_cost is not None:
+                    row["printed_cost"] = printed_cost
+                if calculated_cost is not None:
+                    row["calculated_cost"] = calculated_cost
+                    row["cost_is_calculated"] = True
+                result.append(row)
             elif isinstance(c, str):
                 result.append({"name": _strip_ares(c), "tags": [], "cost": 0})
         return result

@@ -27,8 +27,18 @@ def fetch_player_view(base_url: str, player_id: str) -> dict:
     return raw.get("playerView", raw)
 
 
+def find_game_logs(game_id: str) -> list[Path]:
+    """Return all watch logs for a game.
+
+    A live watcher can be restarted near game end, producing a tiny end-only log.
+    Postgame summaries should aggregate the whole run instead of picking that
+    last file and losing all card/advisor events.
+    """
+    return sorted(LOG_DIR.glob(f"watch_live_{game_id}_*.jsonl"))
+
+
 def find_latest_log(game_id: str) -> Path | None:
-    matches = sorted(LOG_DIR.glob(f"watch_live_{game_id}_*.jsonl"))
+    matches = find_game_logs(game_id)
     return matches[-1] if matches else None
 
 
@@ -41,59 +51,211 @@ def corp_name_from_tableau(tableau: list[dict]) -> str:
     return "unknown"
 
 
-def parse_log(log_path: Path | None) -> dict:
+def _event_key(event: dict) -> tuple | None:
+    etype = event.get("type")
+    if etype == "card_played":
+        return (
+            etype,
+            event.get("player_id"),
+            event.get("card"),
+            event.get("last_card_played"),
+            event.get("prev_hand_rank"),
+            event.get("prev_hand_score"),
+        )
+    if etype == "advisor_miss":
+        return (
+            etype,
+            event.get("player_id"),
+            event.get("card"),
+            event.get("best_card"),
+            event.get("chosen_rank"),
+            event.get("score_gap"),
+            event.get("score_kind"),
+        )
+    return None
+
+
+def parse_log(log_paths: Path | list[Path] | None) -> dict:
     result = {
         "session_start": None,
         "initial_snapshots": {},
         "card_played": defaultdict(list),
         "advisor_miss": defaultdict(list),
         "game_states": [],
+        "log_paths": [],
     }
-    if log_path is None or not log_path.exists():
+    if log_paths is None:
         return result
 
-    with log_path.open(encoding="utf-8") as fh:
-        for line in fh:
-            event = json.loads(line)
-            etype = event.get("type")
-            if etype == "session_start":
-                result["session_start"] = event
-            elif etype == "initial_snapshot":
-                result["initial_snapshots"][event["player_id"]] = event
-            elif etype == "card_played":
-                result["card_played"][event["player_id"]].append(event)
-            elif etype == "advisor_miss":
-                result["advisor_miss"][event["player_id"]].append(event)
-            elif etype == "game_state":
-                result["game_states"].append(event)
+    if isinstance(log_paths, Path):
+        paths = [log_paths]
+    else:
+        paths = list(log_paths)
+
+    seen_events: set[tuple] = set()
+    for log_path in paths:
+        if log_path is None or not log_path.exists():
+            continue
+        result["log_paths"].append(str(log_path))
+        with log_path.open(encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                key = _event_key(event)
+                if key is not None:
+                    if key in seen_events:
+                        continue
+                    seen_events.add(key)
+                etype = event.get("type")
+                if etype == "session_start" and result["session_start"] is None:
+                    result["session_start"] = event
+                elif etype == "initial_snapshot":
+                    result["initial_snapshots"].setdefault(event["player_id"], event)
+                elif etype == "card_played":
+                    result["card_played"][event["player_id"]].append(event)
+                elif etype == "advisor_miss":
+                    result["advisor_miss"][event["player_id"]].append(event)
+                elif etype == "game_state":
+                    result["game_states"].append(event)
     return result
 
 
 def summarize_offtop(events: list[dict]) -> dict:
-    ranked = [e for e in events if isinstance(e.get("prev_hand_rank"), int)]
-    off_top = [e for e in ranked if e["prev_hand_rank"] >= OFFTOP_RANK]
-    avg_rank = round(statistics.mean(e["prev_hand_rank"] for e in ranked), 1) if ranked else None
+    ranked = []
+    stale_filtered = []
+    for event in events:
+        if not _best_move_is_card_play(event):
+            stale_filtered.append(event)
+            continue
+        if isinstance(event.get("prev_play_rank"), int):
+            ranked.append({
+                "event": event,
+                "rank": event["prev_play_rank"],
+                "score": event.get("prev_play_score"),
+                "source": "play",
+            })
+            continue
+        if isinstance(event.get("prev_hand_rank"), int):
+            ranked.append({
+                "event": event,
+                "rank": event["prev_hand_rank"],
+                "score": event.get("prev_hand_score"),
+                "source": "legacy_hand",
+            })
+
+    off_top = [row for row in ranked if row["rank"] >= OFFTOP_RANK]
+    avg_rank = round(statistics.mean(row["rank"] for row in ranked), 1) if ranked else None
+    source_counts = Counter(row["source"] for row in ranked)
     return {
         "plays_logged": len(events),
         "ranked_plays": len(ranked),
         "avg_rank": avg_rank,
         "off_top_count": len(off_top),
+        "rank_source_counts": dict(sorted(source_counts.items())),
+        "stale_filtered_count": len(stale_filtered),
         "top_off_top": sorted(
             (
                 {
-                    "card": e.get("card") or e.get("last_card_played"),
-                    "rank": e.get("prev_hand_rank"),
-                    "score": e.get("prev_hand_score"),
+                    "card": row["event"].get("card") or row["event"].get("last_card_played"),
+                    "rank": row["rank"],
+                    "score": row["score"],
+                    "source": row["source"],
                 }
-                for e in off_top
+                for row in off_top
             ),
             key=lambda row: (-row["rank"], -(row["score"] or 0), row["card"] or ""),
         )[:5],
     }
 
 
-def summarize_misses(events: list[dict]) -> dict:
-    by_severity = Counter(e.get("severity", "unknown") for e in events)
+def _miss_play_key(event: dict) -> tuple:
+    return (event.get("player_id"), event.get("card"), event.get("ts"))
+
+
+def _best_option_action(miss: dict, played_event: dict | None) -> str | None:
+    if not played_event:
+        return None
+    top_options = (
+        played_event.get("decision_context", {}).get("top_options")
+        if isinstance(played_event.get("decision_context"), dict)
+        else None
+    ) or []
+    for option in top_options:
+        if option.get("name") == miss.get("best_card"):
+            return option.get("action")
+    return None
+
+
+def _best_move_is_card_play(played_event: dict | None) -> bool:
+    if not played_event:
+        return True
+    decision_context = played_event.get("decision_context")
+    if not isinstance(decision_context, dict):
+        return True
+    best_move = decision_context.get("best_move") or ""
+    return not best_move or str(best_move).startswith("PLAY ")
+
+
+def _best_move_play_card(played_event: dict | None) -> str | None:
+    if not played_event:
+        return None
+    decision_context = played_event.get("decision_context")
+    if not isinstance(decision_context, dict):
+        return None
+    best_move = str(decision_context.get("best_move") or "").strip()
+    if not best_move.startswith("PLAY "):
+        return None
+    remainder = best_move.removeprefix("PLAY ").strip()
+    if not remainder:
+        return None
+    for separator in (" — ", " | ", " - "):
+        if separator in remainder:
+            return remainder.split(separator, 1)[0].strip() or None
+    return remainder
+
+
+def filter_stale_advisor_misses(
+    events: list[dict],
+    played_events: list[dict] | None = None,
+) -> tuple[list[dict], list[dict]]:
+    """Drop legacy miss events where the logged best option was not playable.
+
+    Older live-watch logs ranked raw hand scores and could emit advisor_miss
+    against HOLD cards. New watcher logs include score_kind=play_value_now, so
+    this compatibility filter only applies to legacy events missing score_kind.
+    """
+    played_by_key = {
+        _miss_play_key(event): event
+        for event in (played_events or [])
+        if event.get("type") == "card_played"
+    }
+    kept = []
+    stale = []
+    for event in events:
+        if event.get("score_kind"):
+            kept.append(event)
+            continue
+        played_event = played_by_key.get(_miss_play_key(event))
+        if not _best_move_is_card_play(played_event):
+            stale.append(event)
+            continue
+        best_move_card = _best_move_play_card(played_event)
+        if best_move_card and event.get("best_card") and event.get("best_card") != best_move_card:
+            stale.append(event)
+            continue
+        action = _best_option_action(event, played_event)
+        if action and action != "PLAY":
+            stale.append(event)
+            continue
+        kept.append(event)
+    return kept, stale
+
+
+def summarize_misses(events: list[dict], played_events: list[dict] | None = None) -> dict:
+    filtered_events, stale_events = filter_stale_advisor_misses(events, played_events)
+    by_severity = Counter(e.get("severity", "unknown") for e in filtered_events)
     top = sorted(
         (
             {
@@ -103,12 +265,14 @@ def summarize_misses(events: list[dict]) -> dict:
                 "best_card": e.get("best_card"),
                 "severity": e.get("severity"),
             }
-            for e in events
+            for e in filtered_events
         ),
         key=lambda row: (-(row["score_gap"] or 0), -(row["chosen_rank"] or 0), row["card"] or ""),
     )[:5]
     return {
-        "count": len(events),
+        "count": len(filtered_events),
+        "raw_count": len(events),
+        "stale_filtered_count": len(stale_events),
         "by_severity": dict(sorted(by_severity.items())),
         "top": top,
     }
@@ -130,8 +294,9 @@ def summarize_player(player_view: dict, log_data: dict) -> dict:
     gp_steps = me.get("globalParameterSteps", {}) or {}
     player_id = me["id"]
     initial = log_data["initial_snapshots"].get(player_id, {})
-    off_top = summarize_offtop(log_data["card_played"].get(player_id, []))
-    misses = summarize_misses(log_data["advisor_miss"].get(player_id, []))
+    played_events = log_data["card_played"].get(player_id, [])
+    off_top = summarize_offtop(played_events)
+    misses = summarize_misses(log_data["advisor_miss"].get(player_id, []), played_events)
 
     return {
         "id": player_id,
@@ -225,13 +390,14 @@ def build_takeaways(players: list[dict]) -> list[str]:
     return takeaways
 
 
-def build_summary(game_id: str, base_url: str, log_path: Path | None) -> dict:
+def build_summary(game_id: str, base_url: str, log_paths: Path | list[Path] | None) -> dict:
     game_meta = fetch_json(f"{base_url.rstrip('/')}/api/game?id={game_id}")
     players_min = game_meta.get("players", [])
-    log_data = parse_log(log_path)
+    log_data = parse_log(log_paths)
     player_views = [fetch_player_view(base_url, row["id"]) for row in players_min]
     players = [summarize_player(view, log_data) for view in player_views]
     players.sort(key=lambda row: (-row["vp"]["total"], row["name"]))
+    parsed_log_paths = log_data.get("log_paths", [])
 
     return {
         "game": {
@@ -239,7 +405,8 @@ def build_summary(game_id: str, base_url: str, log_path: Path | None) -> dict:
             "phase": game_meta.get("phase"),
             "active_player": game_meta.get("activePlayer"),
             "spectator_id": game_meta.get("spectatorId"),
-            "log_path": str(log_path) if log_path else None,
+            "log_path": parsed_log_paths[-1] if parsed_log_paths else None,
+            "log_paths": parsed_log_paths,
             "players_count": len(players),
             "options": game_meta.get("gameOptions", {}),
         },
@@ -257,10 +424,12 @@ def format_cards(rows: list[dict], limit: int = 3) -> str:
 def format_offtop(rows: list[dict], limit: int = 3) -> str:
     if not rows:
         return "-"
-    return ", ".join(
-        f"{row['card']} r{row['rank']} s{row['score']}"
-        for row in rows[:limit]
-    )
+    parts = []
+    for row in rows[:limit]:
+        source = row.get("source")
+        source_part = f" {source}" if source and source != "play" else ""
+        parts.append(f"{row['card']} r{row['rank']} s{row['score']}{source_part}")
+    return ", ".join(parts)
 
 
 def print_text(summary: dict) -> None:
@@ -270,7 +439,9 @@ def print_text(summary: dict) -> None:
     runner_up = players[1] if len(players) > 1 else None
     margin = winner["vp"]["total"] - runner_up["vp"]["total"] if winner and runner_up else 0
 
-    print(f"Game {game['id']} | phase={game['phase']} | log={game['log_path'] or '-'}")
+    log_paths = game.get("log_paths") or []
+    log_text = f"{len(log_paths)} logs, latest={game['log_path']}" if log_paths else "-"
+    print(f"Game {game['id']} | phase={game['phase']} | log={log_text}")
     if winner and runner_up:
         print(f"Winner: {winner['name']} / {winner['corp']} with {winner['vp']['total']} VP ({margin:+d} vs {runner_up['name']})")
     print()
@@ -289,11 +460,24 @@ def print_text(summary: dict) -> None:
         print(f"  Top VP cards: {format_cards(player['top_vp_cards'])}")
         if player["negative_vp_cards"]:
             print(f"  Negative VP: {format_cards(player['negative_vp_cards'])}")
+        stale_misses = player["advisor_miss"].get("stale_filtered_count", 0)
+        stale_text = f" (filtered stale {stale_misses})" if stale_misses else ""
+        stale_offtop = player["off_top"].get("stale_filtered_count", 0)
+        source_counts = player["off_top"].get("rank_source_counts") or {}
+        legacy_count = source_counts.get("legacy_hand", 0)
+        detail_parts = []
+        if legacy_count:
+            detail_parts.append(f"legacy {legacy_count}")
+        if stale_offtop:
+            detail_parts.append(f"filtered stale {stale_offtop}")
+        stale_offtop_text = f" ({'; '.join(detail_parts)})" if detail_parts else ""
+        avg_rank = player["off_top"]["avg_rank"]
+        avg_rank_text = avg_rank if avg_rank is not None else "-"
         print(
             f"  Advisor log: plays {player['off_top']['plays_logged']}, "
-            f"avg prior rank {player['off_top']['avg_rank']}, "
-            f"off-top {player['off_top']['off_top_count']}, "
-            f"advisor_miss {player['advisor_miss']['count']}"
+            f"avg prior rank {avg_rank_text}, "
+            f"off-top {player['off_top']['off_top_count']}{stale_offtop_text}, "
+            f"advisor_miss {player['advisor_miss']['count']}{stale_text}"
         )
         if player["off_top"]["top_off_top"]:
             print(f"  Biggest off-top: {format_offtop(player['off_top']['top_off_top'])}")
@@ -323,8 +507,8 @@ def main() -> None:
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
-    log_path = args.log_path or find_latest_log(args.game_id)
-    summary = build_summary(args.game_id, args.base_url, log_path)
+    log_paths = [args.log_path] if args.log_path else find_game_logs(args.game_id)
+    summary = build_summary(args.game_id, args.base_url, log_paths)
     if args.json:
         print(json.dumps(summary, ensure_ascii=False, indent=2))
         return

@@ -85,6 +85,7 @@ function run() {
   testCollectWorkflowCardNamesTraversesNestedOptions();
   testCollectWorkflowCardNamesIgnoresEmptyNodes();
   runPythonScript('opening_regressions.py');
+  runPythonScript('snapshot_output_regressions.py');
   runPythonScript('action_ordering_regressions.py');
   runPythonScript('late_scoring_regressions.py');
   runPythonScript('late_colony_regressions.py');

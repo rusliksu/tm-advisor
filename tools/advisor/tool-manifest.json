@@ -1,7 +1,10 @@
 {
   "name": "tm-advisor-tools",
   "required_files": [
+    "tools/advisor/finish-live-logging.js",
+    "tools/advisor/logger-quality.py",
     "tools/advisor/postgame-summary.py",
+    "tools/advisor/start-live-logging.js",
     "scripts/postgame_summary.py",
     "tools/advisor/sync-workflow.js",
     "scripts/sync-advisor-workflow.js"
@@ -11,6 +14,9 @@
       "path": "package.json",
       "contains": [
         "\"advisor:postgame\": \"python tools/advisor/postgame-summary.py\"",
+        "\"advisor:logger-quality\": \"python tools/advisor/logger-quality.py\"",
+        "\"advisor:finish-live-logging\": \"node tools/advisor/finish-live-logging.js\"",
+        "\"advisor:start-live-logging\": \"node tools/advisor/start-live-logging.js\"",
         "\"advisor:check-workflow\": \"node tools/advisor/sync-workflow.js --check\"",
         "\"advisor:sync-workflow\": \"node tools/advisor/sync-workflow.js\""
       ]

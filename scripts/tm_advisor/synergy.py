@@ -191,6 +191,46 @@ def _count_visible_tag_support(card_names: list[str], db, target_tag: str, skip_
     return count
 
 
+def _count_microbe_shell_support(card_names: list[str], db, parser=None, skip_name: str = "", ongoing_only: bool = False) -> int:
+    count = 0
+    seen: set[str] = set()
+    for name in card_names:
+        if not name or name == skip_name or name in seen:
+            continue
+        seen.add(name)
+        info = db.get_info(name) if db else None
+        tags = info.get("tags", []) if info else []
+        card_type = str(info.get("type", "")).lower() if info else ""
+        if not ongoing_only and "Microbe" in tags:
+            count += 1
+            continue
+        eff = parser.get(name) if parser else None
+        if eff:
+            if getattr(eff, "resource_holds", False) and getattr(eff, "resource_type", "") == "Microbe":
+                count += 1
+                continue
+            if not ongoing_only and any(add.get("type") == "Microbe" for add in getattr(eff, "adds_resources", []) or []):
+                count += 1
+                continue
+            if any("microbe" in str(action.get("effect", "")).lower()
+                   for action in getattr(eff, "actions", []) or []):
+                count += 1
+                continue
+            if any("microbe" in str(trigger.get("effect", "")).lower()
+                   for trigger in getattr(eff, "triggers", []) or []):
+                count += 1
+                continue
+            if ongoing_only and card_type == "active" and any(
+                add.get("type") == "Microbe" for add in getattr(eff, "adds_resources", []) or []
+            ):
+                count += 1
+                continue
+        desc = db.get_desc(name).lower() if db else ""
+        if not ongoing_only and "microbe" in desc:
+            count += 1
+    return count
+
+
 def _is_event_card(card_info: dict | None) -> bool:
     if not card_info:
         return False
@@ -742,22 +782,58 @@ class SynergyEngine:
 
                 if "Neptunian Power Consultants" in visible_support_cards and support_hits <= 2:
                     bonus -= 1
+            if card_name == "Solarnet":
+                if "Planetary Alliance" in opening_preludes:
+                    bonus += 6
             if card_name == "Established Methods":
                 premium_colonies = {
-                    "Luna", "Pluto", "Titan", "Ganymede", "Europa", "Ceres",
+                    "Luna", "Pluto", "Triton", "Ceres",
                 }
+                good_colonies = {"Ganymede", "Callisto"}
                 colony_hits = len(visible_colonies & premium_colonies)
+                good_hits = len(visible_colonies & good_colonies)
                 if colony_hits >= 2:
-                    bonus += 3
+                    bonus += 4
                 elif colony_hits == 1:
+                    bonus += 2
+                if good_hits > 0:
                     bonus += 1
                 if corp_name == "Poseidon":
-                    bonus += 2
+                    bonus += 3
                 if corp_name == "Thorgate":
                     bonus += 2
                 if corp_name == "CrediCor":
                     bonus += 2
                 if "Sagitta Frontier Services" in opening_ceos:
+                    bonus += 1
+            if card_name == "High Circles":
+                turmoil_shell_hits = 0
+                if corp_name == "Septem Tribus":
+                    bonus += 3
+                    turmoil_shell_hits += 1
+                if "Corridors of Power" in opening_preludes:
+                    bonus += 2
+                    turmoil_shell_hits += 1
+                if "Rise To Power" in opening_preludes:
+                    bonus += 2
+                    turmoil_shell_hits += 1
+                if turmoil_shell_hits >= 2:
+                    bonus += 1
+
+            if card_name == "Power Generation":
+                premium_trade_colonies = {"Luna", "Pluto", "Triton", "Ceres"}
+                premium_hits = len(visible_colonies & premium_trade_colonies)
+                has_callisto = "Callisto" in visible_colonies
+
+                if premium_hits >= 3:
+                    bonus += 2
+                elif premium_hits >= 2:
+                    bonus += 1
+
+                if has_callisto and premium_hits >= 1:
+                    bonus += 1
+
+                if player_count >= 4 and (premium_hits >= 2 or (has_callisto and premium_hits >= 1)):
                     bonus += 1
 
             if card_name == "Great Aquifer":
@@ -896,6 +972,43 @@ class SynergyEngine:
                     bonus -= 4
                 elif earth_shell == 1:
                     bonus -= 2
+
+        if state and card_name == "Topsoil Contract":
+            parser = self.combo.parser if self.combo and hasattr(self.combo, "parser") else None
+            tableau_support_cards = []
+            if getattr(state, "me", None) and getattr(state.me, "tableau", None):
+                for tableau_card in state.me.tableau:
+                    tableau_support_cards.append(
+                        tableau_card.get("name", "") if isinstance(tableau_card, dict) else str(tableau_card)
+                    )
+            hand_support_cards = []
+            for hand_card in getattr(state, "cards_in_hand", []) or []:
+                hand_support_cards.append(
+                    hand_card.get("name", "") if isinstance(hand_card, dict) else str(hand_card)
+                )
+
+            microbe_shell = _count_microbe_shell_support(
+                tableau_support_cards,
+                self.db,
+                parser=parser,
+                skip_name=card_name,
+                ongoing_only=True,
+            )
+            microbe_shell += _count_microbe_shell_support(
+                hand_support_cards,
+                self.db,
+                parser=parser,
+                skip_name=card_name,
+            )
+            if corp_name == "Splice":
+                microbe_shell += 1
+            if "Enceladus" in set(_visible_colony_names(state)):
+                microbe_shell += 2
+
+            if microbe_shell <= 0:
+                bonus -= 6
+            elif microbe_shell == 1:
+                bonus -= 3
 
         # Corp tag synergies
         corp_syn = CORP_TAG_SYNERGIES.get(corp_name, {})
@@ -1302,6 +1415,8 @@ class SynergyEngine:
             elif draw_shell >= 2 and engine_shell <= 1:
                 if is_discount_velocity or is_prod_velocity:
                     bonus += 2 + min(1, draw_shell - 2)
+                    if is_prod_velocity and velocity_ctx["prod_shell"] == 0:
+                        bonus += 2
                 elif is_draw_velocity and not is_prod_velocity:
                     bonus -= 1
 
@@ -1309,6 +1424,10 @@ class SynergyEngine:
         # These are ON TOP of CORP_TAG_SYNERGIES (which gives static +N per tag)
         if corp_name == "Splice" and "Microbe" in card_tags:
             bonus += 2  # opponent Microbe plays also trigger Splice in 3P
+        if corp_name == "Septem Tribus" and card_info:
+            desc = str(card_info.get("description", "")).lower()
+            if "delegate" in desc or "influence" in desc:
+                bonus += 2
         if corp_name in ("Lakefront Resorts", "Lakefront") and card_info:
             desc = str(card_info.get("description", "")).lower()
             if "ocean" in desc:
@@ -1348,7 +1467,7 @@ class SynergyEngine:
                 bonus -= 3
             else:
                 pristar_bonus = 0
-                if "production" in desc and ("increase" in desc or "raise" in desc):
+                if card_name != "Power Generation" and "production" in desc and ("increase" in desc or "raise" in desc):
                     pristar_bonus += 2
                 if "draw" in desc and "card" in desc:
                     pristar_bonus += 1
@@ -1622,6 +1741,18 @@ class SynergyEngine:
                 bonus -= wasted_tr * 7
             if near_closed_tr > 0:
                 bonus -= near_closed_tr * 2  # mild penalty for near-closed
+
+            if card_name == "Arctic Algae":
+                oceans_placed = max(0, getattr(state, "oceans", 0))
+                oceans_remaining = max(0, 9 - getattr(state, "oceans", 0))
+                if oceans_placed > 0:
+                    bonus -= round(oceans_placed * 2 * 0.75)
+                if oceans_remaining <= 0:
+                    bonus -= 24
+                elif oceans_remaining == 1:
+                    bonus -= 14
+                elif oceans_remaining == 2:
+                    bonus -= 10
 
         # Diminishing returns: many small bonuses shouldn't inflate mediocre cards.
         # Negative bonuses (penalties) apply at full strength — mistakes are costly.

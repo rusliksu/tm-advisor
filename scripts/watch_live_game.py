@@ -14,6 +14,7 @@ import json
 import os
 import sys
 import time
+import urllib.error
 import urllib.request
 from datetime import datetime
 
@@ -32,9 +33,19 @@ ADVISOR_MISS_STRONG_SCORE_GAP = int(os.environ.get("TM_ADVISOR_MISS_STRONG_SCORE
 ADVISOR_MISS_TOP_CHOICES = int(os.environ.get("TM_ADVISOR_MISS_TOP_CHOICES", "3"))
 
 
-def fetch_json(url: str) -> dict:
-    with urllib.request.urlopen(url) as response:
-        return json.load(response)
+def fetch_json(url: str, retries: int = 3, timeout: float = 20.0) -> dict:
+    last_error: Exception | None = None
+    for attempt in range(retries):
+        try:
+            with urllib.request.urlopen(url, timeout=timeout) as response:
+                return json.load(response)
+        except (urllib.error.URLError, TimeoutError, ConnectionResetError, OSError) as exc:
+            last_error = exc
+            if attempt >= retries - 1:
+                break
+            time.sleep(min(5.0, 0.75 * (2 ** attempt)))
+    assert last_error is not None
+    raise last_error
 
 
 @functools.lru_cache(maxsize=4)
@@ -139,6 +150,42 @@ def draft_score(card: dict) -> int | None:
     return card.get("adjusted_score", card.get("effective_score", card.get("base_score")))
 
 
+def numeric_score(value) -> float | None:
+    if isinstance(value, (int, float)):
+        return float(value)
+    return None
+
+
+def hand_cards_by_name(snap: dict) -> dict[str, dict]:
+    cards: dict[str, dict] = {}
+    for card in snap.get("hand", []) or []:
+        name = card.get("name")
+        if name and name not in cards:
+            cards[name] = card
+    return cards
+
+
+def hand_advice_by_name(snap: dict) -> dict[str, dict]:
+    rows: dict[str, dict] = {}
+    for row in snap.get("hand_advice", []) or []:
+        name = row.get("name")
+        if name and name not in rows:
+            rows[name] = row
+    return rows
+
+
+def advice_value(row: dict, fallback_card: dict | None = None) -> float | None:
+    score = numeric_score(row.get("play_value_now"))
+    if score is not None:
+        return score
+    score = numeric_score(row.get("hold_value"))
+    if score is not None:
+        return score
+    if fallback_card is not None:
+        return numeric_score(card_score(fallback_card))
+    return None
+
+
 def build_rank_map(cards: list[dict], score_fn) -> dict[str, tuple[int, int | None]]:
     ranks: dict[str, tuple[int, int | None]] = {}
     for idx, card in enumerate(cards, start=1):
@@ -166,12 +213,88 @@ def option_entries_from_cards(cards: list[dict], score_fn, limit: int | None = 3
     entries = []
     source = cards if limit is None else cards[:limit]
     for idx, card in enumerate(source, start=1):
-        entries.append({
+        entry = {
             "name": card.get("name"),
             "rank": idx,
             "score": score_fn(card),
-        })
+        }
+        action = card.get("play_action") or card.get("draft_action")
+        reason = card.get("play_reason") or card.get("draft_reason")
+        if action:
+            entry["action"] = action
+        if reason:
+            entry["reason"] = reason
+        entries.append(entry)
     return entries
+
+
+def option_entries_from_hand_advice(snap: dict, limit: int | None = 3) -> list[dict]:
+    entries = []
+    cards = hand_cards_by_name(snap)
+    source = snap.get("hand_advice", []) or []
+    if limit is not None:
+        source = source[:limit]
+    for idx, row in enumerate(source, start=1):
+        name = row.get("name")
+        card = cards.get(name, {})
+        entry = {
+            "name": name,
+            "rank": idx,
+            "score": card_score(card),
+        }
+        action = row.get("action")
+        reason = row.get("reason")
+        value = advice_value(row, card)
+        if action:
+            entry["action"] = action
+        if reason:
+            entry["reason"] = reason
+        if value is not None:
+            entry["play_value_now"] = value
+        if row.get("priority") is not None:
+            entry["priority"] = row.get("priority")
+        entries.append(entry)
+    return entries
+
+
+def recommended_play_card_name(snap: dict) -> str | None:
+    best_move = str((snap.get("summary") or {}).get("best_move") or "").strip()
+    if not best_move.startswith("PLAY "):
+        return None
+
+    remainder = best_move.removeprefix("PLAY ").strip()
+    if not remainder:
+        return None
+
+    known_names = [
+        row.get("name")
+        for row in (snap.get("hand_advice", []) or [])
+        if row.get("name")
+    ]
+    known_names.extend(hand_cards_by_name(snap).keys())
+    for name in sorted(set(known_names), key=len, reverse=True):
+        if remainder == name or remainder.startswith(f"{name} "):
+            return name
+
+    for separator in (" — ", " | ", " - "):
+        if separator in remainder:
+            return remainder.split(separator, 1)[0].strip() or None
+    return remainder
+
+
+def advisor_miss_top_choices(play_entries: list[dict], best_name: str) -> list[dict]:
+    best_entry = next((entry for entry in play_entries if entry.get("name") == best_name), None)
+    if best_entry is None:
+        return play_entries[:ADVISOR_MISS_TOP_CHOICES]
+
+    choices = [best_entry]
+    for entry in play_entries:
+        if entry.get("name") == best_name:
+            continue
+        choices.append(entry)
+        if len(choices) >= ADVISOR_MISS_TOP_CHOICES:
+            break
+    return choices
 
 
 def option_entries_from_names(option_names: list[str], rank_map: dict[str, tuple[int, int | None]], limit: int | None = 3) -> list[dict]:
@@ -255,12 +378,19 @@ def build_decision_context(snap: dict, top_options: list[dict] | None = None) ->
         "alerts": pick_relevant_alerts(snap.get("alerts", []) or []),
         "vp_race": summarize_vp_race(snap),
     }
+    summary = snap.get("summary") or {}
+    if summary.get("best_move"):
+        context["best_move"] = summary.get("best_move")
+    if summary.get("lines"):
+        context["summary_lines"] = list(summary.get("lines")[:4])
     trade_hint = (snap.get("trade") or {}).get("hint")
     if trade_hint:
         context["trade_hint"] = trade_hint
     if top_options is None:
         if snap.get("current_draft"):
             top_options = option_entries_from_cards(snap.get("current_draft", []), draft_score)
+        elif snap.get("hand_advice"):
+            top_options = ranked_advisor_play_entries(snap, limit=3) or option_entries_from_hand_advice(snap)
         elif snap.get("hand"):
             top_options = option_entries_from_cards(snap.get("hand", []), card_score)
     if top_options:
@@ -276,7 +406,58 @@ def research_offer_cards(live: dict) -> list[str]:
     )
 
 
-def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_name: str) -> dict | None:
+def advisor_play_entries(snap: dict, limit: int | None = None) -> list[dict]:
+    entries = []
+    cards = hand_cards_by_name(snap)
+    seen: set[str] = set()
+    for advice_rank, row in enumerate(snap.get("hand_advice", []) or [], start=1):
+        name = row.get("name")
+        if not name or name in seen or row.get("action") != "PLAY":
+            continue
+        seen.add(name)
+        card = cards.get(name, {})
+        value = advice_value(row, card)
+        if value is None:
+            continue
+        entry = {
+            "name": name,
+            "rank": len(entries) + 1,
+            "advice_rank": advice_rank,
+            "score": value,
+            "play_value_now": value,
+            "effective_score": card_score(card),
+            "action": row.get("action"),
+            "reason": row.get("reason"),
+        }
+        entries.append(entry)
+        if limit is not None and len(entries) >= limit:
+            break
+    return entries
+
+
+def ranked_advisor_play_entries(snap: dict, limit: int | None = None) -> list[dict]:
+    entries = advisor_play_entries(snap)
+    recommended_name = recommended_play_card_name(snap)
+    recommended = next(
+        (entry for entry in entries if entry.get("name") == recommended_name),
+        None,
+    )
+    ordered = ([recommended] if recommended else []) + [
+        entry for entry in entries
+        if recommended is None or entry.get("name") != recommended.get("name")
+    ]
+
+    ranked = []
+    for idx, entry in enumerate(ordered, start=1):
+        ranked_entry = dict(entry)
+        ranked_entry["rank"] = idx
+        ranked.append(ranked_entry)
+        if limit is not None and len(ranked) >= limit:
+            break
+    return ranked
+
+
+def build_static_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_name: str) -> dict | None:
     prev_hand = prev_snap.get("hand", [])
     if not prev_hand:
         return None
@@ -296,7 +477,43 @@ def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_na
     if best_name == card_name or best_score is None or chosen_score is None:
         return None
 
-    score_gap = best_score - chosen_score
+    return build_advisor_miss_event(
+        prev_snap,
+        curr_snap,
+        player_id,
+        card_name,
+        chosen_rank,
+        float(chosen_score),
+        best_name,
+        float(best_score),
+        [
+            {
+                "name": card.get("name"),
+                "rank": idx,
+                "score": card_score(card),
+            }
+            for idx, card in enumerate(prev_hand[:ADVISOR_MISS_TOP_CHOICES], start=1)
+        ],
+        "effective_score",
+    )
+
+
+def build_advisor_miss_event(
+    prev_snap: dict,
+    curr_snap: dict,
+    player_id: str,
+    card_name: str,
+    chosen_rank: int,
+    chosen_score: float,
+    best_name: str,
+    best_score: float,
+    top_choices: list[dict],
+    score_kind: str,
+) -> dict | None:
+    if best_name == card_name:
+        return None
+
+    score_gap = round(best_score - chosen_score, 1)
     if score_gap < 0:
         return None
     if chosen_rank < ADVISOR_MISS_MIN_RANK and score_gap < ADVISOR_MISS_STRONG_SCORE_GAP:
@@ -316,14 +533,6 @@ def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_na
     if score_gap >= ADVISOR_MISS_STRONG_SCORE_GAP:
         reasons.append("score_gap")
 
-    top_choices = []
-    for idx, card in enumerate(prev_hand[:ADVISOR_MISS_TOP_CHOICES], start=1):
-        top_choices.append({
-            "name": card.get("name"),
-            "rank": idx,
-            "score": card_score(card),
-        })
-
     return {
         "type": "advisor_miss",
         "ts": datetime.now().isoformat(timespec="seconds"),
@@ -335,11 +544,57 @@ def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_na
         "best_card": best_name,
         "best_score": best_score,
         "score_gap": score_gap,
+        "score_kind": score_kind,
         "severity": severity,
         "reason": "+".join(reasons) if reasons else "score_gap",
         "top_choices": top_choices,
         "snapshot_error": prev_snap.get("snapshot_error"),
     }
+
+
+def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_name: str) -> dict | None:
+    best_move = (prev_snap.get("summary") or {}).get("best_move") or ""
+    if best_move and not str(best_move).startswith("PLAY "):
+        return None
+
+    if "hand_advice" not in prev_snap:
+        return build_static_advisor_miss(prev_snap, curr_snap, player_id, card_name)
+
+    play_entries = ranked_advisor_play_entries(prev_snap)
+    if not play_entries:
+        return None
+
+    play_rank_map = {entry["name"]: entry for entry in play_entries}
+    recommended_name = recommended_play_card_name(prev_snap)
+    best = play_rank_map.get(recommended_name) if recommended_name else None
+    if best is None:
+        best = play_entries[0]
+    chosen = play_rank_map.get(card_name)
+    if chosen is None:
+        card = hand_cards_by_name(prev_snap).get(card_name, {})
+        advice = hand_advice_by_name(prev_snap).get(card_name)
+        if advice is None:
+            return None
+        chosen_score = advice_value(advice, card)
+        if chosen_score is None:
+            return None
+        chosen_rank = len(play_entries) + 1
+    else:
+        chosen_score = chosen["score"]
+        chosen_rank = chosen["rank"]
+
+    return build_advisor_miss_event(
+        prev_snap,
+        curr_snap,
+        player_id,
+        card_name,
+        chosen_rank,
+        chosen_score,
+        best["name"],
+        best["score"],
+        advisor_miss_top_choices(play_entries, best["name"]),
+        "play_value_now",
+    )
 
 
 def append_jsonl(path: str, payload: dict) -> None:
@@ -479,7 +734,7 @@ def start_game_session(game_id: str, base_url: str) -> dict:
                 for c in state.get("hand", [])[:5]
             ],
             "current_draft": [
-                {"name": c["name"], "score": c["adjusted_score"]}
+                {"name": c["name"], "score": draft_score(c)}
                 for c in state.get("current_draft", [])[:5]
             ],
             "alerts": state.get("alerts", [])[:6],
@@ -554,6 +809,9 @@ def poll_game_session(session: dict) -> dict:
         prev_live = prev["live"]
         curr_live = curr["live"]
         prev_ranks = hand_rank_map(prev)
+        prev_play_entries = ranked_advisor_play_entries(prev)
+        prev_play_ranks = {entry["name"]: entry for entry in prev_play_entries}
+        prev_recommended_play = prev_play_entries[0]["name"] if prev_play_entries else None
         prev_draft_ranks = draft_rank_map(prev)
 
         prev_research_offer = research_offer_cards(prev_live)
@@ -577,6 +835,7 @@ def poll_game_session(session: dict) -> dict:
         for card_name in new_cards:
             changed = True
             rank = prev_ranks.get(card_name)
+            play_rank = prev_play_ranks.get(card_name)
             append_jsonl(log_path, {
                 "type": "card_played",
                 "ts": datetime.now().isoformat(timespec="seconds"),
@@ -585,6 +844,10 @@ def poll_game_session(session: dict) -> dict:
                 "card": card_name,
                 "prev_hand_rank": rank[0] if rank else None,
                 "prev_hand_score": rank[1] if rank else None,
+                "prev_play_rank": play_rank.get("rank") if play_rank else None,
+                "prev_play_score": play_rank.get("score") if play_rank else None,
+                "prev_play_reason": play_rank.get("reason") if play_rank else None,
+                "prev_recommended_play": prev_recommended_play,
                 "last_card_played": curr_live["last_card_played"],
                 "decision_context": build_decision_context(prev),
                 "snapshot_error": prev.get("snapshot_error"),
@@ -660,7 +923,7 @@ def poll_game_session(session: dict) -> dict:
         if curr_live["current_pack"] != prev_live["current_pack"] and curr_live["current_pack"]:
             changed = True
             draft_scores = {
-                card["name"]: card["adjusted_score"]
+                card["name"]: draft_score(card)
                 for card in curr.get("current_draft", [])
             }
             append_jsonl(log_path, {
@@ -712,7 +975,15 @@ def monitor_game(game_id: str, interval: float, base_url: str) -> str:
     session = start_game_session(game_id, base_url)
     while True:
         time.sleep(interval)
-        result = poll_game_session(session)
+        try:
+            result = poll_game_session(session)
+        except (urllib.error.URLError, TimeoutError, ConnectionResetError, OSError) as exc:
+            append_jsonl(session["log_path"], {
+                "type": "poll_error",
+                "ts": datetime.now().isoformat(timespec="seconds"),
+                "error": repr(exc),
+            })
+            continue
         if not result["active"]:
             break
     return session["log_path"]
