@@ -318,12 +318,11 @@ var TM_CARD_DATA = {
   }
  },
  "Ore Processor": {
-  "behavior": {
-   "production": {
-    "titanium": 0
-   }
-  },
   "action": {
+   "stock": {
+    "titanium": 1,
+    "energy": -4
+   },
    "global": {
     "oxygen": 1
    }
@@ -399,14 +398,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Equatorial Magnetizer": {
-  "behavior": {
+  "action": {
+   "tr": 1,
    "production": {
     "energy": -1
-   },
-   "tr": 1
-  },
-  "action": {
-   "tr": 1
+   }
   },
   "tags": [
    "building"
@@ -414,6 +410,14 @@ var TM_CARD_DATA = {
  },
  "Space Mirrors": {
   "behavior": {
+   "production": {
+    "energy": 1
+   }
+  },
+  "action": {
+   "stock": {
+    "megacredits": -7
+   },
    "production": {
     "energy": 1
    }
@@ -437,7 +441,8 @@ var TM_CARD_DATA = {
  "Steelworks": {
   "action": {
    "stock": {
-    "megacredits": 4
+    "steel": 2,
+    "energy": -4
    },
    "global": {
     "oxygen": 1
@@ -491,7 +496,7 @@ var TM_CARD_DATA = {
   "action": {
    "tr": 1,
    "stock": {
-    "megacredits": 3.5
+    "heat": -8
    }
   }
  },
@@ -947,6 +952,16 @@ var TM_CARD_DATA = {
   ]
  },
  "Power Infrastructure": {
+  "actionChoices": [
+   {
+    "label": "Spend any amount of energy to gain that many MC",
+    "variable": true,
+    "stockRatio": {
+     "energy": -1,
+     "megacredits": 1
+    }
+   }
+  ],
   "tags": [
    "power",
    "building"
@@ -1352,6 +1367,9 @@ var TM_CARD_DATA = {
  },
  "Security Fleet": {
   "action": {
+   "stock": {
+    "titanium": -1
+   },
    "addResources": 1
   },
   "vp": {
@@ -1419,7 +1437,8 @@ var TM_CARD_DATA = {
   },
   "action": {
    "stock": {
-    "megacredits": 7
+    "megacredits": 7,
+    "plants": -1
    }
   },
   "vp": {
@@ -1498,8 +1517,9 @@ var TM_CARD_DATA = {
  },
  "Restricted Area": {
   "action": {
+   "drawCard": 1,
    "stock": {
-    "megacredits": 1
+    "megacredits": -2
    }
   },
   "tags": [
@@ -1635,6 +1655,15 @@ var TM_CARD_DATA = {
    },
    "city": 1
   },
+  "actionChoices": [
+   {
+    "label": "Add 1 resource to another Venus card",
+    "conditional": true,
+    "addResources": 1,
+    "target": "another",
+    "tagConstraint": "venus"
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 3
@@ -1652,7 +1681,6 @@ var TM_CARD_DATA = {
    "city": 1
   },
   "action": {
-   "drawCard": 0.5,
    "addResources": 1
   },
   "vp": {
@@ -1764,7 +1792,9 @@ var TM_CARD_DATA = {
  },
  "Water Splitting Plant": {
   "action": {
-   "tr": 0.5,
+   "stock": {
+    "energy": -3
+   },
    "global": {
     "oxygen": 1
    }
@@ -1776,7 +1806,8 @@ var TM_CARD_DATA = {
  "Ironworks": {
   "action": {
    "stock": {
-    "megacredits": 3.5
+    "steel": 1,
+    "energy": -4
    },
    "global": {
     "oxygen": 1
@@ -2052,7 +2083,10 @@ var TM_CARD_DATA = {
   ]
  },
  "Industrial Center": {
-  "behavior": {
+  "action": {
+   "stock": {
+    "megacredits": -7
+   },
    "production": {
     "steel": 1
    }
@@ -2091,16 +2125,48 @@ var TM_CARD_DATA = {
   ]
  },
  "Rotator Impacts": {
-  "action": {
-   "tr": 0.17,
-   "addResources": 1
-  },
-  "resourceType": "floater",
+  "actionChoices": [
+   {
+    "label": "Spend 6 MC to add 1 asteroid to this card",
+    "stock": {
+     "megacredits": -6
+    },
+    "addResources": 1,
+    "resourceType": "asteroid",
+    "target": "this",
+    "canUseTitanium": true
+   },
+   {
+    "label": "Remove 1 asteroid to raise Venus 1 step",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "global": {
+     "venus": 1
+    }
+   }
+  ],
   "tags": [
    "space"
   ]
  },
  "Titan Air-scrapping": {
+  "actionChoices": [
+   {
+    "label": "Spend 1 titanium to add 2 floaters to this card",
+    "stock": {
+     "titanium": -1
+    },
+    "addResources": 2,
+    "resourceType": "floater",
+    "target": "this"
+   },
+   {
+    "label": "Remove 2 floaters here to increase TR 1 step",
+    "conditional": true,
+    "spendResourcesHere": 2,
+    "tr": 1
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 2
@@ -2124,17 +2190,12 @@ var TM_CARD_DATA = {
   ]
  },
  "Venus Magnetizer": {
-  "behavior": {
-   "production": {
-    "energy": -1
-   }
-  },
   "action": {
-   "stock": {
-    "megacredits": 6
-   },
    "global": {
     "venus": 1
+   },
+   "production": {
+    "energy": -1
    }
   },
   "tags": [
@@ -2155,6 +2216,24 @@ var TM_CARD_DATA = {
   "action": {
    "addResources": 1
   },
+  "actionChoices": [
+   {
+    "label": "Add 1 microbe to this card",
+    "addResources": 1,
+    "resourceType": "microbe",
+    "target": "this"
+   },
+   {
+    "label": "Remove any number of microbes to gain 3 MC per microbe",
+    "conditional": true,
+    "variable": true,
+    "spendResourcesHere": "any",
+    "stockRatio": {
+     "microbe": -1,
+     "megacredits": 3
+    }
+   }
+  ],
   "resourceType": "microbe",
   "tags": [
    "venus",
@@ -2329,6 +2408,16 @@ var TM_CARD_DATA = {
     "megacredits": -2
    }
   },
+  "actionChoices": [
+   {
+    "label": "Gain 1 MC per science tag you have",
+    "dynamic": true,
+    "stockPerTag": {
+     "tag": "science",
+     "megacredits": 1
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 2
@@ -2408,6 +2497,11 @@ var TM_CARD_DATA = {
     "cards": 1
    },
    "drawCard": 1
+  },
+  "action": {
+   "stock": {
+    "megacredits": -2
+   }
   }
  },
  "Venera Base": {
@@ -2590,7 +2684,7 @@ var TM_CARD_DATA = {
  },
  "Refugee Camps": {
   "action": {
-   "stock": {
+   "production": {
     "megacredits": -1
    },
    "addResources": 1
@@ -2745,6 +2839,23 @@ var TM_CARD_DATA = {
     "steel": 1
    }
   },
+  "actionChoices": [
+   {
+    "label": "Increase energy production 1 step if you have no energy resources",
+    "conditional": true,
+    "production": {
+     "energy": 1
+    }
+   },
+   {
+    "label": "Spend 3 MC to draw a building card",
+    "stock": {
+     "megacredits": -3
+    },
+    "drawCard": 1,
+    "tagConstraint": "building"
+   }
+  ],
   "tags": [
    "power",
    "building"
@@ -2757,6 +2868,17 @@ var TM_CARD_DATA = {
     "titanium": 1
    }
   },
+  "actionChoices": [
+   {
+    "label": "Decrease any production 1 step to gain 4 resources of that kind",
+    "conditional": true,
+    "variable": true,
+    "productionToStockRatio": {
+     "production": -1,
+     "stock": 4
+    }
+   }
+  ],
   "tags": [
    "building"
   ]
@@ -2778,6 +2900,18 @@ var TM_CARD_DATA = {
     "titanium": 1
    }
   },
+  "actionChoices": [
+   {
+    "label": "Add 1 asteroid here for every space tag you have",
+    "dynamic": true,
+    "addResourcesPerTag": {
+     "tag": "space",
+     "amount": 1
+    },
+    "resourceType": "asteroid",
+    "target": "this"
+   }
+  ],
   "tags": [
    "space",
    "space"
@@ -2882,6 +3016,19 @@ var TM_CARD_DATA = {
     "energy": 1
    }
   },
+  "actionChoices": [
+   {
+    "label": "Spend any amount of energy to draw that many cards and keep 1",
+    "variable": true,
+    "stockRatio": {
+     "energy": -1
+    },
+    "drawCardRatio": {
+     "cards": 1,
+     "keepMax": 1
+    }
+   }
+  ],
   "tags": [
    "power",
    "science"
@@ -2958,18 +3105,29 @@ var TM_CARD_DATA = {
   ]
  },
  "Robinson Industries": {
-  "behavior": {
-   "production": {
-    "megacredits": 1
+  "actionChoices": [
+   {
+    "label": "Spend 4 MC to increase one of your lowest productions 1 step",
+    "conditional": true,
+    "stock": {
+     "megacredits": -4
+    },
+    "productionChoice": {
+     "count": 1,
+     "lowestOnly": true
+    }
    }
-  }
+  ]
  },
  "Stormcraft Incorporated": {
-  "behavior": {
-   "production": {
-    "heat": 1
+  "actionChoices": [
+   {
+    "label": "Add 1 floater to any card",
+    "addResources": 1,
+    "resourceType": "floater",
+    "target": "any"
    }
-  },
+  ],
   "tags": [
    "jovian"
   ]
@@ -3269,6 +3427,20 @@ var TM_CARD_DATA = {
    "tr": 2,
    "drawCard": 1
   },
+  "actionChoices": [
+   {
+    "label": "Raise 1 global parameter without TR or placement bonuses",
+    "conditional": true,
+    "globalChoice": [
+     "ocean",
+     "oxygen",
+     "temperature",
+     "venus"
+    ],
+    "noTR": true,
+    "noBonuses": true
+   }
+  ],
   "tags": [
    "earth"
   ]
@@ -3310,7 +3482,19 @@ var TM_CARD_DATA = {
     "cards": 1
    },
    "drawCard": 1
-  }
+  },
+  "actionChoices": [
+   {
+    "label": "Discard 1 card and spend 1 standard resource to draw 1 card and gain 1 standard resource",
+    "conditional": true,
+    "stock": {
+     "cards": -1
+    },
+    "spendStandardResource": 1,
+    "drawCard": 1,
+    "gainStandardResource": 1
+   }
+  ]
  },
  "Power Generation": {
   "behavior": {
@@ -3841,9 +4025,6 @@ var TM_CARD_DATA = {
  },
  "Psychrophiles": {
   "action": {
-   "stock": {
-    "megacredits": 2
-   },
    "addResources": 1
   },
   "resourceType": "microbe",
@@ -3944,10 +4125,31 @@ var TM_CARD_DATA = {
    "building"
   ]
  },
+ "Self-replicating Robots": {
+  "actionChoices": [
+   {
+    "label": "Reveal a Space or Building card from hand here and place 2 resources on it",
+    "conditional": true,
+    "hostCardFromHand": true,
+    "tagConstraint": [
+     "space",
+     "building"
+    ],
+    "addResources": 2,
+    "target": "hosted_card"
+   },
+   {
+    "label": "Double resources on a card hosted here",
+    "conditional": true,
+    "doubleHostedResources": true
+   }
+  ]
+ },
  "Directed Heat Usage": {
   "action": {
    "stock": {
-    "megacredits": 4
+    "megacredits": 4,
+    "heat": -3
    }
   }
  },
@@ -3957,10 +4159,26 @@ var TM_CARD_DATA = {
     "energy": -1
    }
   },
+  "actionChoices": [
+   {
+    "label": "Remove 1 disease from any of your cards to gain 1 MC per city in play",
+    "conditional": true,
+    "spendResources": {
+     "type": "disease",
+     "count": 1,
+     "target": "any_owned"
+    },
+    "stockPerBoard": {
+     "per": "city",
+     "megacredits": 1
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 1
   },
+  "resourceType": "disease",
   "tags": [
    "building"
   ]
@@ -3971,6 +4189,21 @@ var TM_CARD_DATA = {
     "megacredits": 0
    }
   },
+  "actionChoices": [
+   {
+    "label": "Add 2 floaters to any card",
+    "addResources": 2,
+    "resourceType": "floater",
+    "target": "any"
+   },
+   {
+    "label": "Remove any number of floaters here to gain that many of one standard resource",
+    "conditional": true,
+    "variable": true,
+    "spendResourcesHere": "any",
+    "standardResourceChoice": true
+   }
+  ],
   "tags": [
    "space"
   ]
@@ -3986,6 +4219,14 @@ var TM_CARD_DATA = {
   ]
  },
  "Floater Technology": {
+  "actionChoices": [
+   {
+    "label": "Add 1 floater to another card",
+    "addResources": 1,
+    "resourceType": "floater",
+    "target": "another"
+   }
+  ],
   "tags": [
    "science"
   ]
@@ -4018,12 +4259,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Neptunian Power Consultants": {
-  "action": {
-   "stock": {
-    "megacredits": 3
-   },
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -4321,6 +4556,38 @@ var TM_CARD_DATA = {
   "action": {
    "addResources": 1
   },
+  "actionChoices": [
+   {
+    "label": "Add 1 floater to this card",
+    "addResources": 1,
+    "resourceType": "floater",
+    "target": "this"
+   },
+   {
+    "label": "Remove 1 floater to gain 2 titanium",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "stock": {
+     "titanium": 2
+    }
+   },
+   {
+    "label": "Remove 1 floater to gain 3 energy",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "stock": {
+     "energy": 3
+    }
+   },
+   {
+    "label": "Remove 1 floater to gain 4 heat",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "stock": {
+     "heat": 4
+    }
+   }
+  ],
   "resourceType": "floater"
  },
  "Sub-zero Salt Fish": {
@@ -4392,23 +4659,55 @@ var TM_CARD_DATA = {
   "behavior": {
    "tr": 1
   },
+  "actionChoices": [
+   {
+    "label": "Decrease energy production 1 step to increase plant production 1 step",
+    "conditional": true,
+    "production": {
+     "energy": -1,
+     "plants": 1
+    }
+   }
+  ],
   "tags": [
    "power",
    "building"
   ]
  },
  "Icy Impactors": {
-  "action": {
-   "tr": 0.5,
-   "addResources": 1
-  },
-  "resourceType": "floater",
+  "actionChoices": [
+   {
+    "label": "Spend 10 MC to add 2 asteroids to this card",
+    "stock": {
+     "megacredits": -10
+    },
+    "addResources": 2,
+    "resourceType": "asteroid",
+    "target": "this",
+    "canUseTitanium": true
+   },
+   {
+    "label": "Remove 1 asteroid here to place an ocean",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "global": {
+     "ocean": 1
+    },
+    "firstPlayerPlaces": true
+   }
+  ],
   "tags": [
    "space"
   ]
  },
  "Asteroid Hollowing": {
   "action": {
+   "stock": {
+    "titanium": -1
+   },
+   "production": {
+    "megacredits": 1
+   },
    "addResources": 1
   },
   "vp": {
@@ -4650,6 +4949,15 @@ var TM_CARD_DATA = {
    "city": 1,
    "drawCard": 1
   },
+  "action": {
+   "stock": {
+    "titanium": -2
+   },
+   "production": {
+    "energy": 1,
+    "heat": 1
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -4693,11 +5001,15 @@ var TM_CARD_DATA = {
   ]
  },
  "Mars Nomads": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Move the Nomads to an adjacent non-reserved empty area and collect the placement bonus",
+    "conditional": true,
+    "boardAction": "move_nomads",
+    "placementBonus": true,
+    "noTilePlaced": true
    }
-  }
+  ]
  },
  "Red Spot Observatory": {
   "behavior": {
@@ -4845,11 +5157,26 @@ var TM_CARD_DATA = {
   ]
  },
  "Energy Market": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Spend 2X MC to gain X energy",
+    "variable": true,
+    "stockRatio": {
+     "megacredits": -2,
+     "energy": 1
+    }
+   },
+   {
+    "label": "Decrease energy production 1 step to gain 8 MC",
+    "conditional": true,
+    "production": {
+     "energy": -1
+    },
+    "stock": {
+     "megacredits": 8
+    }
    }
-  },
+  ],
   "tags": [
    "power"
   ]
@@ -4870,6 +5197,11 @@ var TM_CARD_DATA = {
   "behavior": {
    "production": {
     "megacredits": 2
+   }
+  },
+  "action": {
+   "stock": {
+    "megacredits": -3
    }
   },
   "tags": [
@@ -4980,7 +5312,8 @@ var TM_CARD_DATA = {
  "Martian Rails": {
   "action": {
    "stock": {
-    "megacredits": 3
+    "megacredits": 3,
+    "energy": -1
    }
   },
   "tags": [
@@ -5000,7 +5333,10 @@ var TM_CARD_DATA = {
  },
  "Development Center": {
   "action": {
-   "drawCard": 1
+   "drawCard": 1,
+   "stock": {
+    "energy": -1
+   }
   },
   "tags": [
    "science",
@@ -5078,7 +5414,8 @@ var TM_CARD_DATA = {
   },
   "action": {
    "stock": {
-    "megacredits": 5
+    "megacredits": 5,
+    "steel": -1
    }
   },
   "vp": {
@@ -5172,10 +5509,6 @@ var TM_CARD_DATA = {
     "energy": -1
    }
   },
-  "action": {
-   "drawCard": 0.5,
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -5234,10 +5567,6 @@ var TM_CARD_DATA = {
    "production": {
     "energy": -1
    }
-  },
-  "action": {
-   "drawCard": 0.5,
-   "addResources": 1
   },
   "resourceType": "data"
  },
@@ -5362,15 +5691,24 @@ var TM_CARD_DATA = {
   ]
  },
  "Saturn Surfing": {
-  "action": {
-   "stock": {
-    "megacredits": 4
+  "actionChoices": [
+   {
+    "label": "Remove 1 floater here to gain 1 MC per floater here, including the paid floater, max 5",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "stockPerResourceHere": {
+     "resourceType": "floater",
+     "megacredits": 1,
+     "max": 5,
+     "includesSpent": true
+    }
    }
-  },
+  ],
   "vp": {
    "type": "static",
    "vp": 1
   },
+  "resourceType": "floater",
   "tags": [
    "jovian",
    "earth"
@@ -5401,6 +5739,25 @@ var TM_CARD_DATA = {
   ]
  },
  "Titan Shuttles": {
+  "actionChoices": [
+   {
+    "label": "Add 2 floaters to any Jovian card",
+    "addResources": 2,
+    "resourceType": "floater",
+    "target": "any",
+    "tagConstraint": "jovian"
+   },
+   {
+    "label": "Remove any number of floaters here to gain that many titanium",
+    "conditional": true,
+    "variable": true,
+    "spendResourcesHere": "any",
+    "stockRatio": {
+     "floater": -1,
+     "titanium": 1
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 1
@@ -5510,12 +5867,13 @@ var TM_CARD_DATA = {
   ]
  },
  "Floyd Continuum": {
-  "behavior": {
-   "stock": {
-    "cards": 1
-   },
-   "drawCard": 1
-  },
+  "actionChoices": [
+   {
+    "label": "Gain 3 MC per completed terraforming parameter",
+    "dynamic": true,
+    "completedParameterMc": 3
+   }
+  ],
   "tags": [
    "science"
   ]
@@ -5839,6 +6197,9 @@ var TM_CARD_DATA = {
  },
  "Floating Habs": {
   "action": {
+   "stock": {
+    "megacredits": -2
+   },
    "addResources": 1
   },
   "vp": {
@@ -5963,6 +6324,27 @@ var TM_CARD_DATA = {
   ]
  },
  "Floating Refinery": {
+  "actionChoices": [
+   {
+    "label": "Add 1 floater to this card",
+    "addResources": 1,
+    "resourceType": "floater",
+    "target": "this"
+   },
+   {
+    "label": "Remove 2 floaters from any card to gain 1 titanium and 2 MC",
+    "conditional": true,
+    "spendResources": {
+     "type": "floater",
+     "count": 2,
+     "target": "any"
+    },
+    "stock": {
+     "titanium": 1,
+     "megacredits": 2
+    }
+   }
+  ],
   "tags": [
    "venus"
   ]
@@ -6025,6 +6407,19 @@ var TM_CARD_DATA = {
   ]
  },
  "Hi-Tech Lab": {
+  "actionChoices": [
+   {
+    "label": "Spend any amount of energy to draw that many cards and keep 1",
+    "variable": true,
+    "stockRatio": {
+     "energy": -1
+    },
+    "drawCardRatio": {
+     "cards": 1,
+     "keepMax": 1
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 1
@@ -6066,6 +6461,22 @@ var TM_CARD_DATA = {
    },
    "ocean": 1
   },
+  "actionChoices": [
+   {
+    "label": "Add 1 microbe to another card",
+    "conditional": true,
+    "addResources": 1,
+    "resourceType": "microbe",
+    "target": "another"
+   },
+   {
+    "label": "Add 1 animal to another card",
+    "conditional": true,
+    "addResources": 1,
+    "resourceType": "animal",
+    "target": "another"
+   }
+  ],
   "tags": [
    "building"
   ]
@@ -6139,9 +6550,29 @@ var TM_CARD_DATA = {
  "Bio Printing Facility": {
   "action": {
    "stock": {
-    "megacredits": 2
+    "plants": 2,
+    "energy": -2
    }
   },
+  "actionChoices": [
+   {
+    "label": "Spend 2 energy to gain 2 plants",
+    "stock": {
+     "energy": -2,
+     "plants": 2
+    }
+   },
+   {
+    "label": "Spend 2 energy to add 1 animal to another card",
+    "conditional": true,
+    "stock": {
+     "energy": -2
+    },
+    "addResources": 1,
+    "resourceType": "animal",
+    "target": "another"
+   }
+  ],
   "tags": [
    "building"
   ]
@@ -6314,12 +6745,14 @@ var TM_CARD_DATA = {
  },
  "Physics Complex": {
   "action": {
-   "tr": 0.5,
+   "stock": {
+    "energy": -6
+   },
    "addResources": 1
   },
   "vp": {
    "type": "per_resource",
-   "per": 1
+   "per": 0.5
   },
   "resourceType": "science",
   "tags": [
@@ -6391,6 +6824,25 @@ var TM_CARD_DATA = {
   ]
  },
  "Comet Aiming": {
+  "actionChoices": [
+   {
+    "label": "Spend 1 titanium to add 1 asteroid to any card",
+    "stock": {
+     "titanium": -1
+    },
+    "addResources": 1,
+    "resourceType": "asteroid",
+    "target": "any"
+   },
+   {
+    "label": "Remove 1 asteroid here to place an ocean",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "global": {
+     "ocean": 1
+    }
+   }
+  ],
   "tags": [
    "space"
   ]
@@ -6406,11 +6858,26 @@ var TM_CARD_DATA = {
   ]
  },
  "Directed Impactors": {
-  "action": {
-   "tr": 0.17,
-   "addResources": 1
-  },
-  "resourceType": "floater",
+  "actionChoices": [
+   {
+    "label": "Spend 6 MC to add 1 asteroid to any card",
+    "stock": {
+     "megacredits": -6
+    },
+    "addResources": 1,
+    "resourceType": "asteroid",
+    "target": "any",
+    "canUseTitanium": true
+   },
+   {
+    "label": "Remove 1 asteroid here to raise temperature 1 step",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "global": {
+     "temperature": 1
+    }
+   }
+  ],
   "tags": [
    "space"
   ]
@@ -6419,6 +6886,22 @@ var TM_CARD_DATA = {
   "action": {
    "addResources": 1
   },
+  "actionChoices": [
+   {
+    "label": "Add 1 floater to this card",
+    "addResources": 1,
+    "resourceType": "floater",
+    "target": "this"
+   },
+   {
+    "label": "Remove 1 floater to increase MC production 1 step",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "production": {
+     "megacredits": 1
+    }
+   }
+  ],
   "resourceType": "floater",
   "tags": [
    "venus"
@@ -6469,7 +6952,6 @@ var TM_CARD_DATA = {
    }
   },
   "action": {
-   "tr": 0.33,
    "addResources": 1
   },
   "vp": {
@@ -6497,6 +6979,11 @@ var TM_CARD_DATA = {
    "global": {
     "temperature": 1
    }
+  },
+  "action": {
+   "stock": {
+    "plants": -1
+   }
   }
  },
  "Controlled Bloom": {
@@ -6516,6 +7003,9 @@ var TM_CARD_DATA = {
  "Cultivation of Venus": {
   "action": {
    "tr": 1,
+   "stock": {
+    "plants": -3
+   },
    "global": {
     "venus": 1
    }
@@ -6534,12 +7024,6 @@ var TM_CARD_DATA = {
   }
  },
  "Economic Espionage": {
-  "action": {
-   "stock": {
-    "megacredits": 3
-   },
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -6698,7 +7182,10 @@ var TM_CARD_DATA = {
  },
  "Ozone Generators": {
   "action": {
-   "tr": 1
+   "tr": 1,
+   "stock": {
+    "energy": -3
+   }
   },
   "vp": {
    "type": "static",
@@ -6888,6 +7375,18 @@ var TM_CARD_DATA = {
     "titanium": 5
    }
   },
+  "actionChoices": [
+   {
+    "label": "Spend 2 titanium to raise temperature 1 step",
+    "conditional": true,
+    "stock": {
+     "titanium": -2
+    },
+    "global": {
+     "temperature": 1
+    }
+   }
+  ],
   "tags": [
    "space"
   ]
@@ -6897,9 +7396,23 @@ var TM_CARD_DATA = {
    "stock": {
     "steel": 10
    }
-  }
+  },
+  "actionChoices": [
+   {
+    "label": "Place a community marker adjacent to one of your tiles or marked areas",
+    "conditional": true,
+    "boardAction": "place_community_marker"
+   }
+  ]
  },
  "Septem Tribus": {
+  "actionChoices": [
+   {
+    "label": "When you perform an action, the wild tag counts as any tag of your choice",
+    "conditional": true,
+    "tagFlexAction": true
+   }
+  ],
   "tags": [
    "wild"
   ]
@@ -7255,13 +7768,6 @@ var TM_CARD_DATA = {
    }
   }
  },
- "Cryptocurrency": {
-  "action": {
-   "stock": {
-    "megacredits": 1
-   }
-  }
- },
  "Archimedes Hydroponics Station": {
   "behavior": {
    "production": {
@@ -7303,11 +7809,28 @@ var TM_CARD_DATA = {
    }
   },
   "action": {
-   "tr": 0.33,
+   "drawCard": 1,
    "stock": {
-    "megacredits": 3
+    "megacredits": -3
    }
-  }
+  },
+  "actionChoices": [
+   {
+    "label": "Spend 3 MC to draw a blue card",
+    "stock": {
+     "megacredits": -3
+    },
+    "drawCard": 1,
+    "cardType": "active"
+   },
+   {
+    "label": "Flip and discard a played blue card to convert VP into TR and draw 2 cards",
+    "conditional": true,
+    "discardPlayedCardType": "active",
+    "trFromDiscardedCardVP": true,
+    "drawCard": 2
+   }
+  ]
  },
  "Trade Advance": {
   "behavior": {
@@ -7399,6 +7922,14 @@ var TM_CARD_DATA = {
   ]
  },
  "Underground Detonations": {
+  "action": {
+   "stock": {
+    "megacredits": -10
+   },
+   "production": {
+    "heat": 2
+   }
+  },
   "tags": [
    "building"
   ]
@@ -7733,6 +8264,9 @@ var TM_CARD_DATA = {
  },
  "Processor Factory": {
   "action": {
+   "stock": {
+    "steel": -1
+   },
    "addResources": 1
   },
   "vp": {
@@ -7742,6 +8276,9 @@ var TM_CARD_DATA = {
  },
  "Rust Eating Bacteria": {
   "action": {
+   "stock": {
+    "steel": -1
+   },
    "addResources": 1
   },
   "vp": {
@@ -7755,6 +8292,16 @@ var TM_CARD_DATA = {
    "production": {
     "megacredits": 3,
     "energy": -1
+   }
+  }
+ },
+ "Solar Panel Foundry": {
+  "action": {
+   "stock": {
+    "steel": -2
+   },
+   "production": {
+    "energy": 1
    }
   }
  },
@@ -7914,6 +8461,14 @@ var TM_CARD_DATA = {
     "plants": 2
    }
   },
+  "action": {
+   "stock": {
+    "plants": 2
+   },
+   "production": {
+    "plants": 1
+   }
+  },
   "tags": [
    "plant"
   ]
@@ -8031,6 +8586,11 @@ var TM_CARD_DATA = {
     "count": 1
    }
   },
+  "action": {
+   "stock": {
+    "energy": -1
+   }
+  },
   "tags": [
    "science"
   ]
@@ -8104,6 +8664,15 @@ var TM_CARD_DATA = {
     "steel": 5
    }
   },
+  "actionChoices": [
+   {
+    "label": "Excavate an underground resource",
+    "conditional": true,
+    "underworld": {
+     "excavate": 1
+    }
+   }
+  ],
   "tags": [
    "building"
   ]
@@ -8200,6 +8769,11 @@ var TM_CARD_DATA = {
     "titanium": 3
    }
   },
+  "action": {
+   "stock": {
+    "titanium": -1
+   }
+  },
   "tags": [
    "jovian",
    "space"
@@ -8242,6 +8816,11 @@ var TM_CARD_DATA = {
   ]
  },
  "Microgravimetry": {
+  "action": {
+   "stock": {
+    "energy": -2
+   }
+  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -8348,6 +8927,9 @@ var TM_CARD_DATA = {
  },
  "Private Military Contractor": {
   "action": {
+   "stock": {
+    "titanium": -1
+   },
    "addResources": 1
   },
   "resourceType": "fighter",
@@ -8431,6 +9013,9 @@ var TM_CARD_DATA = {
  },
  "Space Wargames": {
   "action": {
+   "stock": {
+    "titanium": -1
+   },
    "addResources": 1
   },
   "vp": {
@@ -8527,6 +9112,9 @@ var TM_CARD_DATA = {
    }
   },
   "action": {
+   "stock": {
+    "energy": -8
+   },
    "global": {
     "oxygen": 1
    }
@@ -8556,6 +9144,16 @@ var TM_CARD_DATA = {
   }
  },
  "United Nations Mars Initiative": {
+  "actionChoices": [
+   {
+    "label": "If your TR was raised this generation, pay 3 MC to raise TR 1 step",
+    "conditional": true,
+    "stock": {
+     "megacredits": -3
+    },
+    "tr": 1
+   }
+  ],
   "tags": [
    "earth"
   ]
@@ -8563,7 +9161,8 @@ var TM_CARD_DATA = {
  "Meltworks": {
   "action": {
    "stock": {
-    "megacredits": 3
+    "steel": 3,
+    "heat": -5
    }
   },
   "tags": [
@@ -8893,11 +9492,25 @@ var TM_CARD_DATA = {
   ]
  },
  "Geologist Team": {
+  "actionChoices": [
+   {
+    "label": "Identify 1 underground resource",
+    "conditional": true,
+    "underworld": {
+     "identify": 1
+    }
+   }
+  ],
   "tags": [
    "science"
   ]
  },
  "Tunnel Boring Machine": {
+  "action": {
+   "stock": {
+    "energy": -3
+   }
+  },
   "tags": [
    "building"
   ]
@@ -8913,11 +9526,35 @@ var TM_CARD_DATA = {
   ]
  },
  "Search for Life Underground": {
+  "actionChoices": [
+   {
+    "label": "Spend 1 MC to identify an underground resource; if it depicts a microbe, add 1 science resource here",
+    "conditional": true,
+    "stock": {
+     "megacredits": -1
+    },
+    "underworld": {
+     "identify": 1
+    },
+    "addResourcesIfToken": {
+     "token": "microbe",
+     "resourceType": "science",
+     "amount": 1,
+     "target": "this"
+    }
+   }
+  ],
+  "resourceType": "science",
   "tags": [
    "science"
   ]
  },
  "Grey Market Exploitation": {
+  "action": {
+   "stock": {
+    "megacredits": -1
+   }
+  },
   "tags": [
    "crime"
   ]
@@ -8928,11 +9565,34 @@ var TM_CARD_DATA = {
   ]
  },
  "Stem Field Subsidies": {
+  "actionChoices": [
+   {
+    "label": "Spend 2 data here to identify 3 underground resources and claim 1",
+    "conditional": true,
+    "spendResourcesHere": 2,
+    "underworld": {
+     "identify": 3,
+     "claim": 1
+    }
+   }
+  ],
+  "resourceType": "data",
   "tags": [
    "science"
   ]
  },
  "Titan Manufacturing Colony": {
+  "actionChoices": [
+   {
+    "label": "Spend 1 tool here to excavate an underground resource",
+    "conditional": true,
+    "spendResourcesHere": 1,
+    "underworld": {
+     "excavate": 1
+    }
+   }
+  ],
+  "resourceType": "tool",
   "tags": [
    "jovian",
    "space",
@@ -8940,10 +9600,23 @@ var TM_CARD_DATA = {
   ]
  },
  "Space Privateers": {
+  "actionChoices": [
+   {
+    "label": "Steal up to 1 MC per fighter here from each other player; blocked players remove 1 fighter",
+    "conditional": true,
+    "stockPerResourceHere": {
+     "resourceType": "fighter",
+     "megacredits": 1
+    },
+    "stealFromEachOpponent": true,
+    "blockedRemovesResource": "fighter"
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": -2
   },
+  "resourceType": "fighter",
   "tags": [
    "crime",
    "space"
@@ -8952,7 +9625,8 @@ var TM_CARD_DATA = {
  "Personal Spacecruiser": {
   "action": {
    "stock": {
-    "megacredits": 2
+    "megacredits": 2,
+    "energy": -1
    }
   },
   "tags": [
@@ -8961,17 +9635,38 @@ var TM_CARD_DATA = {
   ]
  },
  "Chemical Factory": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Spend 1 plant to excavate an underground resource",
+    "conditional": true,
+    "stock": {
+     "plants": -1
+    },
+    "underworld": {
+     "excavate": 1
+    }
    }
-  },
+  ],
   "tags": [
    "crime",
    "building"
   ]
  },
  "Corporate Theft": {
+  "actionChoices": [
+   {
+    "label": "Pay 5 MC to steal any 1 resource from another player",
+    "conditional": true,
+    "stock": {
+     "megacredits": -5
+    },
+    "stealResource": {
+     "count": 1,
+     "source": "opponent",
+     "anyStandardOrCardResource": true
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": -1
@@ -8981,6 +9676,16 @@ var TM_CARD_DATA = {
   ]
  },
  "Monopoly": {
+  "actionChoices": [
+   {
+    "label": "Spend 1 corruption to increase any production 1 step",
+    "conditional": true,
+    "spendCorruption": 1,
+    "productionChoice": {
+     "count": 1
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": -2
@@ -8990,6 +9695,15 @@ var TM_CARD_DATA = {
   ]
  },
  "Underground Shelters": {
+  "actionChoices": [
+   {
+    "label": "Place your cube on one of your claimed underground resource tokens without a cube",
+    "conditional": true,
+    "underworld": {
+     "shelterToken": 1
+    }
+   }
+  ],
   "tags": [
    "building"
   ]
@@ -8997,7 +9711,8 @@ var TM_CARD_DATA = {
  "Battery Factory": {
   "action": {
    "stock": {
-    "megacredits": 2
+    "megacredits": 2,
+    "energy": -1
    }
   },
   "tags": [
@@ -9006,12 +9721,39 @@ var TM_CARD_DATA = {
   ]
  },
  "Voltaic Metallurgy": {
+  "actionChoices": [
+   {
+    "label": "Spend any number of steel to gain the same amount of titanium, max power tags",
+    "conditional": true,
+    "variable": true,
+    "stockRatio": {
+     "steel": -1,
+     "titanium": 1
+    },
+    "maxByTag": "power"
+   }
+  ],
   "tags": [
    "science",
    "power"
   ]
  },
  "Deep Foundations": {
+  "actionChoices": [
+   {
+    "label": "Pay 20 MC, steel may be used, excavate a valid city space if possible, then place a city",
+    "conditional": true,
+    "stock": {
+     "megacredits": -20
+    },
+    "canUseSteel": true,
+    "underworld": {
+     "excavate": 1,
+     "ifPossible": true
+    },
+    "city": 1
+   }
+  ],
   "tags": [
    "city",
    "building"
@@ -9353,7 +10095,10 @@ var TM_CARD_DATA = {
  "Industrial Center:ares": {
   "action": {
    "stock": {
-    "megacredits": 7
+    "megacredits": -7
+   },
+   "production": {
+    "steel": 1
    }
   },
   "tags": [
@@ -9440,7 +10185,10 @@ var TM_CARD_DATA = {
  },
  "Restricted Area:ares": {
   "action": {
-   "drawCard": 1
+   "drawCard": 1,
+   "stock": {
+    "megacredits": -2
+   }
   },
   "tags": [
    "science"
@@ -9469,15 +10217,19 @@ var TM_CARD_DATA = {
    "tr": 1
   }
  },
+ "Jenson-Boyle & Co": {
+  "action": {
+   "stock": {
+    "steel": 5
+   }
+  },
+  "tags": [
+   "crime"
+  ]
+ },
  "Standard Technology:u": {
   "tags": [
    "science"
-  ],
-  "action": {}
- },
- "Jenson-Boyle & Co": {
-  "tags": [
-   "crime"
   ],
   "action": {}
  },

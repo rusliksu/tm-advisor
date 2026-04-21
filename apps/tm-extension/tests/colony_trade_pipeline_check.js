@@ -191,29 +191,334 @@ assert.strictEqual(Object.prototype.hasOwnProperty.call(cardData['Asteroid Resou
 assert.strictEqual(Object.prototype.hasOwnProperty.call(cardData['Asteroid Resources'].behavior, 'ocean'), false, 'Asteroid Resources card data should not sum the ocean branch');
 const statefulOrActionStaleKeys = {
   'Aerial Mappers': ['actCD'],
+  'Asteroid Deflection System': ['actTR'],
   'Atmo Collectors': ['actMC'],
+  'Communication Center': ['actCD'],
+  'Comet Aiming': ['actTR', 'res'],
   'Copernicus Tower': ['actTR'],
   'Deuterium Export': ['actTR', 'act_ep'],
+  'Directed Impactors': ['actTR', 'res'],
   'Dirigibles': ['actMC'],
+  'Economic Espionage': ['actMC'],
   'Extractor Balloons': ['vn', 'actTR', 'actVn'],
   'Floating Refinery': ['actMC'],
   'Forced Precipitation': ['actMC'],
   'GHG Producing Bacteria': ['actTR', 'actTmp'],
+  'Icy Impactors': ['actTR', 'res'],
   'Jet Stream Microscrappers': ['actTR'],
   'Jupiter Floating Station': ['actMC'],
   'Local Shading': ['actTR', 'act_mp'],
+  'Martian Repository': ['actCD'],
+  'Neptunian Power Consultants': ['actMC'],
   'Nitrite Reducing Bacteria': ['tr', 'actTR'],
+  'Physics Complex': ['actTR'],
+  'Psychrophiles': ['actMC'],
   'Regolith Eaters': ['actTR', 'actO2'],
+  'Refugee Camps': ['actMC'],
+  'Rotator Impacts': ['actTR', 'res', 'tg'],
+  'Stratopolis': ['actCD'],
   'Sulphur-Eating Bacteria': ['actMC'],
   'Thermophiles': ['actTR', 'actVn'],
 };
+const noStaticResourceActionCards = new Set([
+  'Comet Aiming',
+  'Communication Center',
+  'Directed Impactors',
+  'Economic Espionage',
+  'Icy Impactors',
+  'Martian Repository',
+  'Neptunian Power Consultants',
+  'Rotator Impacts',
+]);
 for (const [name, staleKeys] of Object.entries(statefulOrActionStaleKeys)) {
   for (const staleKey of staleKeys) {
     assert.strictEqual(hasOwn(effects[name], staleKey), false, name + ' effects should not expose stale ' + staleKey);
   }
+  if (noStaticResourceActionCards.has(name)) {
+    assert.strictEqual(
+      hasOwn(cardData[name] || {}, 'action'),
+      false,
+      name + ' should not expose a trigger-only or paid resource path as a free static action',
+    );
+    if (name === 'Comet Aiming') {
+      assert.strictEqual(cardData[name].actionChoices.length, 2, name + ' should preserve both paid/add and spend/ocean branches');
+      assert.strictEqual(cardData[name].actionChoices[0].stock.titanium, -1, name + ' add branch should expose titanium cost');
+      assert.strictEqual(cardData[name].actionChoices[0].target, 'any', name + ' add branch should target any asteroid card');
+      assert.strictEqual(cardData[name].actionChoices[1].conditional, true, name + ' ocean branch should be conditional on an asteroid');
+      assert.strictEqual(cardData[name].actionChoices[1].global.ocean, 1, name + ' ocean branch should place an ocean');
+    }
+    if (name === 'Directed Impactors') {
+      assert.strictEqual(cardData[name].actionChoices.length, 2, name + ' should preserve both paid/add and spend/temperature branches');
+      assert.strictEqual(cardData[name].actionChoices[0].stock.megacredits, -6, name + ' add branch should expose MC cost');
+      assert.strictEqual(cardData[name].actionChoices[0].canUseTitanium, true, name + ' add branch should preserve titanium payment');
+      assert.strictEqual(cardData[name].actionChoices[1].conditional, true, name + ' temperature branch should be conditional on an asteroid');
+      assert.strictEqual(cardData[name].actionChoices[1].global.temperature, 1, name + ' temperature branch should raise temperature');
+    }
+    if (name === 'Icy Impactors') {
+      assert.strictEqual(cardData[name].actionChoices.length, 2, name + ' should preserve both paid/add and spend/ocean branches');
+      assert.strictEqual(cardData[name].actionChoices[0].stock.megacredits, -10, name + ' add branch should expose MC cost');
+      assert.strictEqual(cardData[name].actionChoices[0].addResources, 2, name + ' add branch should add two asteroids');
+      assert.strictEqual(cardData[name].actionChoices[0].canUseTitanium, true, name + ' add branch should preserve titanium payment');
+      assert.strictEqual(cardData[name].actionChoices[1].conditional, true, name + ' ocean branch should be conditional on an asteroid');
+      assert.strictEqual(cardData[name].actionChoices[1].global.ocean, 1, name + ' ocean branch should place an ocean');
+    }
+    if (name === 'Rotator Impacts') {
+      assert.strictEqual(cardData[name].actionChoices.length, 2, name + ' should preserve both paid/add and spend/raise branches');
+      assert.strictEqual(cardData[name].actionChoices[0].stock.megacredits, -6, name + ' add branch should expose MC cost');
+      assert.strictEqual(cardData[name].actionChoices[0].canUseTitanium, true, name + ' add branch should preserve titanium payment');
+      assert.strictEqual(cardData[name].actionChoices[1].conditional, true, name + ' Venus branch should be conditional on an asteroid');
+      assert.strictEqual(cardData[name].actionChoices[1].global.venus, 1, name + ' Venus branch should raise Venus');
+    }
+    continue;
+  }
+  if (name === 'Floating Refinery') {
+    assert.strictEqual(
+      hasOwn(cardData[name] || {}, 'action'),
+      false,
+      name + ' should not keep the stale payout action after removing actMC',
+    );
+    assert.strictEqual(cardData[name].actionChoices.length, 2, name + ' should preserve both add-floater and spend-floaters branches');
+    assert.strictEqual(cardData[name].actionChoices[0].addResources, 1, name + ' first branch should add a floater');
+    assert.strictEqual(cardData[name].actionChoices[1].conditional, true, name + ' payout branch should be conditional on floaters');
+    assert.strictEqual(cardData[name].actionChoices[1].stock.titanium, 1, name + ' payout branch should gain titanium');
+    assert.strictEqual(cardData[name].actionChoices[1].stock.megacredits, 2, name + ' payout branch should gain MC');
+    continue;
+  }
+  if (name === 'Refugee Camps') {
+    assert.strictEqual(cardData[name].action.addResources, 1, name + ' should keep its camp-resource action branch');
+    assert.strictEqual(cardData[name].action.production.megacredits, -1, name + ' action should model MC production loss');
+    assert.strictEqual(hasOwn(cardData[name].action, 'stock'), false, name + ' should not model production loss as stock MC loss');
+    continue;
+  }
+  if (name === 'Physics Complex') {
+    assert.strictEqual(cardData[name].action.addResources, 1, name + ' should keep its science-resource action branch');
+    assert.strictEqual(cardData[name].action.stock.energy, -6, name + ' should expose the 6 energy action cost');
+    assert.strictEqual(hasOwn(cardData[name].action, 'tr'), false, name + ' should not expose a simultaneous TR action');
+    assert.strictEqual(hasOwn(cardData[name].action, 'global'), false, name + ' should not expose a simultaneous global action');
+    continue;
+  }
   assertResourceOnlyAction(name);
 }
 assertResourceOnlyAction('Weather Balloons');
+assert.strictEqual(hasOwn(effects['Ore Processor'], 'tp'), false, 'Ore Processor should not expose a fake immediate titanium production value');
+assert.strictEqual(effects['Ore Processor'].actTI, 1, 'Ore Processor effects should expose action titanium gain');
+assert.strictEqual(cardData['Ore Processor'].action.stock.titanium, 1, 'Ore Processor action should gain titanium, not MC');
+assert.strictEqual(cardData['Ore Processor'].action.global.oxygen, 1, 'Ore Processor action should keep the oxygen raise');
+assert.strictEqual(hasOwn(cardData['Ore Processor'].behavior, 'production'), false, 'Ore Processor should not expose zero titanium production behavior');
+assert.strictEqual(effects['Steelworks'].actST, 2, 'Steelworks effects should expose action steel gain');
+assert.strictEqual(hasOwn(effects['Steelworks'], 'actMC'), false, 'Steelworks should not value steel as action MC');
+assert.strictEqual(cardData['Steelworks'].action.stock.steel, 2, 'Steelworks action should gain steel, not MC');
+assert.strictEqual(cardData['Steelworks'].action.global.oxygen, 1, 'Steelworks action should keep the oxygen raise');
+assert.strictEqual(hasOwn(cardData['Steelworks'].action.stock, 'megacredits'), false, 'Steelworks action should not gain MC');
+assert.strictEqual(effects['Ironworks'].actST, 1, 'Ironworks effects should expose action steel gain');
+assert.strictEqual(hasOwn(effects['Ironworks'], 'actMC'), false, 'Ironworks should not value steel as action MC');
+assert.strictEqual(cardData['Ironworks'].action.stock.steel, 1, 'Ironworks action should gain steel, not MC');
+assert.strictEqual(cardData['Ironworks'].action.global.oxygen, 1, 'Ironworks action should keep the oxygen raise');
+assert.strictEqual(hasOwn(cardData['Ironworks'].action.stock, 'megacredits'), false, 'Ironworks action should not gain MC');
+assert.strictEqual(hasOwn(effects['Water Splitting Plant'], 'actTR'), false, 'Water Splitting Plant should not double-count TR beside oxygen');
+assert.strictEqual(cardData['Water Splitting Plant'].action.global.oxygen, 1, 'Water Splitting Plant action should keep the oxygen raise');
+assert.strictEqual(hasOwn(cardData['Water Splitting Plant'].action, 'tr'), false, 'Water Splitting Plant action should not expose separate TR');
+assert.strictEqual(effects['Meltworks'].actST, 3, 'Meltworks effects should expose action steel gain');
+assert.strictEqual(hasOwn(effects['Meltworks'], 'actMC'), false, 'Meltworks should not value steel as action MC');
+assert.strictEqual(cardData['Meltworks'].action.stock.steel, 3, 'Meltworks action should gain steel, not MC');
+assert.strictEqual(hasOwn(cardData['Meltworks'].action.stock, 'megacredits'), false, 'Meltworks action should not gain MC');
+assert.strictEqual(hasOwn(effects['Venus Magnetizer'], 'ep'), false, 'Venus Magnetizer should not spend energy production on play');
+assert.strictEqual(hasOwn(effects['Venus Magnetizer'], 'actMC'), false, 'Venus Magnetizer should not value the Venus action as MC stock');
+assert.strictEqual(cardData['Venus Magnetizer'].action.global.venus, 1, 'Venus Magnetizer action should keep the Venus raise');
+assert.strictEqual(cardData['Venus Magnetizer'].action.production.energy, -1, 'Venus Magnetizer action should spend energy production');
+assert.strictEqual(hasOwn(cardData['Venus Magnetizer'].behavior, 'production'), false, 'Venus Magnetizer should not expose immediate energy production loss');
+assert.strictEqual(hasOwn(cardData['Venus Magnetizer'].action, 'stock'), false, 'Venus Magnetizer action should not gain MC');
+assert.strictEqual(hasOwn(effects['Equatorial Magnetizer'], 'tr'), false, 'Equatorial Magnetizer should not gain TR on play');
+assert.strictEqual(hasOwn(effects['Equatorial Magnetizer'], 'ep'), false, 'Equatorial Magnetizer should not spend energy production on play');
+assert.strictEqual(cardData['Equatorial Magnetizer'].action.tr, 1, 'Equatorial Magnetizer action should keep the TR raise');
+assert.strictEqual(cardData['Equatorial Magnetizer'].action.production.energy, -1, 'Equatorial Magnetizer action should spend energy production');
+assert.strictEqual(hasOwn(cardData['Equatorial Magnetizer'], 'behavior'), false, 'Equatorial Magnetizer should not expose immediate play behavior');
+assert.strictEqual(hasOwn(effects['Caretaker Contract'], 'actMC'), false, 'Caretaker Contract should not value heat spending as MC stock');
+assert.strictEqual(cardData['Caretaker Contract'].action.tr, 1, 'Caretaker Contract action should keep the TR raise');
+assert.strictEqual(cardData['Caretaker Contract'].action.stock.heat, -8, 'Caretaker Contract action should expose its heat cost');
+assert.strictEqual(hasOwn(cardData['Caretaker Contract'].action.stock, 'megacredits'), false, 'Caretaker Contract action should not gain MC');
+for (const name of ['Restricted Area', 'Restricted Area:ares']) {
+  assert.strictEqual(effects[name].actCD, 1, name + ' effects should expose the action card draw');
+  assert.strictEqual(effects[name].actMC, -2, name + ' effects should expose the 2 MC action cost');
+  assert.strictEqual(cardData[name].action.drawCard, 1, name + ' action should draw a card');
+  assert.strictEqual(cardData[name].action.stock.megacredits, -2, name + ' action should pay MC, not gain MC');
+}
+assert.strictEqual(cardData['Project Workshop'].behavior.stock.steel, 1, 'Project Workshop should keep starting steel');
+assert.strictEqual(cardData['Project Workshop'].behavior.stock.titanium, 1, 'Project Workshop should keep starting titanium');
+assert.strictEqual(effects['Project Workshop'].actCD, 1, 'Project Workshop effects should keep the paid blue-card draw branch');
+assert.strictEqual(effects['Project Workshop'].actMC, -3, 'Project Workshop effects should expose the 3 MC action cost');
+assert.strictEqual(hasOwn(effects['Project Workshop'], 'actTR'), false, 'Project Workshop should not expose an averaged TR action');
+assert.strictEqual(cardData['Project Workshop'].action.drawCard, 1, 'Project Workshop action should draw a blue card as a card draw');
+assert.strictEqual(cardData['Project Workshop'].action.stock.megacredits, -3, 'Project Workshop action should pay MC, not gain MC');
+assert.strictEqual(hasOwn(cardData['Project Workshop'].action, 'tr'), false, 'Project Workshop action should not expose fake averaged TR');
+assert.strictEqual(cardData['Project Workshop'].actionChoices.length, 2, 'Project Workshop should preserve both OR action choices');
+assert.strictEqual(cardData['Project Workshop'].actionChoices[0].drawCard, 1, 'Project Workshop first action choice should be the paid blue-card draw');
+assert.strictEqual(cardData['Project Workshop'].actionChoices[0].stock.megacredits, -3, 'Project Workshop paid draw choice should expose the MC cost');
+assert.strictEqual(cardData['Project Workshop'].actionChoices[1].conditional, true, 'Project Workshop flip branch should be marked conditional');
+assert.strictEqual(cardData['Project Workshop'].actionChoices[1].drawCard, 2, 'Project Workshop flip branch should draw 2 cards');
+assert.strictEqual(cardData['Project Workshop'].actionChoices[1].trFromDiscardedCardVP, true, 'Project Workshop flip branch should preserve VP-to-TR conversion');
+assert.strictEqual(hasOwn(effects['Energy Market'], 'actMC'), false, 'Energy Market should not expose a static MC action for its OR action');
+assert.strictEqual(hasOwn(cardData['Energy Market'] || {}, 'action'), false, 'Energy Market should not expose a misleading static action');
+assert.strictEqual(cardData['Energy Market'].actionChoices.length, 2, 'Energy Market should preserve both variable-energy and energy-prod cash branches');
+assert.strictEqual(cardData['Energy Market'].actionChoices[0].variable, true, 'Energy Market energy branch should be variable');
+assert.strictEqual(cardData['Energy Market'].actionChoices[0].stockRatio.megacredits, -2, 'Energy Market energy branch should expose 2 MC per energy');
+assert.strictEqual(cardData['Energy Market'].actionChoices[0].stockRatio.energy, 1, 'Energy Market energy branch should expose gained energy');
+assert.strictEqual(cardData['Energy Market'].actionChoices[1].conditional, true, 'Energy Market cash branch should be conditional on energy production');
+assert.strictEqual(cardData['Energy Market'].actionChoices[1].production.energy, -1, 'Energy Market cash branch should spend energy production');
+assert.strictEqual(cardData['Energy Market'].actionChoices[1].stock.megacredits, 8, 'Energy Market cash branch should gain 8 MC');
+assert.strictEqual(hasOwn(effects['Floyd Continuum'], 'cd'), false, 'Floyd Continuum should not expose a false immediate card draw');
+assert.strictEqual(!!(cardData['Floyd Continuum'].behavior && cardData['Floyd Continuum'].behavior.drawCard), false, 'Floyd Continuum card data should not draw on play');
+assert.strictEqual(cardData['Floyd Continuum'].actionChoices.length, 1, 'Floyd Continuum should preserve its dynamic MC action');
+assert.strictEqual(cardData['Floyd Continuum'].actionChoices[0].completedParameterMc, 3, 'Floyd Continuum action should gain 3 MC per completed parameter');
+assert.strictEqual(cardData['Power Infrastructure'].actionChoices.length, 1, 'Power Infrastructure should expose its variable energy-to-MC action');
+assert.strictEqual(cardData['Power Infrastructure'].actionChoices[0].stockRatio.energy, -1, 'Power Infrastructure action should spend energy');
+assert.strictEqual(cardData['Power Infrastructure'].actionChoices[0].stockRatio.megacredits, 1, 'Power Infrastructure action should gain matching MC');
+assert.strictEqual(cardData['Hi-Tech Lab'].actionChoices.length, 1, 'Hi-Tech Lab should expose its variable energy draw action');
+assert.strictEqual(cardData['Hi-Tech Lab'].actionChoices[0].stockRatio.energy, -1, 'Hi-Tech Lab action should spend energy');
+assert.strictEqual(cardData['Hi-Tech Lab'].actionChoices[0].drawCardRatio.keepMax, 1, 'Hi-Tech Lab action should keep one drawn card');
+assert.strictEqual(cardData['United Nations Mars Initiative'].actionChoices.length, 1, 'UNMI should expose its conditional TR action');
+assert.strictEqual(cardData['United Nations Mars Initiative'].actionChoices[0].stock.megacredits, -3, 'UNMI action should pay 3 MC');
+assert.strictEqual(cardData['United Nations Mars Initiative'].actionChoices[0].tr, 1, 'UNMI action should raise TR');
+assert.strictEqual(cardData['Factorum'].actionChoices.length, 2, 'Factorum should preserve energy-production and building-draw branches');
+assert.strictEqual(cardData['Factorum'].actionChoices[0].conditional, true, 'Factorum production branch should be conditional on no energy resources');
+assert.strictEqual(cardData['Factorum'].actionChoices[0].production.energy, 1, 'Factorum production branch should increase energy production');
+assert.strictEqual(cardData['Factorum'].actionChoices[1].stock.megacredits, -3, 'Factorum draw branch should pay 3 MC');
+assert.strictEqual(cardData['Factorum'].actionChoices[1].tagConstraint, 'building', 'Factorum draw branch should draw a building card');
+assert.strictEqual(cardData['Tycho Magnetics'].actionChoices[0].drawCardRatio.keepMax, 1, 'Tycho Magnetics should preserve its keep-1 draw action');
+assert.strictEqual(cardData['Kuiper Cooperative'].actionChoices[0].addResourcesPerTag.tag, 'space', 'Kuiper Cooperative should add asteroids per space tag');
+assert.strictEqual(hasOwn(effects['Stormcraft Incorporated'], 'hp'), false, 'Stormcraft Incorporated should not expose false heat production');
+assert.strictEqual(!!(cardData['Stormcraft Incorporated'].behavior && cardData['Stormcraft Incorporated'].behavior.production), false, 'Stormcraft Incorporated should not expose heat production behavior');
+assert.strictEqual(cardData['Stormcraft Incorporated'].actionChoices[0].resourceType, 'floater', 'Stormcraft Incorporated action should add a floater');
+assert.strictEqual(cardData['Stormcraft Incorporated'].actionChoices[0].target, 'any', 'Stormcraft Incorporated should add a floater to any card');
+assert.strictEqual(hasOwn(effects['Robinson Industries'], 'mp'), false, 'Robinson Industries should not expose false MC production');
+assert.strictEqual(hasOwn(cardData['Robinson Industries'], 'behavior'), false, 'Robinson Industries should not expose MC production behavior');
+assert.strictEqual(cardData['Robinson Industries'].actionChoices[0].stock.megacredits, -4, 'Robinson Industries action should pay 4 MC');
+assert.strictEqual(cardData['Robinson Industries'].actionChoices[0].productionChoice.lowestOnly, true, 'Robinson Industries should only increase a lowest production');
+assert.strictEqual(cardData['Palladin Shipping'].actionChoices[0].stock.titanium, -2, 'Palladin Shipping action should spend 2 titanium');
+assert.strictEqual(cardData['Palladin Shipping'].actionChoices[0].global.temperature, 1, 'Palladin Shipping action should raise temperature');
+assert.strictEqual(cardData['Utopia Invest'].actionChoices[0].productionToStockRatio.stock, 4, 'Utopia Invest action should gain 4 matching resources');
+assert.strictEqual(cardData['Arcadian Communities'].actionChoices[0].boardAction, 'place_community_marker', 'Arcadian Communities should expose community marker action');
+assert.strictEqual(cardData['Hadesphere'].actionChoices[0].underworld.excavate, 1, 'Hadesphere should expose its excavate action');
+assert.strictEqual(cardData['Focused Organization'].actionChoices[0].gainStandardResource, 1, 'Focused Organization should expose its standard resource exchange action');
+assert.strictEqual(cardData['World Government Advisor'].actionChoices[0].noTR, true, 'World Government Advisor action should not grant TR');
+assert.strictEqual(cardData['Atmo Collectors'].actionChoices.length, 4, 'Atmo Collectors should preserve all OR action choices');
+assert.strictEqual(cardData['Atmo Collectors'].actionChoices[0].addResources, 1, 'Atmo Collectors first branch should add a floater');
+assert.strictEqual(cardData['Atmo Collectors'].actionChoices[1].stock.titanium, 2, 'Atmo Collectors titanium branch should gain 2 titanium');
+assert.strictEqual(cardData['Atmo Collectors'].actionChoices[2].stock.energy, 3, 'Atmo Collectors energy branch should gain 3 energy');
+assert.strictEqual(cardData['Atmo Collectors'].actionChoices[3].stock.heat, 4, 'Atmo Collectors heat branch should gain 4 heat');
+assert.strictEqual(cardData['Floater Technology'].actionChoices.length, 1, 'Floater Technology should expose its floater placement action');
+assert.strictEqual(cardData['Floater Technology'].actionChoices[0].target, 'another', 'Floater Technology should target another card');
+assert.strictEqual(cardData['Local Shading'].actionChoices.length, 2, 'Local Shading should preserve both add-floater and spend-floater branches');
+assert.strictEqual(cardData['Local Shading'].actionChoices[0].addResources, 1, 'Local Shading first branch should add a floater');
+assert.strictEqual(cardData['Local Shading'].actionChoices[1].conditional, true, 'Local Shading production branch should be conditional on a floater');
+assert.strictEqual(cardData['Local Shading'].actionChoices[1].production.megacredits, 1, 'Local Shading production branch should increase MC production');
+assert.strictEqual(cardData['Sulphur-Eating Bacteria'].actionChoices.length, 2, 'Sulphur-Eating Bacteria should preserve both add/spend microbe branches');
+assert.strictEqual(cardData['Sulphur-Eating Bacteria'].actionChoices[0].resourceType, 'microbe', 'Sulphur-Eating Bacteria first branch should add a microbe');
+assert.strictEqual(cardData['Sulphur-Eating Bacteria'].actionChoices[1].variable, true, 'Sulphur-Eating Bacteria spend branch should be variable');
+assert.strictEqual(cardData['Sulphur-Eating Bacteria'].actionChoices[1].stockRatio.megacredits, 3, 'Sulphur-Eating Bacteria spend branch should gain 3 MC per microbe');
+assert.strictEqual(cardData['Titan Air-scrapping'].actionChoices.length, 2, 'Titan Air-scrapping should preserve both paid/add and spend/TR branches');
+assert.strictEqual(cardData['Titan Air-scrapping'].actionChoices[0].stock.titanium, -1, 'Titan Air-scrapping add branch should spend titanium');
+assert.strictEqual(cardData['Titan Air-scrapping'].actionChoices[0].addResources, 2, 'Titan Air-scrapping add branch should add two floaters');
+assert.strictEqual(cardData['Titan Air-scrapping'].actionChoices[1].conditional, true, 'Titan Air-scrapping TR branch should be conditional on floaters');
+assert.strictEqual(cardData['Titan Air-scrapping'].actionChoices[1].tr, 1, 'Titan Air-scrapping TR branch should raise TR');
+assert.strictEqual(cardData['Titan Shuttles'].actionChoices.length, 2, 'Titan Shuttles should preserve both add-floaters and spend-floaters branches');
+assert.strictEqual(cardData['Titan Shuttles'].actionChoices[0].tagConstraint, 'jovian', 'Titan Shuttles add branch should require a Jovian target');
+assert.strictEqual(cardData['Titan Shuttles'].actionChoices[1].variable, true, 'Titan Shuttles spend branch should be variable');
+assert.strictEqual(cardData['Titan Shuttles'].actionChoices[1].stockRatio.titanium, 1, 'Titan Shuttles spend branch should gain titanium per floater');
+assert.strictEqual(cardData['Floating Trade Hub'].actionChoices.length, 2, 'Floating Trade Hub should preserve both add-floaters and conversion branches');
+assert.strictEqual(cardData['Floating Trade Hub'].actionChoices[0].addResources, 2, 'Floating Trade Hub add branch should add two floaters');
+assert.strictEqual(cardData['Floating Trade Hub'].actionChoices[1].standardResourceChoice, true, 'Floating Trade Hub conversion branch should choose a standard resource');
+assert.strictEqual(cardData['Electro Catapult'].action.stock.megacredits, 7, 'Electro Catapult action should keep the 7 MC payout');
+assert.strictEqual(cardData['Electro Catapult'].action.stock.plants, -1, 'Electro Catapult action should expose its plant/steel spend cost');
+assert.strictEqual(cardData['Directed Heat Usage'].action.stock.megacredits, 4, 'Directed Heat Usage action should keep the 4 MC payout');
+assert.strictEqual(cardData['Directed Heat Usage'].action.stock.heat, -3, 'Directed Heat Usage action should expose its heat cost');
+assert.strictEqual(cardData['Martian Rails'].action.stock.megacredits, 3, 'Martian Rails should keep the dynamic MC heuristic');
+assert.strictEqual(cardData['Martian Rails'].action.stock.energy, -1, 'Martian Rails should expose its energy cost');
+assert.strictEqual(cardData['Space Elevator'].action.stock.megacredits, 5, 'Space Elevator action should keep the 5 MC payout');
+assert.strictEqual(cardData['Space Elevator'].action.stock.steel, -1, 'Space Elevator action should expose its steel cost');
+assert.strictEqual(cardData['Personal Spacecruiser'].action.stock.megacredits, 2, 'Personal Spacecruiser should keep the corruption MC heuristic');
+assert.strictEqual(cardData['Personal Spacecruiser'].action.stock.energy, -1, 'Personal Spacecruiser should expose its energy cost');
+assert.strictEqual(cardData['Battery Factory'].action.stock.megacredits, 2, 'Battery Factory should keep the power-tag MC heuristic');
+assert.strictEqual(cardData['Battery Factory'].action.stock.energy, -1, 'Battery Factory should expose its energy cost');
+for (const name of ['Industrial Center', 'Industrial Center:ares']) {
+  assert.strictEqual(hasOwn(effects[name], 'sp'), false, name + ' should not expose steel production on play');
+  assert.strictEqual(effects[name].actMC, -7, name + ' action should spend 7 MC');
+  assert.strictEqual(effects[name].act_sp, 1, name + ' action should increase steel production');
+  assert.strictEqual(cardData[name].action.stock.megacredits, -7, name + ' action should pay MC, not gain MC');
+  assert.strictEqual(cardData[name].action.production.steel, 1, name + ' action should increase steel production');
+  assert.strictEqual(hasOwn(cardData[name], 'behavior'), false, name + ' should not expose immediate steel production behavior');
+}
+assert.strictEqual(hasOwn(effects['Bio Printing Facility'], 'actMC'), false, 'Bio Printing Facility should not expose plant/animal choice as MC income');
+assert.strictEqual(cardData['Bio Printing Facility'].action.stock.energy, -2, 'Bio Printing Facility action should expose its energy cost');
+assert.strictEqual(cardData['Bio Printing Facility'].action.stock.plants, 2, 'Bio Printing Facility action should expose the plant branch');
+assert.strictEqual(cardData['Bio Printing Facility'].actionChoices.length, 2, 'Bio Printing Facility should preserve both OR action choices');
+assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[0].stock.energy, -2, 'Bio Printing Facility plant branch should expose energy cost');
+assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[0].stock.plants, 2, 'Bio Printing Facility plant branch should gain plants');
+assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[1].conditional, true, 'Bio Printing Facility animal branch should be marked conditional');
+assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[1].resourceType, 'animal', 'Bio Printing Facility animal branch should target animals');
+assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[1].target, 'another', 'Bio Printing Facility animal branch should target another card');
+assert.strictEqual(hasOwn(effects['Chemical Factory'], 'actMC'), false, 'Chemical Factory should not expose excavation as MC income');
+assert.strictEqual(hasOwn(cardData['Chemical Factory'] || {}, 'action'), false, 'Chemical Factory should not expose unsupported excavation as a static MC action');
+for (const name of [
+  'Cryptocurrency',
+  'Mars Nomads',
+  'Saturn Surfing',
+  'Chemical Factory',
+  'Corporate Theft',
+  'Deep Foundations',
+  'Monopoly',
+  'Space Privateers',
+  'Stem Field Subsidies',
+  'Titan Manufacturing Colony',
+  'Underground Shelters',
+  'Voltaic Metallurgy',
+]) {
+  assert.strictEqual(hasOwn(effects[name], 'actMC'), false, name + ' should not expose a stateful/board action as static MC income');
+  assert.strictEqual(hasOwn(cardData[name] || {}, 'action'), false, name + ' should not expose a misleading static MC action');
+}
+assert.strictEqual(cardData['Septem Tribus'].actionChoices[0].tagFlexAction, true, 'Septem Tribus should expose wild-tag action flexibility without static income');
+assert.strictEqual(cardData['Self-replicating Robots'].actionChoices.length, 2, 'Self-replicating Robots should expose link/double action choices');
+assert.strictEqual(cardData['Self-replicating Robots'].actionChoices[0].hostCardFromHand, true, 'Self-replicating Robots should link a card from hand');
+assert.strictEqual(cardData['Self-replicating Robots'].actionChoices[1].doubleHostedResources, true, 'Self-replicating Robots should double hosted resources');
+assert.strictEqual(cardData['Orbital Cleanup'].actionChoices[0].stockPerTag.tag, 'science', 'Orbital Cleanup should scale with science tags');
+assert.strictEqual(cardData['Orbital Cleanup'].actionChoices[0].stockPerTag.megacredits, 1, 'Orbital Cleanup should gain 1 MC per science tag');
+assert.strictEqual(cardData['Mohole Lake'].actionChoices.length, 2, 'Mohole Lake should expose animal/microbe target choices');
+assert.strictEqual(cardData['Mohole Lake'].actionChoices[0].target, 'another', 'Mohole Lake should target another card');
+assert.strictEqual(cardData['Mohole Lake'].actionChoices[1].resourceType, 'animal', 'Mohole Lake should expose the animal branch');
+assert.strictEqual(cardData['Saturn Surfing'].resourceType, 'floater', 'Saturn Surfing should expose its floater resource type');
+assert.strictEqual(cardData['Saturn Surfing'].actionChoices[0].stockPerResourceHere.max, 5, 'Saturn Surfing should cap MC gain at 5');
+assert.strictEqual(cardData['Saturn Surfing'].actionChoices[0].stockPerResourceHere.includesSpent, true, 'Saturn Surfing should count the paid floater');
+assert.strictEqual(cardData['Mars Nomads'].actionChoices[0].boardAction, 'move_nomads', 'Mars Nomads should expose a board action, not MC income');
+assert.strictEqual(cardData['Mars Nomads'].actionChoices[0].placementBonus, true, 'Mars Nomads should collect placement bonus');
+assert.strictEqual(cardData['Teslaract'].actionChoices[0].production.energy, -1, 'Teslaract action should spend energy production');
+assert.strictEqual(cardData['Teslaract'].actionChoices[0].production.plants, 1, 'Teslaract action should gain plant production');
+assert.strictEqual(cardData['Hospitals'].resourceType, 'disease', 'Hospitals should expose disease resources');
+assert.strictEqual(cardData['Hospitals'].actionChoices[0].spendResources.type, 'disease', 'Hospitals should spend a disease');
+assert.strictEqual(cardData['Hospitals'].actionChoices[0].stockPerBoard.per, 'city', 'Hospitals payout should scale with cities in play');
+assert.strictEqual(cardData['Maxwell Base'].actionChoices[0].tagConstraint, 'venus', 'Maxwell Base should target another Venus card');
+assert.strictEqual(cardData['Geologist Team'].actionChoices[0].underworld.identify, 1, 'Geologist Team should identify one underground resource');
+assert.strictEqual(cardData['Search for Life Underground'].resourceType, 'science', 'Search for Life Underground should expose science resources');
+assert.strictEqual(cardData['Search for Life Underground'].actionChoices[0].stock.megacredits, -1, 'Search for Life Underground action should cost 1 MC');
+assert.strictEqual(cardData['Search for Life Underground'].actionChoices[0].addResourcesIfToken.resourceType, 'science', 'Search for Life Underground should add science resource on a microbe token');
+assert.strictEqual(cardData['Chemical Factory'].actionChoices[0].stock.plants, -1, 'Chemical Factory action should spend a plant');
+assert.strictEqual(cardData['Chemical Factory'].actionChoices[0].underworld.excavate, 1, 'Chemical Factory action should excavate');
+assert.strictEqual(cardData['Corporate Theft'].actionChoices[0].stock.megacredits, -5, 'Corporate Theft action should cost 5 MC');
+assert.strictEqual(cardData['Corporate Theft'].actionChoices[0].stealResource.count, 1, 'Corporate Theft action should steal one resource');
+assert.strictEqual(cardData['Deep Foundations'].actionChoices[0].canUseSteel, true, 'Deep Foundations action should allow steel payment');
+assert.strictEqual(cardData['Deep Foundations'].actionChoices[0].city, 1, 'Deep Foundations action should place a city');
+assert.strictEqual(cardData['Monopoly'].actionChoices[0].spendCorruption, 1, 'Monopoly action should spend corruption');
+assert.strictEqual(cardData['Monopoly'].actionChoices[0].productionChoice.count, 1, 'Monopoly action should increase one production');
+assert.strictEqual(cardData['Space Privateers'].resourceType, 'fighter', 'Space Privateers should expose fighter resources');
+assert.strictEqual(cardData['Space Privateers'].actionChoices[0].stockPerResourceHere.resourceType, 'fighter', 'Space Privateers payout should scale with fighters');
+assert.strictEqual(cardData['Stem Field Subsidies'].resourceType, 'data', 'Stem Field Subsidies should expose data resources');
+assert.strictEqual(cardData['Stem Field Subsidies'].actionChoices[0].underworld.claim, 1, 'Stem Field Subsidies action should claim one identified resource');
+assert.strictEqual(cardData['Titan Manufacturing Colony'].resourceType, 'tool', 'Titan Manufacturing Colony should expose tool resources');
+assert.strictEqual(cardData['Titan Manufacturing Colony'].actionChoices[0].underworld.excavate, 1, 'Titan Manufacturing Colony action should excavate');
+assert.strictEqual(cardData['Underground Shelters'].actionChoices[0].underworld.shelterToken, 1, 'Underground Shelters action should mark a claimed token');
+assert.strictEqual(cardData['Voltaic Metallurgy'].actionChoices[0].stockRatio.titanium, 1, 'Voltaic Metallurgy should convert steel to titanium');
+assert.strictEqual(cardData['Voltaic Metallurgy'].actionChoices[0].maxByTag, 'power', 'Voltaic Metallurgy conversion should cap by power tags');
+assert.strictEqual(effects['Physics Complex'].vpAcc, 0.5, 'Physics Complex should score 2 VP per science resource');
+assert.strictEqual(cardData['Physics Complex'].vp.per, 0.5, 'Physics Complex card data should score 2 VP per science resource');
 for (const nonVpResourceCard of [
   'Atmo Collectors',
   'Dirigibles',

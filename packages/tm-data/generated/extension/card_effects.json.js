@@ -140,8 +140,9 @@ const TM_CARD_EFFECTS = {
  },
  "Ore Processor": {
   "c": 13,
-  "tp": 0,
-  "actO2": 1
+  "actO2": 1,
+  "actTI": 1,
+  "actEN": -4
  },
  "Titanium Mine": {
   "c": 7,
@@ -176,15 +177,14 @@ const TM_CARD_EFFECTS = {
  },
  "Equatorial Magnetizer": {
   "c": 11,
-  "tr": 1,
-  "ep": -1,
   "actTR": 1,
   "act_ep": -1
  },
  "Space Mirrors": {
   "c": 3,
   "ep": 1,
-  "act_ep": 1
+  "act_ep": 1,
+  "actMC": -7
  },
  "Power Plant": {
   "c": 4,
@@ -192,8 +192,9 @@ const TM_CARD_EFFECTS = {
  },
  "Steelworks": {
   "c": 15,
-  "actMC": 4,
-  "actO2": 1
+  "actO2": 1,
+  "actST": 2,
+  "actEN": -4
  },
  "Heat Trappers": {
   "c": 6,
@@ -212,9 +213,9 @@ const TM_CARD_EFFECTS = {
  },
  "Caretaker Contract": {
   "c": 3,
-  "actMC": 3.5,
   "minG": 4,
-  "actTR": 1
+  "actTR": 1,
+  "actHE": -8
  },
  "Food Factory": {
   "c": 12,
@@ -597,7 +598,8 @@ const TM_CARD_EFFECTS = {
  "Security Fleet": {
   "c": 12,
   "vpAcc": 1,
-  "res": "fighter"
+  "res": "fighter",
+  "actTI": -1
  },
  "Symbiotic Fungus": {
   "c": 4,
@@ -626,7 +628,8 @@ const TM_CARD_EFFECTS = {
   "sp": -1,
   "actMC": 7,
   "vp": 1,
-  "ep": -1
+  "ep": -1,
+  "actPL": -1
  },
  "AI Central": {
   "c": 21,
@@ -655,7 +658,8 @@ const TM_CARD_EFFECTS = {
  },
  "Restricted Area": {
   "c": 11,
-  "actMC": 1
+  "actMC": -2,
+  "actCD": 1
  },
  "Search For Life": {
   "c": 3,
@@ -720,7 +724,6 @@ const TM_CARD_EFFECTS = {
  "Stratopolis": {
   "c": 22,
   "city": 1,
-  "actCD": 0.5,
   "res": "floater",
   "places": "floater",
   "placesTag": "venus",
@@ -779,13 +782,14 @@ const TM_CARD_EFFECTS = {
  },
  "Water Splitting Plant": {
   "c": 12,
-  "actTR": 0.5,
-  "actO2": 1
+  "actO2": 1,
+  "actEN": -3
  },
  "Ironworks": {
   "c": 11,
-  "actMC": 3.5,
-  "actO2": 1
+  "actO2": 1,
+  "actST": 1,
+  "actEN": -4
  },
  "Tropical Resort": {
   "c": 13,
@@ -906,7 +910,8 @@ const TM_CARD_EFFECTS = {
  },
  "Industrial Center": {
   "c": 4,
-  "sp": 1
+  "actMC": -7,
+  "act_sp": 1
  },
  "Natural Preserve": {
   "c": 9,
@@ -921,10 +926,7 @@ const TM_CARD_EFFECTS = {
  },
  "Rotator Impacts": {
   "c": 6,
-  "actTR": 0.17,
-  "vp": 0,
-  "res": "floater",
-  "tg": "venus"
+  "vp": 0
  },
  "Titan Air-scrapping": {
   "c": 21,
@@ -939,8 +941,6 @@ const TM_CARD_EFFECTS = {
  },
  "Venus Magnetizer": {
   "c": 7,
-  "actMC": 6,
-  "ep": -1,
   "actVn": 1,
   "act_ep": -1
  },
@@ -1065,7 +1065,8 @@ const TM_CARD_EFFECTS = {
  },
  "Think Tank": {
   "c": 12,
-  "cd": 1
+  "cd": 1,
+  "actMC": -2
  },
  "Venera Base": {
   "c": 21,
@@ -1152,7 +1153,6 @@ const TM_CARD_EFFECTS = {
  "Refugee Camps": {
   "c": 10,
   "vpAcc": 1,
-  "actMC": -1,
   "res": "camp",
   "act_mp": -1
  },
@@ -1314,12 +1314,10 @@ const TM_CARD_EFFECTS = {
   "cd": 3
  },
  "Robinson Industries": {
-  "c": 0,
-  "mp": 1
+  "c": 0
  },
  "Stormcraft Incorporated": {
   "c": 0,
-  "hp": 1,
   "places": "floater"
  },
  "Celestic": {
@@ -1703,7 +1701,6 @@ const TM_CARD_EFFECTS = {
  },
  "Psychrophiles": {
   "c": 2,
-  "actMC": 2,
   "res": "microbe"
  },
  "Trading Colony": {
@@ -1749,7 +1746,8 @@ const TM_CARD_EFFECTS = {
  },
  "Directed Heat Usage": {
   "c": 1,
-  "actMC": 4
+  "actMC": 4,
+  "actHE": -3
  },
  "Hospitals": {
   "c": 8,
@@ -1786,7 +1784,6 @@ const TM_CARD_EFFECTS = {
  },
  "Neptunian Power Consultants": {
   "c": 10,
-  "actMC": 3,
   "vpAcc": 1
  },
  "Protected Growth": {
@@ -1977,16 +1974,15 @@ const TM_CARD_EFFECTS = {
   "tr": 1
  },
  "Icy Impactors": {
-  "c": 15,
-  "actTR": 0.5,
-  "res": "floater"
+  "c": 15
  },
  "Asteroid Hollowing": {
   "c": 16,
   "vpAcc": 1,
   "vpPer": 2,
   "res": "asteroid",
-  "act_mp": 1
+  "act_mp": 1,
+  "actTI": -1
  },
  "St. Joseph of Cupertino Mission": {
   "c": 7,
@@ -2102,7 +2098,8 @@ const TM_CARD_EFFECTS = {
   "city": 1,
   "vp": 1,
   "act_ep": 1,
-  "act_hp": 1
+  "act_hp": 1,
+  "actTI": -2
  },
  "Lunar Embassy": {
   "c": 28,
@@ -2121,8 +2118,7 @@ const TM_CARD_EFFECTS = {
   "actCD": 0.3
  },
  "Mars Nomads": {
-  "c": 13,
-  "actMC": 3
+  "c": 13
  },
  "Red Spot Observatory": {
   "c": 17,
@@ -2184,8 +2180,7 @@ const TM_CARD_EFFECTS = {
   "tr": 3
  },
  "Energy Market": {
-  "c": 3,
-  "actMC": 3
+  "c": 3
  },
  "Frontier Town": {
   "c": 11,
@@ -2194,7 +2189,8 @@ const TM_CARD_EFFECTS = {
  },
  "Martian Media Center": {
   "c": 7,
-  "mp": 2
+  "mp": 2,
+  "actMC": -3
  },
  "Terraforming Contract": {
   "c": 8,
@@ -2242,7 +2238,8 @@ const TM_CARD_EFFECTS = {
  },
  "Martian Rails": {
   "c": 13,
-  "actMC": 3
+  "actMC": 3,
+  "actEN": -1
  },
  "Business Contacts": {
   "c": 7,
@@ -2250,7 +2247,8 @@ const TM_CARD_EFFECTS = {
  },
  "Development Center": {
   "c": 11,
-  "actCD": 1
+  "actCD": 1,
+  "actEN": -1
  },
  "Heavy Taxation": {
   "c": 3,
@@ -2281,7 +2279,8 @@ const TM_CARD_EFFECTS = {
   "c": 27,
   "tp": 1,
   "vp": 2,
-  "actMC": 5
+  "actMC": 5,
+  "actST": -1
  },
  "Wildlife Dome": {
   "c": 15,
@@ -2327,7 +2326,6 @@ const TM_CARD_EFFECTS = {
  },
  "Martian Repository": {
   "c": 12,
-  "actCD": 0.5,
   "ep": -1,
   "vpAcc": 1
  },
@@ -2365,7 +2363,6 @@ const TM_CARD_EFFECTS = {
  },
  "Communication Center": {
   "c": 8,
-  "actCD": 0.5,
   "ep": -1,
   "res": "data"
  },
@@ -2434,8 +2431,7 @@ const TM_CARD_EFFECTS = {
  },
  "Saturn Surfing": {
   "c": 13,
-  "vp": 1,
-  "actMC": 4
+  "vp": 1
  },
  "Zeppelins": {
   "c": 13,
@@ -2496,8 +2492,7 @@ const TM_CARD_EFFECTS = {
   "ep": 4
  },
  "Floyd Continuum": {
-  "c": 4,
-  "cd": 1
+  "c": 4
  },
  "Miranda Resort": {
   "c": 12,
@@ -2632,7 +2627,8 @@ const TM_CARD_EFFECTS = {
   "vpAcc": 1,
   "vpPer": 2,
   "res": "floater",
-  "tg": "venus"
+  "tg": "venus",
+  "actMC": -2
  },
  "Lightning Harvest": {
   "c": 8,
@@ -2755,11 +2751,12 @@ const TM_CARD_EFFECTS = {
  },
  "Bio Printing Facility": {
   "c": 7,
-  "actMC": 2,
   "places": [
    "animal",
    "microbe"
-  ]
+  ],
+  "actEN": -2,
+  "actPL": 2
  },
  "Fueled Generators": {
   "c": 1,
@@ -2827,9 +2824,9 @@ const TM_CARD_EFFECTS = {
  },
  "Physics Complex": {
   "c": 12,
-  "actTR": 0.5,
   "res": "science",
-  "vpAcc": 1
+  "vpAcc": 0.5,
+  "actEN": -6
  },
  "Robot Pollinators": {
   "c": 9,
@@ -2868,9 +2865,7 @@ const TM_CARD_EFFECTS = {
   "vn": 1
  },
  "Directed Impactors": {
-  "c": 8,
-  "actTR": 0.17,
-  "res": "floater"
+  "c": 8
  },
  "Local Shading": {
   "c": 4,
@@ -2894,7 +2889,6 @@ const TM_CARD_EFFECTS = {
  "Asteroid Deflection System": {
   "c": 13,
   "ep": -1,
-  "actTR": 0.33,
   "res": "asteroid",
   "vpAcc": 1
  },
@@ -2906,7 +2900,8 @@ const TM_CARD_EFFECTS = {
  },
  "Breeding Farms": {
   "c": 16,
-  "tmp": 1
+  "tmp": 1,
+  "actPL": -1
  },
  "Controlled Bloom": {
   "c": 13,
@@ -2923,7 +2918,8 @@ const TM_CARD_EFFECTS = {
    "tag": "venus",
    "per": 2
   },
-  "actVn": 1
+  "actVn": 1,
+  "actPL": -3
  },
  "Dust Storm": {
   "c": 17,
@@ -2931,7 +2927,6 @@ const TM_CARD_EFFECTS = {
  },
  "Economic Espionage": {
   "c": 8,
-  "actMC": 3,
   "vpAcc": 1
  },
  "Economic Help": {
@@ -3016,7 +3011,8 @@ const TM_CARD_EFFECTS = {
  "Ozone Generators": {
   "c": 14,
   "actTR": 1,
-  "vp": 1
+  "vp": 1,
+  "actEN": -3
  },
  "Public Sponsored Grant": {
   "c": 6,
@@ -3386,8 +3382,7 @@ const TM_CARD_EFFECTS = {
   "c": 8
  },
  "Cryptocurrency": {
-  "c": 6,
-  "actMC": 1
+  "c": 6
  },
  "Archimedes Hydroponics Station": {
   "c": 14,
@@ -3407,10 +3402,10 @@ const TM_CARD_EFFECTS = {
  },
  "Project Workshop": {
   "c": 15,
-  "actMC": 3,
-  "actTR": 0.33,
+  "actMC": -3,
   "st": 1,
-  "ti": 1
+  "ti": 1,
+  "actCD": 1
  },
  "Trade Advance": {
   "c": 2,
@@ -3452,7 +3447,8 @@ const TM_CARD_EFFECTS = {
  },
  "Underground Detonations": {
   "act_hp": 2,
-  "c": 6
+  "c": 6,
+  "actMC": -10
  },
  "Agricola Inc": {
   "mp": 1,
@@ -3642,12 +3638,14 @@ const TM_CARD_EFFECTS = {
  },
  "Processor Factory": {
   "vpAcc": 1,
-  "c": 8
+  "c": 8,
+  "actST": -1
  },
  "Rust Eating Bacteria": {
   "res": "microbe",
   "vpAcc": 1,
-  "c": 7
+  "c": 7,
+  "actST": -1
  },
  "Sinus Irdium Road Network": {
   "ep": -1,
@@ -3656,7 +3654,8 @@ const TM_CARD_EFFECTS = {
  },
  "Solar Panel Foundry": {
   "c": 11,
-  "act_ep": 1
+  "act_ep": 1,
+  "actST": -2
  },
  "Staging Station \"Behemoth\"": {
   "tradeFleet": 2
@@ -3728,7 +3727,8 @@ const TM_CARD_EFFECTS = {
  "Arborist Collective": {
   "pp": 2,
   "pl": 2,
-  "act_pp": 1
+  "act_pp": 1,
+  "actPL": 2
  },
  "Battery Shipment": {
   "ep": 2,
@@ -3770,7 +3770,8 @@ const TM_CARD_EFFECTS = {
  },
  "Earthquake Machine": {
   "c": 10,
-  "pOpp": 1
+  "pOpp": 1,
+  "actEN": -1
  },
  "Expedition Vehicles": {
   "c": 10,
@@ -3827,7 +3828,8 @@ const TM_CARD_EFFECTS = {
  },
  "Keplertec": {
   "tp": 1,
-  "ti": 3
+  "ti": 3,
+  "actTI": -1
  },
  "Kingdom of Tauraro": {
   "mp": 6,
@@ -3844,7 +3846,8 @@ const TM_CARD_EFFECTS = {
  },
  "Microgravimetry": {
   "c": 5,
-  "vp": 1
+  "vp": 1,
+  "actEN": -2
  },
  "Microprobing Technology": {
   "c": 8,
@@ -3883,7 +3886,8 @@ const TM_CARD_EFFECTS = {
  },
  "Private Military Contractor": {
   "res": "fighter",
-  "c": 14
+  "c": 14,
+  "actTI": -1
  },
  "Private Resorts": {
   "c": 9,
@@ -3915,7 +3919,8 @@ const TM_CARD_EFFECTS = {
    "tag": "jovian",
    "per": 1
   },
-  "c": 25
+  "c": 25,
+  "actTI": -1
  },
  "Sting Operation": {
   "cd": 2
@@ -3946,7 +3951,8 @@ const TM_CARD_EFFECTS = {
  },
  "Voltagon": {
   "ep": 1,
-  "actO2": 1
+  "actO2": 1,
+  "actEN": -8
  },
  "Whales": {
   "vpAcc": 1,
@@ -3961,7 +3967,8 @@ const TM_CARD_EFFECTS = {
  },
  "Meltworks": {
   "c": 4,
-  "actMC": 3
+  "actST": 3,
+  "actHE": -5
  },
  "Splice": {
   "c": 0
@@ -4218,7 +4225,8 @@ const TM_CARD_EFFECTS = {
   "c": 6
  },
  "Tunnel Boring Machine": {
-  "c": 10
+  "c": 10,
+  "actEN": -3
  },
  "Labor Trafficking": {
   "c": 6,
@@ -4229,7 +4237,8 @@ const TM_CARD_EFFECTS = {
   "vp": 0
  },
  "Grey Market Exploitation": {
-  "c": 4
+  "c": 4,
+  "actMC": -1
  },
  "Excavator Leasing": {
   "c": 8
@@ -4246,11 +4255,11 @@ const TM_CARD_EFFECTS = {
  },
  "Personal Spacecruiser": {
   "c": 12,
-  "actMC": 2
+  "actMC": 2,
+  "actEN": -1
  },
  "Chemical Factory": {
-  "c": 18,
-  "actMC": 3
+  "c": 18
  },
  "Corporate Theft": {
   "c": 10,
@@ -4265,7 +4274,8 @@ const TM_CARD_EFFECTS = {
  },
  "Battery Factory": {
   "c": 8,
-  "actMC": 2
+  "actMC": 2,
+  "actEN": -1
  },
  "Voltaic Metallurgy": {
   "c": 8
@@ -4437,7 +4447,8 @@ const TM_CARD_EFFECTS = {
  },
  "Industrial Center:ares": {
   "c": 4,
-  "actMC": 7
+  "actMC": -7,
+  "act_sp": 1
  },
  "Great Dam:ares": {
   "c": 15,
@@ -4475,7 +4486,8 @@ const TM_CARD_EFFECTS = {
  },
  "Restricted Area:ares": {
   "c": 11,
-  "actCD": 1
+  "actCD": 1,
+  "actMC": -2
  },
  "Solar Farm": {
   "c": 12,
@@ -4486,5 +4498,8 @@ const TM_CARD_EFFECTS = {
  },
  "Private Investigator": {
   "tr": 1
+ },
+ "Jenson-Boyle & Co": {
+  "actST": 5
  }
 };

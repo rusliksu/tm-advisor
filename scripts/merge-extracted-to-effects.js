@@ -34,27 +34,86 @@ const STALE_EFFECT_KEYS = {
   // Stateful OR-actions: add a resource now, or spend stored resources for a
   // payoff. Do not expose both branches as one recurring static action.
   'Aerial Mappers': ['actCD'],
+  'Asteroid Deflection System': ['actTR'],
   'Atmo Collectors': ['actMC'],
+  'Caretaker Contract': ['actMC'],
+  'Communication Center': ['actCD'],
   'Comet Aiming': ['actTR', 'res'],
   'Copernicus Tower': ['actTR'],
   'Deuterium Export': ['actTR', 'act_ep'],
+  'Directed Impactors': ['actTR', 'res'],
   'Dirigibles': ['actMC'],
+  'Economic Espionage': ['actMC'],
+  'Equatorial Magnetizer': ['tr', 'ep'],
   'Extractor Balloons': ['vn', 'actTR', 'actVn'],
   'Floating Refinery': ['actMC'],
   'Forced Precipitation': ['actMC'],
   'GHG Producing Bacteria': ['actTR', 'actTmp'],
+  'Icy Impactors': ['actTR', 'res'],
+  'Ironworks': ['actMC'],
   'Jet Stream Microscrappers': ['actTR'],
   'Jupiter Floating Station': ['actMC'],
   'Local Shading': ['actTR', 'act_mp'],
+  'Martian Repository': ['actCD'],
+  'Meltworks': ['actMC'],
+  'Neptunian Power Consultants': ['actMC'],
   'Nitrite Reducing Bacteria': ['tr', 'actTR'],
+  'Ore Processor': ['tp'],
+  'Physics Complex': ['actTR'],
+  'Psychrophiles': ['actMC'],
   'Regolith Eaters': ['actTR', 'actO2'],
+  'Refugee Camps': ['actMC'],
+  'Rotator Impacts': ['actTR', 'res', 'tg'],
+  'Steelworks': ['actMC'],
+  'Stratopolis': ['actCD'],
   'Sulphur-Eating Bacteria': ['actMC'],
   'Thermophiles': ['actTR', 'actVn'],
+  'Venus Magnetizer': ['ep', 'actMC'],
+  'Water Splitting Plant': ['actTR'],
   // Either production OR ocean+stock; do not merge both branches into one value.
   'Asteroid Resources': ['st', 'ti', 'oc'],
   // Discount/enabler only: parser used render symbols as real MC production + city placement.
   'Prefabrication of Human Habitats': ['mp', 'city'],
 };
+const MANUAL_EFFECT_PATCHES = {
+  // Paid draw actions should stay explicit. A net actMC shortcut makes these
+  // look like recurring cash income and hides the real card draw/cost.
+  'Restricted Area': {set: {actMC: -2, actCD: 1}},
+  'Restricted Area:ares': {set: {actMC: -2, actCD: 1}},
+  // OR action: spend 3 MC to draw a blue card, or flip a blue card for VP->TR.
+  // Effects can only hold one scoreable static action; actionChoices in
+  // generated card_data preserves the second branch for factual display.
+  'Project Workshop': {remove: ['actTR'], set: {actMC: -3, actCD: 1}},
+  // Complex OR action (MC -> energy, or energy-production -> MC). The old
+  // actMC shortcut caused false cash-income value spikes.
+  'Energy Market': {remove: ['actMC']},
+  // Spend 7 MC to increase steel production; not immediate steel production
+  // and not a positive cash action.
+  'Industrial Center': {remove: ['sp'], set: {actMC: -7, act_sp: 1}},
+  'Industrial Center:ares': {set: {actMC: -7, act_sp: 1}},
+  // Unsupported board/excavation/resource-conversion actions should not be
+  // exposed as fake recurring MC income.
+  // The animal branch is conditional on an animal target and is represented in
+  // generated card_data.actionChoices; keep the unconditional plant branch here.
+  'Bio Printing Facility': {remove: ['actMC'], set: {actEN: -2, actPL: 2}},
+  // Action-only dynamic MC. The render icons include a cards symbol near the
+  // help text, but the card does not draw on play.
+  'Floyd Continuum': {remove: ['cd']},
+  // Corporation action text leaked into fake starting production.
+  'Robinson Industries': {remove: ['mp']},
+  'Stormcraft Incorporated': {remove: ['hp']},
+  'Chemical Factory': {remove: ['actMC', 'actPL']},
+  'Cryptocurrency': {remove: ['actMC']},
+  'Economic Espionage': {remove: ['actMC']},
+  'Mars Nomads': {remove: ['actMC']},
+  'Saturn Surfing': {remove: ['actMC']},
+};
+const SKIP_ACTION_SPEND_MAP = new Set([
+  // Their action payoff is unsupported by static card_data; do not create
+  // cost-only placeholder actions.
+  'Chemical Factory',
+  'Economic Espionage',
+]);
 
 const inEffects = new Set(Object.keys(effects));
 const inCatalog = new Set(allCards.map((card) => card.name).concat(Object.keys(effects)));
@@ -138,8 +197,37 @@ for (const name of Object.keys(extracted)) {
   // Action: TR
   if (act.tr) entry.actTR = act.tr;
 
-  // Action: stock (MC)
-  if (act.stock && act.stock.megacredits) entry.actMC = act.stock.megacredits;
+  // Reset spend-derived action stock keys before recalculating them. The merge
+  // reads the previous generated effects as input, so additive spend handling
+  // must be idempotent across repeated runs.
+  if (act.spend && !SKIP_ACTION_SPEND_MAP.has(name)) {
+    for (const key of Object.keys(act.spend)) {
+      const short = STOCK_MAP[key];
+      if (short) delete entry['act' + short.toUpperCase()];
+    }
+  }
+
+  // Action: stock resources.
+  if (act.stock) {
+    for (const [key, val] of Object.entries(act.stock)) {
+      const short = STOCK_MAP[key];
+      if (short && typeof val === 'number' && val !== 0) {
+        entry['act' + short.toUpperCase()] = val;
+      }
+    }
+  }
+
+  // Action: spend standard resources. Keep costs explicit so recurring
+  // actions are not valued as free income in generated card_data.
+  if (act.spend && !SKIP_ACTION_SPEND_MAP.has(name)) {
+    for (const [key, val] of Object.entries(act.spend)) {
+      const short = STOCK_MAP[key];
+      if (short && typeof val === 'number' && val !== 0) {
+        const actionKey = 'act' + short.toUpperCase();
+        entry[actionKey] = (entry[actionKey] || 0) - val;
+      }
+    }
+  }
 
   // Action: add resources (for VP accumulators)
   if (act.addResources || beh.addResources) entry.res = card.resourceType || 'resource';
@@ -179,6 +267,29 @@ for (const name of Object.keys(extracted)) {
       updated++;
       console.log('  ~ ' + name + ': ' + after);
     }
+  }
+}
+
+for (const [name, patch] of Object.entries(MANUAL_EFFECT_PATCHES)) {
+  const entry = Object.assign({}, effects[name] || {});
+  const before = JSON.stringify(entry);
+  for (const staleKey of patch.remove || []) {
+    delete entry[staleKey];
+  }
+  for (const [key, val] of Object.entries(patch.set || {})) {
+    if (val === undefined) delete entry[key];
+    else entry[key] = val;
+  }
+  const after = JSON.stringify(entry);
+  if (after === before) continue;
+  if (Object.keys(entry).length > 0) effects[name] = entry;
+  else delete effects[name];
+  if (!inEffects.has(name)) {
+    added++;
+    console.log('  + ' + name + ': ' + after);
+  } else {
+    updated++;
+    console.log('  ~ ' + name + ': ' + after);
   }
 }
 

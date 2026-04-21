@@ -66,6 +66,40 @@ function applyTradeRenderEffects(source, result) {
   }
 }
 
+function applyChoiceBehaviorOverrides(rawName, result) {
+  if (rawName !== 'ASTEROID_RESOURCES') return;
+  // The TS source has mutually exclusive branches here. Keep one branch as the
+  // static approximation instead of summing production + ocean/stock rewards.
+  result.behavior = {
+    production: { steel: 1, titanium: 1 },
+  };
+}
+
+const RESOURCE_ACCUMULATOR_OR_ACTIONS = new Set([
+  'AERIAL_MAPPERS',
+  'ATMO_COLLECTORS',
+  'COPERNICUS_TOWER',
+  'DEUTERIUM_EXPORT',
+  'DIRIGIBLES',
+  'EXTRACTOR_BALLOONS',
+  'GHG_PRODUCING_BACTERIA',
+  'LOCAL_SHADING',
+  'NITRITE_REDUCING_BACTERIA',
+  'REGOLITH_EATERS',
+  'SULPHUR_EATING_BACTERIA',
+  'THERMOPHILES',
+  'WEATHER_BALLOONS',
+]);
+
+function applyChoiceActionOverrides(rawName, result) {
+  if (!RESOURCE_ACCUMULATOR_OR_ACTIONS.has(rawName)) return;
+  // These cards choose between accumulating a resource and spending stored
+  // resources for a payoff. Static card data cannot model the live resource
+  // count, so keep the always-available accumulation branch instead of
+  // exposing an impossible "add + spend" combined action.
+  result.action = { addResources: 1 };
+}
+
 // Find all .ts card files recursively
 function findCardFiles(dir) {
   const files = [];
@@ -111,9 +145,9 @@ function extractCard(source, filename) {
   if (typeMatch) result.type = typeMatch[1];
 
   // Behavior block
-  const behMatch = body.match(/behavior:\s*\{([\s\S]*?)\}(?:\s*,\s*(?:requirements|action|metadata|resourceType|victoryPoints))/);
-  if (behMatch) {
-    result.behavior = parseBehaviorBlock(behMatch[1]);
+  const behaviorBlock = extractObjectLiteral(body, 'behavior');
+  if (behaviorBlock) {
+    result.behavior = parseBehaviorBlock(behaviorBlock);
   }
 
   // Action block
@@ -123,14 +157,20 @@ function extractCard(source, filename) {
   }
 
   // Victory points
-  const vpMatch = body.match(/victoryPoints:\s*(\{[\s\S]*?\}|\d+)/);
-  if (vpMatch) {
-    const vpStr = vpMatch[1];
-    if (/^\d+$/.test(vpStr)) {
+  const vpObject = extractObjectLiteral(body, 'victoryPoints');
+  const vpScalarMatch = vpObject ? null : body.match(/victoryPoints:\s*(\d+)/);
+  if (vpObject || vpScalarMatch) {
+    const vpStr = vpObject || vpScalarMatch[1];
+    if (vpScalarMatch) {
       result.vp = parseInt(vpStr);
     } else if (vpStr.includes('resourcesHere')) {
+      const eachMatch = vpStr.match(/each:\s*(\d+)/);
       const divMatch = vpStr.match(/divisor:\s*(\d+)/);
-      result.vpPerResource = divMatch ? parseInt(divMatch[1]) : 1;
+      if (eachMatch) {
+        result.vpPerResource = 1 / parseInt(eachMatch[1], 10);
+      } else {
+        result.vpPerResource = divMatch ? parseInt(divMatch[1], 10) : 1;
+      }
     } else if (vpStr.includes('tag:')) {
       const tagMatch = vpStr.match(/tag:\s*Tag\.(\w+)/);
       const perMatch = vpStr.match(/per:\s*(\d+)/);
@@ -159,6 +199,8 @@ function extractCard(source, filename) {
   if (cardDiscount != null) result.cardDiscount = cardDiscount;
 
   applyTradeRenderEffects(source, result);
+  applyChoiceBehaviorOverrides(rawName, result);
+  applyChoiceActionOverrides(rawName, result);
 
   return result;
 }
@@ -206,8 +248,14 @@ function parseBehaviorBlock(block) {
   }
 
   // Ocean
-  const oceanMatch = block.match(/ocean:\s*(\d+)/);
-  if (oceanMatch) beh.ocean = parseInt(oceanMatch[1]);
+  const oceanBlock = extractObjectLiteral(block, 'ocean');
+  if (oceanBlock !== null) {
+    const countMatch = oceanBlock.match(/count:\s*(\d+)/);
+    beh.ocean = countMatch ? parseInt(countMatch[1], 10) : 1;
+  } else {
+    const oceanMatch = block.match(/ocean:\s*(\d+)/);
+    if (oceanMatch) beh.ocean = parseInt(oceanMatch[1], 10);
+  }
 
   // Greenery
   const greenMatch = block.match(/greenery:\s*(?:\{[^}]*\}|(\d+))/);
@@ -268,6 +316,17 @@ function parseBehaviorBlock(block) {
   // Add resources
   const addResMatch = block.match(/addResources:\s*(\d+)/);
   if (addResMatch) beh.addResources = parseInt(addResMatch[1]);
+
+  // Turmoil
+  const turmoilBlock = extractObjectLiteral(block, 'turmoil');
+  if (turmoilBlock) {
+    const turmoil = {};
+    const influenceBonusMatch = turmoilBlock.match(/influenceBonus:\s*(-?\d+)/);
+    if (influenceBonusMatch) {
+      turmoil.influenceBonus = parseInt(influenceBonusMatch[1], 10);
+    }
+    if (Object.keys(turmoil).length > 0) beh.turmoil = turmoil;
+  }
 
   return beh;
 }
@@ -349,8 +408,8 @@ console.error(`Found ${cardFiles.length} card files`);
 const cardNameFile = path.join(TM_ROOT, 'src/common/cards/CardName.ts');
 const cardNameSrc = fs.readFileSync(cardNameFile, 'utf8');
 const nameMap = {};
-for (const [, key, val] of cardNameSrc.matchAll(/(\w+)\s*=\s*'([^']+)'/g)) {
-  nameMap[key] = val;
+for (const [, key, val] of cardNameSrc.matchAll(/(\w+)\s*=\s*'((?:\\'|[^'])*)'/g)) {
+  nameMap[key] = val.replace(/\\'/g, "'");
 }
 console.error(`CardName entries: ${Object.keys(nameMap).length}`);
 

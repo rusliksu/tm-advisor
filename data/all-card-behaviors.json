@@ -318,7 +318,9 @@
       "building"
     ],
     "type": "AUTOMATED",
-    "behavior": {},
+    "behavior": {
+      "ocean": 1
+    },
     "vp": 1,
     "requirements": {
       "temperature": -6
@@ -453,7 +455,8 @@
       "production": {
         "megacredits": -2,
         "heat": 3
-      }
+      },
+      "ocean": 1
     }
   },
   "Breathing Filters": {
@@ -579,7 +582,7 @@
     "type": "AUTOMATED",
     "behavior": {}
   },
-  "CEO\\": {
+  "CEO's Favorite Project": {
     "cost": 1,
     "type": "EVENT",
     "behavior": {}
@@ -621,6 +624,7 @@
       "global": {
         "temperature": 1
       },
+      "ocean": 1,
       "removeAnyPlants": 3
     }
   },
@@ -631,7 +635,8 @@
     ],
     "type": "EVENT",
     "behavior": {
-      "drawCard": 1
+      "drawCard": 1,
+      "ocean": 1
     }
   },
   "Corporate Stronghold": {
@@ -1049,13 +1054,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 2
-      },
-      "global": {
-        "temperature": 1
-      }
+      "addResources": 1
     },
     "resourceType": "microbe",
     "requirements": {
@@ -1073,6 +1072,7 @@
       "global": {
         "temperature": 2
       },
+      "ocean": 2,
       "removeAnyPlants": 6
     }
   },
@@ -1210,12 +1210,16 @@
       "space"
     ],
     "type": "EVENT",
-    "behavior": {}
+    "behavior": {
+      "ocean": 2
+    }
   },
   "Ice Cap Melting": {
     "cost": 5,
     "type": "EVENT",
-    "behavior": {},
+    "behavior": {
+      "ocean": 1
+    },
     "requirements": {
       "temperature": 2
     }
@@ -1265,7 +1269,9 @@
       "space"
     ],
     "type": "EVENT",
-    "behavior": {}
+    "behavior": {
+      "ocean": 1
+    }
   },
   "Imported Nitrogen": {
     "cost": 23,
@@ -1350,7 +1356,7 @@
     "type": "EVENT",
     "behavior": {}
   },
-  "Inventors\\": {
+  "Inventors' Guild": {
     "cost": 9,
     "tags": [
       "science"
@@ -1446,7 +1452,9 @@
   "Lake Marineris": {
     "cost": 18,
     "type": "AUTOMATED",
-    "behavior": {},
+    "behavior": {
+      "ocean": 2
+    },
     "vp": 2,
     "requirements": {
       "temperature": 0
@@ -1465,7 +1473,8 @@
     ],
     "type": "EVENT",
     "behavior": {
-      "drawCard": 2
+      "drawCard": 2,
+      "ocean": 1
     },
     "vp": 2
   },
@@ -1753,11 +1762,7 @@
       "addResources": 3
     },
     "action": {
-      "tr": 1,
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 3
-      }
+      "addResources": 1
     },
     "resourceType": "microbe"
   },
@@ -1901,7 +1906,9 @@
   "Permafrost Extraction": {
     "cost": 8,
     "type": "EVENT",
-    "behavior": {},
+    "behavior": {
+      "ocean": 1
+    },
     "requirements": {
       "temperature": -8
     }
@@ -1961,7 +1968,7 @@
         "energy": 6
       }
     },
-    "vpPerResource": 1,
+    "vpPerResource": 0.5,
     "resourceType": "science",
     "behavior": {}
   },
@@ -2105,13 +2112,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 2
-      },
-      "global": {
-        "oxygen": 1
-      }
+      "addResources": 1
     },
     "resourceType": "microbe",
     "behavior": {}
@@ -2451,7 +2452,9 @@
   "Subterranean Reservoir": {
     "cost": 11,
     "type": "EVENT",
-    "behavior": {}
+    "behavior": {
+      "ocean": 1
+    }
   },
   "Symbiotic Fungus": {
     "cost": 4,
@@ -2548,7 +2551,8 @@
       },
       "global": {
         "oxygen": 1
-      }
+      },
+      "ocean": 1
     }
   },
   "Trans-Neptune Probe": {
@@ -2937,17 +2941,11 @@
     "type": "ACTIVE",
     "behavior": {},
     "action": {
-      "addResources": 1,
-      "stock": {
-        "titanium": 2
-      },
-      "spend": {
-        "resourcesHere": 1
-      }
+      "addResources": 1
     },
     "resourceType": "floater"
   },
-  "Colony": {
+  "Build Colony": {
     "cost": 17,
     "behavior": {}
   },
@@ -3080,6 +3078,7 @@
     ],
     "type": "AUTOMATED",
     "behavior": {
+      "ocean": 1,
       "colony": {},
       "colonies": {
         "buildColony": {}
@@ -3615,7 +3614,11 @@
     "tags": [
       "science"
     ],
-    "behavior": {}
+    "behavior": {
+      "turmoil": {
+        "influenceBonus": 1
+      }
+    }
   },
   "Junk Ventures": {
     "behavior": {}
@@ -3690,7 +3693,7 @@
   "CrediCor": {
     "behavior": {}
   },
-  "EcoLine": {
+  "Ecoline": {
     "tags": [
       "plant"
     ],
@@ -3779,7 +3782,7 @@
     ],
     "behavior": {}
   },
-  "Thorgate": {
+  "ThorGate": {
     "tags": [
       "power"
     ],
@@ -3836,7 +3839,7 @@
     "resourceType": "resource_cube",
     "behavior": {}
   },
-  "An Offer You Can\\": {
+  "An Offer You Can't Refuse": {
     "cost": 5,
     "type": "EVENT",
     "behavior": {}
@@ -3910,11 +3913,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "tr": 1,
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 1
-      }
+      "addResources": 1
     },
     "vpPerTag": {
       "tag": "moon",
@@ -3999,7 +3998,7 @@
     "type": "ACTIVE",
     "behavior": {}
   },
-  "Darkside Smugglers\\": {
+  "Darkside Smugglers' Union": {
     "cost": 17,
     "tags": [
       "space"
@@ -5016,10 +5015,6 @@
       "production": {
         "steel": 1,
         "titanium": 1
-      },
-      "stock": {
-        "steel": 2,
-        "titanium": 1
       }
     },
     "vp": 1
@@ -5101,6 +5096,7 @@
         "per": 2
       },
       "drawCard": 1,
+      "ocean": 1,
       "city": 1
     },
     "vp": 1
@@ -5957,7 +5953,8 @@
       "global": {
         "temperature": 1,
         "oxygen": 1
-      }
+      },
+      "ocean": 1
     }
   },
   "Small Open Pit Mine": {
@@ -6097,7 +6094,9 @@
       "space"
     ],
     "type": "ACTIVE",
-    "behavior": {}
+    "behavior": {
+      "tr": 2
+    }
   },
   "Terraforming Robots": {
     "cost": 10,
@@ -6222,10 +6221,10 @@
       "power"
     ],
     "behavior": {
-      "ocean": 1,
       "production": {
         "energy": 2
-      }
+      },
+      "ocean": 1
     }
   },
   "Biofuels": {
@@ -6349,10 +6348,16 @@
     "tags": [
       "jovian"
     ],
-    "behavior": {}
+    "behavior": {
+      "production": {
+        "titanium": 2
+      }
+    }
   },
   "Great Aquifer": {
-    "behavior": {}
+    "behavior": {
+      "ocean": 2
+    }
   },
   "House Printing": {
     "cost": 10,
@@ -6540,7 +6545,8 @@
     "behavior": {
       "production": {
         "heat": 2
-      }
+      },
+      "ocean": 1
     }
   },
   "Power Generation": {
@@ -6765,7 +6771,11 @@
   "Colonial Representation": {
     "cost": 10,
     "type": "ACTIVE",
-    "behavior": {}
+    "behavior": {
+      "turmoil": {
+        "influenceBonus": 1
+      }
+    }
   },
   "Colony Trade Hub": {
     "tags": [
@@ -6869,7 +6879,10 @@
       "earth"
     ],
     "behavior": {
-      "tr": 1
+      "tr": 1,
+      "turmoil": {
+        "influenceBonus": 1
+      }
     }
   },
   "Industrial Complex": {
@@ -6994,9 +7007,7 @@
     }
   },
   "Preservation Program": {
-    "behavior": {
-      "tr": 5
-    }
+    "behavior": {}
   },
   "Project Eden": {
     "tags": [
@@ -7358,7 +7369,7 @@
     "type": "AUTOMATED",
     "behavior": {}
   },
-  "Astrodrill": {
+  "AstroDrill": {
     "tags": [
       "space"
     ],
@@ -7535,6 +7546,13 @@
     ],
     "type": "ACTIVE",
     "behavior": {}
+  },
+  "Established Methods": {
+    "behavior": {
+      "stock": {
+        "megacredits": 30
+      }
+    }
   },
   "Factorum": {
     "tags": [
@@ -7819,7 +7837,8 @@
       },
       "global": {
         "temperature": 1
-      }
+      },
+      "ocean": 1
     }
   },
   "Mons Insurance": {
@@ -8239,10 +8258,7 @@
       "drawCard": 1
     },
     "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 1
-      }
+      "addResources": 1
     },
     "resourceType": "floater"
   },
@@ -8397,7 +8413,11 @@
       "science"
     ],
     "type": "ACTIVE",
-    "behavior": {},
+    "behavior": {
+      "turmoil": {
+        "influenceBonus": 1
+      }
+    },
     "requirements": {}
   },
   "GMO Contract": {
@@ -8526,7 +8546,7 @@
     },
     "requirements": {}
   },
-  "Terralabs Research": {
+  "TerraLabs Research": {
     "tags": [
       "science",
       "earth"
@@ -8847,7 +8867,8 @@
     "behavior": {
       "production": {
         "plants": 1
-      }
+      },
+      "ocean": 1
     }
   },
   "Demetron Labs": {
@@ -8894,7 +8915,11 @@
     "tags": [
       "crime"
     ],
-    "behavior": {}
+    "behavior": {
+      "turmoil": {
+        "influenceBonus": 1
+      }
+    }
   },
   "Excavator Leasing": {
     "cost": 8,
@@ -9271,8 +9296,7 @@
     "behavior": {
       "production": {
         "megacredits": 6
-      },
-      "city": 1
+      }
     }
   },
   "Labor Trafficking": {
@@ -10033,10 +10057,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "drawCard": 1,
-      "spend": {
-        "resourcesHere": 1
-      }
+      "addResources": 1
     },
     "vp": 1,
     "resourceType": "floater",
@@ -10167,13 +10188,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 1
-      },
-      "production": {
-        "energy": 1
-      }
+      "addResources": 1
     },
     "resourceType": "floater",
     "behavior": {}
@@ -10184,7 +10199,9 @@
       "venus"
     ],
     "type": "ACTIVE",
-    "action": {},
+    "action": {
+      "addResources": 1
+    },
     "resourceType": "floater",
     "behavior": {}
   },
@@ -10195,19 +10212,10 @@
     ],
     "type": "ACTIVE",
     "behavior": {
-      "global": {
-        "venus": 1
-      },
       "addResources": 3
     },
     "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 2
-      },
-      "global": {
-        "venus": 1
-      }
+      "addResources": 1
     },
     "resourceType": "floater"
   },
@@ -10367,13 +10375,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "addResources": 1,
-      "spend": {
-        "resourcesHere": 1
-      },
-      "production": {
-        "megacredits": 1
-      }
+      "addResources": 1
     },
     "resourceType": "floater",
     "behavior": {}
@@ -10596,7 +10598,10 @@
     "requirements": {
       "venus": 6
     },
-    "behavior": {}
+    "behavior": {},
+    "action": {
+      "addResources": 1
+    }
   },
   "Sulphur Exports": {
     "cost": 21,
@@ -10634,12 +10639,7 @@
     ],
     "type": "ACTIVE",
     "action": {
-      "spend": {
-        "resourcesHere": 2
-      },
-      "global": {
-        "venus": 1
-      }
+      "addResources": 1
     },
     "resourceType": "microbe",
     "requirements": {
