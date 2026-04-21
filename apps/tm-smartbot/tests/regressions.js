@@ -358,6 +358,40 @@ function testDiscardHonorsRequiredCount() {
   assert.strictEqual(input.cards.length, 2, 'discard should satisfy required minimum count');
 }
 
+function testTriggerOnlyResourcesDoNotExposeRecurringActions() {
+  for (const name of [
+    'Arklight',
+    'Bactoviral Research',
+    'Decomposers',
+    'Ecological Zone',
+    'Ecological Zone:ares',
+    'Hecate Speditions',
+    'Herbivores',
+    'Mars University',
+    'Microgravity Nutrition',
+    'Neptunian Power Consultants',
+    'Ocean Sanctuary',
+    'Olympus Conference',
+    'Pets',
+    'Pristar',
+    'Recyclon',
+    'Research & Development Hub',
+    'Thiolava Vents',
+    'Venusian Animals',
+    'Whales',
+  ]) {
+    const data = SMARTBOT.CARD_DATA[name] || {};
+    assert.strictEqual(
+      Object.prototype.hasOwnProperty.call(data, 'action'),
+      false,
+      name + ' should not expose trigger-only resources as recurring actions'
+    );
+  }
+
+  assert.ok(SMARTBOT.CARD_DATA['Physics Complex'].action, 'Physics Complex should keep its real blue action');
+  assert.ok(SMARTBOT.CARD_DATA['Security Fleet'].action, 'Security Fleet should keep its real blue action');
+}
+
 function testStandardProjectSkipsClosedGlobals() {
   const wf = {
     type: 'and',
@@ -716,6 +750,7 @@ function run() {
   testPristarBoostPrefersEngineShellOverTerraforming();
   testForcedSellFallsBackWhenAllCardsHaveVpPotential();
   testDiscardHonorsRequiredCount();
+  testTriggerOnlyResourcesDoNotExposeRecurringActions();
   testStandardProjectSkipsClosedGlobals();
   testStandardProjectPrioritizesOpenAsteroid();
   testBlueActionIgnoresDisabledHigherEvOption();

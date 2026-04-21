@@ -23,6 +23,10 @@ const cardData = loadGeneratedVar('card_data.js', 'TM_CARD_DATA');
 const descriptions = loadGeneratedVar('card_descriptions.js', 'TM_CARD_DESCRIPTIONS');
 const tags = loadGeneratedVar('card_tags.js', 'TM_CARD_TAGS');
 
+function hasOwn(obj, key) {
+  return Object.prototype.hasOwnProperty.call(obj || {}, key);
+}
+
 assert.strictEqual(effects['Cryo-Sleep'].tradeDiscount, 1, 'Cryo-Sleep should keep tradeDiscount in effects');
 assert.strictEqual(effects['Rim Freighters'].tradeDiscount, 1, 'Rim Freighters should keep tradeDiscount in effects');
 assert.strictEqual(effects['Trade Envoys'].tradeOffset, 1, 'Trade Envoys should keep tradeOffset in effects');
@@ -43,6 +47,37 @@ assert(descriptions['Venus Trade Hub'].includes('When you trade, gain 3 M€.'),
 
 assert.strictEqual(effects['Freyja Biodomes'].placesTag, 'venus', 'Freyja Biodomes should remain tagged as a venus placer');
 assert(tags['Venusian Animals'] && tags['Venusian Animals'].includes('venus'), 'Venusian Animals should expose its venus tag');
+
+const triggerOnlyNoStaticActionCards = [
+  'Arklight',
+  'Bactoviral Research',
+  'Decomposers',
+  'Ecological Zone',
+  'Ecological Zone:ares',
+  'Hecate Speditions',
+  'Herbivores',
+  'Mars University',
+  'Microgravity Nutrition',
+  'Neptunian Power Consultants',
+  'Ocean Sanctuary',
+  'Olympus Conference',
+  'Pets',
+  'Pristar',
+  'Recyclon',
+  'Research & Development Hub',
+  'Thiolava Vents',
+  'Venusian Animals',
+  'Whales',
+];
+for (const name of triggerOnlyNoStaticActionCards) {
+  assert.strictEqual(hasOwn(cardData[name], 'action'), false, name + ' should not expose trigger-only resources as recurring actions');
+}
+assert.strictEqual(hasOwn(effects['Olympus Conference'], 'actCD'), false, 'Olympus Conference science trigger should not be a blue-card draw action');
+assert.strictEqual(hasOwn(effects['Mars University'], 'actCD'), false, 'Mars University science trigger should not be a blue-card draw action');
+assert.strictEqual(cardData['Decomposers'].resourceType, 'microbe', 'Decomposers should keep resource metadata after dropping fake action');
+assert.strictEqual(cardData['Decomposers'].vp.per, 1, 'Decomposers should keep VP/resource metadata after dropping fake action');
+assert.strictEqual(cardData['Pets'].resourceType, 'animal', 'Pets should keep animal resource metadata after dropping fake action');
+assert.strictEqual(hasOwn(cardData["Inventors' Guild"], 'action'), true, "Inventors' Guild should keep its real blue action");
 
 const contentSrc = fs.readFileSync(path.resolve(ROOT, 'apps', 'tm-extension', 'src', 'content.js'), 'utf8');
 assert(contentSrc.includes('getCardTagsForName(targetName)'), 'content.js should use card tags for placesTag target reachability');

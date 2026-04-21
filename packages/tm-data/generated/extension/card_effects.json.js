@@ -643,12 +643,10 @@ const TM_CARD_EFFECTS = {
  },
  "Olympus Conference": {
   "c": 10,
-  "actCD": 0.5,
   "vp": 1
  },
  "Mars University": {
   "c": 8,
-  "actCD": 0.3,
   "vp": 1
  },
  "Inventors' Guild": {

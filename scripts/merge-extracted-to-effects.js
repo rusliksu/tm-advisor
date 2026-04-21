@@ -31,6 +31,10 @@ const GLOBAL_MAP = { temperature: 'tmp', oxygen: 'o2', venus: 'vn' };
 
 const inEffects = new Set(Object.keys(effects));
 const inCatalog = new Set(allCards.map((card) => card.name).concat(Object.keys(effects)));
+const STALE_EFFECT_KEYS = {
+  'Mars University': ['actCD'],
+  'Olympus Conference': ['actCD'],
+};
 
 let added = 0;
 let updated = 0;
@@ -44,6 +48,10 @@ for (const name of Object.keys(extracted)) {
   const act = card.action || {};
   const entry = Object.assign({}, effects[name] || {});
   const before = JSON.stringify(entry);
+
+  for (const staleKey of STALE_EFFECT_KEYS[name] || []) {
+    delete entry[staleKey];
+  }
 
   // Production
   if (beh.production) {
