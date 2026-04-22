@@ -381,6 +381,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    72  Protected Valley
    72  Aerial Mappers
    72  Miranda Resort
+   72  Energy Tapping
    72  Inventors' Guild
    72  Lake Marineris
    72  Pollinators
@@ -560,7 +561,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    63  Small Animals
    63  Urban Decomposers
    63  Venus Shuttles
-   63  Energy Tapping
    63  Summit Logistics
    63  Vermin
    63  Lightning Harvest

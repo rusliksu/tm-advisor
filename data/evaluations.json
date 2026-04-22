@@ -5641,14 +5641,19 @@
   },
   "Energy Tapping": {
     "name": "Energy Tapping",
-    "score": 63,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
+    "opening_hand_bias": 5,
+    "opening_hand_note": "Strong opener in Colonies or 2P when it enables your own trade/card and disrupts an opponent's trade threshold; less attractive if the only target is not actually energy-constrained.",
     "economy": "3+3=6 MC for steal 1 energy-prod (7 MC gained for you, ~7 MC lost for opponent) - 1 VP (5 MC). Power tag (2-3 MC). Net +3-4 MC. Take-that penalty in 3P: -5 to -10 MC score adjustment.",
-    "reasoning": "Cheap Power tag with take-that energy steal. Per COTD community, significantly better with Colonies — hitting someone's energy when they need 3 energy to trade is devastating. Almost always played gen 1-3 with Colonies. Without Colonies, still a decent tempo card. The -1 VP is negligible early. Power tag for energy awards.",
+    "reasoning": "Cheap Power tag with take-that energy steal. Per COTD community, this is significantly better with Colonies: taking someone from 3 energy production to 2 can deny a trade, while increasing your own production can unlock your trade or an energy-requirement card. TFMStats supports B rather than C: it is kept from starting hands about 74% of the time, kept starts are strongly positive, and played stats are solid. The -1 VP is real, and in 3P+ the target choice can help a third player, so the card is timing-sensitive rather than generic economy.",
     "synergies": [
       "Power Infrastructure",
-      "AI Central"
+      "AI Central",
+      "Power Supply Consortium",
+      "Thorgate",
+      "Aridor"
     ],
     "when_to_pick": "When you need a cheap Power tag and the energy steal target has excess energy they cannot use. Skip if target is using all their energy -- helps third player too much.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1opuz5h/cotd_energy_tapping_6_nov_2025/"
