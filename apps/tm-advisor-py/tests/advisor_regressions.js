@@ -54,10 +54,12 @@ function runPythonScript(scriptName) {
   const script = path.join(REPO_ROOT, 'apps', 'tm-advisor-py', 'tests', scriptName);
   const candidates = [];
   if (process.env.PYTHON) candidates.push([process.env.PYTHON]);
+  candidates.push(['python3']);
   candidates.push(['python']);
-  candidates.push(['py', '-3']);
+  if (process.platform === 'win32') candidates.push(['py', '-3']);
 
   let lastFailure = null;
+  let missingCommandFailure = null;
   for (const candidate of candidates) {
     const result = spawnSync(candidate[0], [...candidate.slice(1), script], {
       cwd: REPO_ROOT,
@@ -65,7 +67,7 @@ function runPythonScript(scriptName) {
     });
 
     if (result.error) {
-      lastFailure = result.error;
+      missingCommandFailure = result.error;
       continue;
     }
     if (result.status === 0) {
@@ -78,7 +80,7 @@ function runPythonScript(scriptName) {
     );
   }
 
-  throw lastFailure || new Error('Failed to run advisor opening regressions');
+  throw lastFailure || missingCommandFailure || new Error('Failed to run advisor opening regressions');
 }
 
 function run() {
