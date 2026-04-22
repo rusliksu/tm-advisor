@@ -9,7 +9,7 @@
  *   TM_BOT_TOKEN    — Telegram bot token
  *   TM_BASE_URL     — TM base URL (default: https://tm.knightbyte.win)
  *   TM_DB_PATH      — path to game.db (default: /home/openclaw/tm-runtime/prod/shared/db/game.db)
- *   PLAYER_TELEGRAM_JSON — optional JSON object with extra player → chat ID mappings
+ *   PLAYER_TELEGRAM_JSON — optional JSON object with extra player -> chat ID mappings
  *   POLL_INTERVAL   — seconds between polls (default: 15)
  */
 
@@ -25,7 +25,7 @@ const BASE_URL = (process.env.TM_BASE_URL || 'https://tm.knightbyte.win').replac
 const DB_PATH = process.env.TM_DB_PATH || '/home/openclaw/tm-runtime/prod/shared/db/game.db';
 const POLL_INTERVAL = parseInt(process.env.POLL_INTERVAL || '15') * 1000;
 
-// Player name → Telegram chat ID
+// Player name -> Telegram chat ID
 const DEFAULT_PLAYER_TELEGRAM = {
   'gydro': 162438481,
   'руслан': 162438481,
@@ -57,8 +57,8 @@ const PLAYER_TELEGRAM = {
   ...parsePlayerTelegramOverrides(),
 };
 
-// Track: playerId → logical turn key
-const notified = new Map();
+// Track: playerId -> { noticeKey, messageId, chatId }
+const playerState = new Map();
 
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
@@ -74,10 +74,16 @@ function fetchJson(url) {
   });
 }
 
-function sendTelegram(chatId, text) {
-  if (!BOT_TOKEN) { console.log('[DRY]', chatId, text.replace(/<[^>]+>/g, '')); return Promise.resolve(); }
-  const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-  const data = JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true });
+function callTelegram(method, payload) {
+  if (!BOT_TOKEN) {
+    if (method === 'sendMessage') {
+      console.log('[DRY]', payload.chat_id, String(payload.text || '').replace(/<[^>]+>/g, ''));
+      return Promise.resolve({ ok: true, result: { message_id: -1 } });
+    }
+    return Promise.resolve({ ok: true });
+  }
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/${method}`;
+  const data = JSON.stringify(payload);
   return new Promise((resolve, reject) => {
     const req = https.request(url, {
       method: 'POST',
@@ -86,11 +92,36 @@ function sendTelegram(chatId, text) {
     }, (res) => {
       let body = '';
       res.on('data', (c) => body += c);
-      res.on('end', () => resolve(body));
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(body));
+        } catch (_err) {
+          resolve({ ok: false, description: body });
+        }
+      });
     });
     req.on('error', reject);
     req.write(data);
     req.end();
+  });
+}
+
+function sendTelegram(chatId, text) {
+  return callTelegram('sendMessage', {
+    chat_id: chatId,
+    text,
+    parse_mode: 'HTML',
+    disable_web_page_preview: true,
+  });
+}
+
+function deleteTelegramMessage(chatId, messageId) {
+  if (!chatId || !Number.isInteger(messageId) || messageId < 0) {
+    return Promise.resolve({ ok: true });
+  }
+  return callTelegram('deleteMessage', {
+    chat_id: chatId,
+    message_id: messageId,
   });
 }
 
@@ -196,6 +227,21 @@ function getWaitingFor(state) {
   return state.waitingFor || state.thisPlayer?.waitingFor || null;
 }
 
+function normalizePromptTitle(waitingFor) {
+  if (!waitingFor) return '';
+  const rawTitle = typeof waitingFor.title === 'object' ? (waitingFor.title?.message || '') : (waitingFor.title || '');
+  const title = String(rawTitle).trim();
+  switch (title) {
+  case 'Take your first action':
+  case 'Take your next action':
+    return 'Выбери действие';
+  case 'Select one option':
+    return 'Выбери вариант';
+  default:
+    return title;
+  }
+}
+
 function getPhase(state, entry) {
   return state.game?.phase || entry.phase || '';
 }
@@ -217,25 +263,42 @@ function isPlayersTurn(entry, state) {
 function buildNoticeKey(entry, state) {
   const phase = getPhase(state, entry);
   const gameId = state.game?.id || entry.gameId || '';
+  const waitingFor = getWaitingFor(state) || {};
+  const promptType = waitingFor.type || '';
+  const promptTitle = normalizePromptTitle(waitingFor);
   if (isDraftPhase(phase)) {
-    return [gameId, phase, getCardsFingerprint(state.cardsInHand)].join('|');
+    return [gameId, state.game?.generation || '?', phase, promptType, getCardsFingerprint(state.cardsInHand)].join('|');
   }
   if (phase === 'research') {
-    return [gameId, phase, getResearchFingerprint(state)].join('|');
+    return [gameId, state.game?.generation || '?', phase, promptType, getResearchFingerprint(state)].join('|');
   }
-  return [gameId, state.game?.generation || '?', phase, entry.activePlayerId || entry.playerId].join('|');
+  return [gameId, state.game?.generation || '?', phase, entry.activePlayerId || entry.playerId, promptType, promptTitle].join('|');
 }
 
 function buildActionLabel(entry, state) {
   const phase = getPhase(state, entry);
   const waitingFor = getWaitingFor(state) || {};
-  const wfTitle = typeof waitingFor.title === 'object' ? (waitingFor.title?.message || '') : (waitingFor.title || '');
-  if (isDraftPhase(phase) || phase === 'research') return '📋 Драфт карт';
-  if (waitingFor.type === 'or') return '🎯 ' + (wfTitle.slice(0, 50) || 'Выбери действие');
-  if (waitingFor.type === 'card') return '🃏 Выбери карты';
-  if (waitingFor.type === 'space') return '📍 Размести тайл';
-  if (waitingFor.type) return waitingFor.type;
-  return '🎯 Твой ход';
+  const wfTitle = normalizePromptTitle(waitingFor);
+  if (isDraftPhase(phase) || phase === 'research') return 'Драфт карт';
+  if (waitingFor.type === 'or') return wfTitle || 'Выбери действие';
+  if (waitingFor.type === 'card') return 'Выбери карты';
+  if (waitingFor.type === 'space') return 'Размести тайл';
+  if (waitingFor.type === 'option') return wfTitle || 'Выбери вариант';
+  if (wfTitle) return wfTitle;
+  return 'Твой ход';
+}
+
+async function clearPlayerNotice(playerId) {
+  const previous = playerState.get(playerId);
+  if (!previous) return;
+  playerState.delete(playerId);
+  try {
+    await deleteTelegramMessage(previous.chatId, previous.messageId);
+  } catch (e) {
+    if (e && e.message) {
+      console.warn('delete notice error:', playerId.slice(0, 8), e.message);
+    }
+  }
 }
 
 async function checkPlayer(entry) {
@@ -243,22 +306,26 @@ async function checkPlayer(entry) {
   try {
     const state = await fetchJson(`${BASE_URL}/api/player?id=${playerId}`);
     if (!state) {
-      notified.delete(playerId);
+      await clearPlayerNotice(playerId);
       return;
     }
 
     if (!isPlayersTurn(entry, state)) {
-      notified.delete(playerId);
+      await clearPlayerNotice(playerId);
       return;
     }
 
     const playerName = state.thisPlayer?.name || entry.playerName || state.color || 'Unknown';
     const chatId = entry.chatId || findChatId(playerName);
-    if (!chatId) return;
+    if (!chatId) {
+      await clearPlayerNotice(playerId);
+      return;
+    }
 
     const noticeKey = buildNoticeKey(entry, state);
     if (!noticeKey) return;
-    if (notified.get(playerId) === noticeKey) return;
+    const previous = playerState.get(playerId);
+    if (previous && previous.noticeKey === noticeKey) return;
 
     const game = state.game || {};
     const gen = game.generation || '?';
@@ -266,24 +333,33 @@ async function checkPlayer(entry) {
     const action = buildActionLabel(entry, state);
 
     const link = `${BASE_URL}/player?id=${playerId}`;
-    const msg = `🎲 <b>Твой ход!</b>\nGen ${gen} · ${phase}\n${action}\n\n<a href="${link}">Открыть игру</a>`;
+    const msg = `<b>Твой ход!</b>\nGen ${gen} · ${phase}\n${action}\n\n<a href="${link}">Открыть игру</a>`;
 
-    await sendTelegram(chatId, msg);
-    notified.set(playerId, noticeKey);
+    if (previous) {
+      await deleteTelegramMessage(previous.chatId, previous.messageId);
+    }
+    const response = await sendTelegram(chatId, msg);
+    const messageId = Number(response?.result?.message_id);
+    playerState.set(playerId, {
+      noticeKey,
+      chatId,
+      messageId: Number.isInteger(messageId) ? messageId : -1,
+    });
     console.log(`[${new Date().toISOString().slice(11, 19)}] ${playerName} notified (gen ${gen})`);
   } catch (e) {
-    // Player API failed — game might have ended or player ID invalid
-    notified.delete(playerId);
+    // Keep player state on transient API or Telegram failures to avoid duplicate spam.
     if (e.message && !e.message.includes('Parse error')) {
       console.warn('checkPlayer error:', playerId.slice(0, 8), e.message);
     }
   }
 }
 
-function cleanupNotified() {
+async function cleanupNotified() {
   const activePlayerIds = new Set(getWatchedPlayers().map((entry) => entry.playerId));
-  for (const key of notified.keys()) {
-    if (!activePlayerIds.has(key)) notified.delete(key);
+  for (const key of Array.from(playerState.keys())) {
+    if (!activePlayerIds.has(key)) {
+      await clearPlayerNotice(key);
+    }
   }
 }
 
@@ -293,6 +369,7 @@ async function poll() {
   for (const entry of players) {
     await checkPlayer(entry);
   }
+  await cleanupNotified();
 }
 
 console.log('TM Turn Notifier started');
@@ -301,5 +378,5 @@ console.log(`DB: ${DB_PATH}`);
 console.log(`Poll: ${POLL_INTERVAL / 1000}s`);
 console.log(`Bot: ${BOT_TOKEN ? 'configured' : 'DRY RUN'}`);
 
-setInterval(() => { poll(); cleanupNotified(); }, POLL_INTERVAL);
+setInterval(() => { void poll(); }, POLL_INTERVAL);
 poll();

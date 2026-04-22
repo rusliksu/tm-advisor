@@ -19,15 +19,6 @@ const NOTIFY_DELAY = parseInt(process.env.TM_NOTIFY_DELAY_MS || '5000');
 const NOTIFY_COOLDOWN = parseInt(process.env.TM_NOTIFY_COOLDOWN_MS || '30000');
 const HOST = process.env.HOST || 'https://tm.knightbyte.win:4444';
 
-// Player name (lowercase) → Telegram chat ID
-const PLAYER_TELEGRAM = {
-  'gydro': 162438481,
-  'руслан': 162438481,
-  'илья': 353877502,
-  'леха': null, // add when known
-  'алексей': null,
-};
-
 // Track last notification per player ID to avoid spam
 const lastNotified = new Map();
 // Track pending timers to cancel if player acts before delay
@@ -46,9 +37,10 @@ function sendTelegram(chatId, text) {
   req.end();
 }
 
-function getChatId(playerName) {
-  const lower = (playerName || '').trim().toLowerCase();
-  return PLAYER_TELEGRAM[lower] || null;
+function normalizeChatId(raw) {
+  if (raw === undefined || raw === null) return null;
+  const text = String(raw).trim();
+  return /^\d{5,20}$/.test(text) ? text : null;
 }
 
 function patchPlayer() {
@@ -79,8 +71,7 @@ function patchPlayer() {
         }
 
         // Schedule notification with delay (skip if player acts quickly)
-        const playerName = this.name;
-        const chatId = getChatId(playerName);
+        const chatId = normalizeChatId(this.telegramID);
         if (!chatId) return;
 
         const lastTime = lastNotified.get(playerId) || 0;
