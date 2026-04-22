@@ -522,8 +522,9 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                 continue
 
         # Good card — PLAY (VP race adjustments)
-        priority = _play_priority(score, eff_cost, is_production, phase, gens_left)
-        play_reason = _play_reason(score, phase, gens_left)
+        priority = _play_priority(
+            score, eff_cost, is_production, phase, gens_left, play_value)
+        play_reason = _play_reason(score, phase, gens_left, play_value)
         if pay_hint:
             play_reason += f" ({pay_hint})"
 
@@ -832,9 +833,14 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 effect_parser, db, corp_name=me.corp,
                 tableau_tags=dict(me.tags) if me.tags else None,
                 player_colonies=getattr(me, "colonies", 0))
-            priority = _play_priority(score, cost,
-                                      _is_production_card(tags, name, effect_parser=effect_parser),
-                                      phase, gens_left)
+            priority = _play_priority(
+                score,
+                cost,
+                _is_production_card(tags, name, effect_parser=effect_parser),
+                phase,
+                gens_left,
+                value_mc,
+            )
             allocations.append({
                 "action": f"Play {name}",
                 "cost": cost, "value_mc": round(value_mc),
@@ -1830,6 +1836,8 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                 value *= _late_game_engine_multiplier(eff, gens_left)
             if value > 0:
                 return value
+            if phase == "endgame" and gens_left <= 2 and _has_structured_effect_data(eff):
+                return max(0, value)
 
     # Fallback: score heuristic (with late-game engine penalty for high-score cards)
     return _estimate_card_value(score, cost, tags, phase, gens_left, rv)
@@ -2340,8 +2348,18 @@ def _has_claimable_milestone(state):
     return False
 
 
-def _play_priority(score, cost, is_production, phase, gens_left):
+def _play_priority(score, cost, is_production, phase, gens_left, play_value=None):
     """1 = play first, 9 = play last."""
+    if phase == "endgame" and play_value is not None:
+        if play_value >= 14:
+            return 3
+        if play_value >= 8:
+            return 4
+        if play_value < 2:
+            return 7
+        if play_value < 5:
+            return 6
+
     if score >= 80:
         return 2
     if score >= 70:
@@ -2355,7 +2373,12 @@ def _play_priority(score, cost, is_production, phase, gens_left):
     return 5
 
 
-def _play_reason(score, phase, gens_left):
+def _play_reason(score, phase, gens_left, play_value=None):
+    if phase == "endgame" and play_value is not None:
+        if play_value < 2:
+            return "endgame low immediate value — after VP/TR plays"
+        if play_value < 5:
+            return "endgame filler value"
     if score >= 80:
         return "strong card, play ASAP"
     if score >= 70:

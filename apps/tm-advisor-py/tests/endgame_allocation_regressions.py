@@ -161,6 +161,54 @@ def build_soil_studies_state() -> GameState:
     })
 
 
+def build_endgame_value_order_state() -> GameState:
+    hand = [
+        {"name": "Symbiotic Fungus", "calculatedCost": 0, "tags": ["Microbe"]},
+        {"name": "Aquifer Pumping", "calculatedCost": 13, "tags": ["Building"]},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 30,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 19,
+        "steelProduction": 1,
+        "titaniumProduction": 0,
+        "plantProduction": 2,
+        "energyProduction": 7,
+        "heatProduction": 3,
+        "terraformRating": 42,
+        "cardsInHandNbr": len(hand),
+        "tableau": [
+            {"name": "Cheung Shing MARS"},
+            {"name": "Decomposers", "resources": 2},
+        ],
+        "tags": {"microbe": 2, "building": 6},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 10,
+            "phase": "action",
+            "oxygenLevel": 13,
+            "temperature": 6,
+            "oceans": 8,
+            "venusScaleLevel": 30,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
 def main() -> None:
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
     parser = CardEffectParser(db)
@@ -249,6 +297,29 @@ def main() -> None:
         not a["action"].startswith("Play Soil Studies")
         for a in soil_alloc
     ), soil_alloc
+
+    value_order_state = build_endgame_value_order_state()
+    value_order_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            value_order_state.cards_in_hand, value_order_state, synergy, req_checker)
+    }
+    symbiotic = value_order_advice["Symbiotic Fungus"]
+    aquifer = value_order_advice["Aquifer Pumping"]
+    assert symbiotic["action"] == "PLAY", symbiotic
+    assert symbiotic["play_value_now"] < 2, symbiotic
+    assert "low immediate value" in symbiotic["reason"], symbiotic
+    assert aquifer["play_value_now"] > 10, aquifer
+    assert aquifer["priority"] < symbiotic["priority"], (aquifer, symbiotic)
+
+    value_order_alloc = mc_allocation_advice(
+        value_order_state, synergy, req_checker)["allocations"]
+    play_names = [
+        a["action"].replace("Play ", "")
+        for a in value_order_alloc
+        if a.get("type") == "card" and a.get("action", "").startswith("Play ")
+    ]
+    assert play_names.index("Aquifer Pumping") < play_names.index("Symbiotic Fungus"), value_order_alloc
 
     print("advisor endgame allocation regression checks: OK")
 
