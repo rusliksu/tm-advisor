@@ -9,7 +9,7 @@ from .analysis import (
     strategy_advice, _generate_alerts, _estimate_remaining_gens,
     _forecast_requirements, _mc_flow_projection, endgame_convert_actions,
 )
-from .colony_advisor import analyze_trade_options, analyze_settlement
+from .colony_advisor import analyze_trade_options, analyze_settlement, is_actionable_trade_hint
 from .draft_play_advisor import draft_buy_advice, play_hold_advice, mc_allocation_advice
 
 
@@ -274,7 +274,8 @@ class ClaudeOutput:
                 a("")
 
             if trade_result["best_hint"]:
-                a(f"**Рекомендация:** {trade_result['best_hint']}")
+                label = "Рекомендация" if is_actionable_trade_hint(trade_result["best_hint"]) else "Статус"
+                a(f"**{label}:** {trade_result['best_hint']}")
 
                 # Compare best trade vs best playable card
                 best_trade = trade_result["trades"][0] if trade_result["trades"] else None

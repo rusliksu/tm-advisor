@@ -775,6 +775,19 @@ def analyze_trade_options(state) -> dict:
     }
 
 
+def is_actionable_trade_hint(hint: str | None) -> bool:
+    """True when a trade hint is an actionable recommendation, not availability status."""
+    if not hint:
+        return False
+    low = hint.lower()
+    non_actionable = (
+        "невыгоден" in low
+        or hint.startswith("Флот занят")
+        or hint.startswith("Нет ресурсов")
+    )
+    return not non_actionable
+
+
 def analyze_settlement(state) -> list[dict]:
     """Анализ: куда ставить колонию и стоит ли (17 MC standard project)."""
     if not state.colonies_data:
@@ -875,7 +888,7 @@ def format_trade_hints(state) -> list[str]:
     hints = []
 
     if not result["trades"]:
-        if result["best_hint"]:
+        if is_actionable_trade_hint(result["best_hint"]):
             hints.append(f"🚀 {result['best_hint']}")
         me = state.me
         energy_ctx = _energy_tempo_context(state)

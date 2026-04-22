@@ -82,6 +82,14 @@ def assert_value_trade_alert_suppresses_track_only_trade_first() -> None:
     assert all("Trade FIRST: Callisto" not in alert for alert in alerts), alerts
     assert "🔥 TR из 11 heat (+1 temp, +1 TR)" in alerts, alerts
 
+    build_then_trade_alerts = _dedupe_alerts([
+        "🚀 Сначала Callisto, потом trade: track 5→6, 3 energy (+6.5 MC темпа) [9.0 MC]",
+        "⚡ Trade FIRST: Callisto (contested — opponents haven't passed)",
+    ])
+    assert build_then_trade_alerts == [
+        "🚀 Сначала Callisto, потом trade: track 5→6, 3 energy (+6.5 MC темпа) [9.0 MC]",
+    ], build_then_trade_alerts
+
 
 def assert_track_only_trade_first_survives_without_value_trade() -> None:
     alerts = _dedupe_alerts([

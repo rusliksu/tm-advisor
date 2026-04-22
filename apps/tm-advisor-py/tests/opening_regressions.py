@@ -572,6 +572,23 @@ def main():
     ceres_trade_hints = format_trade_hints(ceres_trade_state)
     assert any("Сначала Ceres" in hint for hint in ceres_trade_hints)
 
+    occupied_fleet_state = build_state(
+        corps=["Cheung Shing MARS", "Thorgate", "Kuiper Cooperative"],
+        preludes=["Donation", "Allied Banks", "Power Generation"],
+        projects=["Imported Nutrients", "Deimos Down"],
+        colonies=[("Callisto", True), ("Luna", True), ("Triton", True)],
+        generation=5,
+    )
+    occupied_fleet_state.phase = "action"
+    occupied_fleet_state.me.energy = 3
+    occupied_fleet_state.me.mc = 30
+    occupied_fleet_state.me.trades_this_gen = 1
+    occupied_fleet_state.me.fleet_size = 1
+    occupied_trade = analyze_trade_options(occupied_fleet_state)
+    assert occupied_trade["best_hint"].startswith("Флот занят"), occupied_trade
+    assert not any("Флот занят" in hint for hint in format_trade_hints(occupied_fleet_state))
+    assert not any("Флот занят" in alert for alert in _generate_alerts(occupied_fleet_state))
+
     engine_no_draw_state = build_state(
         corps=["Cheung Shing MARS", "Helion", "Teractor"],
         preludes=["Donation", "Allied Banks", "Power Generation"],
