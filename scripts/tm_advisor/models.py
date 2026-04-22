@@ -79,6 +79,11 @@ class PlayerInfo:
         self.fleet_size = data.get("fleetSize", 1)
         self.trades_this_gen = data.get("tradesThisGeneration", 0)
         self.actions_this_gen = data.get("actionsTakenThisRound", 0)
+        actions_this_generation = data.get("actionsThisGeneration", [])
+        self.actions_this_generation = (
+            actions_this_generation if isinstance(actions_this_generation, list)
+            else []
+        )
         self.card_cost = data.get("cardCost", 3)  # Polyphemos = 5
 
         # Tags
