@@ -196,6 +196,8 @@ class GameLogger:
                     effects["production"] = eff.production_change
                 if eff.gains_resources:
                     effects["immediate"] = eff.gains_resources
+                if eff.scaled_gains_resources:
+                    effects["scaled_immediate"] = eff.scaled_gains_resources
                 if eff.placement:
                     effects["placement"] = eff.placement
                 if eff.draws_cards:

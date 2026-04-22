@@ -502,14 +502,17 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         play_value = _estimate_card_value_rich(
             name, score, cost, tags, phase, gens_left, rv,
             effect_parser, db, corp_name=me.corp,
-            tableau_tags=dict(me.tags) if me.tags else None)
+            tableau_tags=dict(me.tags) if me.tags else None,
+            player_colonies=getattr(me, "colonies", 0))
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
         # SELL: low score card (but allow early game speculation and immediate payoff)
         if score < 40 and phase != "early":
             net_play_value = play_value - eff_cost
             has_immediate_value = _has_endgame_immediate_value(
-                name, effect_parser, allow_placement=True)
+                name, effect_parser, allow_placement=True,
+                tableau_tags=dict(me.tags) if me.tags else None,
+                player_colonies=getattr(me, "colonies", 0))
             if net_play_value <= 0 and not has_immediate_value:
                 results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
                                       play_value, 0, eff_cost, 9))
@@ -518,9 +521,13 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         # Production in endgame = bad
         is_production = _is_production_card(tags, name, effect_parser=effect_parser)
         has_endgame_nonplacement_value = _has_endgame_immediate_value(
-            name, effect_parser, allow_placement=False)
+            name, effect_parser, allow_placement=False,
+            tableau_tags=dict(me.tags) if me.tags else None,
+            player_colonies=getattr(me, "colonies", 0))
         has_endgame_immediate_value = _has_endgame_immediate_value(
-            name, effect_parser, allow_placement=True)
+            name, effect_parser, allow_placement=True,
+            tableau_tags=dict(me.tags) if me.tags else None,
+            player_colonies=getattr(me, "colonies", 0))
         if (is_production and gens_left <= 2 and
                 not has_endgame_nonplacement_value and
                 (not has_endgame_immediate_value or play_value <= eff_cost)):
@@ -537,6 +544,15 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                 results.append(_entry(name, "SELL", sell_reason,
                                       play_value * 0.1, 0, eff_cost, 9))
                 continue
+
+        endgame_shortfall = _endgame_low_value_reason(
+            name, effect_parser, play_value, eff_cost, state,
+            tableau_tags=dict(me.tags) if me.tags else None,
+            player_colonies=getattr(me, "colonies", 0))
+        if endgame_shortfall:
+            results.append(_entry(name, "SELL", endgame_shortfall,
+                                  play_value, 0, eff_cost, 9))
+            continue
 
         # Check opportunity costs (using effective MC cost)
         opportunity_cost = _calc_opportunity_cost(state, eff_cost)
@@ -861,14 +877,17 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
             if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
                 has_immediate_value = _has_endgame_immediate_value(
-                    name, effect_parser, allow_placement=True)
+                    name, effect_parser, allow_placement=True,
+                    tableau_tags=dict(me.tags) if me.tags else None,
+                    player_colonies=getattr(me, "colonies", 0))
                 if not has_immediate_value and score < 70:
                     continue
 
             value_mc = _estimate_card_value_rich(
                 name, score, cost, tags, phase, gens_left, rv,
                 effect_parser, db, corp_name=me.corp,
-                tableau_tags=dict(me.tags) if me.tags else None)
+                tableau_tags=dict(me.tags) if me.tags else None,
+                player_colonies=getattr(me, "colonies", 0))
             priority = _play_priority(score, cost,
                                       _is_production_card(tags, name, effect_parser=effect_parser),
                                       phase, gens_left)
@@ -1851,7 +1870,7 @@ def _entry(name, action, reason, play_value_now, hold_value,
 
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                               effect_parser=None, db=None, corp_name="",
-                              tableau_tags=None):
+                              tableau_tags=None, player_colonies=0):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
     # Try effect-based estimation first
     if effect_parser:
@@ -1860,7 +1879,8 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
             value = _value_from_effects(eff, gens_left, rv, phase,
                                         corp_name=corp_name,
                                         card_cost=cost,
-                                        tableau_tags=tableau_tags)
+                                        tableau_tags=tableau_tags,
+                                        player_colonies=player_colonies)
             # Late-game penalty for engine/draw cards that won't pay off
             if value > 0 and gens_left <= 3:
                 value *= _late_game_engine_multiplier(eff, gens_left)
@@ -1888,7 +1908,7 @@ def _late_game_engine_multiplier(eff, gens_left: int) -> float:
     has_static_vp = eff.vp_per and "resource" not in str(eff.vp_per.get("per", "")) \
                     and "tag" not in str(eff.vp_per.get("per", ""))
     has_placement = bool(eff.placement)
-    has_immediate_gains = bool(eff.gains_resources)
+    has_immediate_gains = bool(eff.gains_resources or eff.scaled_gains_resources)
     has_immediate_draw = bool(eff.draws_cards)  # card draw is always valuable
 
     if (has_direct_tr or has_prod_boost or has_static_vp or has_placement
@@ -1927,7 +1947,89 @@ def _late_game_engine_multiplier(eff, gens_left: int) -> float:
     return penalties.get(gens_left, 1.0)
 
 
-def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0, tableau_tags=None):
+def _immediate_resource_value(res, rv):
+    return {
+        "mc": 1.0, "steel": rv["steel"], "titanium": rv["titanium"],
+        "plant": rv["plant"], "heat": rv["heat"],
+    }.get(res, 1.0)
+
+
+def _scaled_gain_count(scales, tableau_tags=None, player_colonies=0):
+    tag_counts = {str(k).lower(): v for k, v in (tableau_tags or {}).items()}
+    count = 0
+    for scale in scales or []:
+        kind = scale.get("kind")
+        if kind == "tag":
+            count += tag_counts.get(str(scale.get("name", "")).lower(), 0)
+        elif kind == "planet_tags":
+            count += (
+                tag_counts.get("earth", 0)
+                + tag_counts.get("jovian", 0)
+                + tag_counts.get("venus", 0)
+            )
+        elif kind == "colony":
+            count += max(0, int(player_colonies or 0))
+    return count
+
+
+def _scaled_resource_gain(eff, resource, tableau_tags=None, player_colonies=0):
+    total = 0
+    for gain in eff.scaled_gains_resources:
+        if gain.get("resource") != resource:
+            continue
+        total += gain.get("amount", 0) * _scaled_gain_count(
+            gain.get("scales"), tableau_tags, player_colonies)
+    return total
+
+
+def _has_structured_effect_data(eff):
+    return bool(
+        eff.tr_gain
+        or eff.production_change
+        or eff.vp_per
+        or eff.discount
+        or eff.triggers
+        or eff.actions
+        or eff.tag_scaling
+        or eff.placement
+        or eff.draws_cards
+        or eff.gains_resources
+        or eff.scaled_gains_resources
+    )
+
+
+def _endgame_low_value_reason(name, effect_parser, play_value, eff_cost, state,
+                              tableau_tags=None, player_colonies=0):
+    if eff_cost <= 0:
+        return None
+    gens_left = _estimate_remaining_gens(state)
+    if game_phase(gens_left, state.generation) != "endgame" or gens_left > 2:
+        return None
+    if play_value + 1 >= eff_cost:
+        return None
+    if not effect_parser:
+        return None
+
+    eff = effect_parser.get(name)
+    if not eff or not _has_structured_effect_data(eff):
+        return None
+
+    me = state.me
+    plant_gain = eff.gains_resources.get("plant", 0) + _scaled_resource_gain(
+        eff, "plant", tableau_tags, player_colonies)
+    if plant_gain > 0 and getattr(me, "plants", 0) + plant_gain >= 8:
+        return None
+
+    heat_gain = eff.gains_resources.get("heat", 0) + _scaled_resource_gain(
+        eff, "heat", tableau_tags, player_colonies)
+    if heat_gain > 0 and state.temperature < 8 and getattr(me, "heat", 0) + heat_gain >= 8:
+        return None
+
+    return f"endgame: value {play_value:.1f} < cost {eff_cost}"
+
+
+def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0,
+                        tableau_tags=None, player_colonies=0):
     """Calculate MC-value from CardEffect data."""
     value = 0
 
@@ -1969,11 +2071,14 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
 
     # Immediate resource gains
     for res, amount in eff.gains_resources.items():
-        res_val = {
-            "mc": 1.0, "steel": rv["steel"], "titanium": rv["titanium"],
-            "plant": rv["plant"], "heat": rv["heat"],
-        }.get(res, 1.0)
-        value += amount * res_val
+        value += amount * _immediate_resource_value(res, rv)
+
+    for gain in eff.scaled_gains_resources:
+        amount = gain.get("amount", 0) * _scaled_gain_count(
+            gain.get("scales"), tableau_tags, player_colonies)
+        if amount <= 0:
+            continue
+        value += amount * _immediate_resource_value(gain.get("resource"), rv)
 
     # VP (rough estimate — VP cards scale with remaining game)
     if eff.vp_per:
@@ -2178,7 +2283,8 @@ def _estimate_card_value(score, cost, tags, phase, gens_left, rv):
     return base_value
 
 
-def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True):
+def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True,
+                                 tableau_tags=None, player_colonies=0):
     """Whether the card still gives a meaningful payoff this generation."""
     if not effect_parser:
         return False
@@ -2189,9 +2295,13 @@ def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True)
         return True
     if allow_placement and eff.placement:
         return True
-    if eff.gains_resources.get("plant", 0) >= 5:
+    plant_gain = eff.gains_resources.get("plant", 0) + _scaled_resource_gain(
+        eff, "plant", tableau_tags, player_colonies)
+    mc_gain = eff.gains_resources.get("mc", 0) + _scaled_resource_gain(
+        eff, "mc", tableau_tags, player_colonies)
+    if plant_gain >= 5:
         return True
-    if eff.gains_resources.get("mc", 0) >= 4:
+    if mc_gain >= 4:
         return True
     if (eff.vp_per and str(eff.vp_per.get("per", "")).lower() == "flat"
             and eff.vp_per.get("amount", 0) > 0):

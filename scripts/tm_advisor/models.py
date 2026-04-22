@@ -18,6 +18,7 @@ class CardEffect:
         "discount", "triggers", "actions",
         "tag_scaling", "placement", "attacks",
         "draws_cards", "gains_resources",
+        "scaled_gains_resources",
     )
 
     def __init__(self, name: str):
@@ -37,6 +38,7 @@ class CardEffect:
         self.attacks: list[str] = []           # ["-2 plant-prod", "-3 MC-prod"]
         self.draws_cards: int = 0              # сколько карт draw
         self.gains_resources: dict = {}        # {mc: 5, plant: 3, ...} immediate
+        self.scaled_gains_resources: list[dict] = []  # [{resource, amount, scales}]
 
 
 class PlayerInfo:
