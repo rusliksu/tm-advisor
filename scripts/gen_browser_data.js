@@ -17,6 +17,7 @@ const EXT_DATA = path.join(ROOT, 'extension', 'data');
 // ── Load sources ──
 
 const allCards = JSON.parse(fs.readFileSync(path.join(DATA, 'all_cards.json'), 'utf8'));
+const allCardsByName = Object.fromEntries(allCards.map((card) => [card.name, card]));
 
 // Load existing card_tags.js for tag fallback (has more cards than all_cards.json)
 let existingCardTags = {};
@@ -167,11 +168,15 @@ for (const [name, e] of Object.entries(effects)) {
 
   // ── action (blue card recurring) ──
   const act = {};
-  if (e.actCD) act.drawCard = e.actCD;
-  if (e.actTR) act.tr = e.actTR;
-  if (e.actMC) act.stock = { megacredits: e.actMC };
-  if (e.actOc) act.global = { ocean: e.actOc };
-  if (e.vpAcc || e.res) act.addResources = 1;
+  const catalogCard = allCardsByName[name];
+  const canExposeStaticAction = !catalogCard || catalogCard.hasAction === true;
+  if (canExposeStaticAction) {
+    if (e.actCD) act.drawCard = e.actCD;
+    if (e.actTR) act.tr = e.actTR;
+    if (e.actMC) act.stock = { megacredits: e.actMC };
+    if (e.actOc) act.global = { ocean: e.actOc };
+    if (e.vpAcc || e.res) act.addResources = 1;
+  }
   if (Object.keys(act).length > 0) entry.action = act;
 
   // ── VP ──

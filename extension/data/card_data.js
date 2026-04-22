@@ -1207,9 +1207,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Ecological Zone": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 2
@@ -1307,9 +1304,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Decomposers": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -1338,9 +1332,6 @@ var TM_CARD_DATA = {
     "count": 1
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 2
@@ -1351,9 +1342,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Pets": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 2
@@ -1481,9 +1469,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Olympus Conference": {
-  "action": {
-   "drawCard": 0.5
-  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -1495,9 +1480,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Mars University": {
-  "action": {
-   "drawCard": 0.3
-  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -2231,9 +2213,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Venusian Animals": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_tag",
    "tag": "science",
@@ -2817,9 +2796,6 @@ var TM_CARD_DATA = {
     "megacredits": 2
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -2831,9 +2807,6 @@ var TM_CARD_DATA = {
  "Pristar": {
   "behavior": {
    "tr": -2
-  },
-  "action": {
-   "addResources": 1
   },
   "vp": {
    "type": "per_resource",
@@ -2889,9 +2862,6 @@ var TM_CARD_DATA = {
    "production": {
     "steel": 1
    }
-  },
-  "action": {
-   "addResources": 1
   },
   "resourceType": "microbe",
   "tags": [
@@ -4173,12 +4143,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Neptunian Power Consultants": {
-  "action": {
-   "stock": {
-    "megacredits": 3
-   },
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -5712,9 +5676,6 @@ var TM_CARD_DATA = {
     "cards": 1
    },
    "drawCard": 1
-  },
-  "action": {
-   "addResources": 1
   },
   "resourceType": "microbe",
   "tags": [
@@ -7706,9 +7667,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Microgravity Nutrition": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "static",
    "vp": 1
@@ -7964,9 +7922,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Ocean Sanctuary": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -8904,9 +8859,6 @@ var TM_CARD_DATA = {
     "addTradeFleet": 1
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "resourceType": "supply_chain",
   "tags": [
    "earth",
@@ -9174,9 +9126,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Research & Development Hub": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -9250,9 +9199,6 @@ var TM_CARD_DATA = {
     "heat": 2
    }
   },
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -9320,9 +9266,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Whales": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
@@ -10368,9 +10311,6 @@ var TM_CARD_DATA = {
   ]
  },
  "Ecological Zone:ares": {
-  "action": {
-   "addResources": 1
-  },
   "vp": {
    "type": "per_resource",
    "per": 1
