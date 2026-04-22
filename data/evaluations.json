@@ -8195,17 +8195,21 @@
   },
   "Magnetic Field Dome": {
     "name": "Magnetic Field Dome",
-    "score": 52,
+    "score": 42,
     "tier": "D",
     "type": "project",
-    "economy": "5 MC + 3 MC card + 15 MC (2 energy prod) = ~23 MC for 1 TR (~7 MC) + 1 plant prod (~8 MC) + Building tag (~2 MC) = ~17 MC value. 6 MC deficit.",
-    "reasoning": "Overcosted production card. Per COTD community, 'never a keep, sometimes playable last gen.' The 2 energy production cost is steep for just 1 TR + 1 plant-prod return. Experienced players unanimously rate it as a last-gen-only play with excess energy. Very weak overall.",
-    "synergies": [],
-    "when_to_pick": "Last gen with 2+ unused energy production and steel to dump. Otherwise skip. Never play early/mid game.",
-    "backtest_note": "WR 57%. Cheap city (steel payable) + 1 plant prod. City VP underrated.",
+    "economy": "5 MC + 3 MC card + 2 energy production is a poor mid-game exchange: roughly 23 MC of cost for 1 TR, 1 plant production, and a Building tag. In the final generation the energy production loss matters less, but then the plant production usually matters little too.",
+    "reasoning": "Late energy dump, not a real production card. COTD consensus is 'never a keep, sometimes playable last gen,' and the 2 energy production cost is too steep before the endgame. TFMStats starting-hand signal is severe: only ~5.3% keep rate and kept starts underperform badly. Keep it in D, not F, because a final TR for spare energy/steel or an exact plant-to-greenery line can still pay.",
+    "synergies": [
+      "Excess energy production",
+      "Steel surplus",
+      "Final-generation TR push"
+    ],
+    "when_to_pick": "Do not buy in the opening hand. Consider mid/late only if heat is maxed or the game is ending, you have 2 energy production that no longer matters, and steel/surplus cash makes a 1 TR play efficient. Upgrade only if +1 plant production creates an extra greenery.",
+    "backtest_note": "TFMStats: 5.3% opening keep rate, kept starts -1.49 Elo, played win rate 42.6%. Treat rare played Elo gains as selection bias from final-generation/spare-energy spots.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1ikkf71/cotd_magnetic_field_dome_8_feb_2025/",
-    "opening_hand_bias": -8,
-    "opening_hand_note": "Later spare-energy conversion only; TFMStats starting keeps are among the worst signals in this batch."
+    "opening_hand_bias": -10,
+    "opening_hand_note": "Never an opener unless the hand already has an extreme, cheap-energy plan; TFMStats starting keeps are among the worst signals in this batch."
   },
   "Meltworks": {
     "name": "Meltworks",
