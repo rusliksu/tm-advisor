@@ -64,14 +64,76 @@ def main() -> None:
     assert snapshot._is_action_phase("action")
     assert not snapshot._is_action_phase("drafting")
     assert snapshot._should_emit_action_advice("action")
+    assert not snapshot._should_emit_action_advice("research")
+    assert not snapshot._should_emit_action_advice("drafting")
     assert not snapshot._should_emit_action_advice("end")
     assert snapshot._snapshot_card_cost(
         {"cost": 0}, FakeDb(), "Harvest", action_phase=False) == 4
     assert snapshot._snapshot_card_cost(
         {"cost": 0}, FakeDb(), "Harvest", action_phase=True) == 0
+    assert snapshot._snapshot_trade_payload({"trades": [], "best_hint": "Флот занят (1/1 trades)"}) is None
+    assert snapshot._snapshot_trade_payload({"trades": [], "best_hint": "Нет ресурсов для торговли"}) is None
+    assert snapshot._snapshot_trade_payload({"trades": [], "best_hint": "Trade невыгоден в этом gen"}) is None
+    assert snapshot._snapshot_trade_payload({
+        "trades": [],
+        "best_hint": "Сначала Callisto: +3 energy → trade сейчас",
+    }) == {"best": None, "hint": "Сначала Callisto: +3 energy → trade сейчас"}
+    assert snapshot._snapshot_trade_payload({
+        "trades": [{"name": "Ceres", "net_profit": 2.0}],
+        "best_hint": "Trade Ceres (+2.0 MC net, 4 Steel)",
+    })["best"]["name"] == "Ceres"
+    filtered_alerts = snapshot._filter_alerts_against_play_advice(
+        [
+            "📊 Miranda Resort: VP scaling — играй после Earth тегов",
+            "⏳ Noctis City — обычно late city",
+            "💰 Income: MC 0+TR 22",
+        ],
+        [
+            {"name": "Miranda Resort", "action": "PLAY", "priority": 1},
+            {"name": "Noctis City", "action": "HOLD", "priority": 6},
+        ],
+    )
+    assert filtered_alerts == ["⏳ Noctis City — обычно late city", "💰 Income: MC 0+TR 22"], filtered_alerts
 
     class FakeClient:
         def get_player_state(self, _player_id):
+            if _player_id == "p-research":
+                return {
+                    "thisPlayer": {
+                        "color": "red",
+                        "name": "me",
+                        "megaCredits": 30,
+                        "terraformRating": 25,
+                        "cardsInHandNbr": 1,
+                        "tableau": [{"name": "Cheung Shing MARS"}],
+                        "tags": {},
+                    },
+                    "players": [
+                        {"color": "red", "name": "me", "cardsInHandNbr": 1},
+                        {"color": "blue", "name": "opp", "cardsInHandNbr": 4},
+                    ],
+                    "cardsInHand": [{"name": "Ecological Zone", "calculatedCost": 12}],
+                    "waitingFor": {
+                        "type": "card",
+                        "cards": [
+                            {"name": "Mining Rights", "cost": 9, "tags": ["Building"]},
+                            {"name": "Aquifer Pumping", "cost": 18, "tags": ["Building"]},
+                        ],
+                    },
+                    "game": {
+                        "generation": 4,
+                        "phase": "research",
+                        "oxygenLevel": 3,
+                        "temperature": -22,
+                        "oceans": 3,
+                        "venusScaleLevel": 4,
+                        "milestones": [],
+                        "awards": [],
+                        "colonies": [{"name": "Callisto", "isActive": True, "trackPosition": 3, "colonies": []}],
+                        "spaces": [],
+                        "gameOptions": {"expansions": {"colonies": True}},
+                    },
+                }
             return {
                 "thisPlayer": {
                     "color": "red",
@@ -106,6 +168,7 @@ def main() -> None:
     snapshot.TMClient = FakeClient
     try:
         terminal = snapshot.snapshot("p-end")
+        research = snapshot.snapshot("p-research")
     finally:
         snapshot.TMClient = original_client
 
@@ -115,6 +178,13 @@ def main() -> None:
     assert "play_advice" not in terminal, terminal.get("play_advice")
     assert "trade" not in terminal, terminal.get("trade")
     assert terminal["vp_estimates"], terminal
+    assert research["game"]["live_phase"] == "research", research["game"]
+    assert research["current_draft"], research
+    assert research["alerts"] == [], research["alerts"]
+    assert research["opponent_intents"] == [], research["opponent_intents"]
+    assert "play_advice" not in research, research.get("play_advice")
+    assert "trade" not in research, research.get("trade")
+    assert "colony_advice" not in research, research.get("colony_advice")
 
     print("advisor snapshot regression checks: OK")
 

@@ -21,7 +21,7 @@ from scripts.tm_advisor.analysis import (  # noqa: E402
     _generate_alerts, _estimate_remaining_gens, _estimate_vp, _score_to_tier,
 )
 from scripts.tm_advisor.colony_advisor import (  # noqa: E402
-    analyze_trade_options, colony_strategy_advice,
+    analyze_trade_options, colony_strategy_advice, is_actionable_trade_hint,
 )
 from scripts.tm_advisor.draft_play_advisor import play_hold_advice  # noqa: E402
 from scripts.tm_advisor.economy import resource_values, game_phase  # noqa: E402
@@ -88,7 +88,42 @@ def _is_terminal_phase(phase: str | None) -> bool:
 
 
 def _should_emit_action_advice(phase: str | None) -> bool:
-    return not _is_terminal_phase(phase)
+    return _is_action_phase(phase)
+
+
+def _snapshot_trade_payload(trade: dict) -> dict | None:
+    trades = trade.get("trades") or []
+    best = trades[0] if trades else None
+    hint = trade.get("best_hint") or ""
+    profitable_best = bool(best and best.get("net_profit", 0) > 0)
+    actionable_hint = is_actionable_trade_hint(hint)
+    if not profitable_best and not actionable_hint:
+        return None
+    return {
+        "best": best,
+        "hint": hint if actionable_hint else "",
+    }
+
+
+def _filter_alerts_against_play_advice(alerts: list[str], play_advice: list[dict]) -> list[str]:
+    play_now = set()
+    for row in play_advice:
+        if not row.get("name") or row.get("action") != "PLAY":
+            continue
+        try:
+            priority = int(row.get("priority", 99) or 99)
+        except (TypeError, ValueError):
+            continue
+        if priority <= 3:
+            play_now.add(row.get("name"))
+    if not play_now:
+        return alerts
+    result = []
+    for alert in alerts:
+        if any(alert.startswith(f"📊 {name}:") or alert.startswith(f"⏳ {name}") for name in play_now):
+            continue
+        result.append(alert)
+    return result
 
 
 def _snapshot_card_cost(card: dict, db: CardDatabase, name: str, action_phase: bool) -> int:
@@ -281,6 +316,7 @@ def snapshot(player_id: str) -> dict:
             result["alerts"].extend(format_opponent_intent_warnings(state))
         except Exception as e:
             result["opponent_intents"] = [{"error": str(e)}]
+        result["alerts"] = _filter_alerts_against_play_advice(result["alerts"], play_advice)
     else:
         result["alerts"] = []
         result["opponent_intents"] = []
@@ -300,10 +336,9 @@ def snapshot(player_id: str) -> dict:
     if state.colonies_data and _should_emit_action_advice(state.phase):
         try:
             trade = analyze_trade_options(state)
-            result["trade"] = {
-                "best": trade["trades"][0] if trade["trades"] else None,
-                "hint": trade["best_hint"],
-            }
+            trade_payload = _snapshot_trade_payload(trade)
+            if trade_payload:
+                result["trade"] = trade_payload
         except Exception:
             pass
         try:
