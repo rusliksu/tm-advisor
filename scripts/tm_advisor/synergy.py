@@ -1280,7 +1280,13 @@ class SynergyEngine:
 
             if velocity_gap >= 2:
                 if is_draw_velocity:
-                    draw_push = min(8, 2 + velocity_gap - hand_relief)
+                    draw_push = 2 + velocity_gap - hand_relief
+                    # First draw/selection source is a bottleneck in a built
+                    # discount/prod shell; do not let existing draw-trigger
+                    # synergy outrank the missing velocity relief by itself.
+                    if draw_shell == 0 and velocity_gap >= 4:
+                        draw_push += 1
+                    draw_push = min(8, draw_push)
                     bonus += max(1, draw_push)
                 elif is_discount_velocity or is_prod_velocity:
                     penalty = 1 + min(3, velocity_gap - 1)
@@ -1290,6 +1296,8 @@ class SynergyEngine:
             elif draw_shell >= 2 and engine_shell <= 1:
                 if is_discount_velocity or is_prod_velocity:
                     bonus += 2 + min(1, draw_shell - 2)
+                    if is_prod_velocity and velocity_ctx["prod_shell"] == 0 and draw_shell >= 3:
+                        bonus += 1
                 elif is_draw_velocity and not is_prod_velocity:
                     bonus -= 1
 

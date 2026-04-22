@@ -502,15 +502,25 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             tableau_tags=dict(me.tags) if me.tags else None)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
-        # SELL: low score card (but allow early game speculation)
+        # SELL: low score card (but allow early game speculation and immediate payoff)
         if score < 40 and phase != "early":
-            results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
-                                  play_value, 0, eff_cost, 9))
-            continue
+            net_play_value = play_value - eff_cost
+            has_immediate_value = _has_endgame_immediate_value(
+                name, effect_parser, allow_placement=True)
+            if net_play_value <= 0 and not has_immediate_value:
+                results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
+                                      play_value, 0, eff_cost, 9))
+                continue
 
         # Production in endgame = bad
-        is_production = _is_production_card(tags, name)
-        if is_production and gens_left <= 2:
+        is_production = _is_production_card(tags, name, effect_parser=effect_parser)
+        has_endgame_nonplacement_value = _has_endgame_immediate_value(
+            name, effect_parser, allow_placement=False)
+        has_endgame_immediate_value = _has_endgame_immediate_value(
+            name, effect_parser, allow_placement=True)
+        if (is_production and gens_left <= 2 and
+                not has_endgame_nonplacement_value and
+                (not has_endgame_immediate_value or play_value <= eff_cost)):
             results.append(_entry(name, "SELL", "production в endgame бесполезна",
                                   play_value * 0.2, 0, eff_cost, 9))
             continue
@@ -518,14 +528,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         # Last gen: only play if immediate VP/TR or conversion fuel
         if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
             # Check if card gives immediate TR, placement, or resources
-            has_immediate_value = False
-            if effect_parser:
-                eff_data = effect_parser.get(name)
-                if eff_data:
-                    if eff_data.tr_gain > 0 or eff_data.placement:
-                        has_immediate_value = True
-                    if eff_data.gains_resources.get("plant", 0) >= 5:
-                        has_immediate_value = True  # enough for greenery SP
+            has_immediate_value = has_endgame_immediate_value
             if not has_immediate_value and score < 70:
                 sell_reason = f"last gen: no immediate VP (sell +1 MC)"
                 results.append(_entry(name, "SELL", sell_reason,
@@ -838,12 +841,18 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             if not req_ok or cost > budget:
                 continue
 
+            if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
+                has_immediate_value = _has_endgame_immediate_value(
+                    name, effect_parser, allow_placement=True)
+                if not has_immediate_value and score < 70:
+                    continue
+
             value_mc = _estimate_card_value_rich(
                 name, score, cost, tags, phase, gens_left, rv,
                 effect_parser, db, corp_name=me.corp,
                 tableau_tags=dict(me.tags) if me.tags else None)
             priority = _play_priority(score, cost,
-                                      _is_production_card(tags, name),
+                                      _is_production_card(tags, name, effect_parser=effect_parser),
                                       phase, gens_left)
             allocations.append({
                 "action": f"Play {name}",
@@ -990,9 +999,16 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
     # 8. Endgame sell-all optimization
     if phase == "endgame" and gens_left <= 1 and state.cards_in_hand and synergy:
+        play_allocation_names = {
+            a["action"][5:]
+            for a in allocations
+            if a.get("type") == "card" and a.get("action", "").startswith("Play ")
+        }
         sellable = []
         for card in state.cards_in_hand:
             cname = card["name"]
+            if cname in play_allocation_names:
+                continue
             ctags = card.get("tags", [])
             cscore = synergy.adjusted_score(
                 cname, ctags, me.corp, state.generation, me.tags, state)
@@ -2138,10 +2154,36 @@ def _estimate_card_value(score, cost, tags, phase, gens_left, rv):
     return base_value
 
 
-def _is_production_card(tags, name):
+def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True):
+    """Whether the card still gives a meaningful payoff this generation."""
+    if not effect_parser:
+        return False
+    eff = effect_parser.get(name)
+    if not eff:
+        return False
+    if eff.tr_gain > 0:
+        return True
+    if allow_placement and eff.placement:
+        return True
+    if eff.gains_resources.get("plant", 0) >= 5:
+        return True
+    if eff.gains_resources.get("mc", 0) >= 4:
+        return True
+    if eff.vp_per and str(eff.vp_per.get("per", "")).lower() == "flat":
+        return True
+    return False
+
+
+def _is_production_card(tags, name, effect_parser=None):
     """Heuristic: is this a production-focused card."""
+    eff = effect_parser.get(name) if effect_parser else None
+    if eff and any(amount > 0 for amount in eff.production_change.values()):
+        return True
     tag_set = {t.lower() for t in tags}
-    if "building" in tag_set or "power" in tag_set:
+    if "power" in tag_set and any(
+        kw in name.lower()
+        for kw in ("power", "energy", "generator", "reactor", "fusion", "solar", "wind")
+    ):
         return True
     prod_keywords = ("production", "prod", "factory", "mining", "generator")
     return any(kw in name.lower() for kw in prod_keywords)
