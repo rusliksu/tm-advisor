@@ -3181,8 +3181,7 @@ const TM_CARD_EFFECTS = {
   "mc": 2
  },
  "Stefan": {
-  "c": 0,
-  "actMC": 3
+  "c": 0
  },
  "Floyd": {
   "c": 0,
@@ -3382,7 +3381,6 @@ const TM_CARD_EFFECTS = {
  },
  "Archimedes Hydroponics Station": {
   "c": 14,
-  "actMC": 1,
   "ep": -1,
   "mp": -1,
   "pp": 2
@@ -4051,8 +4049,7 @@ const TM_CARD_EFFECTS = {
   "c": 39
  },
  "Luna Trade Station": {
-  "c": 10,
-  "actMC": 2
+  "c": 10
  },
  "Lunar Dust Processing Plant": {
   "c": 6
@@ -4061,12 +4058,10 @@ const TM_CARD_EFFECTS = {
   "c": 4
  },
  "Steel Market Monopolists": {
-  "c": 15,
-  "actMC": 3
+  "c": 15
  },
  "Titanium Market Monopolists": {
-  "c": 21,
-  "actMC": 4
+  "c": 21
  },
  "Subterranean Habitats": {
   "c": 12
@@ -4081,8 +4076,7 @@ const TM_CARD_EFFECTS = {
   "c": 9
  },
  "HE3 Refinery": {
-  "c": 8,
-  "actMC": 3
+  "c": 8
  },
  "Luna Archives": {
   "c": 13,

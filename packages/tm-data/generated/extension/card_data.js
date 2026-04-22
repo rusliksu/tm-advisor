@@ -7466,11 +7466,16 @@ var TM_CARD_DATA = {
   }
  },
  "Stefan": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Once per game, sell any number of cards from hand for 3 MC each",
+    "conditional": true,
+    "oncePerGame": true,
+    "sellCardsFromHand": {
+     "megacredits": 3
+    }
    }
-  }
+  ]
  },
  "Floyd": {
   "behavior": {
@@ -7765,11 +7770,6 @@ var TM_CARD_DATA = {
     "megacredits": -1,
     "plants": 2,
     "energy": -1
-   }
-  },
-  "action": {
-   "stock": {
-    "megacredits": 1
    }
   }
  },
@@ -9242,32 +9242,80 @@ var TM_CARD_DATA = {
   }
  },
  "Luna Trade Station": {
-  "action": {
-   "stock": {
-    "megacredits": 2
+  "actionChoices": [
+   {
+    "label": "Gain 2 MC for each habitat tile on The Moon",
+    "dynamic": true,
+    "stockPerBoard": {
+     "per": "moon_habitat_tile",
+     "megacredits": 2
+    }
    }
-  }
+  ]
  },
  "Steel Market Monopolists": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Spend 3X MC to gain 2X steel, max 9 MC",
+    "variable": true,
+    "stockRatio": {
+     "megacredits": -3,
+     "steel": 2
+    },
+    "maxSpend": {
+     "megacredits": 9
+    }
+   },
+   {
+    "label": "Spend X steel to gain 3X MC, max 3 steel",
+    "variable": true,
+    "stockRatio": {
+     "steel": -1,
+     "megacredits": 3
+    },
+    "maxSpend": {
+     "steel": 3
+    }
    }
-  }
+  ]
  },
  "Titanium Market Monopolists": {
-  "action": {
-   "stock": {
-    "megacredits": 4
+  "actionChoices": [
+   {
+    "label": "Spend 2X MC to gain X titanium, max 8 MC",
+    "variable": true,
+    "stockRatio": {
+     "megacredits": -2,
+     "titanium": 1
+    },
+    "maxSpend": {
+     "megacredits": 8
+    }
+   },
+   {
+    "label": "Spend X titanium to gain 4X MC, max 4 titanium",
+    "variable": true,
+    "stockRatio": {
+     "titanium": -1,
+     "megacredits": 4
+    },
+    "maxSpend": {
+     "titanium": 4
+    }
    }
-  }
+  ]
  },
  "HE3 Refinery": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Gain 1 MC for each level of mining rate",
+    "dynamic": true,
+    "stockPerBoard": {
+     "per": "moon_mining_rate",
+     "megacredits": 1
+    }
    }
-  }
+  ]
  },
  "Luna Archives": {
   "action": {

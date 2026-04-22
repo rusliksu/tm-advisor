@@ -408,6 +408,10 @@ assert.strictEqual(cardData['Project Workshop'].actionChoices[0].stock.megacredi
 assert.strictEqual(cardData['Project Workshop'].actionChoices[1].conditional, true, 'Project Workshop flip branch should be marked conditional');
 assert.strictEqual(cardData['Project Workshop'].actionChoices[1].drawCard, 2, 'Project Workshop flip branch should draw 2 cards');
 assert.strictEqual(cardData['Project Workshop'].actionChoices[1].trFromDiscardedCardVP, true, 'Project Workshop flip branch should preserve VP-to-TR conversion');
+assert.strictEqual(hasOwn(effects['Stefan'], 'actMC'), false, 'Stefan should not expose one-per-game card selling as recurring MC income');
+assert.strictEqual(hasOwn(cardData['Stefan'] || {}, 'action'), false, 'Stefan should not expose one-per-game card selling as a flat stock action');
+assert.strictEqual(cardData['Stefan'].actionChoices[0].oncePerGame, true, 'Stefan should mark the sell action as one-per-game');
+assert.strictEqual(cardData['Stefan'].actionChoices[0].sellCardsFromHand.megacredits, 3, 'Stefan should sell hand cards for 3 MC each');
 assert.strictEqual(hasOwn(effects['Energy Market'], 'actMC'), false, 'Energy Market should not expose a static MC action for its OR action');
 assert.strictEqual(hasOwn(cardData['Energy Market'] || {}, 'action'), false, 'Energy Market should not expose a misleading static action');
 assert.strictEqual(cardData['Energy Market'].actionChoices.length, 2, 'Energy Market should preserve both variable-energy and energy-prod cash branches');
@@ -511,6 +515,11 @@ assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[0].stock.plan
 assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[1].conditional, true, 'Bio Printing Facility animal branch should be marked conditional');
 assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[1].resourceType, 'animal', 'Bio Printing Facility animal branch should target animals');
 assert.strictEqual(cardData['Bio Printing Facility'].actionChoices[1].target, 'another', 'Bio Printing Facility animal branch should target another card');
+assert.strictEqual(hasOwn(effects['Archimedes Hydroponics Station'], 'actMC'), false, 'Archimedes Hydroponics Station should not expose production-box MC as an action');
+assert.strictEqual(hasOwn(cardData['Archimedes Hydroponics Station'] || {}, 'action'), false, 'Archimedes Hydroponics Station is automated and should not expose an action');
+assert.strictEqual(cardData['Archimedes Hydroponics Station'].behavior.production.energy, -1, 'Archimedes should keep the energy-production penalty');
+assert.strictEqual(cardData['Archimedes Hydroponics Station'].behavior.production.megacredits, -1, 'Archimedes should keep the MC-production penalty');
+assert.strictEqual(cardData['Archimedes Hydroponics Station'].behavior.production.plants, 2, 'Archimedes should keep the plant production gain');
 assert.strictEqual(hasOwn(effects['Chemical Factory'], 'actMC'), false, 'Chemical Factory should not expose excavation as MC income');
 assert.strictEqual(hasOwn(cardData['Chemical Factory'] || {}, 'action'), false, 'Chemical Factory should not expose unsupported excavation as a static MC action');
 for (const name of [
@@ -540,6 +549,21 @@ assert.strictEqual(hasOwn(effects['Red Ships'], 'actMC'), false, 'Red Ships shou
 assert.strictEqual(hasOwn(cardData['Red Ships'], 'action'), false, 'Red Ships should not expose a flat stock action');
 assert.strictEqual(cardData['Red Ships'].actionChoices[0].stockPerBoard.per, 'ocean_adjacent_city_or_special_tile', 'Red Ships should scale with ocean-adjacent city/special tiles');
 assert.strictEqual(cardData['Red Ships'].actionChoices[0].stockPerBoard.megacredits, 1, 'Red Ships should gain 1 MC per matching tile');
+assert.strictEqual(hasOwn(effects['Luna Trade Station'], 'actMC'), false, 'Luna Trade Station should not expose Moon habitat scaling as static MC income');
+assert.strictEqual(hasOwn(cardData['Luna Trade Station'] || {}, 'action'), false, 'Luna Trade Station should not expose a flat stock action');
+assert.strictEqual(cardData['Luna Trade Station'].actionChoices[0].stockPerBoard.per, 'moon_habitat_tile', 'Luna Trade Station should scale with Moon habitat tiles');
+assert.strictEqual(cardData['Luna Trade Station'].actionChoices[0].stockPerBoard.megacredits, 2, 'Luna Trade Station should gain 2 MC per Moon habitat tile');
+assert.strictEqual(hasOwn(effects['HE3 Refinery'], 'actMC'), false, 'HE3 Refinery should not expose mining-rate scaling as static MC income');
+assert.strictEqual(cardData['HE3 Refinery'].actionChoices[0].stockPerBoard.per, 'moon_mining_rate', 'HE3 Refinery should scale with Moon mining rate');
+for (const name of ['Steel Market Monopolists', 'Titanium Market Monopolists']) {
+  assert.strictEqual(hasOwn(effects[name], 'actMC'), false, name + ' should not expose variable market conversion as static MC income');
+  assert.strictEqual(hasOwn(cardData[name] || {}, 'action'), false, name + ' should not expose a flat stock action');
+  assert.strictEqual(cardData[name].actionChoices.length, 2, name + ' should preserve both variable market branches');
+}
+assert.strictEqual(cardData['Steel Market Monopolists'].actionChoices[0].stockRatio.megacredits, -3, 'Steel Market Monopolists first branch should spend 3X MC');
+assert.strictEqual(cardData['Steel Market Monopolists'].actionChoices[1].stockRatio.megacredits, 3, 'Steel Market Monopolists second branch should gain 3X MC');
+assert.strictEqual(cardData['Titanium Market Monopolists'].actionChoices[0].stockRatio.megacredits, -2, 'Titanium Market Monopolists first branch should spend 2X MC');
+assert.strictEqual(cardData['Titanium Market Monopolists'].actionChoices[1].stockRatio.megacredits, 4, 'Titanium Market Monopolists second branch should gain 4X MC');
 assert.strictEqual(cardData['Mohole Lake'].actionChoices.length, 2, 'Mohole Lake should expose animal/microbe target choices');
 assert.strictEqual(cardData['Mohole Lake'].actionChoices[0].target, 'another', 'Mohole Lake should target another card');
 assert.strictEqual(cardData['Mohole Lake'].actionChoices[1].resourceType, 'animal', 'Mohole Lake should expose the animal branch');

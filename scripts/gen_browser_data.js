@@ -155,6 +155,14 @@ const ACTION_CHOICES = {
       cardType: 'active',
     },
   ],
+  'Stefan': [
+    {
+      label: 'Once per game, sell any number of cards from hand for 3 MC each',
+      conditional: true,
+      oncePerGame: true,
+      sellCardsFromHand: { megacredits: 3 },
+    },
+  ],
   'Tycho Magnetics': [
     {
       label: 'Spend any amount of energy to draw that many cards and keep 1',
@@ -271,6 +279,48 @@ const ACTION_CHOICES = {
       label: 'Gain 1 MC for each city and special tile adjacent to an ocean',
       dynamic: true,
       stockPerBoard: { per: 'ocean_adjacent_city_or_special_tile', megacredits: 1 },
+    },
+  ],
+  'Luna Trade Station': [
+    {
+      label: 'Gain 2 MC for each habitat tile on The Moon',
+      dynamic: true,
+      stockPerBoard: { per: 'moon_habitat_tile', megacredits: 2 },
+    },
+  ],
+  'HE3 Refinery': [
+    {
+      label: 'Gain 1 MC for each level of mining rate',
+      dynamic: true,
+      stockPerBoard: { per: 'moon_mining_rate', megacredits: 1 },
+    },
+  ],
+  'Steel Market Monopolists': [
+    {
+      label: 'Spend 3X MC to gain 2X steel, max 9 MC',
+      variable: true,
+      stockRatio: { megacredits: -3, steel: 2 },
+      maxSpend: { megacredits: 9 },
+    },
+    {
+      label: 'Spend X steel to gain 3X MC, max 3 steel',
+      variable: true,
+      stockRatio: { steel: -1, megacredits: 3 },
+      maxSpend: { steel: 3 },
+    },
+  ],
+  'Titanium Market Monopolists': [
+    {
+      label: 'Spend 2X MC to gain X titanium, max 8 MC',
+      variable: true,
+      stockRatio: { megacredits: -2, titanium: 1 },
+      maxSpend: { megacredits: 8 },
+    },
+    {
+      label: 'Spend X titanium to gain 4X MC, max 4 titanium',
+      variable: true,
+      stockRatio: { titanium: -1, megacredits: 4 },
+      maxSpend: { titanium: 4 },
     },
   ],
   'Mohole Lake': [

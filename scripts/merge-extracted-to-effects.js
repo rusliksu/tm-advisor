@@ -98,6 +98,8 @@ const MANUAL_EFFECT_PATCHES = {
   // The animal branch is conditional on an animal target and is represented in
   // generated card_data.actionChoices; keep the unconditional plant branch here.
   'Bio Printing Facility': {remove: ['actMC'], set: {actEN: -2, actPL: 2}},
+  // Automated card: production box symbols were misread as a cash action.
+  'Archimedes Hydroponics Station': {remove: ['actMC']},
   // Action-only dynamic MC. The render icons include a cards symbol near the
   // help text, but the card does not draw on play.
   'Floyd Continuum': {remove: ['cd']},
@@ -107,6 +109,13 @@ const MANUAL_EFFECT_PATCHES = {
   // Corporation action reuses another already-used blue-card action; it is not
   // a fixed MC payout.
   'Viron': {remove: ['actMC']},
+  // Variable/conditional actions. Keep their factual actionChoices in
+  // generated card_data, but do not expose a single recurring MC number.
+  'Stefan': {remove: ['actMC']},
+  'Luna Trade Station': {remove: ['actMC']},
+  'HE3 Refinery': {remove: ['actMC']},
+  'Steel Market Monopolists': {remove: ['actMC']},
+  'Titanium Market Monopolists': {remove: ['actMC']},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},
