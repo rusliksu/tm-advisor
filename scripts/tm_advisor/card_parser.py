@@ -90,6 +90,20 @@ class CardEffectParser:
         "Ceres Tech Market": [{"cost": "1 science", "effect": "draw cards"}],
         "Mars University": [],  # trigger, not action per se
         "Vermin": [{"cost": "free", "effect": "add 1 animal here or 1 microbe to another card"}],
+        "Symbiotic Fungus": [{"cost": "free", "effect": "add 1 microbe to another card"}],
+        "Extreme-Cold Fungus": [
+            {"cost": "free", "effect": "gain 1 plant", "choice_group": "or"},
+            {"cost": "free", "effect": "add 2 microbes to another card", "choice_group": "or"},
+        ],
+    }
+
+    _ACTION_RESOURCE_ADD_OVERRIDES: dict[str, list[dict]] = {
+        "Symbiotic Fungus": [
+            {"type": "Microbe", "amount": 1, "target": "another", "per_tag": None},
+        ],
+        "Extreme-Cold Fungus": [
+            {"type": "Microbe", "amount": 2, "target": "another", "per_tag": None},
+        ],
     }
 
     # Implicit "add resource to self" for hasAction + resourceType cards
@@ -125,6 +139,14 @@ class CardEffectParser:
                             if not any(a["target"] == "this" and a["type"] == rt for a in eff.adds_resources):
                                 eff.adds_resources.append({"type": rt, "amount": int(m.group(1)),
                                                             "target": "this", "per_tag": None})
+                for add in self._ACTION_RESOURCE_ADD_OVERRIDES.get(name, []):
+                    if not any(
+                        a["target"] == add["target"]
+                        and a["type"] == add["type"]
+                        and a.get("amount", 1) == add["amount"]
+                        for a in eff.adds_resources
+                    ):
+                        eff.adds_resources.append(dict(add))
 
             # Auto-generate implicit action for hasAction + resourceType cards
             elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
