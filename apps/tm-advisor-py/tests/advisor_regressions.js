@@ -96,6 +96,7 @@ function run() {
   runPythonScript('late_colony_regressions.py');
   runPythonScript('late_draw_regressions.py');
   runPythonScript('astra_consistency_regressions.py');
+  runPythonScript('watch_live_logging_regressions.py');
   console.log('advisor regression checks: OK');
 }
 
