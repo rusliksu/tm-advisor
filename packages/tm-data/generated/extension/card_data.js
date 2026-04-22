@@ -5219,11 +5219,20 @@ var TM_CARD_DATA = {
     "megacredits": 2
    }
   },
-  "action": {
-   "stock": {
-    "megacredits": -3
+  "actionChoices": [
+   {
+    "label": "Pay 3 MC to add a delegate to any party",
+    "stock": {
+     "megacredits": -3
+    },
+    "turmoil": {
+     "sendDelegates": {
+      "count": 1,
+      "target": "any_party"
+     }
+    }
    }
-  },
+  ],
   "tags": [
    "building"
   ]

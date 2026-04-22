@@ -397,6 +397,13 @@ const ACTION_CHOICES = {
       stockPerResourceHere: { resourceType: 'ware', megacredits: 1 },
     },
   ],
+  'Martian Media Center': [
+    {
+      label: 'Pay 3 MC to add a delegate to any party',
+      stock: { megacredits: -3 },
+      turmoil: { sendDelegates: { count: 1, target: 'any_party' } },
+    },
+  ],
   'Mohole Lake': [
     {
       label: 'Add 1 microbe to another card',

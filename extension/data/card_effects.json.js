@@ -2184,8 +2184,7 @@ const TM_CARD_EFFECTS = {
  },
  "Martian Media Center": {
   "c": 7,
-  "mp": 2,
-  "actMC": -3
+  "mp": 2
  },
  "Terraforming Contract": {
   "c": 8,

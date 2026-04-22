@@ -523,6 +523,11 @@ assert.strictEqual(hasOwn(cardData['Think Tank'] || {}, 'behavior'), false, 'Thi
 assert.strictEqual(hasOwn(cardData['Think Tank'] || {}, 'action'), false, 'Think Tank should not expose a cost-only static action');
 assert.strictEqual(cardData['Think Tank'].resourceType, 'data', 'Think Tank should expose data resources');
 assert.strictEqual(cardData['Think Tank'].actionChoices[0].addResources, 1, 'Think Tank action should add one data');
+assert.strictEqual(hasOwn(effects['Martian Media Center'], 'actMC'), false, 'Martian Media Center should not expose delegate placement as static MC loss');
+assert.strictEqual(hasOwn(cardData['Martian Media Center'] || {}, 'action'), false, 'Martian Media Center should not expose a cost-only static action');
+assert.strictEqual(cardData['Martian Media Center'].behavior.production.megacredits, 2, 'Martian Media Center should keep +2 MC production');
+assert.strictEqual(cardData['Martian Media Center'].actionChoices[0].stock.megacredits, -3, 'Martian Media Center delegate action should expose the MC cost');
+assert.strictEqual(cardData['Martian Media Center'].actionChoices[0].turmoil.sendDelegates.count, 1, 'Martian Media Center delegate action should add one delegate');
 for (const name of ['Industrial Center', 'Industrial Center:ares']) {
   assert.strictEqual(hasOwn(effects[name], 'sp'), false, name + ' should not expose steel production on play');
   assert.strictEqual(effects[name].actMC, -7, name + ' action should spend 7 MC');

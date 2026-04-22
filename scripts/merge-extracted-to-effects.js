@@ -122,6 +122,9 @@ const MANUAL_EFFECT_PATCHES = {
   'Martian Express': {remove: ['actMC']},
   'Grey Market Exploitation': {remove: ['actMC']},
   'Think Tank': {remove: ['actMC', 'cd']},
+  // Turmoil action: spend MC to place a delegate. Delegate placement is not a
+  // cash loss action, so keep it as semantic actionChoices only.
+  'Martian Media Center': {remove: ['actMC']},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},
