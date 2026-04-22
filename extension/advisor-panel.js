@@ -1006,6 +1006,137 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   // RENDERING
   // ══════════════════════════════════════════════════════════════
 
+  function opponentIntentWarnings(state, limit) {
+    if (!state || !state.thisPlayer) return [];
+    limit = limit || 5;
+    var tp = state.thisPlayer;
+    var players = (state.players || (state.game && state.game.players) || []);
+    var passed = (state.game && state.game.passedPlayers) || [];
+    var warnings = [];
+
+    function playerName(p) { return p.name || p.playerName || p.color || '?'; }
+    function mcOf(p) { return p.megaCredits || p.megacredits || p.mc || 0; }
+    function actionText(p) {
+      var actions = p.actionsThisGeneration || [];
+      var parts = [];
+      for (var i = 0; i < actions.length; i++) {
+        var a = actions[i];
+        if (!a) continue;
+        if (typeof a === 'string') parts.push(a);
+        else {
+          ['title', 'type', 'name', 'card', 'action', 'description'].forEach(function(k) {
+            if (a[k]) parts.push(String(a[k]));
+          });
+        }
+      }
+      return parts.join(' ').toLowerCase();
+    }
+    function showsTerraforming(text) {
+      return /oxygen|temperature|ocean|greenery|asteroid|terraform|raise\s+(o2|oxygen|temp)/.test(text || '');
+    }
+    function showsEngine(text) {
+      return !showsTerraforming(text) &&
+        /card|draw|production|research|invent|science|microbe|animal|floater/.test(text || '');
+    }
+    function add(kind, p, prob, urgency, reason) {
+      warnings.push({ kind: kind, player: playerName(p), prob: prob, urgency: urgency, reason: reason });
+    }
+
+    for (var pi = 0; pi < players.length; pi++) {
+      var p = players[pi];
+      if (!p || p.color === tp.color) continue;
+      if (passed.indexOf(p.color) >= 0) continue;
+
+      var text = actionText(p);
+      if (showsTerraforming(text)) add('terraforming', p, 70, 7, 'recent actions moved globals');
+
+      var plants = p.plants || 0;
+      var plantProd = p.plantProduction || p.plantsProduction || 0;
+      if (plants >= 8) add('greenery', p, 85, 9, plants + ' plants ready');
+      else if (plants >= 6 && plantProd > 0) add('greenery', p, 60, 6, plants + '+' + plantProd + ' plants close');
+
+      var heat = p.heat || 0;
+      var temp = (state.game && typeof state.game.temperature === 'number') ? state.game.temperature : -30;
+      if (temp < 8 && heat >= 8) add('temperature', p, 80, 8, heat + ' heat ready');
+
+      var colonies = (state.game && state.game.colonies) || [];
+      var traded = p.tradesThisGeneration || 0;
+      var fleet = p.fleetSize || 1;
+      if ((p.energy || 0) >= 3 || mcOf(p) >= 9) {
+        for (var ci = 0; ci < colonies.length; ci++) {
+          var col = colonies[ci];
+          var track = col.trackPosition || col.track || 0;
+          if (col.isActive !== false && track >= 5 && traded < fleet) {
+            add('trade', p, (p.energy || 0) >= 3 ? 75 : 55, 6,
+              'can trade ' + (col.name || 'colony') + ' track ' + track);
+            break;
+          }
+        }
+      }
+
+      var milestones = (state.game && state.game.milestones) || [];
+      var claimed = 0;
+      for (var mi = 0; mi < milestones.length; mi++) {
+        if (milestones[mi].playerName || milestones[mi].playerColor || milestones[mi].owner_name || milestones[mi].owner_color) claimed++;
+      }
+      if (claimed < 3 && mcOf(p) >= 8) {
+        for (var mi2 = 0; mi2 < milestones.length; mi2++) {
+          var ms = milestones[mi2];
+          if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) continue;
+          var scores = ms.scores || [];
+          for (var si = 0; si < scores.length; si++) {
+            var s = scores[si];
+            if ((s.playerColor || s.color) === p.color && s.claimable) {
+              add('milestone', p, 90, 10, 'can claim ' + (ms.name || 'milestone'));
+            }
+          }
+        }
+      }
+
+      var awards = (state.game && state.game.awards) || [];
+      var funded = 0;
+      for (var ai = 0; ai < awards.length; ai++) {
+        if (awards[ai].funder_name || awards[ai].funder_color || awards[ai].playerName) funded++;
+      }
+      var cost = [8, 14, 20][Math.min(funded, 2)];
+      if (funded < 3 && mcOf(p) >= cost) {
+        for (var ai2 = 0; ai2 < awards.length; ai2++) {
+          var aw = awards[ai2];
+          if (aw.funder_name || aw.funder_color || aw.playerName) continue;
+          var oppScore = 0, myScore = 0;
+          var awScores = aw.scores || [];
+          for (var asi = 0; asi < awScores.length; asi++) {
+            var as = awScores[asi];
+            if ((as.playerColor || as.color) === p.color) oppScore = as.score || 0;
+            if ((as.playerColor || as.color) === tp.color) myScore = as.score || 0;
+          }
+          if (oppScore > myScore + 2) add('award', p, 70, 8, 'can fund ' + (aw.name || 'award') + ' for ' + cost + ' MC');
+        }
+      }
+
+      if (showsEngine(text)) add('engine', p, 55, 3, 'recent actions look like engine/card play');
+      if ((p.actionsTakenThisRound || 0) >= 2 && mcOf(p) <= 3 && plants < 8 && !(temp < 8 && heat >= 8)) {
+        add('pass', p, 60, 4, 'low MC and no visible conversion');
+      }
+    }
+
+    warnings.sort(function(a, b) {
+      return (b.urgency - a.urgency) || (b.prob - a.prob) || a.player.localeCompare(b.player);
+    });
+
+    return warnings.slice(0, limit).map(function(w) {
+      var pct = Math.round(w.prob);
+      if (w.kind === 'milestone') return '\u23F0 ' + w.player + ': ' + w.reason + '. Claim first.';
+      if (w.kind === 'award') return '\u23F0 ' + w.player + ': ' + w.reason + '. Check block.';
+      if (w.kind === 'greenery') return '\u23F0 ' + w.player + ': likely greenery (' + pct + '%) - ' + w.reason + '.';
+      if (w.kind === 'temperature') return '\u23F0 ' + w.player + ': likely temp (' + pct + '%) - ' + w.reason + '.';
+      if (w.kind === 'trade') return '\u23F0 ' + w.player + ': likely trade (' + pct + '%) - ' + w.reason + '.';
+      if (w.kind === 'terraforming') return '\u23F0 ' + w.player + ': rush pressure (' + pct + '%) - ' + w.reason + '.';
+      if (w.kind === 'pass') return '\u23F3 ' + w.player + ': likely pass soon (' + pct + '%) - ' + w.reason + '.';
+      return '\u2139\uFE0F ' + w.player + ': low rush pressure - ' + w.reason + '.';
+    });
+  }
+
   function renderTiming(state) {
     var el = document.getElementById("tm-advisor-timing");
     if (!el) return;
@@ -1519,7 +1650,20 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
   function renderAlerts(state) {
     var el = document.getElementById("tm-advisor-" + "alerts");
-    if (el) el.innerHTML = '';
+    if (!el) return;
+    var warnings = opponentIntentWarnings(state, 5);
+    if (!warnings.length) {
+      el.innerHTML = '';
+      return;
+    }
+    var html = '<div class="tm-alert-section">Opponent intent</div>';
+    for (var i = 0; i < warnings.length; i++) {
+      var w = warnings[i];
+      var color = w.indexOf('\u23F0') === 0 ? '#e67e22' :
+        (w.indexOf('\u23F3') === 0 ? '#f1c40f' : '#95a5a6');
+      html += '<div style="color:' + color + ';font-size:10px;line-height:1.35">' + _esc(w) + '</div>';
+    }
+    el.innerHTML = html;
   }
 
   // ── Strategy variance warnings ──
@@ -1846,7 +1990,15 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
   function renderCompactAlerts(state) {
     var el = document.getElementById("tm-advisor-" + "alerts");
-    if (el) el.innerHTML = '';
+    if (!el) return;
+    var warnings = opponentIntentWarnings(state, 2);
+    if (!warnings.length) {
+      el.innerHTML = '';
+      return;
+    }
+    el.innerHTML = warnings.map(function(w) {
+      return '<div style="font-size:10px;line-height:1.25">' + _esc(w) + '</div>';
+    }).join('');
   }
 
   function renderPass(state) {
