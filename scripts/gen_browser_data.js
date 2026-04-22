@@ -258,6 +258,13 @@ const ACTION_CHOICES = {
       stockPerTag: { tag: 'science', megacredits: 1 },
     },
   ],
+  'Red Ships': [
+    {
+      label: 'Gain 1 MC for each city and special tile adjacent to an ocean',
+      dynamic: true,
+      stockPerBoard: { per: 'ocean_adjacent_city_or_special_tile', megacredits: 1 },
+    },
+  ],
   'Mohole Lake': [
     {
       label: 'Add 1 microbe to another card',

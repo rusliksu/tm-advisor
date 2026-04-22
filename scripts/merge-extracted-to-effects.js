@@ -101,6 +101,9 @@ const MANUAL_EFFECT_PATCHES = {
   // Action-only dynamic MC. The render icons include a cards symbol near the
   // help text, but the card does not draw on play.
   'Floyd Continuum': {remove: ['cd']},
+  // Board-scaled action. Static actMC=4 is only an old estimate and is not
+  // factual card text.
+  'Red Ships': {remove: ['actMC']},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},

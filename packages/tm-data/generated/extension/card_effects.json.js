@@ -743,8 +743,7 @@ const TM_CARD_EFFECTS = {
   "vp": 1
  },
  "Red Ships": {
-  "c": 2,
-  "actMC": 4
+  "c": 2
  },
  "Virus": {
   "c": 1,

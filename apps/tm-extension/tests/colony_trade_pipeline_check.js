@@ -533,6 +533,10 @@ assert.strictEqual(cardData['Self-replicating Robots'].actionChoices[0].hostCard
 assert.strictEqual(cardData['Self-replicating Robots'].actionChoices[1].doubleHostedResources, true, 'Self-replicating Robots should double hosted resources');
 assert.strictEqual(cardData['Orbital Cleanup'].actionChoices[0].stockPerTag.tag, 'science', 'Orbital Cleanup should scale with science tags');
 assert.strictEqual(cardData['Orbital Cleanup'].actionChoices[0].stockPerTag.megacredits, 1, 'Orbital Cleanup should gain 1 MC per science tag');
+assert.strictEqual(hasOwn(effects['Red Ships'], 'actMC'), false, 'Red Ships should not expose a static 4 MC action');
+assert.strictEqual(hasOwn(cardData['Red Ships'], 'action'), false, 'Red Ships should not expose a flat stock action');
+assert.strictEqual(cardData['Red Ships'].actionChoices[0].stockPerBoard.per, 'ocean_adjacent_city_or_special_tile', 'Red Ships should scale with ocean-adjacent city/special tiles');
+assert.strictEqual(cardData['Red Ships'].actionChoices[0].stockPerBoard.megacredits, 1, 'Red Ships should gain 1 MC per matching tile');
 assert.strictEqual(cardData['Mohole Lake'].actionChoices.length, 2, 'Mohole Lake should expose animal/microbe target choices');
 assert.strictEqual(cardData['Mohole Lake'].actionChoices[0].target, 'another', 'Mohole Lake should target another card');
 assert.strictEqual(cardData['Mohole Lake'].actionChoices[1].resourceType, 'animal', 'Mohole Lake should expose the animal branch');

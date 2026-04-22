@@ -1706,11 +1706,16 @@ var TM_CARD_DATA = {
   }
  },
  "Red Ships": {
-  "action": {
-   "stock": {
-    "megacredits": 4
+  "actionChoices": [
+   {
+    "label": "Gain 1 MC for each city and special tile adjacent to an ocean",
+    "dynamic": true,
+    "stockPerBoard": {
+     "per": "ocean_adjacent_city_or_special_tile",
+     "megacredits": 1
+    }
    }
-  }
+  ]
  },
  "Virus": {
   "behavior": {
