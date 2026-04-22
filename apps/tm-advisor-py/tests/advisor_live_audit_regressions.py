@@ -220,6 +220,55 @@ def main() -> None:
         "stop-heartbeat-stale", {"target": "gabc123"}, clean_stale_summary)["decision"] == "delete"
     assert audit.heartbeat_contract("continue", {"target": "gabc123"}, progressed_summary)["decision"] == "continue"
 
+    def watch_item(target: str, decision: str, recommendation: str = "continue") -> dict:
+        return {
+            "audit": {"target": target, "issues": [] if decision != "notify" else [{"check": "x"}]},
+            "summary": {
+                "target": target,
+                "recommendation": recommendation,
+                "last_state": {"label": "gen 2 action"},
+            },
+            "recommendation": recommendation,
+            "heartbeat": {"decision": decision, "message": f"{target}: {decision}"},
+        }
+
+    aggregate_continue = audit.aggregate_heartbeat_contract([
+        watch_item("g1", "continue"),
+        watch_item("g2", "continue"),
+    ])
+    assert aggregate_continue["decision"] == "continue", aggregate_continue
+    assert aggregate_continue["remaining_targets"] == ["g1", "g2"], aggregate_continue
+
+    aggregate_notify = audit.aggregate_heartbeat_contract([
+        watch_item("g1", "continue"),
+        watch_item("g2", "notify", "inspect-issues"),
+    ])
+    assert aggregate_notify["decision"] == "notify", aggregate_notify
+    assert "g2" in aggregate_notify["message"], aggregate_notify
+
+    aggregate_update = audit.aggregate_heartbeat_contract([
+        watch_item("g1", "delete", "stop-heartbeat-terminal"),
+        watch_item("g2", "continue"),
+    ])
+    assert aggregate_update["decision"] == "update", aggregate_update
+    assert aggregate_update["done_targets"] == ["g1"], aggregate_update
+    assert aggregate_update["remaining_targets"] == ["g2"], aggregate_update
+
+    aggregate_delete = audit.aggregate_heartbeat_contract([
+        watch_item("g1", "delete", "stop-heartbeat-terminal"),
+        watch_item("g2", "delete", "stop-heartbeat-stale"),
+    ])
+    assert aggregate_delete["decision"] == "delete", aggregate_delete
+    assert aggregate_delete["remaining_targets"] == [], aggregate_delete
+
+    many_output = audit.format_watch_many({
+        "items": [watch_item("g1", "delete", "stop-heartbeat-terminal"), watch_item("g2", "continue")],
+        "heartbeat": aggregate_update,
+    })
+    assert "Advisor watch many: 2 target(s)" in many_output, many_output
+    assert "heartbeat_decision: update" in many_output, many_output
+    assert "remaining_targets: g2" in many_output, many_output
+
     watch_output = audit.format_watch_once({
         "audit": {**result, "stale": clean_stale_summary["stale"]},
         "summary": clean_stale_summary,
