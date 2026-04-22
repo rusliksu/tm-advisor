@@ -24,6 +24,9 @@ from scripts.tm_advisor.colony_advisor import (  # noqa: E402
     analyze_trade_options, colony_strategy_advice,
 )
 from scripts.tm_advisor.economy import resource_values, game_phase  # noqa: E402
+from scripts.tm_advisor.opponent_intent import (  # noqa: E402
+    analyze_opponent_intents, format_opponent_intent_warnings,
+)
 from scripts.tm_advisor.requirements import RequirementsChecker  # noqa: E402
 from scripts.tm_advisor.shared_data import resolve_data_path  # noqa: E402
 
@@ -191,6 +194,11 @@ def snapshot(player_id: str) -> dict:
         result["alerts"] = _generate_alerts(state)
     except Exception as e:
         result["alerts"] = [f"Error: {e}"]
+    try:
+        result["opponent_intents"] = analyze_opponent_intents(state)
+        result["alerts"].extend(format_opponent_intent_warnings(state))
+    except Exception as e:
+        result["opponent_intents"] = [{"error": str(e)}]
 
     vp_estimates = []
     try:
