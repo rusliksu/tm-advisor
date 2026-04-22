@@ -802,17 +802,18 @@
     "name": "Space Lanes",
     "score": 73,
     "tier": "B",
-    "economy": "3 ti = 9 MC. Space тег ~1 MC. Effect: +2 MC per colony trade. 5-8 trades за игру = 10-16 MC. Total ~20-26 MC.",
-    "reasoning": "Colony-oriented прелюдия с decent base. 3 ti gen 1 помогают с space-картами. Ongoing effect +2 MC per trade — стабильный income в colony games. В 3P с 5-8 trades за игру это ~10-16 MC дополнительного дохода. Space тег для milestone/синергий. Без Colonies effect бесполезен — чистые 3 ti + Space тег (~10 MC). Сильна в colony-heavy meta, средняя без.",
+    "economy": "3 ti = ~9 MC. Space тег ~1 MC. Effect: -2 MC за каждый Jovian/Earth/Venus tag, который ты играешь, включая несколько подходящих тегов на одной карте. 3 discounted tags дают лишь ~16 MC package; 5-6+ tags уже выводят прелюдию в нормальный/хороший value.",
+    "reasoning": "Это не colony/trade прелюдия, а situational B-tier engine prelude для planet-tag линий. Floor низкий: 3 ti + Space тег. Ceiling хороший, если старт уже показывает Earth/Venus/Jovian shell: скидки начинают накапливаться, а titanium помогает оплатить early space/Jovian cards.",
     "synergies": [
-      "Colony-heavy games",
-      "Poseidon",
-      "Trade Fleet",
-      "Titan colony",
-      "Luna colony",
-      "Saturn Systems"
+      "Point Luna",
+      "Teractor",
+      "Morning Star Inc.",
+      "Saturn Systems",
+      "PhoboLog",
+      "Earth/Venus/Jovian tag engines",
+      "Public Spaceline"
     ],
-    "when_to_pick": "В играх с хорошими колониями, где вы планируете активно торговать. 3 ti gen 1 + ongoing trade bonus = solid combo. Без Colonies — слабая."
+    "when_to_pick": "Когда в стартовой руке уже есть несколько Earth/Venus/Jovian tags или корпорация явно платит за такие теги. Не брать как generic space prelude без follow-up."
   },
   {
     "name": "Strategic Base Planning",

@@ -7847,7 +7847,7 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Gain 3 titanium.",
+    "description": "Gain 3 titanium. When you play a Jovian, Earth, or Venus tag, you pay 2 M€ less for it.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0
