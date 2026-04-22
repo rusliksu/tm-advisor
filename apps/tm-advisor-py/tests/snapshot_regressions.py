@@ -63,10 +63,58 @@ def main() -> None:
 
     assert snapshot._is_action_phase("action")
     assert not snapshot._is_action_phase("drafting")
+    assert snapshot._should_emit_action_advice("action")
+    assert not snapshot._should_emit_action_advice("end")
     assert snapshot._snapshot_card_cost(
         {"cost": 0}, FakeDb(), "Harvest", action_phase=False) == 4
     assert snapshot._snapshot_card_cost(
         {"cost": 0}, FakeDb(), "Harvest", action_phase=True) == 0
+
+    class FakeClient:
+        def get_player_state(self, _player_id):
+            return {
+                "thisPlayer": {
+                    "color": "red",
+                    "name": "me",
+                    "megaCredits": 30,
+                    "terraformRating": 42,
+                    "cardsInHandNbr": 1,
+                    "tableau": [{"name": "Cheung Shing MARS"}],
+                    "tags": {},
+                },
+                "players": [
+                    {"color": "red", "name": "me", "cardsInHandNbr": 1},
+                    {"color": "blue", "name": "opp", "cardsInHandNbr": 4},
+                ],
+                "cardsInHand": [{"name": "Jovian Embassy", "calculatedCost": 14}],
+                "game": {
+                    "generation": 10,
+                    "phase": "end",
+                    "oxygenLevel": 14,
+                    "temperature": 8,
+                    "oceans": 9,
+                    "venusScaleLevel": 30,
+                    "milestones": [],
+                    "awards": [],
+                    "colonies": [{"name": "Callisto", "isActive": True, "trackPosition": 5, "colonies": []}],
+                    "spaces": [],
+                    "gameOptions": {"expansions": {"colonies": True}},
+                },
+            }
+
+    original_client = snapshot.TMClient
+    snapshot.TMClient = FakeClient
+    try:
+        terminal = snapshot.snapshot("p-end")
+    finally:
+        snapshot.TMClient = original_client
+
+    assert terminal["game"]["live_phase"] == "end", terminal["game"]
+    assert terminal["alerts"] == [], terminal["alerts"]
+    assert terminal["opponent_intents"] == [], terminal["opponent_intents"]
+    assert "play_advice" not in terminal, terminal.get("play_advice")
+    assert "trade" not in terminal, terminal.get("trade")
+    assert terminal["vp_estimates"], terminal
 
     print("advisor snapshot regression checks: OK")
 

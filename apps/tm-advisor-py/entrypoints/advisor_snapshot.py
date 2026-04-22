@@ -83,6 +83,14 @@ def _is_action_phase(phase: str | None) -> bool:
     return str(phase or "").lower() == "action"
 
 
+def _is_terminal_phase(phase: str | None) -> bool:
+    return str(phase or "").lower() in {"end", "ended", "game_end", "postgame"}
+
+
+def _should_emit_action_advice(phase: str | None) -> bool:
+    return not _is_terminal_phase(phase)
+
+
 def _snapshot_card_cost(card: dict, db: CardDatabase, name: str, action_phase: bool) -> int:
     raw_cost = card.get("cost", 0)
     if action_phase:
@@ -263,15 +271,19 @@ def snapshot(player_id: str) -> dict:
         for c in combos_found[:10]
     ]
 
-    try:
-        result["alerts"] = _generate_alerts(state)
-    except Exception as e:
-        result["alerts"] = [f"Error: {e}"]
-    try:
-        result["opponent_intents"] = analyze_opponent_intents(state)
-        result["alerts"].extend(format_opponent_intent_warnings(state))
-    except Exception as e:
-        result["opponent_intents"] = [{"error": str(e)}]
+    if _should_emit_action_advice(state.phase):
+        try:
+            result["alerts"] = _generate_alerts(state)
+        except Exception as e:
+            result["alerts"] = [f"Error: {e}"]
+        try:
+            result["opponent_intents"] = analyze_opponent_intents(state)
+            result["alerts"].extend(format_opponent_intent_warnings(state))
+        except Exception as e:
+            result["opponent_intents"] = [{"error": str(e)}]
+    else:
+        result["alerts"] = []
+        result["opponent_intents"] = []
 
     vp_estimates = []
     try:
@@ -285,7 +297,7 @@ def snapshot(player_id: str) -> dict:
             pass
     result["vp_estimates"] = vp_estimates
 
-    if state.colonies_data:
+    if state.colonies_data and _should_emit_action_advice(state.phase):
         try:
             trade = analyze_trade_options(state)
             result["trade"] = {
