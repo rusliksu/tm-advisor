@@ -268,12 +268,22 @@ def build_decision_context(snap: dict, top_options: list[dict] | None = None) ->
     return context
 
 
-def research_offer_cards(live: dict) -> list[str]:
-    return (
-        list(live.get("drafted_cards") or [])
-        or list(live.get("dealt_project_cards") or [])
-        or list(live.get("current_pack") or [])
-    )
+def research_offer_cards(live: dict, live_phase: str | None = None) -> list[str]:
+    current_pack = list(live.get("current_pack") or [])
+    if current_pack:
+        return current_pack
+
+    phase = str(live_phase or live.get("live_phase") or live.get("phase") or "").lower()
+    if phase != "research":
+        return []
+
+    waiting_type = str(live.get("waiting_type") or "").lower()
+    waiting_label = str(live.get("waiting_label") or "").lower()
+    has_active_card_wait = waiting_type in {"and", "card", "or"} or "research" in waiting_label
+    if not has_active_card_wait:
+        return []
+
+    return list(live.get("dealt_project_cards") or [])
 
 
 def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_name: str) -> dict | None:
@@ -375,7 +385,7 @@ def append_pick_event(
 
 def maybe_start_research_pending(session: dict, pid: str, prev_snap: dict) -> None:
     prev_live = prev_snap["live"]
-    offer = research_offer_cards(prev_live)
+    offer = research_offer_cards(prev_live, prev_snap.get("game", {}).get("live_phase"))
     if not offer:
         return
     if prev_snap.get("game", {}).get("live_phase") != "research":
@@ -556,8 +566,8 @@ def poll_game_session(session: dict) -> dict:
         prev_ranks = hand_rank_map(prev)
         prev_draft_ranks = draft_rank_map(prev)
 
-        prev_research_offer = research_offer_cards(prev_live)
-        curr_research_offer = research_offer_cards(curr_live)
+        prev_research_offer = research_offer_cards(prev_live, prev.get("game", {}).get("live_phase"))
+        curr_research_offer = research_offer_cards(curr_live, curr.get("game", {}).get("live_phase"))
         if pid in pending_research:
             if try_resolve_research_pending(log_path, pid, prev, curr, pending_research[pid]):
                 changed = True
@@ -644,7 +654,7 @@ def poll_game_session(session: dict) -> dict:
                 prev_live["dealt_ceos"],
             )
 
-        project_options = prev_live["current_pack"] or prev_live["dealt_project_cards"]
+        project_options = research_offer_cards(prev_live, prev.get("game", {}).get("live_phase"))
         for picked_name in new_items(curr_live["drafted_cards"], prev_live["drafted_cards"]):
             changed = True
             append_pick_event(
