@@ -1003,6 +1003,13 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             if not req_ok or eff_cost > budget:
                 continue
 
+            if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
+                has_immediate_value = _has_endgame_immediate_value(
+                    name, effect_parser, allow_placement=True
+                )
+                if not has_immediate_value and score < 70:
+                    continue
+
             value_mc = _estimate_card_value_rich(
                 name, score, eff_cost, tags, phase, gens_left, rv,
                 effect_parser, db, corp_name=me.corp,

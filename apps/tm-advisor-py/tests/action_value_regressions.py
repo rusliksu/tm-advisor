@@ -550,6 +550,7 @@ def build_last_gen_discounted_tectonic_state() -> GameState:
 def build_endgame_immediate_low_score_city_state() -> GameState:
     hand = [
         {"name": "Underground City", "calculatedCost": 13, "tags": ["City", "Building"]},
+        {"name": "Venus Shuttles", "calculatedCost": 6, "tags": ["Venus"]},
     ]
     me = {
         "color": "red",
@@ -1297,6 +1298,9 @@ def main() -> int:
     underground_city = low_score_city_advice["Underground City"]
     assert underground_city["action"] == "PLAY", underground_city
     assert underground_city["play_value_now"] > 13, underground_city
+    venus_shuttles = low_score_city_advice["Venus Shuttles"]
+    assert venus_shuttles["action"] == "SELL", venus_shuttles
+    assert "no immediate VP" in venus_shuttles["reason"], venus_shuttles
     low_score_city_alloc = mc_allocation_advice(
         low_score_city_state, bot.synergy, bot.req_checker
     )
@@ -1309,6 +1313,10 @@ def main() -> int:
             a.get("type") == "sell"
             and "Underground City" in a.get("action", "")
         )
+        for a in low_score_city_alloc["allocations"]
+    ), low_score_city_alloc["allocations"]
+    assert all(
+        not a["action"].startswith("Play Venus Shuttles")
         for a in low_score_city_alloc["allocations"]
     ), low_score_city_alloc["allocations"]
 
