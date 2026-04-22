@@ -195,6 +195,99 @@ function testFormatReportMentionsExactInput() {
   assert.ok(report.includes('[or] play Comet -> play Sponsors | count=2'));
 }
 
+function testAnalyzeRawObservedOutcomeMatch() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 2,
+    promptType: 'card',
+    title: 'Select a card to keep and pass the rest to ${0}',
+    botAction: 'cards: Tectonic Stress Power',
+    observedAction: 'draft Tectonic Stress Power, Soil Factory',
+    playerActed: true,
+    status: 'resolved',
+    observedChanges: {
+      draftedAdded: ['Tectonic Stress Power', 'Soil Factory'],
+    },
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsObserved.scorable, 1);
+  assert.strictEqual(stats.botVsObserved.matched, 1);
+  assert.strictEqual(stats.botVsObserved.differed, 0);
+  assert.strictEqual(stats.botVsObserved.byPromptType.card.matched, 1);
+}
+
+function testAnalyzeRawObservedOutcomeMismatchReport() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 3,
+    promptType: 'card',
+    title: 'Select a card to keep and pass the rest to ${0}',
+    botAction: 'cards: Comet',
+    observedAction: 'draft Sponsors',
+    playerActed: true,
+    status: 'resolved',
+    observedChanges: {
+      draftedAdded: ['Sponsors'],
+    },
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsObserved.scorable, 1);
+  assert.strictEqual(stats.botVsObserved.matched, 0);
+  assert.strictEqual(stats.botVsObserved.differed, 1);
+
+  const report = formatReport(stats, ['shadow-g.jsonl']);
+  assert.ok(report.includes('## Bot vs Observed Outcome'));
+  assert.ok(report.includes('Mismatch gen 3 Ruslan'));
+  assert.ok(report.includes('## Top Observed Mismatch Patterns'));
+  assert.ok(report.includes('[card] cards: Comet -> draft Sponsors | count=1'));
+}
+
+function testAnalyzeRawObservedCardActionOutcomeMatch() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 4,
+    promptType: 'or',
+    title: 'Take your next action',
+    botAction: 'cards: Local Shading',
+    observedAction: 'action Local Shading',
+    playerActed: true,
+    status: 'resolved',
+    observedChanges: {
+      actionsAdded: ['Local Shading'],
+    },
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsObserved.scorable, 1);
+  assert.strictEqual(stats.botVsObserved.matched, 1);
+  assert.strictEqual(stats.botVsObserved.differed, 0);
+}
+
+function testAnalyzeRawObservedIntermediateIsUnscorable() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 3,
+    promptType: 'card',
+    botAction: 'cards: Comet',
+    observedAction: 'state changed',
+    playerActed: true,
+    status: 'resolved',
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsObserved.scorable, 0);
+}
+
 function main() {
   testNormalizeMergedTurn();
   testAnalyzeMergedMatch();
@@ -203,6 +296,10 @@ function main() {
   testNormalizeMergedEntryRepairsBrokenPromptTitle();
   testNormalizeHistoricalBotActionSummary();
   testFormatReportMentionsExactInput();
+  testAnalyzeRawObservedOutcomeMatch();
+  testAnalyzeRawObservedOutcomeMismatchReport();
+  testAnalyzeRawObservedCardActionOutcomeMatch();
+  testAnalyzeRawObservedIntermediateIsUnscorable();
   console.log('shadow-analyze tests passed');
 }
 

@@ -111,6 +111,9 @@ function normalizeLogEntry(entry) {
       botAction: normalizeActionSummaryText(entry.botAction || rawShadow.botAction || null),
       inputAction: normalizeActionSummaryText(entry.inputAction || null),
       observedAction: entry.observedAction || rawShadow.observedAction || null,
+      observedChanges: entry.shadow?.observedChanges || rawShadow.observedChanges || null,
+      playerActed: entry.shadow?.playerActed ?? rawShadow.playerActed ?? null,
+      status: entry.status || rawShadow.status || null,
       botReasoning: Array.isArray(entry.shadow?.botReasoning) ? entry.shadow.botReasoning : (Array.isArray(rawShadow.botReasoning) ? rawShadow.botReasoning : []),
       mc: rawShadow.mc ?? rawInput.mc ?? null,
       ts: entry.shadowTs || entry.inputTs || entry.resolvedAt || rawShadow.ts || rawInput.ts || null,
@@ -131,6 +134,9 @@ function normalizeLogEntry(entry) {
       botAction: normalizeActionSummaryText(entry.botAction || null),
       inputAction: null,
       observedAction: entry.observedAction || null,
+      observedChanges: entry.observedChanges || null,
+      playerActed: entry.playerActed ?? null,
+      status: entry.status || null,
       botReasoning: Array.isArray(entry.botReasoning) ? entry.botReasoning : [],
       mc: entry.mc ?? null,
       ts: entry.ts || entry.resolvedAt || null,
@@ -152,6 +158,125 @@ function canonicalizeAction(action) {
   if (value.includes(' | ')) value = value.split(' | ')[0];
   value = value.replace(/\s+/g, ' ').trim().toLowerCase();
   return value || null;
+}
+
+function safeArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function splitCardList(value) {
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function changeContainsCard(changes, cardName) {
+  if (!changes || !cardName) return false;
+  const buckets = [
+    'tableauAdded',
+    'corpAdded',
+    'preludeAdded',
+    'draftedAdded',
+    'actionsAdded',
+  ];
+  return buckets.some((bucket) => safeArray(changes[bucket]).includes(cardName));
+}
+
+function isIntermediateObservedAction(observedAction) {
+  const value = String(observedAction || '').trim();
+  return (
+    !value ||
+    value === 'state changed' ||
+    value.startsWith('prompt ') ||
+    value.startsWith('phase ') ||
+    value.startsWith('resource delta') ||
+    value.startsWith('corp ') ||
+    value.startsWith('lastCard')
+  );
+}
+
+function classifyObservedActionMatch(entry) {
+  const status = entry.status || null;
+  if (status && status !== 'resolved') {
+    return {status: 'unscorable', reason: 'status!=resolved'};
+  }
+  if (entry.playerActed === false) {
+    return {status: 'unscorable', reason: 'not acted'};
+  }
+
+  const botAction = String(entry.botAction || '').trim();
+  const observedAction = String(entry.observedAction || '').trim();
+  const changes = entry.observedChanges || {};
+  if (!botAction) {
+    return {status: 'unscorable', reason: 'no botAction'};
+  }
+  if (isIntermediateObservedAction(observedAction)) {
+    return {status: 'unscorable', reason: 'intermediate observed action'};
+  }
+
+  if (botAction === 'initialCards') {
+    return {status: 'unscorable', reason: 'initialCards bulk'};
+  }
+  if (botAction === 'option' || botAction.startsWith('option[')) {
+    return {status: 'unscorable', reason: 'option index not comparable'};
+  }
+  if (botAction.startsWith('space ') || botAction.startsWith('player')) {
+    return {status: 'unscorable', reason: 'board/player selection not comparable'};
+  }
+
+  if (botAction === 'pass') {
+    const low = observedAction.toLowerCase();
+    return (low.includes('pass') || low.includes('idle'))
+      ? {status: 'match', reason: 'pass'}
+      : {status: 'mismatch', reason: `bot pass, observed ${observedAction}`};
+  }
+
+  const cardsMatch = botAction.match(/^cards?:\s*(.+)$/);
+  if (cardsMatch) {
+    const cardNames = splitCardList(cardsMatch[1]);
+    for (const cardName of cardNames) {
+      if (
+        observedAction === `draft ${cardName}` ||
+        observedAction === `play ${cardName}` ||
+        observedAction === `play card ${cardName}` ||
+        observedAction === `action ${cardName}` ||
+        changeContainsCard(changes, cardName)
+      ) {
+        return {status: 'match', reason: `card=${cardName}`};
+      }
+    }
+    if (observedAction.startsWith('draft ')) {
+      const picked = splitCardList(observedAction.slice('draft '.length));
+      if (cardNames.some((cardName) => picked.includes(cardName))) {
+        return {status: 'match', reason: 'card among multi-draft'};
+      }
+    }
+    return {status: 'mismatch', reason: `bot=${cardNames.join(', ')}, observed=${observedAction}`};
+  }
+
+  const playMatch = botAction.match(/^play\s+(.+)$/);
+  if (playMatch) {
+    const cardName = playMatch[1].trim();
+    if (
+      observedAction === `play ${cardName}` ||
+      observedAction === `play card ${cardName}` ||
+      safeArray(changes.tableauAdded).includes(cardName)
+    ) {
+      return {status: 'match', reason: `played ${cardName}`};
+    }
+    return {status: 'mismatch', reason: `bot play ${cardName}, observed ${observedAction}`};
+  }
+
+  const colonyMatch = botAction.match(/^colony\s+(.+)$/);
+  if (colonyMatch) {
+    const colonyName = colonyMatch[1].trim();
+    return observedAction.toLowerCase().includes(colonyName.toLowerCase())
+      ? {status: 'match', reason: `colony ${colonyName}`}
+      : {status: 'mismatch', reason: `bot colony ${colonyName}, observed ${observedAction}`};
+  }
+
+  return {status: 'unscorable', reason: `unknown ${botAction}`};
 }
 
 function analyze(entries) {
@@ -180,6 +305,14 @@ function analyze(entries) {
     },
     botVsPlayer: {
       comparable: 0,
+      matched: 0,
+      differed: 0,
+      examples: [],
+      byPromptType: {},
+      mismatchPatterns: {},
+    },
+    botVsObserved: {
+      scorable: 0,
       matched: 0,
       differed: 0,
       examples: [],
@@ -246,6 +379,48 @@ function analyze(entries) {
             botAction: e.botAction,
             inputAction: e.inputAction,
             observedAction: e.observedAction,
+          });
+        }
+      }
+    }
+
+    const observedMatch = classifyObservedActionMatch(e);
+    if (observedMatch.status === 'match' || observedMatch.status === 'mismatch') {
+      const promptKey = e.promptType || '?';
+      stats.botVsObserved.scorable++;
+      if (!stats.botVsObserved.byPromptType[promptKey]) {
+        stats.botVsObserved.byPromptType[promptKey] = {scorable: 0, matched: 0, differed: 0};
+      }
+      stats.botVsObserved.byPromptType[promptKey].scorable++;
+      if (observedMatch.status === 'match') {
+        stats.botVsObserved.matched++;
+        stats.botVsObserved.byPromptType[promptKey].matched++;
+      } else {
+        stats.botVsObserved.differed++;
+        stats.botVsObserved.byPromptType[promptKey].differed++;
+        const patternKey = [promptKey, canonicalizeAction(e.botAction), String(e.observedAction || '').toLowerCase()].join('||');
+        if (!stats.botVsObserved.mismatchPatterns[patternKey]) {
+          stats.botVsObserved.mismatchPatterns[patternKey] = {
+            promptType: promptKey,
+            botAction: e.botAction,
+            observedAction: e.observedAction,
+            reason: observedMatch.reason,
+            count: 0,
+            sample: {
+              gen: e.gen,
+              player: e.player,
+            },
+          };
+        }
+        stats.botVsObserved.mismatchPatterns[patternKey].count++;
+        if (stats.botVsObserved.examples.length < 5) {
+          stats.botVsObserved.examples.push({
+            gen: e.gen,
+            player: e.player,
+            promptType: e.promptType,
+            botAction: e.botAction,
+            observedAction: e.observedAction,
+            reason: observedMatch.reason,
           });
         }
       }
@@ -383,6 +558,47 @@ function formatReport(stats, files) {
     }
   }
 
+  if (stats.botVsObserved.scorable > 0) {
+    lines.push('## Bot vs Observed Outcome');
+    lines.push(`  Scorable turns: ${stats.botVsObserved.scorable}`);
+    lines.push(`  Matched:        ${stats.botVsObserved.matched} (${(stats.botVsObserved.matched / stats.botVsObserved.scorable * 100).toFixed(0)}%)`);
+    lines.push(`  Differed:       ${stats.botVsObserved.differed} (${(stats.botVsObserved.differed / stats.botVsObserved.scorable * 100).toFixed(0)}%)`);
+    for (const example of stats.botVsObserved.examples) {
+      lines.push(`  Mismatch gen ${example.gen ?? '?'} ${example.player || '?'} [${example.promptType || '?'}]: bot=${example.botAction} | observed=${example.observedAction || '?'} | ${example.reason}`);
+    }
+    lines.push('');
+
+    const observedPromptBreakdown = Object.entries(stats.botVsObserved.byPromptType)
+      .sort((a, b) => {
+        const differedDelta = b[1].differed - a[1].differed;
+        if (differedDelta !== 0) return differedDelta;
+        return b[1].scorable - a[1].scorable;
+      });
+    if (observedPromptBreakdown.length > 0) {
+      lines.push('## Observed Mismatch Breakdown By Prompt');
+      for (const [promptType, promptStats] of observedPromptBreakdown) {
+        const mismatchRate = promptStats.scorable > 0 ? (promptStats.differed / promptStats.scorable * 100) : 0;
+        lines.push(`  ${promptType}: differed ${promptStats.differed}/${promptStats.scorable} (${mismatchRate.toFixed(0)}%)`);
+      }
+      lines.push('');
+    }
+
+    const topObservedPatterns = Object.values(stats.botVsObserved.mismatchPatterns)
+      .sort((a, b) => {
+        const countDelta = b.count - a.count;
+        if (countDelta !== 0) return countDelta;
+        return a.promptType.localeCompare(b.promptType);
+      })
+      .slice(0, 8);
+    if (topObservedPatterns.length > 0) {
+      lines.push('## Top Observed Mismatch Patterns');
+      for (const pattern of topObservedPatterns) {
+        lines.push(`  [${pattern.promptType}] ${pattern.botAction} -> ${pattern.observedAction || '?'} | count=${pattern.count} | ${pattern.reason}`);
+      }
+      lines.push('');
+    }
+  }
+
   lines.push('## Card vs SP Decisions');
   const total = stats.spVsCard.cardWins + stats.spVsCard.spWins + stats.spVsCard.bothNone;
   if (total > 0) {
@@ -458,6 +674,10 @@ function formatReport(stats, files) {
     if (stats.botVsPlayer.comparable > 0 && stats.botVsPlayer.differed / stats.botVsPlayer.comparable > 0.4) {
       lines.push('  Bot choices diverge from exact player input on >40% of comparable turns');
       lines.push('  Consider: inspect mismatch examples before changing card scoring heuristics');
+    }
+    if (stats.botVsObserved.scorable > 0 && stats.botVsObserved.differed / stats.botVsObserved.scorable > 0.4) {
+      lines.push('  Bot choices diverge from observed player outcomes on >40% of scorable turns');
+      lines.push('  Consider: inspect observed mismatch patterns, especially for raw shadow-only logs');
     }
   }
   lines.push('');
