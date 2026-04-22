@@ -2071,6 +2071,13 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left, source_eff=N
         elif gens_left == 2:
             draw_value *= 0.45
         mc_value += draw_value
+    elif "look at" in effect_str and "card" in effect_str:
+        look_value = rv["card"] * 0.35
+        if gens_left <= 1:
+            look_value = 0.3 if is_free_action and mc_cost == 0 else 0
+        elif gens_left == 2:
+            look_value *= 0.45
+        mc_value += look_value
     if "vp" in effect_str or "victory" in effect_str:
         vp_m = re.search(r'(\d+)\s*(?:vp|victory)', effect_str)
         mc_value += int(vp_m.group(1)) * rv["vp"] if vp_m else rv["vp"]

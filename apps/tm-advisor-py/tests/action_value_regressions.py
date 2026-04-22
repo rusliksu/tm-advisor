@@ -685,6 +685,40 @@ def main() -> int:
     assert power_infra_eff.actions == [
         {"cost": "any energy", "effect": "gain that many MC"}
     ], power_infra_eff.actions
+    assert bot.effect_parser.get("AI Central").actions == [
+        {"cost": "free", "effect": "draw 2 cards"}
+    ], bot.effect_parser.get("AI Central").actions
+    assert bot.effect_parser.get("Business Network").actions == [
+        {"cost": "free", "effect": "look at the top card and either buy it or discard it"}
+    ], bot.effect_parser.get("Business Network").actions
+    assert bot.effect_parser.get("Inventors' Guild").actions == [
+        {"cost": "free", "effect": "look at the top card and either buy it or discard it"}
+    ], bot.effect_parser.get("Inventors' Guild").actions
+    assert bot.effect_parser.get("Space Elevator").actions == [
+        {"cost": "1 steel", "effect": "gain 5 MC"}
+    ], bot.effect_parser.get("Space Elevator").actions
+    assert bot.effect_parser.get("Sub-Crust Measurements").actions == [
+        {"cost": "free", "effect": "draw 1 card"}
+    ], bot.effect_parser.get("Sub-Crust Measurements").actions
+    assert bot.effect_parser.get("Red Ships").actions == [
+        {"cost": "free", "effect": "gain 1 MC per ocean-adjacent city or special tile"}
+    ], bot.effect_parser.get("Red Ships").actions
+    assert bot.effect_parser.get("Symbiotic Fungus").actions == [
+        {"cost": "free", "effect": "add 1 microbe to another card"}
+    ], bot.effect_parser.get("Symbiotic Fungus").actions
+    assert bot.effect_parser.get("Extreme-Cold Fungus").actions == [
+        {"cost": "free", "effect": "gain 1 plant", "choice_group": "or"},
+        {"cost": "free", "effect": "add 2 microbes to another card", "choice_group": "or"},
+    ], bot.effect_parser.get("Extreme-Cold Fungus").actions
+    assert bot.effect_parser.get("Industrial Center").actions == [
+        {"cost": "7 MC", "effect": "increase steel production 1 step"}
+    ], bot.effect_parser.get("Industrial Center").actions
+    assert bot.effect_parser.get("Industrial Center:ares").actions == [
+        {"cost": "7 MC", "effect": "increase steel production 1 step"}
+    ], bot.effect_parser.get("Industrial Center:ares").actions
+    assert bot.effect_parser.get("Restricted Area:ares").actions == [
+        {"cost": "2 MC", "effect": "draw 1 card"}
+    ], bot.effect_parser.get("Restricted Area:ares").actions
 
     stormcraft_eff = bot.effect_parser.get("Stormcraft Incorporated")
     robinson_eff = bot.effect_parser.get("Robinson Industries")
@@ -900,6 +934,15 @@ def main() -> int:
         "free", "add 1 floater to this card", action_me, endgame_rv, 1, source_eff=local_shading_eff
     )
     assert shading_cost == 0 and shading_value <= 1.0, (shading_cost, shading_value)
+    look_cost, look_value = _estimate_action_value(
+        "free",
+        "look at the top card and either buy it or discard it",
+        action_me,
+        resource_values(5),
+        5,
+        source_eff=bot.effect_parser.get("Business Network"),
+    )
+    assert look_cost == 0 and 0 < look_value < resource_values(5)["card"], (look_cost, look_value)
     action_rich_me = type("ActionRichMe", (), {"mc": 31, "energy": 4, "energy_prod": 2, "plants": 2, "heat": 12, "steel": 5, "titanium": 9})()
     assert _estimate_action_value(
         "3 energy", "raise oxygen 1 step", action_rich_me, endgame_rv, 1, source_eff=water_splitting_eff
