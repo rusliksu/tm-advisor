@@ -291,6 +291,7 @@ class GameState:
                     "name": _strip_ares(c.get("name", "???")),
                     "tags": c.get("tags", []),
                     "cost": c.get("calculatedCost", c.get("cost", 0)),
+                    "cost_is_calculated": "calculatedCost" in c,
                 })
             elif isinstance(c, str):
                 result.append({"name": _strip_ares(c), "tags": [], "cost": 0})

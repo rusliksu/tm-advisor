@@ -67,6 +67,55 @@ def build_endgame_state() -> GameState:
     })
 
 
+def build_calculated_cost_state() -> GameState:
+    hand = [
+        {"name": "Underground City", "calculatedCost": 13, "tags": ["City", "Building"]},
+        {"name": "Corona Extractor", "calculatedCost": 3, "tags": ["Space", "Power"]},
+        {"name": "Hackers", "calculatedCost": 0, "tags": []},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 12,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 19,
+        "steelProduction": 7,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 7,
+        "heatProduction": 3,
+        "terraformRating": 42,
+        "cardsInHandNbr": len(hand),
+        "tableau": [
+            {"name": "Cheung Shing MARS"},
+            {"name": "Earth Catapult"},
+        ],
+        "tags": {"building": 8, "science": 4, "power": 4, "city": 1},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 9,
+            "phase": "action",
+            "oxygenLevel": 13,
+            "temperature": 6,
+            "oceans": 8,
+            "venusScaleLevel": 30,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
 def main() -> None:
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
     parser = CardEffectParser(db)
@@ -94,6 +143,34 @@ def main() -> None:
         not a.get("action", "").startswith("Play Venus Shuttles")
         for a in allocation
     ), allocation
+
+    calculated_cost_state = build_calculated_cost_state()
+    calculated_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            calculated_cost_state.cards_in_hand,
+            calculated_cost_state,
+            synergy,
+            req_checker,
+        )
+    }
+    underground = calculated_advice["Underground City"]
+    assert underground["action"] == "HOLD", underground
+    assert "13 MC eff > 12" in underground["reason"], underground
+    assert "-2 discount" not in underground["reason"], underground
+    hackers = calculated_advice["Hackers"]
+    assert hackers["action"] == "SELL", hackers
+
+    calculated_alloc = mc_allocation_advice(
+        calculated_cost_state, synergy, req_checker)["allocations"]
+    assert all(
+        not a.get("action", "").startswith("Play Corona Extractor")
+        for a in calculated_alloc
+    ), calculated_alloc
+    assert all(
+        not a.get("action", "").startswith("Play Hackers")
+        for a in calculated_alloc
+    ), calculated_alloc
 
     print("advisor endgame allocation regression checks: OK")
 

@@ -466,8 +466,11 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             name, tags, me.corp, state.generation, me.tags, state, context="play")
 
         # Effective cost considering discounts + steel/titanium payment
-        eff_cost, pay_hint = _effective_cost(cost, tags, me,
-                                             tableau_discounts=tableau_discounts)
+        eff_cost, pay_hint = _effective_cost(
+            cost, tags, me,
+            tableau_discounts=tableau_discounts,
+            discounts_already_applied=_card_cost_is_calculated(card),
+        )
 
         req_ok, req_reason = True, ""
         if req_checker:
@@ -635,9 +638,12 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             card_data = next((c for c in hand if c["name"] == r["name"]), {})
             card_tags = card_data.get("tags", [])
             card_cost = card_data.get("cost", card_data.get("calculatedCost", 0))
-            eff, _ = _effective_cost(card_cost, card_tags, me,
-                                     steel_sim, ti_sim,
-                                     tableau_discounts=tableau_discounts)
+            eff, _ = _effective_cost(
+                card_cost, card_tags, me,
+                steel_sim, ti_sim,
+                tableau_discounts=tableau_discounts,
+                discounts_already_applied=_card_cost_is_calculated(card_data),
+            )
             if eff > mc_sim:
                 r["reason"] += f" ⚠️ sequence: {eff} MC eff > {mc_sim} осталось"
                 r["action"] = "HOLD"
@@ -830,6 +836,12 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     db = getattr(synergy, 'db', None) if synergy else None
 
     if state.cards_in_hand and synergy and req_checker:
+        tableau_discounts = _collect_tableau_discounts(me.tableau)
+        sell_advice_names = {
+            row["name"] for row in play_hold_advice(
+                state.cards_in_hand, state, synergy, req_checker)
+            if row.get("action") == "SELL"
+        }
         for card in state.cards_in_hand:
             name = card["name"]
             tags = card.get("tags", [])
@@ -838,7 +850,13 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 name, tags, me.corp, state.generation, me.tags, state)
             req_ok, _ = req_checker.check(name, state)
 
+            if not _card_cost_is_calculated(card):
+                cost, _ = _effective_cost(
+                    cost, tags, me, tableau_discounts=tableau_discounts)
+
             if not req_ok or cost > budget:
+                continue
+            if name in sell_advice_names:
                 continue
 
             if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
@@ -1689,8 +1707,13 @@ def _collect_tableau_discounts(tableau) -> dict:
                 discounts[tag] = discounts.get(tag, 0) + amount
     return discounts
 
+def _card_cost_is_calculated(card: dict) -> bool:
+    """True when API already included fixed discounts in the card cost."""
+    return bool(card.get("cost_is_calculated"))
+
+
 def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=None,
-                    tableau_discounts=None):
+                    tableau_discounts=None, discounts_already_applied=False):
     """Calculate effective MC cost after discounts, steel/titanium payment.
 
     Returns (eff_mc_cost, pay_hint_str).
@@ -1702,45 +1725,46 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
     remaining = printed_cost
     hints = []
 
-    # 0. Credicor: +4 MC rebate for cards costing 20+ MC
-    if me.corp == "Credicor" and printed_cost >= 20:
-        remaining -= 4
-        hints.append("-4 Credicor")
+    if not discounts_already_applied:
+        # 0. Credicor: +4 MC rebate for cards costing 20+ MC
+        if me.corp == "Credicor" and printed_cost >= 20:
+            remaining -= 4
+            hints.append("-4 Credicor")
 
-    # 0a. Corp-based tag discounts (Teractor -3 Earth, Thorgate -3 Power)
-    # Supports Merger variant: scans tableau for secondary corps with discounts.
-    corps_in_play = {me.corp}
-    for card in me.tableau:
-        cname = card.get("name", "") if isinstance(card, dict) else ""
-        if cname in CORP_DISCOUNTS:
-            corps_in_play.add(cname)
-    corp_disc_total = 0
-    corp_disc_hint = None
-    for corp in corps_in_play:
-        corp_discs = CORP_DISCOUNTS.get(corp, {})
-        for disc_tag, disc_amount in corp_discs.items():
-            if disc_tag.lower() in tag_set:
-                # Each corp can apply its discount once; take max if same tag
-                # from multiple corps (shouldn't stack same tag discount)
-                if disc_amount > corp_disc_total:
-                    corp_disc_total = disc_amount
-                    corp_disc_hint = f"-{disc_amount} {corp[:8]}"
-    if corp_disc_total > 0:
-        apply = min(corp_disc_total, remaining)
-        remaining -= apply
-        hints.append(corp_disc_hint)
+        # 0a. Corp-based tag discounts (Teractor -3 Earth, Thorgate -3 Power)
+        # Supports Merger variant: scans tableau for secondary corps with discounts.
+        corps_in_play = {me.corp}
+        for card in me.tableau:
+            cname = card.get("name", "") if isinstance(card, dict) else ""
+            if cname in CORP_DISCOUNTS:
+                corps_in_play.add(cname)
+        corp_disc_total = 0
+        corp_disc_hint = None
+        for corp in corps_in_play:
+            corp_discs = CORP_DISCOUNTS.get(corp, {})
+            for disc_tag, disc_amount in corp_discs.items():
+                if disc_tag.lower() in tag_set:
+                    # Each corp can apply its discount once; take max if same tag
+                    # from multiple corps (shouldn't stack same tag discount)
+                    if disc_amount > corp_disc_total:
+                        corp_disc_total = disc_amount
+                        corp_disc_hint = f"-{disc_amount} {corp[:8]}"
+        if corp_disc_total > 0:
+            apply = min(corp_disc_total, remaining)
+            remaining -= apply
+            hints.append(corp_disc_hint)
 
-    # 1. Tableau discounts (from TABLEAU_DISCOUNT_CARDS in constants)
-    if tableau_discounts:
-        total_disc = 0
-        for disc_tag, disc_amount in tableau_discounts.items():
-            disc_key = disc_tag.lower()
-            if disc_key == "all" or disc_key in tag_set:
-                total_disc += disc_amount
-        if total_disc > 0:
-            total_disc = min(total_disc, remaining)  # can't go below 0
-            remaining -= total_disc
-            hints.append(f"-{total_disc} discount")
+        # 1. Tableau discounts (from TABLEAU_DISCOUNT_CARDS in constants)
+        if tableau_discounts:
+            total_disc = 0
+            for disc_tag, disc_amount in tableau_discounts.items():
+                disc_key = disc_tag.lower()
+                if disc_key == "all" or disc_key in tag_set:
+                    total_disc += disc_amount
+            if total_disc > 0:
+                total_disc = min(total_disc, remaining)  # can't go below 0
+                remaining -= total_disc
+                hints.append(f"-{total_disc} discount")
 
     # 2. Titanium (higher value, use first for Space cards)
     if "space" in tag_set and ti > 0 and me.ti_value > 0:
@@ -2169,7 +2193,8 @@ def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True)
         return True
     if eff.gains_resources.get("mc", 0) >= 4:
         return True
-    if eff.vp_per and str(eff.vp_per.get("per", "")).lower() == "flat":
+    if (eff.vp_per and str(eff.vp_per.get("per", "")).lower() == "flat"
+            and eff.vp_per.get("amount", 0) > 0):
         return True
     return False
 
