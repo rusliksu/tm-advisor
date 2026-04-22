@@ -52,6 +52,7 @@ scripts/*.log
 game-data/
 game-state.md
 game-advisor-errors.log
+data/advisor_live_audit/*.jsonl
 
 # Claude Code
 .claude/

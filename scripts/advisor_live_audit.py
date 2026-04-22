@@ -14,6 +14,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
@@ -21,6 +22,7 @@ from urllib.parse import parse_qs, urlparse
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = ROOT / "scripts"
 DEFAULT_SERVER = "https://terraforming-mars.herokuapp.com"
+DEFAULT_LOG_DIR = ROOT / "data" / "advisor_live_audit"
 
 for path in (ROOT, SCRIPTS_DIR):
     if str(path) not in sys.path:
@@ -117,6 +119,11 @@ def short_text(value: str, limit: int = 140) -> str:
     if len(text) <= limit:
         return text
     return text[: limit - 1] + "..."
+
+
+def safe_log_name(identifier: str) -> str:
+    safe = re.sub(r"[^0-9A-Za-z_.-]+", "_", identifier).strip("._")
+    return safe or "advisor-live-audit"
 
 
 def alert_conflict_for_card(alert: str, name: str, advice: dict) -> str | None:
@@ -310,6 +317,39 @@ def audit_live(identifier: str, server: str, include_claude: bool = True) -> dic
     }
 
 
+def default_log_path(identifier: str) -> Path:
+    return DEFAULT_LOG_DIR / f"{safe_log_name(identifier)}.jsonl"
+
+
+def resolve_log_path(value: str, identifier: str) -> Path:
+    path = default_log_path(identifier) if value == "" else Path(value)
+    if not path.is_absolute():
+        path = ROOT / path
+    return path
+
+
+def jsonl_record(result: dict) -> dict:
+    players = result.get("players") or []
+    return {
+        "schema_version": 1,
+        "recorded_at": datetime.now(timezone.utc).isoformat(),
+        "target": result.get("target"),
+        "server": result.get("server"),
+        "generation": next((p.get("generation") for p in players if p.get("generation") is not None), None),
+        "phases": sorted({str(p.get("phase") or "?") for p in players}),
+        "players": players,
+        "issue_count": len(result.get("issues") or []),
+        "issues": result.get("issues") or [],
+    }
+
+
+def write_jsonl_log(result: dict, path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(jsonl_record(result), ensure_ascii=False, sort_keys=True) + "\n")
+    return path
+
+
 def format_report(result: dict) -> str:
     players = result.get("players") or []
     issues = result.get("issues") or []
@@ -347,6 +387,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         action="store_true",
         help="Skip Claude markdown output phase-gating audit.",
     )
+    parser.add_argument(
+        "--log-jsonl",
+        nargs="?",
+        const="",
+        default=None,
+        metavar="PATH",
+        help=(
+            "Append one JSONL audit record. If PATH is omitted, writes to "
+            "data/advisor_live_audit/<target>.jsonl."
+        ),
+    )
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     return parser.parse_args(argv)
 
@@ -365,10 +416,17 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Advisor live audit failed: {exc}", file=sys.stderr)
         return 2
 
+    log_path = None
+    if args.log_jsonl is not None:
+        log_path = write_jsonl_log(result, resolve_log_path(args.log_jsonl, identifier))
+        result["log_path"] = str(log_path)
+
     if args.json:
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
         print(format_report(result))
+        if log_path:
+            print(f"Log: {log_path}")
     return 1 if result.get("issues") else 0
 
 

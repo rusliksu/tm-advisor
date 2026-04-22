@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import importlib.util
+import json
+import tempfile
 from pathlib import Path
 
 
@@ -96,6 +98,31 @@ def main() -> None:
     assert checks(claude_issues).count("claude-phase-gating") == 2, claude_issues
     assert audit.audit_claude_output("me", "solar", "# TM Game Snapshot\n\n## Колонии\n\n## Стратегия") == []
     assert audit.audit_claude_output("me", "action", "## Рекомендации\n\n## Стандартные проекты") == []
+
+    assert audit.safe_log_name("https://host/game?id=gabc123") == "https_host_game_id_gabc123"
+    assert audit.default_log_path("gabc123").name == "gabc123.jsonl"
+
+    result = {
+        "target": "gabc123",
+        "server": "https://terraforming-mars.herokuapp.com",
+        "players": [{"id": "p1", "label": "me (p1)", "generation": 9, "phase": "action"}],
+        "issues": [{"check": "sample", "player": "me", "message": "x", "module": "m"}],
+    }
+    record = audit.jsonl_record(result)
+    assert record["schema_version"] == 1, record
+    assert record["generation"] == 9, record
+    assert record["phases"] == ["action"], record
+    assert record["issue_count"] == 1, record
+    assert record["recorded_at"].endswith("+00:00"), record
+
+    with tempfile.TemporaryDirectory() as tmp:
+        log_path = Path(tmp) / "audit.jsonl"
+        audit.write_jsonl_log(result, log_path)
+        audit.write_jsonl_log({**result, "issues": []}, log_path)
+        rows = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+        assert len(rows) == 2, rows
+        assert rows[0]["issue_count"] == 1, rows
+        assert rows[1]["issue_count"] == 0, rows
 
     print("advisor live audit regression checks: OK")
 
