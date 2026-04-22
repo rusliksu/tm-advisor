@@ -144,7 +144,7 @@ class GameLogger:
         """Снимок состояния игры для диффа."""
         players = {}
         for p in [state.me] + state.opponents:
-            players[p.name] = {
+            player_snapshot = {
                 "corp": p.corp,
                 "tr": p.tr,
                 "mc": p.mc,
@@ -159,6 +159,13 @@ class GameLogger:
                 "tableau": [c if isinstance(c, str) else c.get("name", "?")
                             for c in (p.raw.get("tableau", []) or [])],
             }
+            if p is state.me:
+                player_snapshot["hand"] = [
+                    c.get("name", "?")
+                    for c in (getattr(state, "cards_in_hand", []) or [])
+                    if isinstance(c, dict)
+                ]
+            players[p.name] = player_snapshot
         return {
             "gen": state.generation,
             "oxygen": state.oxygen,
@@ -343,6 +350,15 @@ class GameLogger:
             # Hand size change
             if psnap.get("cards", 0) != pprev.get("cards", 0):
                 pc["hand_size"] = {"from": pprev.get("cards", 0), "to": psnap.get("cards", 0)}
+            prev_hand = set(pprev.get("hand", []) or [])
+            curr_hand = set(psnap.get("hand", []) or [])
+            if prev_hand != curr_hand:
+                added = sorted(curr_hand - prev_hand)
+                removed = sorted(prev_hand - curr_hand)
+                if added:
+                    pc["hand_added"] = added
+                if removed:
+                    pc["hand_removed"] = removed
             if pc:
                 player_changes[name] = pc
 
