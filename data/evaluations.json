@@ -8098,21 +8098,23 @@
   },
   "Capital": {
     "name": "Capital",
-    "score": 60,
-    "tier": "C",
+    "score": 50,
+    "tier": "D",
     "type": "project",
     "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req.",
-    "reasoning": "Most expensive city in the game. Per COTD community, widely considered a trap by experienced players. True cost ~43 MC including energy production. At 5 MC-prod it takes 9+ gens to recover. Experienced players note it can sometimes be the best available option late game as a steel dump. VP from ocean adjacency is variable.",
+    "reasoning": "Most expensive city in the game and a classic city trap. Per COTD, the true cost is about 43-44 MC once the 2 energy production is counted, while the 5 MC production arrives too late to recover in normal games because the card requires 4 oceans. TFMStats also flags the opener as bad: kept starts are strongly negative and not-kept starts are positive. It is still playable as a narrow late-game steel/energy dump when a 3+ ocean adjacency spot is available, but that ceiling does not justify a generic C-tier rating.",
     "synergies": [
       "Artificial Lake",
-      "Ceres colony",
-      "Lakefront Resorts"
+      "Ceres",
+      "Lakefront Resorts",
+      "Mining Guild",
+      "Mass Converter"
     ],
     "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare.",
-    "opening_hand_bias": -6,
-    "opening_hand_note": "Mostly a late steel/energy city and ocean-adjacency VP dump; starting keeps are negative.",
-    "game_data_note": "Fix D-46: ocean adjacency VP undervalued. 2-3 adjacent oceans = 2-3 extra VP = +10-15 MC. City + VP per ocean adj. C in ocean-heavy boards (Hellas, Vastitas).",
-    "review_note": "COTD: decent steel dump late. 4+ VP with ocean adjacency. Expensive but 5 MC-prod helps. Req 4 oceans + 2 energy.",
+    "opening_hand_bias": -8,
+    "opening_hand_note": "Do not keep as a normal opener; consider only with a clear steel/energy surplus plan or a specific map/ocean setup.",
+    "game_data_note": "Ocean adjacency VP gives Capital a real late ceiling, but it needs both spare energy production and an open 3+ ocean spot to compete with simpler VP dumps.",
+    "review_note": "COTD: widely treated as a trap because the 43-44 MC effective cost rarely pays back; playable mostly as a late steel/energy sink for ocean-adjacency points.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1djfs49/cotd_capital_19_jun_2024/"
   },
   "Forced Precipitation": {
