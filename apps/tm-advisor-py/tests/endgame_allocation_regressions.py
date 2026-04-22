@@ -209,6 +209,55 @@ def build_endgame_value_order_state() -> GameState:
     })
 
 
+def build_titanium_payable_missing_tags_state() -> GameState:
+    hand = [
+        {"name": "Ganymede Colony", "calculatedCost": 20},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 6,
+        "steel": 0,
+        "titanium": 5,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 0,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 0,
+        "heatProduction": 0,
+        "terraformRating": 42,
+        "cardsInHandNbr": len(hand),
+        "tableau": [
+            {"name": "Teractor"},
+            {"name": "Io Mining Industries"},
+            {"name": "Saturn Systems"},
+            {"name": "Neptunian Power Consultants"},
+        ],
+        "tags": {"jovian": 3, "space": 2},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Teractor"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 10,
+            "phase": "action",
+            "oxygenLevel": 14,
+            "temperature": 8,
+            "oceans": 9,
+            "venusScaleLevel": 30,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "colonies": True}},
+        },
+    })
+
+
 def main() -> None:
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
     parser = CardEffectParser(db)
@@ -320,6 +369,28 @@ def main() -> None:
         if a.get("type") == "card" and a.get("action", "").startswith("Play ")
     ]
     assert play_names.index("Aquifer Pumping") < play_names.index("Symbiotic Fungus"), value_order_alloc
+
+    titanium_state = build_titanium_payable_missing_tags_state()
+    titanium_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            titanium_state.cards_in_hand,
+            titanium_state,
+            synergy,
+            req_checker)
+    }
+    ganymede = titanium_advice["Ganymede Colony"]
+    assert ganymede["action"] == "PLAY", ganymede
+    assert "5 ti=15 MC" in ganymede["reason"], ganymede
+    assert "нет MC" not in ganymede["reason"], ganymede
+
+    titanium_alloc = mc_allocation_advice(
+        titanium_state, synergy, req_checker)["allocations"]
+    ganymede_alloc = [
+        item for item in titanium_alloc
+        if item.get("action") == "Play Ganymede Colony"
+    ]
+    assert ganymede_alloc and ganymede_alloc[0]["cost"] == 5, titanium_alloc
 
     print("advisor endgame allocation regression checks: OK")
 
