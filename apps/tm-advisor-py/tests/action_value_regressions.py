@@ -17,6 +17,7 @@ from tm_advisor.analysis import _generate_alerts, _vp_projection, is_game_end_tr
 from tm_advisor.constants import FREE_TRADE_CARDS  # noqa: E402
 from tm_advisor.draft_play_advisor import (  # noqa: E402
     _estimate_action_value,
+    _estimate_card_value_rich,
     mc_allocation_advice,
     play_hold_advice,
 )
@@ -930,6 +931,53 @@ def main() -> int:
         source_eff=bio_printing_eff,
         action=bio_printing_eff.actions[1],
     ) == (0, 0)
+
+    decomposers_eff = bot.effect_parser.get("Decomposers")
+    venusian_animals_eff = bot.effect_parser.get("Venusian Animals")
+    birds_mid_eff = bot.effect_parser.get("Birds")
+    ants_mid_eff = bot.effect_parser.get("Ants")
+    assert decomposers_eff is not None
+    assert venusian_animals_eff is not None
+    assert birds_mid_eff is not None
+    assert ants_mid_eff is not None
+    assert decomposers_eff.actions == [], decomposers_eff.actions
+    assert venusian_animals_eff.actions == [], venusian_animals_eff.actions
+    assert decomposers_eff.triggers, decomposers_eff.triggers
+    assert venusian_animals_eff.triggers, venusian_animals_eff.triggers
+
+    mid_rv = resource_values(6)
+
+    def rich_value(card_name, hand=None):
+        info = bot.db.get_info(card_name) or {}
+        return _estimate_card_value_rich(
+            card_name,
+            bot.db.get_score(card_name),
+            info.get("cost", 0) or 0,
+            info.get("tags", []) or [],
+            "early",
+            6,
+            mid_rv,
+            bot.effect_parser,
+            bot.db,
+            hand_cards=hand or [],
+        )
+
+    decomposers_no_shell = rich_value("Decomposers")
+    decomposers_shell = rich_value(
+        "Decomposers",
+        hand=[
+            {"name": "Pets", "tags": ["Earth", "Animal"]},
+            {"name": "Kelp Farming", "tags": ["Plant"]},
+            {"name": "Tardigrades", "tags": ["Microbe"]},
+        ],
+    )
+    venusian_animals_value = rich_value("Venusian Animals")
+    birds_value = rich_value("Birds")
+    ants_value = rich_value("Ants")
+    assert decomposers_no_shell < 2.5, decomposers_no_shell
+    assert decomposers_shell > decomposers_no_shell + 1.5, (decomposers_no_shell, decomposers_shell)
+    assert venusian_animals_value < 8.0, venusian_animals_value
+    assert ants_value < birds_value, (ants_value, birds_value)
 
     state = build_state()
     advice = {

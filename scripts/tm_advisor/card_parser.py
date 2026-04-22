@@ -92,7 +92,6 @@ class CardEffectParser:
         "Penguins": [{"cost": "free", "effect": "add 1 animal to this card"}],
         "Stratospheric Birds": [{"cost": "free", "effect": "add 1 animal to this card"}],
         "Predators": [{"cost": "free", "effect": "add 1 animal (remove 1 animal from another)"}],
-        "Venusian Animals": [{"cost": "free", "effect": "add 1 animal to this card"}],
         "Extremophiles": [{"cost": "free", "effect": "add 1 microbe to this card"}],
         "GHG Producing Bacteria": [{"cost": "free", "effect": "add 1 microbe to this card"},
                                     {"cost": "2 microbes", "effect": "raise temperature 1 step"}],
@@ -102,7 +101,6 @@ class CardEffectParser:
                                        {"cost": "3 microbes", "effect": "raise TR 1 step"}],
         "Regolith Eaters": [{"cost": "free", "effect": "add 1 microbe to this card"},
                              {"cost": "2 microbes", "effect": "raise oxygen 1 step"}],
-        "Decomposers": [{"cost": "free", "effect": "add 1 microbe to this card"}],
         "Tardigrades": [{"cost": "free", "effect": "add 1 microbe to this card"}],
         "Thermophiles": [{"cost": "free", "effect": "add 1 microbe to this card"},
                           {"cost": "2 microbes", "effect": "raise venus 1 step"}],
@@ -188,6 +186,24 @@ class CardEffectParser:
         "Vermin": [{"cost": "free", "effect": "add 1 animal here or 1 microbe to another card"}],
     }
 
+    _TRIGGER_OVERRIDES: dict[str, list[dict]] = {
+        # These are trigger-only resource VP cards, not blue actions.
+        "Decomposers": [
+            {
+                "on": "play an animal, plant, or microbe tag",
+                "effect": "add a microbe to this card",
+                "self": True,
+            },
+        ],
+        "Venusian Animals": [
+            {
+                "on": "play a science tag",
+                "effect": "add 1 animal to this card",
+                "self": True,
+            },
+        ],
+    }
+
     # Implicit "add resource to self" for hasAction + resourceType cards
     _SELF_ADD_RESOURCES = {"Animal", "Microbe", "Floater", "Science", "Fighter", "Asteroid",
                            "Data", "Orbital", "Robot", "Venusian Habitat", "Agenda", "Seed"}
@@ -227,6 +243,13 @@ class CardEffectParser:
             elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
                 if not eff.actions:  # don't override if already parsed
                     eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card", "implicit": True})
+
+            for trig in self._TRIGGER_OVERRIDES.get(name, []):
+                if not any(
+                    t.get("on") == trig.get("on") and t.get("effect") == trig.get("effect")
+                    for t in eff.triggers
+                ):
+                    eff.triggers.append(dict(trig))
 
             # Ensure all resource-holding action cards have self-add in adds_resources
             # (even if actions were parsed from description, e.g. Ants)

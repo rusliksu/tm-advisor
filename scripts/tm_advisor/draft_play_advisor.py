@@ -2236,12 +2236,13 @@ _TRIGGER_TAGS = (
 )
 
 
-def _extract_trigger_tag(trigger_text: str) -> str:
+def _extract_trigger_tags(trigger_text: str) -> list[str]:
     low = (trigger_text or "").lower()
+    tags = []
     for tag in _TRIGGER_TAGS:
-        if f"{tag} tag" in low:
-            return tag
-    return ""
+        if re.search(rf"\b{re.escape(tag)}\b(?:\s+tag|\s*,|\s+or\b|\s+and\b)", low):
+            tags.append(tag)
+    return tags
 
 
 def _count_hand_tag_matches(hand_cards, target_tag: str, skip_name: str = "", db=None) -> int:
@@ -2285,24 +2286,27 @@ def _estimate_standard_project_hits(gens_left: int) -> int:
 def _estimate_trigger_hits(trig, card_name, card_tags, gens_left,
                            tableau_tags=None, hand_cards=None, db=None):
     trigger_text = (trig.get("on", "") or "").lower()
-    trigger_tag = _extract_trigger_tag(trigger_text)
+    trigger_tags = _extract_trigger_tags(trigger_text)
     current_tags = {str(tag).lower() for tag in (card_tags or [])}
-    includes_self = bool(trig.get("self")) and trigger_tag in current_tags
+    includes_self = bool(trig.get("self")) and any(tag in current_tags for tag in trigger_tags)
 
     if "standard project" in trigger_text:
         return _estimate_standard_project_hits(gens_left)
 
-    if not trigger_tag:
+    if not trigger_tags:
         return 0
 
     max_future_hits = max(0, gens_left - (1 if includes_self else 0))
     future_hits = min(
-        _count_hand_tag_matches(hand_cards, trigger_tag, skip_name=card_name, db=db),
+        sum(
+            _count_hand_tag_matches(hand_cards, trigger_tag, skip_name=card_name, db=db)
+            for trigger_tag in trigger_tags
+        ),
         max_future_hits,
     )
 
     if future_hits <= 0 and tableau_tags:
-        shell_count = tableau_tags.get(trigger_tag, 0)
+        shell_count = max(tableau_tags.get(trigger_tag, 0) for trigger_tag in trigger_tags)
         if shell_count >= 5 and gens_left >= 4:
             future_hits = min(2, max_future_hits)
         elif shell_count >= 2 and gens_left >= 4:
@@ -2311,9 +2315,38 @@ def _estimate_trigger_hits(trig, card_name, card_tags, gens_left,
     return future_hits + (1 if includes_self else 0)
 
 
+def _resource_vp_token_value(eff, rv) -> float:
+    if not eff or not getattr(eff, "vp_per", None):
+        return 0.0
+    per = str(eff.vp_per.get("per", "") or "").lower()
+    if "resource" not in per:
+        return 0.0
+    amount = float(eff.vp_per.get("amount", 1) or 1)
+    divisor_match = re.search(r"(\d+(?:\.\d+)?)\s+resources?", per)
+    divisor = float(divisor_match.group(1)) if divisor_match else 1.0
+    if divisor <= 0:
+        divisor = 1.0
+    return amount * rv["vp"] / divisor
+
+
+def _self_resource_action_rate(eff) -> float:
+    if not eff or not getattr(eff, "actions", None):
+        return 0.0
+    rate = 0.0
+    for act in eff.actions:
+        if act.get("conditional"):
+            continue
+        effect_text = (act.get("effect", "") or "").lower()
+        if "to this card" not in effect_text and "here" not in effect_text:
+            continue
+        add_match = re.search(r"add\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|data|resource)", effect_text)
+        if add_match:
+            rate += float(add_match.group(1) or 1)
+    return rate
+
+
 def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
                           tableau_tags=None, hand_cards=None, db=None):
-    trigger_tag = _extract_trigger_tag(trig.get("on", ""))
     effect_text = (trig.get("effect", "") or "").lower()
     total_hits = _estimate_trigger_hits(
         trig, card_name, card_tags, gens_left,
@@ -2323,6 +2356,16 @@ def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
     )
     if total_hits <= 0:
         return 0.0
+
+    resource_token_value = _resource_vp_token_value(eff, rv)
+    if resource_token_value > 0 and ("to this card" in effect_text or "here" in effect_text):
+        add_match = re.search(
+            r"add\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|data|resource)",
+            effect_text,
+        )
+        if add_match:
+            amount = float(add_match.group(1) or 1)
+            return total_hits * amount * resource_token_value * 0.9
 
     if "draw" in effect_text and "card" in effect_text:
         draw_value = rv["card"]
@@ -2500,33 +2543,43 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
         amt = eff.vp_per.get("amount", 1)
         if "resource" in str(per):
             # Resource-VP cards accumulate resources → VP at end.
-            # Base rate: 1 resource/gen from own action.
+            # Base rate comes only from a real self-add blue action. Trigger-only
+            # cards such as Decomposers/Venusian Animals are valued above via
+            # their trigger text, not as if they had a recurring action.
             # External placers (Bio Printing, Freyja Biodomes, etc.) add more.
             # Count external placers in tableau if available.
-            resources_per_gen = 1.0  # own action
+            resource_token_value = _resource_vp_token_value(eff, rv)
+            resources_per_gen = _self_resource_action_rate(eff)
             if tableau_tags:
                 # Heuristic: each animal/microbe/floater placer in tableau
                 # adds ~0.5 resources/gen to existing accumulators.
                 # This is approximate — real value depends on which card
                 # the resources go to, but it captures the synergy.
-                res_type = ""
+                res_type = str(getattr(eff, "resource_type", "") or "").lower()
                 per_clean = str(per).lower().replace("(", " ").replace(")", " ")
-                for word in per_clean.split():
-                    if word in ("animal", "animals", "microbe", "microbes",
-                                "floater", "floaters", "fighter", "fighters"):
-                        res_type = word.rstrip("s")
-                        break
+                if not res_type:
+                    for word in per_clean.split():
+                        if word in ("animal", "animals", "microbe", "microbes",
+                                    "floater", "floaters", "fighter", "fighters"):
+                            res_type = word.rstrip("s")
+                            break
                 if res_type and tableau_tags:
                     # Count cards that add this resource type to other cards
                     # Rough proxy: animal/microbe/floater tag count
                     placer_tags = tableau_tags.get(res_type, tableau_tags.get(res_type + "s", 0))
                     if placer_tags > 0:
                         resources_per_gen += placer_tags * 0.4
+            immediate_resources = sum(
+                float(add.get("amount", 1) or 1)
+                for add in getattr(eff, "adds_resources", [])
+                if add.get("target") == "this"
+            )
+            if immediate_resources > 0 and resource_token_value > 0:
+                value += immediate_resources * resource_token_value
             # Subtract action opportunity cost (~2 MC/gen for using the action)
-            action_cost_per_gen = 2.0
-            net_value_per_gen = (resources_per_gen * amt * rv["vp"]
-                                 - action_cost_per_gen)
-            value += max(0, gens_left * net_value_per_gen * 0.65)
+            action_cost_per_gen = 2.0 if resources_per_gen > 0 else 0.0
+            net_value_per_gen = resources_per_gen * resource_token_value - action_cost_per_gen
+            value += max(0, max(0, gens_left - 1) * net_value_per_gen * 0.65)
         elif "tag" in str(per):
             # Use actual tableau tag count instead of hardcoded 3
             tag_name = ""
