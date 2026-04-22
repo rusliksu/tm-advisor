@@ -28,10 +28,7 @@ jobs:
           node-version: 20
 
       - name: Syntax check extension files
-        run: |
-          for f in extension/data/*.js extension/content.js; do
-            node -c "$f" && echo "✓ $f" || exit 1
-          done
+        run: npm run test:syntax
 
       - name: Run synergy rules unit tests
         run: node scripts/test-synergy-rules.js
@@ -40,6 +37,7 @@ jobs:
   e2e:
     name: E2E tooltip tests (Playwright)
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -50,10 +48,16 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright Chromium browser
+        timeout-minutes: 8
+        run: npx playwright install chromium
+
+      - name: Install Playwright system dependencies
+        timeout-minutes: 10
+        run: npx playwright install-deps chromium
 
       - name: Run tooltip tests (xvfb)
+        timeout-minutes: 10
         run: xvfb-run --auto-servernum node scripts/test-synergy-tooltips.mjs
 
       - name: Upload screenshots
