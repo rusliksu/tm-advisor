@@ -105,7 +105,14 @@ def main() -> None:
     result = {
         "target": "gabc123",
         "server": "https://terraforming-mars.herokuapp.com",
-        "players": [{"id": "p1", "label": "me (p1)", "generation": 9, "phase": "action"}],
+        "players": [{
+            "id": "p1",
+            "label": "me (p1)",
+            "generation": 9,
+            "phase": "action",
+            "game_age": 100,
+            "undo_count": 0,
+        }],
         "issues": [{"check": "sample", "player": "me", "message": "x", "module": "m"}],
     }
     record = audit.jsonl_record(result)
@@ -123,6 +130,44 @@ def main() -> None:
         assert len(rows) == 2, rows
         assert rows[0]["issue_count"] == 1, rows
         assert rows[1]["issue_count"] == 0, rows
+
+    fp = audit.record_state_fingerprint(audit.jsonl_record(result))
+    assert fp["players"][0]["game_age"] == 100, fp
+
+    with tempfile.TemporaryDirectory() as tmp:
+        log_path = Path(tmp) / "stale.jsonl"
+        first = {**result, "issues": []}
+        second = {**result, "issues": []}
+        third = {**result, "issues": []}
+        audit.write_jsonl_log_with_stale(first, log_path, stale_after=3)
+        audit.write_jsonl_log_with_stale(second, log_path, stale_after=3)
+        audit.write_jsonl_log_with_stale(third, log_path, stale_after=3)
+        rows = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+        assert rows[0]["stale"]["is_stale"] is False, rows
+        assert rows[1]["stale"]["is_stale"] is False, rows
+        assert rows[2]["stale"]["is_stale"] is True, rows
+        assert rows[2]["stale"]["stable_runs"] == 3, rows
+
+        changed = {
+            **result,
+            "issues": [],
+            "players": [{**result["players"][0], "game_age": 101}],
+        }
+        audit.write_jsonl_log_with_stale(changed, log_path, stale_after=3)
+        rows = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
+        assert rows[-1]["stale"]["is_stale"] is False, rows[-1]
+        assert rows[-1]["stale"]["stable_runs"] == 1, rows[-1]
+
+    terminal_result = {
+        **result,
+        "players": [{**result["players"][0], "phase": "end"}],
+        "issues": [],
+    }
+    terminal_record = audit.jsonl_record(terminal_result)
+    terminal_stale = audit.assess_stale([terminal_record, terminal_record, terminal_record], 3)
+    assert terminal_stale["stable_runs"] == 3, terminal_stale
+    assert terminal_stale["terminal"] is True, terminal_stale
+    assert terminal_stale["is_stale"] is False, terminal_stale
 
     print("advisor live audit regression checks: OK")
 
