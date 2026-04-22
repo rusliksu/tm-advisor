@@ -1375,12 +1375,18 @@ def _dedupe_alerts(alerts: list[str]) -> list[str]:
     """Collapse repeated alerts from analysis + action-ordering layers."""
     deduped = []
     seen = set()
+    has_value_trade_alert = any(
+        alert.startswith("🚀 Trade ") or alert.startswith("🚀 Best trade")
+        for alert in alerts
+    )
 
     for alert in alerts:
         if alert in seen:
             continue
 
         if alert.startswith("⚡ Trade FIRST: "):
+            if has_value_trade_alert:
+                continue
             trade_targets = alert.removeprefix("⚡ Trade FIRST: ").split("(", 1)[0].strip()
             targets = [t.strip() for t in trade_targets.split(",") if t.strip()]
             if any(
