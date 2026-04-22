@@ -14,6 +14,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 from tm_advisor.action_ordering import get_action_advice  # noqa: E402
 from tm_advisor.analysis import _dedupe_alerts  # noqa: E402
+from tm_advisor.draft_play_advisor import _estimate_req_gap  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -99,10 +100,18 @@ def assert_track_only_trade_first_survives_without_value_trade() -> None:
     assert alerts == ["⚡ Trade FIRST: Callisto (contested — opponents haven't passed)"], alerts
 
 
+def assert_max_requirement_is_not_treated_as_soon() -> None:
+    state = build_state(["Static Harvesting"])
+
+    assert _estimate_req_gap("Макс 3 ocean (сейчас 4)", state, 6) == 7
+    assert _estimate_req_gap("Max 3 ocean (сейчас 4)", state, 6) == 7
+
+
 def main() -> None:
     assert_no_wrong_cross_card_leaks()
     assert_value_trade_alert_suppresses_track_only_trade_first()
     assert_track_only_trade_first_survives_without_value_trade()
+    assert_max_requirement_is_not_treated_as_soon()
     print("advisor action-ordering regression checks: OK")
 
 

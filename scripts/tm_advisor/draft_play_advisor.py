@@ -264,6 +264,8 @@ def _estimate_req_gap(req_reason, state, gens_left):
     if not req_reason:
         return 0
     reason = req_reason.lower()
+    if "макс" in reason or "max" in reason:
+        return gens_left + 1
 
     m = re.search(r'(\d+)%?\s*o', reason)
     if m and "oxygen" in reason:
