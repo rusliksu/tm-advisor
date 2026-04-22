@@ -1,5 +1,1030 @@
 [
   {
+    "id": "1srj6ih",
+    "title": "[COTD] Mining Expedition | 21 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 10,
+    "num_comments": 12,
+    "created_utc": 1776765651.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1spot4o/cotd_invention_contest_19_apr_2026/)\n\nToday's card is [Mining Expedition](https://ensonc.com/terraformingmars/card-selection#063) (#063):\n\nEvent card (Red) | Base game\n\nCost: 12 | Requirements: None | Tags: Event\n\nRaise oxygen 1 step. Gain 2 steel. Remove up to 2 plants from any player.",
+    "permalink": "/r/TerraformingMarsGame/comments/1srj6ih/cotd_mining_expedition_21_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1srj6ih/cotd_mining_expedition_21_apr_2026/",
+    "comments": [
+      {
+        "id": "ohf1gwr",
+        "author": "benbever",
+        "body": "Great to have in hand to grab the Temperature bonus.\n\nCan also deny the Ecoline player a TR and 2 plants.\n\nBest played with IC and/or Media Group.\n\nIt’s average in quantified value (15mc including card cost for an Oxygen TR (~10) and 2 steel) so you need one of the above, or card discount, advanced alloys, or Mining Expedition as a free card, to make it a good play.",
+        "score": 6,
+        "parent_id": "t3_1srj6ih",
+        "depth": 0,
+        "created_utc": 1776766181.0
+      },
+      {
+        "id": "ohf4qtj",
+        "author": "Agreeable_Hat",
+        "body": "2P B+P:\n\nVery, very rarely worth keeping in your starting hand, terrible performance in stats (think Zeppelins and Cloud Seeding). Fine enough in later drafts for 8% O2 shenanigans or similar.",
+        "score": 3,
+        "parent_id": "t3_1srj6ih",
+        "depth": 0,
+        "created_utc": 1776767855.0
+      },
+      {
+        "id": "ohfkp8o",
+        "author": "cjeysen",
+        "body": "Why is cloud seeding bad? ",
+        "score": 1,
+        "parent_id": "t1_ohf4qtj",
+        "depth": 1,
+        "created_utc": 1776774424.0
+      },
+      {
+        "id": "ohfswgl",
+        "author": "Reason-and-rhyme",
+        "body": "No plant tag is a bummer, and the soft requirement for your opponent to have some heat production limits it a lot in two player games",
+        "score": 3,
+        "parent_id": "t1_ohfkp8o",
+        "depth": 2,
+        "created_utc": 1776777235.0
+      },
+      {
+        "id": "ohfptk0",
+        "author": "thuswindburns",
+        "body": "Cloud seeding isn’t bad it’s just not great. With 3 ocean requirements you have better plant cards available that don’t reduce your money. I definitely like it better than zeppelins and mining expedition though.",
+        "score": 2,
+        "parent_id": "t1_ohfkp8o",
+        "depth": 2,
+        "created_utc": 1776776213.0
+      },
+      {
+        "id": "ohfury8",
+        "author": "cjeysen",
+        "body": "I thought it was quite good if played early (gen 2 or 3) thanks to aquifer prelude! 1 less heat can lead to 1 less tr for opponent. And it is quite cheap for 2 plant prod. But maybe Im underestimating the -1 mc prod",
+        "score": 2,
+        "parent_id": "t1_ohfptk0",
+        "depth": 3,
+        "created_utc": 1776777835.0
+      },
+      {
+        "id": "ohg17yb",
+        "author": "thuswindburns",
+        "body": "I would rather play it later to stack plant prod on top of  already existing plant prod for when I have more disposable income. Money has the highest value in the beginning and you are sacrificing 1 money prod to stop them from getting a heat bump that would take 8 gens to get standalone. So you paid 8 mc to stop 1 tr which they can easily counter with optimal aero braking or any the heat prod space events, and that early two plant prod you’re just asking to get hit by asteroids or virus which is more painful than losing 1 heat prod.\n\nAlso the mining expedition in this topic.",
+        "score": 1,
+        "parent_id": "t1_ohfury8",
+        "depth": 4,
+        "created_utc": 1776779896.0
+      },
+      {
+        "id": "ohf5ans",
+        "author": "The-University",
+        "body": "This, for me is one of the worst cards in the game. It does 3 things badly, and is just too expensive at 15 (12+3) to be worth. Avoid it under most curcumstances",
+        "score": 2,
+        "parent_id": "t3_1srj6ih",
+        "depth": 0,
+        "created_utc": 1776768119.0
+      },
+      {
+        "id": "ohfovmr",
+        "author": "thuswindburns",
+        "body": "The problem with this card is you usually wanna play it early to delay an opponent placing a green for a gen and to give yourself a quick boost. As late game removing 2 plants isn’t going to hinder them at all and really it hurts you more than anything as it’s too expensive to play early.\n\nCan be good to secure the temp bump or pop the last oxygen point. More appealing if I have advanced alloys or Space elevator/electro cat to recoop the money. ",
+        "score": 2,
+        "parent_id": "t3_1srj6ih",
+        "depth": 0,
+        "created_utc": 1776775894.0
+      },
+      {
+        "id": "ohgaxeo",
+        "author": "Suspicious_Store_800",
+        "body": "Can be alright with enough bonuses, as with most cards that refund materials, but basically awful without combo or a plan to steal the Temperature bonus.",
+        "score": 2,
+        "parent_id": "t3_1srj6ih",
+        "depth": 0,
+        "created_utc": 1776782767.0
+      },
+      {
+        "id": "ohh2wl2",
+        "author": "snickers10m",
+        "body": "Thought-provoking flavor on this card.\n\nFor some reason I never feel bad about taking people's plants away with an asteroid or Deimos Down. Yet the idea of doing the same with an aggressive mineral extraction operation rubs the little environmentalist in me wrong. Not sure if anyone else feels that little bit of hypocritical emotion. Maybe it's just the awe factor of the asteroid projects.",
+        "score": 1,
+        "parent_id": "t3_1srj6ih",
+        "depth": 0,
+        "created_utc": 1776790668.0
+      },
+      {
+        "id": "ohh39ib",
+        "author": "snickers10m",
+        "body": "So many cards in this game are constructive / positive / awesome that the ones with a problematic side to their flavor stick out to me a bit.",
+        "score": 1,
+        "parent_id": "t1_ohh2wl2",
+        "depth": 1,
+        "created_utc": 1776790766.0
+      }
+    ]
+  },
+  {
+    "id": "1spot4o",
+    "title": "[COTD] Invention Contest | 19 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 18,
+    "num_comments": 10,
+    "created_utc": 1776592801.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1sotknf/cotd_giant_solar_shade_18_apr_2026/)\n\nToday's card is [Invention Contest](https://ensonc.com/terraformingmars/card-selection#192) (#192):\n\nEvent card (Red) | Corporate Era\n\nCost: 2 | Requirements: None | Tags: Science, Event\n\nLook at the top 3 cards from the deck. Take 1 into your hand and discard the rest.",
+    "permalink": "/r/TerraformingMarsGame/comments/1spot4o/cotd_invention_contest_19_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1spot4o/cotd_invention_contest_19_apr_2026/",
+    "comments": [
+      {
+        "id": "oh25ybw",
+        "author": "benbever",
+        "body": "Card draw is very important. This card is great mid game when played with a bit of (event) card discount and science tag synergy (Mars University/Olympus Conference).\n\nSome people play this gen 1 if they have “bad cards” but paying 5mc for 1 card usually doesn’t solve your bad start. I’d say this card is overrated as a start hand pick, but it’s still very good overall.",
+        "score": 11,
+        "parent_id": "t3_1spot4o",
+        "depth": 0,
+        "created_utc": 1776599170.0
+      },
+      {
+        "id": "oh2hjfy",
+        "author": "slim_muchacho",
+        "body": "To benbever’s point, card draw is important partly because it can get you cards like this for free, converting the cost of this card from 5 to 2 MC, making it a bargain even if you don’t have space/event/science discounts and synergy. As I have utilized card draw mechanics more with time I find I am playing this type of card more as they become worth it having received the card for free. ",
+        "score": 4,
+        "parent_id": "t1_oh25ybw",
+        "depth": 1,
+        "created_utc": 1776603670.0
+      },
+      {
+        "id": "oh29noy",
+        "author": "Enson_Chan",
+        "body": "It's a card I learned to love less than when I started playing TM. I used to overvalue it because of not knowing that the actual cost of this card is 5 and now I don't snap keep it as often unless I have at least one event or science synergy",
+        "score": 3,
+        "parent_id": "t1_oh25ybw",
+        "depth": 1,
+        "created_utc": 1776600722.0
+      },
+      {
+        "id": "oh2p45a",
+        "author": "Agreeable_Hat",
+        "body": "You're not paying 5 MC for 1 card, you're paying 5 MC to look at 3 cards and pick the best one.\n\nFor 2P B+P from https://www.tfmstats.com/startinghands it's up there among Business Contacts/Hired Raiders/Virus/etc.\n\nSure, ideally you don't play it gen 1, but you're selling it way short by saying you're paying 5 MC for 1 card",
+        "score": 3,
+        "parent_id": "t1_oh25ybw",
+        "depth": 1,
+        "created_utc": 1776606221.0
+      },
+      {
+        "id": "oh2s1l7",
+        "author": "benbever",
+        "body": "You’re paying up to 5mc for picking the best out of 3 randomly drawn cards. That’s much better than just drawing 1 card, but it’s still 5mc for 1 card.\n\nIn quantified value, a card draw is ~3mc and picking from an extra card is ~1mc, so Invention Contest (including card cost) should cost 3 + 1 + 1 = 5mc. Which is exactly on par.\n\nSince it also has a science tag, and can easily be played with discount/rebates/other effects, and since card draw can be very strong, this card is very good instead of average.\n\nThe only thing is that some people see it as a must pick and must play in gen 1. However 5mc is worth a lot in gen 1, and should be spent on income or maybe milestones, not yet on card draw.",
+        "score": 3,
+        "parent_id": "t1_oh2p45a",
+        "depth": 2,
+        "created_utc": 1776607149.0
+      },
+      {
+        "id": "oh45fbt",
+        "author": "Chance_Breakfast4848",
+        "body": "I think it's pretty close to a must pick in your opening hand. I'd only not take it if the 3mc to buy it delayed a production card that generation. \n\nOn the other hand, it's not a must play gen 1. If you've got efficient things to do anyway, and plan to spend down to under 10mc worth of resources, there's little point in playing it now instead of next gen as you are very unlikely to use the card it gives this gen, and you might get better synergy in the future.",
+        "score": 1,
+        "parent_id": "t1_oh2s1l7",
+        "depth": 3,
+        "created_utc": 1776621000.0
+      },
+      {
+        "id": "oh4bb9e",
+        "author": "benbever",
+        "body": "Opening hand pick depends on game setup and your game plan. If you’re playing engine in a 2 or 3 player game, then it’s definitely a keeper. If you’re Ecoline in a 4 player game, it’s better not to keep it.\n\nNote that this card is better in 2 player games, where there are more generations, more cards played per player (more synergy), but you’ll only see 7 different cards per draft round (4 of your own, and 3 from your opponent) instead of 10 different cards. So card drawing, and seeing more cards, becomes more valuable in 2 player.",
+        "score": 0,
+        "parent_id": "t1_oh45fbt",
+        "depth": 4,
+        "created_utc": 1776622622.0
+      },
+      {
+        "id": "oh3nwk8",
+        "author": "snickers10m",
+        "body": "I just wanna say I love all these little events that corporate era added. They really round out the expansion / give the game a whole new feel that the green and blue cards wouldn't have achieved alone.\n\nAdding some science events for triggering Mars University and Olympus Conference was also a great move.\n\nAll around well thought-out cards.",
+        "score": 4,
+        "parent_id": "t3_1spot4o",
+        "depth": 0,
+        "created_utc": 1776616298.0
+      },
+      {
+        "id": "oh9h6mz",
+        "author": "Haunting-Cow9376",
+        "body": "That's probably the card I misevaluate the most. I see a cost of 5mc for looking at three cards and picking one (so card neutral, I will not have more cards afterwards), of course it is fine with Mediagroup, Mars U or Olympus but otherwise I seem to undervalue it because the pros all seem to love it and I don't (doesn't mean I'm not playing it, just don't like it)",
+        "score": 1,
+        "parent_id": "t3_1spot4o",
+        "depth": 0,
+        "created_utc": 1776694191.0
+      },
+      {
+        "id": "ohds8jk",
+        "author": "thuswindburns",
+        "body": "I always draft, I just don’t play it right away and wait until I’ve played all the cards I want and need to do a gamble. It’s paid off waaay too many times for me to ignore when you get lucky with another science tag for warp drive/AGT or that last plant card you needed to get NRA down.",
+        "score": 1,
+        "parent_id": "t3_1spot4o",
+        "depth": 0,
+        "created_utc": 1776742679.0
+      }
+    ]
+  },
+  {
+    "id": "1sotknf",
+    "title": "[COTD] Giant Solar Shade | 18 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 14,
+    "num_comments": 3,
+    "created_utc": 1776506619.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1snwjs9/cotd_viron_17_apr_2026/)\n\nToday's card is [Giant Solar Shade](https://ensonc.com/terraformingmars/card-selection#229) (#229):\n\nAutomated card (Green) | Venus Next expansion\n\nCost: 27 | Requirements: None | Tags: Venus, Space\n\nRaise Venus 3 steps.",
+    "permalink": "/r/TerraformingMarsGame/comments/1sotknf/cotd_giant_solar_shade_18_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1sotknf/cotd_giant_solar_shade_18_apr_2026/",
+    "comments": [
+      {
+        "id": "ogvqtja",
+        "author": "cjeysen",
+        "body": "A bit weak in my opinion, only good if you manage to catch the TR bonus on venus track",
+        "score": 6,
+        "parent_id": "t3_1sotknf",
+        "depth": 0,
+        "created_utc": 1776512755.0
+      },
+      {
+        "id": "ogvlleh",
+        "author": "benbever",
+        "body": "27mc + 3mc card cost = 30mc is fair for 3TR. Not something you’d want to play early in 2 player, but decent late game, or in 4 player.\n\nSpace tag discounts, increased value titanium, Venus discounts, rebates and effects, and Milestones/Cards that require Venus tags or Venus track progress, can make this card pretty good instead of very average. Prelude 2 adds a bunch of Venus synergy.",
+        "score": 10,
+        "parent_id": "t3_1sotknf",
+        "depth": 0,
+        "created_utc": 1776510440.0
+      },
+      {
+        "id": "ogxmqbm",
+        "author": "thuswindburns",
+        "body": "It’s what you play on colonies when you already have massive TR and want to demoralize your opponents further.",
+        "score": 4,
+        "parent_id": "t3_1sotknf",
+        "depth": 0,
+        "created_utc": 1776534452.0
+      }
+    ]
+  },
+  {
+    "id": "1snwjs9",
+    "title": "[COTD] Viron | 17 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 20,
+    "num_comments": 23,
+    "created_utc": 1776420036.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1smz3se/cotd_floater_technology_16_apr_2026/)\n\nToday's corporation is [Viron](https://ensonc.com/terraformingmars/card-selection#CORP17):\n\nCorporation | Venus Next expansion\n\nTags: Microbe\n\nYou start with 48 MC.\n\nAction: Use a card action THAT HAS ALREADY BEEN USED THIS GENERATION.",
+    "permalink": "/r/TerraformingMarsGame/comments/1snwjs9/cotd_viron_17_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1snwjs9/cotd_viron_17_apr_2026/",
+    "comments": [
+      {
+        "id": "ogouxgw",
+        "author": "benbever",
+        "body": "Normally this a high start mc corporation (meaning flexible) with a fun action.\n\nHowever, with a few specific cards it can be really strong:\n\nAI Central: not 2 but 4(!) free cards every generation.\n\nFloating Trade Hub: not 2 but but 4 free floaters every generation. A floater can be worth a card, a titanium, 5mc etc.\n\nExtreme-Cold Fungus: not 2 but but 4 free microbes every generation.\n\nRed Ships: in 4 player, and especially 4 or 5 player on the larger map, Red Ships can give 10+ mc per generation by midgame. With Viron, that’s x2.\n\nAnd Viron is OP/Broken with Merger and Septem Tribus. You can get 12mc x 2 = 24mc income, starting generation 1, since it’s an action.\n\nA Viron player can also ruin games if they have World Government Advisor.\n\n\n\n",
+        "score": 16,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776423599.0
+      },
+      {
+        "id": "ogpjwni",
+        "author": "dmurr1415",
+        "body": "Extreme cold fungus is another great Viron good point",
+        "score": 7,
+        "parent_id": "t1_ogouxgw",
+        "depth": 1,
+        "created_utc": 1776432330.0
+      },
+      {
+        "id": "ogskued",
+        "author": "Feathercrown",
+        "body": "Isn't WGA a prelude? I thought viron could only repeat actions on blue cards?",
+        "score": 3,
+        "parent_id": "t1_ogouxgw",
+        "depth": 1,
+        "created_utc": 1776463172.0
+      },
+      {
+        "id": "ogv6c2t",
+        "author": "benbever",
+        "body": "The game creator ruled that Viron can also use actions on Corporations and Preludes.\n\nThis ruling is like an errata, although no official errata has been issued for Viron.\n\nIt could also be interpreted as cards with an action (the blue box) count as blue cards, not just blue project cards, but also corporations and preludes. Another ruling years later however stated that blue cards only includes project cards.",
+        "score": 4,
+        "parent_id": "t1_ogskued",
+        "depth": 2,
+        "created_utc": 1776502254.0
+      },
+      {
+        "id": "ogvdzt3",
+        "author": "Enson_Chan",
+        "body": "This is why I removed the \"blue card\" text on the COTD",
+        "score": 2,
+        "parent_id": "t1_ogv6c2t",
+        "depth": 3,
+        "created_utc": 1776506556.0
+      },
+      {
+        "id": "ogvktag",
+        "author": "benbever",
+        "body": "You removed the “blue” but you also removed the “card” text.\n\nViron can take a card action that has been used.\n\nIt can not do for instance the Scientist Ruling Policy action again. Only card actions.",
+        "score": 2,
+        "parent_id": "t1_ogvdzt3",
+        "depth": 4,
+        "created_utc": 1776510073.0
+      },
+      {
+        "id": "oh1ti98",
+        "author": "Enson_Chan",
+        "body": "Good point and changed, thanks",
+        "score": 3,
+        "parent_id": "t1_ogvktag",
+        "depth": 5,
+        "created_utc": 1776593018.0
+      },
+      {
+        "id": "ogouydm",
+        "author": "Suspicious_Store_800",
+        "body": "I love Viron tbh. Obviously you need a usable blue in your start hand, but it creates interesting new priorities and strategy. I've seen someone get 12 Power production and Physics complex with this.\n\nPerfect corp design - Simple, has potential to do some great things, but mainly just shifts and revalues some cards to create new dynamics.",
+        "score": 10,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776423610.0
+      },
+      {
+        "id": "oguz84n",
+        "author": "splitalterego",
+        "body": "When this company first came out I was so excited to play it. The only action I had was underground dets...it did not end well.",
+        "score": 5,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776498322.0
+      },
+      {
+        "id": "ogoy58n",
+        "author": "mvBommel1974",
+        "body": "Always confuse this with Vitor",
+        "score": 5,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776424916.0
+      },
+      {
+        "id": "ogpntn4",
+        "author": "The-University",
+        "body": "Further to the above AI central played 1st turn was a game that wasn't close.\nI am surprised no one has mentioned the ultimate Viron combo - a Merger with Septum. 24 MC a gen simply wins the game. This is the only interaction we have banned at our table. \nAll in all a card with a low floor and the highest ceiling. Point Luna is better on average, but I'd take this with a 1st turn AI against anything.",
+        "score": 4,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776433503.0
+      },
+      {
+        "id": "ogq5hur",
+        "author": "benbever",
+        "body": "I mentioned the Merger Viron combo 3 hours before your post, and noted it was the one truly OP/broken combo with it.\n\nBecause 24mc (sometimes a few mc less) in gen 1, and then 24mc in gen 2 and so on is just insane. Normally Septem Tribus is balanced in that your delegates are all spread out, and you have to pay (early) mc to get them on the board. But with 24mc/gen, none of that matters.",
+        "score": 2,
+        "parent_id": "t1_ogpntn4",
+        "depth": 1,
+        "created_utc": 1776438434.0
+      },
+      {
+        "id": "ogrnsf9",
+        "author": "The-University",
+        "body": "Sorry i did not see you mention it.",
+        "score": 2,
+        "parent_id": "t1_ogq5hur",
+        "depth": 2,
+        "created_utc": 1776453340.0
+      },
+      {
+        "id": "ogoog7v",
+        "author": "Mitnichar",
+        "body": "If Zoo is in starting hand, snowballing can happen pretty fast. If Miranda is also available it's OP.",
+        "score": 7,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776420651.0
+      },
+      {
+        "id": "ogor7ak",
+        "author": "Insanitarius-",
+        "body": "I'm assuming you mean [[Martian Zoo]] but the problem with that card is that some games it comes online so late if no one is building cities.\n\nPersonally, huge fan of [[AI Central]] and [[Venus Orbital Station]] with this corp.",
+        "score": 10,
+        "parent_id": "t1_ogoog7v",
+        "depth": 1,
+        "created_utc": 1776421965.0
+      },
+      {
+        "id": "ogor8fk",
+        "author": "AReallyGoodName",
+        "body": "Card: **[Martian ZOO](https://ssimeonoff.github.io/cards-list#C24)**\n\nCost: 12MC\n\nDescription: Effect: When you play an Earth tag, place an animal here. Action: Gain 1MC per animal here. Requires 2 city tiles in play. 1 VP.\n\nTags: Building, Animal\n\n----\n\nCard: **[AI Central](https://ssimeonoff.github.io/cards-list#208)**\n\nCost: 21MC\n\nDescription: Action: Draw 2 cards. Requires 3 Science tags to play. Decrease your Energy production 1 step. 1 VP.\n\nTags: Building, Science\n\n----\n\nCard: **Venus Orbital Survey**\n\nCost: 18MC\n\nDescription: Action: Reveal the top 2 cards\n\nTags: Take Any Venus Cards To Hand For Free. Any Other Card You May Either Buy Or Discard.",
+        "score": 4,
+        "parent_id": "t1_ogor7ak",
+        "depth": 2,
+        "created_utc": 1776421979.0
+      },
+      {
+        "id": "ogorv4o",
+        "author": "Enson_Chan",
+        "body": "Yea [Martian Zoo](https://ensonc.com/terraformingmars/card-selection#C24) (which is what I assume as well) is very difficult to get played early if your opponents are good as well. It heavily depends on whether an opponent plays Tharsis Republic or someone wants to play towards Mayor\n\n[Orbital Cleanup](https://ensonc.com/terraformingmars/card-selection#X08) is a good mid to late game target as well if you have a good science engine",
+        "score": 4,
+        "parent_id": "t1_ogor7ak",
+        "depth": 2,
+        "created_utc": 1776422266.0
+      },
+      {
+        "id": "oh4kl6f",
+        "author": "SnooDoodles2957",
+        "body": "I got Viron with Physics Complex out fairly early on once.  ",
+        "score": 1,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776625281.0
+      },
+      {
+        "id": "ogov9ri",
+        "author": "dmurr1415",
+        "body": "You do get a lot of starter money. The dream of course is Ai central or Martian rails but most of the time you’re going to be using a mediocre blue card. \n\nI’d say above average corporation\n",
+        "score": -1,
+        "parent_id": "t3_1snwjs9",
+        "depth": 0,
+        "created_utc": 1776423743.0
+      },
+      {
+        "id": "ogpf0as",
+        "author": "cafe_brutale",
+        "body": "Maybe the meta in your play group revolves around building cities but generally speaking Martian Rails is at best a very mediocre card, if even that. City building especially early on is far from cost-effective.\n\nAI Central though would obviously be the perfect combo with Viron.",
+        "score": 8,
+        "parent_id": "t1_ogov9ri",
+        "depth": 1,
+        "created_utc": 1776430832.0
+      },
+      {
+        "id": "ogq5z3r",
+        "author": "benbever",
+        "body": "Depends on player count and setup. A 4 player game with Tharsis and Ecoline can see a lot of cities! AI Central isn’t that hot in a 6 generation TR rush game.",
+        "score": 3,
+        "parent_id": "t1_ogpf0as",
+        "depth": 2,
+        "created_utc": 1776438564.0
+      },
+      {
+        "id": "ogv3729",
+        "author": "cafe_brutale",
+        "body": "There is little reason for anyone to be spamming cities to the extent where Martial Rails would become a good card. But just like many cards in this game, with the right circumstances it can be good. Still doesn't make it a very good pair with Viron because chances are it's not going to be worth playing.",
+        "score": 1,
+        "parent_id": "t1_ogq5z3r",
+        "depth": 3,
+        "created_utc": 1776500484.0
+      },
+      {
+        "id": "ogv48gr",
+        "author": "benbever",
+        "body": "Some 4 player games turn into 8 or 9 gen ground games, with 10 or even more cities on Mars. In those games, Martian Rails is very playable. And, late game, 10mc/action is a nice use for Viron. Not saying it’s a top tier combo or anything (Martian rails action requires an energy, and only counts cities on Mars) but it can be good.\n\nIt can even be very good if you’re for instance Tharsis in a 4 player game on Amazonis Planitia (the bigger map) but that’s a rare setup.\n\n",
+        "score": 3,
+        "parent_id": "t1_ogv3729",
+        "depth": 4,
+        "created_utc": 1776501071.0
+      }
+    ]
+  },
+  {
+    "id": "1smz3se",
+    "title": "[COTD] Floater Technology | 16 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 14,
+    "num_comments": 10,
+    "created_utc": 1776333730.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1sm1moq/cotd_trading_colony_15_apr_2026/)\n\nToday's card is [Floater Technology](https://ensonc.com/terraformingmars/card-selection#C12) (#C12):\n\nActive card (Blue) | Colonies expansion\n\nCost: 7 | Requirements: None | Tags: Science\n\nAction: Add 1 floater TO ANOTHER CARD.",
+    "permalink": "/r/TerraformingMarsGame/comments/1smz3se/cotd_floater_technology_16_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1smz3se/cotd_floater_technology_16_apr_2026/",
+    "comments": [
+      {
+        "id": "oght2bz",
+        "author": "benbever",
+        "body": "Very good if it means you can play your next science tree card AND you can use the floater for a strong floater card.\n\nPretty good if played early for the floater OR science tag.\n\nPretty useless if you don’t need science tags and can’t use the floater.\n\n",
+        "score": 12,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776334776.0
+      },
+      {
+        "id": "oghsi6l",
+        "author": "cjeysen",
+        "body": "It adds floater",
+        "score": 8,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776334504.0
+      },
+      {
+        "id": "ogivp9s",
+        "author": "Asand1r",
+        "body": "Hell yea!",
+        "score": 2,
+        "parent_id": "t1_oghsi6l",
+        "depth": 1,
+        "created_utc": 1776348426.0
+      },
+      {
+        "id": "ogi3n7w",
+        "author": "UselessM-13",
+        "body": "Absolute floaters",
+        "score": 1,
+        "parent_id": "t1_oghsi6l",
+        "depth": 1,
+        "created_utc": 1776339312.0
+      },
+      {
+        "id": "ogiox47",
+        "author": "Blackgaze",
+        "body": "but... what does it do!?",
+        "score": 1,
+        "parent_id": "t1_oghsi6l",
+        "depth": 1,
+        "created_utc": 1776346448.0
+      },
+      {
+        "id": "ogi207f",
+        "author": "mvBommel1974",
+        "body": "Good for floaters \n\nCan be useful for the science tag\n\nThat’s it",
+        "score": 4,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776338666.0
+      },
+      {
+        "id": "oghuovx",
+        "author": "baldsoprano",
+        "body": "Cheap requirement free science tag. Much better if you got something to feed floaters to",
+        "score": 3,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776335541.0
+      },
+      {
+        "id": "ogk0fle",
+        "author": "Chance_Breakfast4848",
+        "body": "It's undercosted floaters, and thus is very good if you have a reasonable target. The science tag is nice too. A high priority draft if the science tag and floaters are both visibly useful, otherwise medium to low priority.",
+        "score": 2,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776359318.0
+      },
+      {
+        "id": "ogjnndn",
+        "author": "FloaterRD",
+        "body": "Floater",
+        "score": 1,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776355922.0
+      },
+      {
+        "id": "ogjxig7",
+        "author": "nanitesoldier",
+        "body": "Can be really good sometimes or complete unplayable ",
+        "score": 1,
+        "parent_id": "t3_1smz3se",
+        "depth": 0,
+        "created_utc": 1776358551.0
+      }
+    ]
+  },
+  {
+    "id": "1sm1moq",
+    "title": "[COTD] Trading Colony | 15 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 18,
+    "num_comments": 5,
+    "created_utc": 1776247334.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1sl4bc7/cotd_comet_for_venus_14_apr_2026/)\n\nToday's card is [Trading Colony](https://ensonc.com/terraformingmars/card-selection#C47) (#C47):\n\nActive card (Blue) | Colonies expansion\n\nCost: 18 | Requirements: None | Tags: Space\n\nEffect: When you trade, you may first increase that colony tile track 1 step.\n\nPlace 1 colony.",
+    "permalink": "/r/TerraformingMarsGame/comments/1sm1moq/cotd_trading_colony_15_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1sm1moq/cotd_trading_colony_15_apr_2026/",
+    "comments": [
+      {
+        "id": "ogbip6j",
+        "author": "baldsoprano",
+        "body": "Solid Card. Boost the amazing the trading action. And on the colony you place you’ve effectively boosted it twice. Early/Mid Game high draft priority. Late game only if you’ve got a colony multiplier and/or heavy space discounts. ",
+        "score": 3,
+        "parent_id": "t3_1sm1moq",
+        "depth": 0,
+        "created_utc": 1776257783.0
+      },
+      {
+        "id": "ogbivz2",
+        "author": "thuswindburns",
+        "body": "Idk if it’s the best colonies card but the most fun to play.",
+        "score": 3,
+        "parent_id": "t3_1sm1moq",
+        "depth": 0,
+        "created_utc": 1776257843.0
+      },
+      {
+        "id": "ogcej05",
+        "author": "benbever",
+        "body": "Very good, you get an effect that’s worth 1 colony step every time you trade. It’s often worth 3mc, 2 steel, 1 titanium, 1 card, 1 animal etc. about 3 in value per trade.\n\nWith 2 trade fleets you can double this, which can be part of very strong Colonies synergy.\n\nAnd the card (18mc + 3mc card cost) is only 4mc more than SP Colony. As a free draw and/or with card/space tag discounts it can even be cheaper.",
+        "score": 3,
+        "parent_id": "t3_1sm1moq",
+        "depth": 0,
+        "created_utc": 1776266890.0
+      },
+      {
+        "id": "oggj2v0",
+        "author": "Feathercrown",
+        "body": "Strong card, lets you use titanium to place a colony and you get a track increaser too, all for only $1 more (or $4 more counting buying the card itself). I will always pick this up if there's no other amazing card in the draft.",
+        "score": 2,
+        "parent_id": "t3_1sm1moq",
+        "depth": 0,
+        "created_utc": 1776311897.0
+      },
+      {
+        "id": "ogc17dl",
+        "author": "mvBommel1974",
+        "body": "Great if you get it early",
+        "score": 1,
+        "parent_id": "t3_1sm1moq",
+        "depth": 0,
+        "created_utc": 1776263287.0
+      }
+    ]
+  },
+  {
+    "id": "1sl4bc7",
+    "title": "[COTD] Comet for Venus | 14 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 10,
+    "num_comments": 9,
+    "created_utc": 1776161135.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1sjag69/cotd_research_colony_12_apr_2026/)\n\nToday's card is [Comet for Venus](https://ensonc.com/terraformingmars/card-selection#218) (#218):\n\nEvent card (Red) | Venus Next expansion\n\nCost: 11 | Requirements: None | Tags: Space, Event\n\nRaise Venus 1 step. Remove up to 4 MC from any player WITH VENUS TAG(S) IN PLAY.",
+    "permalink": "/r/TerraformingMarsGame/comments/1sl4bc7/cotd_comet_for_venus_14_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1sl4bc7/cotd_comet_for_venus_14_apr_2026/",
+    "comments": [
+      {
+        "id": "og4bipz",
+        "author": "baldsoprano",
+        "body": "In case you already didn’t want to play Venus cards, here’s a card that punishes you for playing Venus cards",
+        "score": 9,
+        "parent_id": "t3_1sl4bc7",
+        "depth": 0,
+        "created_utc": 1776169416.0
+      },
+      {
+        "id": "og59xqs",
+        "author": "rhou17",
+        "body": "Certainly not unplayable, but very limited when you’d want it. You either have too much titanium later in the game, or someone’s pulling ahead enough to value taking their money away, *but* playing this doesn’t risk giving someone with venus tags the threshold for a good venus card earlier.",
+        "score": 3,
+        "parent_id": "t3_1sl4bc7",
+        "depth": 0,
+        "created_utc": 1776179625.0
+      },
+      {
+        "id": "og7jzw0",
+        "author": "baldsoprano",
+        "body": "It’s fine enough in certain circumstances, but I can’t imagine drafting this unless:\n\n1) I’m trying to get Venus up quick for Birds or Venus Animals \n2) got great engine synergy with space/event cards and/or Venus raising\n3) need a last turn titanium dump",
+        "score": 5,
+        "parent_id": "t1_og59xqs",
+        "depth": 1,
+        "created_utc": 1776201421.0
+      },
+      {
+        "id": "og57c6v",
+        "author": "warpspeed100",
+        "body": "I would really love a 2nd edition of the Venus Next expansion to fix mistakes like this.",
+        "score": 2,
+        "parent_id": "t3_1sl4bc7",
+        "depth": 0,
+        "created_utc": 1776178922.0
+      },
+      {
+        "id": "og6mthn",
+        "author": "thuswindburns",
+        "body": "I don’t like Venus tags and I don’t like this card",
+        "score": 2,
+        "parent_id": "t3_1sl4bc7",
+        "depth": 0,
+        "created_utc": 1776192599.0
+      },
+      {
+        "id": "oggic2t",
+        "author": "Feathercrown",
+        "body": "It's aight. Sucks to have ONE tag and be hit with this.",
+        "score": 1,
+        "parent_id": "t3_1sl4bc7",
+        "depth": 0,
+        "created_utc": 1776311592.0
+      },
+      {
+        "id": "og54r5v",
+        "author": "Enter_Octopus",
+        "body": "This expansion isn't on BGA so I've only played with Venus in a few in-person games.\n\nThis card seems very bad?",
+        "score": 1,
+        "parent_id": "t3_1sl4bc7",
+        "depth": 0,
+        "created_utc": 1776178229.0
+      },
+      {
+        "id": "og7j4w8",
+        "author": "baldsoprano",
+        "body": "Because it is",
+        "score": 3,
+        "parent_id": "t1_og54r5v",
+        "depth": 1,
+        "created_utc": 1776201178.0
+      },
+      {
+        "id": "ogc1dj8",
+        "author": "mvBommel1974",
+        "body": "This is really only a titanium dump or playable with discounts.",
+        "score": 4,
+        "parent_id": "t1_og7j4w8",
+        "depth": 2,
+        "created_utc": 1776263334.0
+      }
+    ]
+  },
+  {
+    "id": "1sjag69",
+    "title": "[COTD] Research Colony | 12 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 18,
+    "num_comments": 6,
+    "created_utc": 1775988095.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1siezt4/cotd_zeppelins_11_apr_2026/)\n\nToday's card is [Research Colony](https://ensonc.com/terraformingmars/card-selection#C34) (#C34):\n\nAutomated card (Green) | Colonies expansion\n\nCost: 20 | Requirements: None | Tags: Science, Space\n\nPlace a colony. IT MAY BE PLACED ON A COLONY TILE WHERE YOU ALREADY HAVE A COLONY. Draw 2 cards.",
+    "permalink": "/r/TerraformingMarsGame/comments/1sjag69/cotd_research_colony_12_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1sjag69/cotd_research_colony_12_apr_2026/",
+    "comments": [
+      {
+        "id": "ofq5f3i",
+        "author": "cjeysen",
+        "body": "This is my colony now",
+        "score": 9,
+        "parent_id": "t3_1sjag69",
+        "depth": 0,
+        "created_utc": 1775988343.0
+      },
+      {
+        "id": "ofqaiqs",
+        "author": "SiLaw9",
+        "body": "One of my all time favourite",
+        "score": 5,
+        "parent_id": "t3_1sjag69",
+        "depth": 0,
+        "created_utc": 1775990909.0
+      },
+      {
+        "id": "ofqmd1p",
+        "author": "baldsoprano",
+        "body": "Double dipping on a colony is amazing. The sooner the better, but due to tags I find this still tastes playable in the mid game",
+        "score": 5,
+        "parent_id": "t3_1sjag69",
+        "depth": 0,
+        "created_utc": 1775996064.0
+      },
+      {
+        "id": "ofqbe4e",
+        "author": "SuddenInjury9027",
+        "body": "Great card 2 relevant tags you can pay with titanium and a second coloney is realy good a lot of the time. All of that for just 6 more credits then a sp",
+        "score": 3,
+        "parent_id": "t3_1sjag69",
+        "depth": 0,
+        "created_utc": 1775991321.0
+      },
+      {
+        "id": "oftnroh",
+        "author": "Tharkun2019",
+        "body": "I love this card, it has value even if you do not have titanium.  +2 cards/science tag.  ",
+        "score": 3,
+        "parent_id": "t3_1sjag69",
+        "depth": 0,
+        "created_utc": 1776028225.0
+      },
+      {
+        "id": "ofq8eqi",
+        "author": "dfinberg",
+        "body": "Very strong if any of the powerful colonies are in. Gets weaker after turn 1 or even late in the turn order on 1 since it can be hard to grab two slots, but a colony for titanium is still good.",
+        "score": 3,
+        "parent_id": "t3_1sjag69",
+        "depth": 0,
+        "created_utc": 1775989876.0
+      }
+    ]
+  },
+  {
+    "id": "1siezt4",
+    "title": "[COTD] Zeppelins | 11 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 11,
+    "num_comments": 7,
+    "created_utc": 1775901689.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1shi69y/cotd_cartel_10_apr_2026/)\n\nToday's card is [Zeppelins](https://ensonc.com/terraformingmars/card-selection#129) (#129):\n\nAutomated card (Green) | Base game\n\nCost: 13 | Requirements: 5% oxygen | Tags: None\n\nIncrease your MC production 1 step for each city tile ON MARS. 1 VP",
+    "permalink": "/r/TerraformingMarsGame/comments/1siezt4/cotd_zeppelins_11_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1siezt4/cotd_zeppelins_11_apr_2026/",
+    "comments": [
+      {
+        "id": "ofk9dk4",
+        "author": "Reason-and-rhyme",
+        "body": "even in the \"flipping banker\" category this falls below toll station, satellites and even insulation in most games. a classic noob trap card tbh.",
+        "score": 7,
+        "parent_id": "t3_1siezt4",
+        "depth": 0,
+        "created_utc": 1775912231.0
+      },
+      {
+        "id": "ofl1zqd",
+        "author": "Virtual_Ad5748",
+        "body": "Funny you should say that. We played it fairly often when we started, but I can’t remember the last time I saw it played. Usually something better to play. ",
+        "score": 4,
+        "parent_id": "t1_ofk9dk4",
+        "depth": 1,
+        "created_utc": 1775921196.0
+      },
+      {
+        "id": "ofjpjl8",
+        "author": "Enter_Octopus",
+        "body": "In 2 player this is perhaps one of the most useless cards in the game. Which is too bad, because zeppelins are sick and the idea of Mars airships is awesome.\n\nI suppose it could be useful in a high player count game with lots of city builders, but even then, the 5% oxygen requirement just makes it even more awkward to use effectively.",
+        "score": 12,
+        "parent_id": "t3_1siezt4",
+        "depth": 0,
+        "created_utc": 1775904181.0
+      },
+      {
+        "id": "ofls316",
+        "author": "warpspeed100",
+        "body": "This is a strange card. It has so many requirements (min O2 and ON MARS) but the reward is very mediocre and situational. \n\nIt would need to provide an ongoing city placement effect for the design to work better.",
+        "score": 5,
+        "parent_id": "t3_1siezt4",
+        "depth": 0,
+        "created_utc": 1775928658.0
+      },
+      {
+        "id": "ofjpgb0",
+        "author": "Drowsy_Forest",
+        "body": "ive played this card maybe once, but I probably would never draft it \n\nIn a banker game against tharsis republic i may hate draft it but for the most part I dont think the card is worth the paper its printed on",
+        "score": 8,
+        "parent_id": "t3_1siezt4",
+        "depth": 0,
+        "created_utc": 1775904136.0
+      },
+      {
+        "id": "ofjufm6",
+        "author": "mvBommel1974",
+        "body": "Can be good if somehow there are lots of cities and it isn’t last gen.\n\nOrherwise nah",
+        "score": 3,
+        "parent_id": "t3_1siezt4",
+        "depth": 0,
+        "created_utc": 1775906448.0
+      },
+      {
+        "id": "ofpk006",
+        "author": "Feathercrown",
+        "body": "Underwhelming, usually before the last gen or two there aren't a lot of cities on mars, and by that point the money prod isn't very useful. And you can't even capitalize on early cities because of the oxygen requirement.",
+        "score": 2,
+        "parent_id": "t3_1siezt4",
+        "depth": 0,
+        "created_utc": 1775977176.0
+      }
+    ]
+  },
+  {
+    "id": "1shi69y",
+    "title": "[COTD] Cartel | 10 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 21,
+    "num_comments": 7,
+    "created_utc": 1775815255.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1sglaw4/cotd_ecological_zone_9_apr_2026/)\n\nToday's card is [Cartel](https://ensonc.com/terraformingmars/card-selection#137) (#137):\n\nAutomated card (Green) | Corporate Era\n\nCost: 8 | Requirements: None | Tags: Earth\n\nIncrease your MC production 1 step for each Earth tag you have, including this.",
+    "permalink": "/r/TerraformingMarsGame/comments/1shi69y/cotd_cartel_10_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1shi69y/cotd_cartel_10_apr_2026/",
+    "comments": [
+      {
+        "id": "ofcvjlv",
+        "author": "Enter_Octopus",
+        "body": "Having just two Earth tags in play makes this a strictly better Acquired Company (a decent card), so yeah it can range from good to nuts.",
+        "score": 14,
+        "parent_id": "t3_1shi69y",
+        "depth": 0,
+        "created_utc": 1775818101.0
+      },
+      {
+        "id": "ofcraqt",
+        "author": "Mario_Is_Perfect",
+        "body": "Oh wow, more profit from playing the best tag in the game? Tell me more!\n\nPersonally ranges from high B to middle-of-the-road A in ranking; unless it’s very late in the game, you’ll always be happy to play this, and even with 3+ earth tags in play you’ll have a relatively quick ROI",
+        "score": 8,
+        "parent_id": "t3_1shi69y",
+        "depth": 0,
+        "created_utc": 1775816096.0
+      },
+      {
+        "id": "ofdic2h",
+        "author": "mvBommel1974",
+        "body": "Not the best tag in the game imo but very useful and a very good card anyway.",
+        "score": 5,
+        "parent_id": "t1_ofcraqt",
+        "depth": 1,
+        "created_utc": 1775826414.0
+      },
+      {
+        "id": "ofcxudx",
+        "author": "benbever",
+        "body": "You need only 1 other Earth tag, commonly found on corporations and preludes, to make this worth playing in generation 1. (8 + 3mc card cost = 11mc for 2 mc production, which is (barely) worth it most setups).\n\nWith some discount or 2 other Earth tags, Cartel becomes pretty good. And with 3+ other Earth tags early game, which isn’t uncommon, Cartel is great value for money.\n\nGreat with Point Luna. Very strong in games with promo cards. Can also help win Banker Award.",
+        "score": 8,
+        "parent_id": "t3_1shi69y",
+        "depth": 0,
+        "created_utc": 1775819088.0
+      },
+      {
+        "id": "ofdeswx",
+        "author": "KeepOnJumpin",
+        "body": "just came here to say it's ok for this card to give you 3-5 mc prod instead of waiting a truckload of gens for a massive payoff.",
+        "score": 7,
+        "parent_id": "t3_1shi69y",
+        "depth": 0,
+        "created_utc": 1775825303.0
+      },
+      {
+        "id": "ofh9cda",
+        "author": "maybeMathProf",
+        "body": "Just played this yesterday with 5 tags! It was a great game ",
+        "score": 3,
+        "parent_id": "t3_1shi69y",
+        "depth": 0,
+        "created_utc": 1775864933.0
+      },
+      {
+        "id": "ofhy2hv",
+        "author": "Feathercrown",
+        "body": "Gotta be a top 20 card in the entire game",
+        "score": 2,
+        "parent_id": "t3_1shi69y",
+        "depth": 0,
+        "created_utc": 1775873724.0
+      }
+    ]
+  },
+  {
+    "id": "1sglaw4",
+    "title": "[COTD] Ecological Zone | 9 Apr, 2026",
+    "author": "Enson_Chan",
+    "score": 20,
+    "num_comments": 6,
+    "created_utc": 1775728837.0,
+    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/comments/1sfogr9/cotd_soil_enrichment_8_apr_2026/)\n\nToday's card is [Ecological Zone](https://ensonc.com/terraformingmars/card-selection#128) (#128):\n\nActive card (Blue) | Base game\n\nCost: 12 | Requirements: 1 greenery tile | Tags: Plant, Animal\n\nEffect: When you play a plant or an animal tag, including these, add 1 animal to this card.\n\nPlace the Ecological Zone tile ADJACENT TO ANY GREENERY TILE. 1 VP per 2 animals on this card.",
+    "permalink": "/r/TerraformingMarsGame/comments/1sglaw4/cotd_ecological_zone_9_apr_2026/",
+    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1sglaw4/cotd_ecological_zone_9_apr_2026/",
+    "comments": [
+      {
+        "id": "of5wwbd",
+        "author": "Enter_Octopus",
+        "body": "One of my favorite cards!\n\nGreat point potential, one of the first animal resource cards you can typically play, and a nice tile with pretty flexible placement? Sign me up!",
+        "score": 13,
+        "parent_id": "t3_1sglaw4",
+        "depth": 0,
+        "created_utc": 1775731598.0
+      },
+      {
+        "id": "of624u6",
+        "author": "makute",
+        "body": "My dislexic ass read that as \"Dead Ecological Zone\" and triggered my ptsd :D",
+        "score": 3,
+        "parent_id": "t3_1sglaw4",
+        "depth": 0,
+        "created_utc": 1775733788.0
+      },
+      {
+        "id": "of68lbu",
+        "author": "baldsoprano",
+        "body": "A low key attack card that pays for itself most games. Unless very late game, this is a great value",
+        "score": 2,
+        "parent_id": "t3_1sglaw4",
+        "depth": 0,
+        "created_utc": 1775736232.0
+      },
+      {
+        "id": "of7v7nx",
+        "author": "AndyShootsAndScores",
+        "body": "Good on its own early-mid game, and extremely powerful if coupled with Meat Industries.\n\nHigh draft priority. Might not buy it if I'm not likely to make a greenery anytime soon, but def don't want my opponents to have it.",
+        "score": 2,
+        "parent_id": "t3_1sglaw4",
+        "depth": 0,
+        "created_utc": 1775753040.0
+      },
+      {
+        "id": "of7xktw",
+        "author": "Chance_Breakfast4848",
+        "body": "Top tier card. Possibly a top 10 card in 2p base + prelude, nearly always a snap pick from any draft. On a bad day, this card will give about 2 points and a tile placement. On a good day, it's more like 5vp (or more) which is crazy good. The bio cards are always a very strong point outlet, and this is one of the best, on par with things like viral, decomposers, kelp, insects, and NRA.\n\nBecause most of the bio stuff come online kind of late, it's still often worth several points even in the last couple of gens. I will buy this out of draft on most final generations.\n\nIt's also very good at flipping diversifier on hellas with 2 hard to get early tags, and farmer+agronmist on varsitas.",
+        "score": 2,
+        "parent_id": "t3_1sglaw4",
+        "depth": 0,
+        "created_utc": 1775753662.0
+      },
+      {
+        "id": "of695al",
+        "author": "mvBommel1974",
+        "body": "Pretty good",
+        "score": 1,
+        "parent_id": "t3_1sglaw4",
+        "depth": 0,
+        "created_utc": 1775736429.0
+      }
+    ]
+  },
+  {
     "id": "1sfogr9",
     "title": "[COTD] Soil Enrichment | 8 Apr, 2026",
     "author": "Enson_Chan",
@@ -5820,983 +6845,6 @@
         "author": "FieldMouse007",
         "score": 3,
         "body": "Situational card\n\n\n\nIf it wasn't for the requirement the card would be good - excellent steel dump (great if steel colony is in the game), draws many cards, gives one point, good if you need to amass building tags.\n\n\n\nBut the requirement is a problem. You want to play this early/mid game as many of the building tagged cards give some sort of income and tend to be worse lategame.. but having a city built next to an ocean is a hoop to jump through.\n\n  \nEven though the ceiling is pretty high - you can get some combos like AI central + energy source + science tag or other powerful effects - the card does not seem to be overly strong as the requirement is harsh and the effect is still a gamble. But if I happen to have the city next to an ocean and some steel to spare I'd have no problem drafting this.",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1ncexbi",
-    "title": "[COTD] Spire | 9 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 24,
-    "num_comments": 14,
-    "created_utc": 1757412660.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/1LJOhOSJKq)\n\nYou may slay this if you want to. Today's card is [Spire](https://ssimeonoff.github.io/cards-list#CORP44):\n\nCorporation | Prelude 2 expansion\n\nTags: City, Earth\n\nYou start with 50 MC. As your first action, draw 4 cards, then discard 3 cards from your hand.\n\nEffect: When you play a card WITH AT LEAST 2 TAGS, including this, add 1 science resource here. When you pay for a standard project, science resources here may be used as 2 MC each.\n\nNote: Links and card images for Prelude 2 cards may not work as expected or be correct. For the accurate card information, please refer to the text above",
-    "permalink": "/r/TerraformingMarsGame/comments/1ncexbi/cotd_spire_9_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1ncexbi/cotd_spire_9_sept_2025/",
-    "comments": [
-      {
-        "author": "fuzzyplastic",
-        "score": 15,
-        "body": "This corp has been really fun and powerful in our games. It has great starting cash and a nice mulligan ability to help optimize your start. A LOT of cards have &gt;=2 tags and so the corp is very flexible.",
-        "depth": 0
-      },
-      {
-        "author": "MoistDingleSack",
-        "score": 7,
-        "body": "Do event tags count?",
-        "depth": 0
-      },
-      {
-        "author": "Enson_Chan",
-        "score": 12,
-        "body": "They count, so space events would trigger Spire\n\nThere's a post some time ago asking this question: https://www.reddit.com/r/TerraformingMarsGame/s/Kr2HoByPRD",
-        "depth": 1
-      },
-      {
-        "author": "GreatWhiteSalmon",
-        "score": 2,
-        "body": "This jumped up its playability and corp effect for me. Much more attractive option now for a long term game plan.",
-        "depth": 2
-      },
-      {
-        "author": "Brave-Elevator4365",
-        "score": 9,
-        "body": "It just says \"tags\", so the assumption I have always made when playing with it is that they do",
-        "depth": 1
-      },
-      {
-        "author": "snakelauncher",
-        "score": 5,
-        "body": "yeah but remember (in the case where you play with some fanmade cards for spire, but it's always usefull to know for sagitta) that \"wild tag\" is not a tag",
-        "depth": 2
-      },
-      {
-        "author": "icehawk84",
-        "score": 6,
-        "body": "It's a decent corp. Starting cash matters a lot, and this is above average on that front. The ability to look at 4 cards should also not be slept on.",
-        "depth": 0
-      },
-      {
-        "author": "benbever",
-        "score": 6,
-        "body": "Strong corporation, and fun to play.\n\n50mc starting cash is a lot, and it gives this corp a lot of flexibility.\n\nThe first action effect is very strong. It’s draw 4 discard 3, but you can discard from your hand, so it’s a good idea to buy a few extra cards in your start hand in case you draw more than one great card from the first action. Good synergy with the large amount of start mc.\n\nAn Earth tag is very useful and can be very strong with a few cards. The city tag is good for a few milestones, like Diversifier or the 3 city tag milestone.\n\nThe effect (2mc to spend on standard projects for each card with 2 or more tags you play) isn’t very strong, but it can still add up to about 2 greeneries or oceans or 3 temperature, or maybe an energy production when you need it. And these 2 mc resources come naturally, because, often, cards with 2 or more tags are very good. Most event cards already have 2 tags. The effect can be a strong combo with Standard Technology and/or Merger+Credicor or other cards that discount standard projects.",
-        "depth": 0
-      },
-      {
-        "author": "charliec247",
-        "score": 3,
-        "body": "I played this once. Got 26 resources onto Spire, which converted into 2 greeneries and a power prod (early game boost to enable colony trading iirc). This corp is very good.",
-        "depth": 0
-      },
-      {
-        "author": "Dokurushi",
-        "score": 4,
-        "body": "I think this is the only city tagged card that doesn't place a city.",
-        "depth": 0
-      },
-      {
-        "author": "Blackgaze",
-        "score": 5,
-        "body": "Because you're going to buy one eventually with the science resources",
-        "depth": 1
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 3,
-        "body": "Fine corp\n\nCard filtering can be very good, especially with good starting cash.\n\nThe effect is not so great but still easily generates a few points, or can give early cheap energy prod",
-        "depth": 0
-      },
-      {
-        "author": "nanitesoldier",
-        "score": 3,
-        "body": "they more stuff you add into the game the better this corporation seems to get, 50Mc start is good and getting more card selection as 1st action is never bad",
-        "depth": 0
-      },
-      {
-        "author": "Ill-Wish-3150",
-        "score": 2,
-        "body": "Great corp imo, both fun to play, have a nice effect and very balanced!",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1nape1r",
-    "title": "[COTD] Worms | 7 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 20,
-    "num_comments": 11,
-    "created_utc": 1757239403.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/D6vOJshYfg)\n\nToday's card is [Worms](https://ssimeonoff.github.io/cards-list#130) (#130):\n\nAutomated card (Green) | Base game\n\nCost: 8 | Requirements: 4% oxygen | Tags: Microbe\n\nIncrease your plant production 1 step per 2 microbe tags you have, including this.",
-    "permalink": "/r/TerraformingMarsGame/comments/1nape1r/cotd_worms_7_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1nape1r/cotd_worms_7_sept_2025/",
-    "comments": [
-      {
-        "author": "Futuralis",
-        "score": 14,
-        "body": "Usually it's trash, because it rewards you for playing microbe cards which are generally bad. Having Worms in hand typically isn't enough to go full microbes.\n\n\nHowever, if you found yourself playing some of the good microbes anyway, then Worms can become a good to great card.\n\n\nWild tags also help, of course.",
-        "depth": 0
-      },
-      {
-        "author": "ThainEshKelch",
-        "score": 15,
-        "body": "There are too few microbe tags in the game to make it really good. Personally I think it should have been 1:1, and 6% Oxygen.",
-        "depth": 0
-      },
-      {
-        "author": "icehawk84",
-        "score": 10,
-        "body": "Yeah, it's kind of strange that Insects gets 1:1 and Worms only 1:2. Could have easily been the other way round. I think the creators originally underestimated plant cards and overestimated microbe cards.",
-        "depth": 1
-      },
-      {
-        "author": "ThainEshKelch",
-        "score": 2,
-        "body": "Seems logical. I play with all expansions and promos, so I am biased. Perhaps microbes weren't as diluted in the base game.",
-        "depth": 2
-      },
-      {
-        "author": "icehawk84",
-        "score": 1,
-        "body": "I wouldn't say they were necessarily diluted, but most of them aren't that great. Viral Enhancers, Insects and Decomposers are the only premium ones. Archaebacteria, Designed Microorganisms and Tardigrades are okay and the rest are subpar.\n\nBut yeah, there are also just fewer of them than plant tags.",
-        "depth": 3
-      },
-      {
-        "author": "AndyShootsAndScores",
-        "score": 6,
-        "body": "Pretty bad card and almost never a draft priority. Really only viable with several expansions in play (particularly Venus).\n\nYou need Worms to at least be your 6th microbe tag when you play it, or else this is just a worse version of plant cards that are typically available around midgame (bushes, grass, algae).\n\n6 microbe tags is a very tall ask in base game given only 15 total in the deck, most of which are \"meh\" on their own. \n\nVenus adds several microbe tags that are playable early and worth playing on their own, so the card becomes a nice to have if you already a microbe engine going.",
-        "depth": 0
-      },
-      {
-        "author": "icehawk84",
-        "score": 6,
-        "body": "This is generally pretty good if you can play it for 2 prod and very good if you can play it for 3 prod early on, though the latter doesn't happen very often.",
-        "depth": 0
-      },
-      {
-        "author": "uo1111111111111",
-        "score": 6,
-        "body": "By the time you can play it for 2 production you have to ask yourself “what decisions did I make to get to this point and am I likely to lose the game because of those decisions”\n\nCause usually the answer is terrible decisions and yes, when you have 3 or 5 microbe tags. The stars have to align for this to be worth playing at all, and if the stars are aligning in that way it isn’t usually a good thing.",
-        "depth": 0
-      },
-      {
-        "author": "jayron32",
-        "score": 3,
-        "body": "VERY situational.  Microbe-based strategies are hard to do well, and you'd need at least 3-5 microbe cards down to make this one worth it.",
-        "depth": 0
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 3,
-        "body": "Weak card\n\nThe biggest bummer is that you have to wait for oxygen to be at 4 %, so even if you have good early microbes, there will be no reward until the plant prod is already somewhat established anyways.\n\nOtherwise it is ok if it gives 2 plant prod, which is also somewhat situational. At 3+ prod it is a good deal.",
-        "depth": 0
-      },
-      {
-        "author": "AnMiWr",
-        "score": 2,
-        "body": "If you happen to have played a decent number of microbe tags (personally for 11 I’d want at least 5 preferably 7 in play prior to playing) then it’s ok\n\nIf not trash card",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1n9w06h",
-    "title": "[COTD] Immigrant City | 6 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 21,
-    "num_comments": 21,
-    "created_utc": 1757153821.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/yqukSu0wE0)\n\nToday's card is [Immigrant City](https://ssimeonoff.github.io/cards-list#200) (#200):\n\nActive card (Blue) | Base game\n\nCost: 13 | Requirements: None | Tags: City, Building\n\nEffect: When any city tile is placed, including this, increase your MC production 1 step.\n\nPlace a city tile. Decrease your energy production 1 step and your MC production 2 steps.",
-    "permalink": "/r/TerraformingMarsGame/comments/1n9w06h/cotd_immigrant_city_6_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n9w06h/cotd_immigrant_city_6_sept_2025/",
-    "comments": [
-      {
-        "author": "nageyoyo",
-        "score": 19,
-        "body": "In 2P at least, it’s better to think of this as a cheap city tile (that may be better late game) than a source of extra income",
-        "depth": 0
-      },
-      {
-        "author": "MoistDingleSack",
-        "score": 13,
-        "body": "Makes Tharsis really strong especially if its in the starting hand. But like someone else said its better utilised as a cheap city maybe to secure mayor",
-        "depth": 0
-      },
-      {
-        "author": "AReallyGoodName",
-        "score": 3,
-        "body": "If Tharsis has a choice of playing this or playing cupola city it’ll need 4 more cities to go down subsequent to immigrant city to catch up to the cupola city play income. (Cupola city immediately give +4 income and this immediately give 0 as tharsis)\n\n\nIt needs a lot of luck/w opponents to be a good early play over pretty much any other income generator even for tharsis.",
-        "depth": 1
-      },
-      {
-        "author": "krucsikosmancsli",
-        "score": 1,
-        "body": "with tharsis you only need two more cities after immigrant to get +4 mc prod",
-        "depth": 2
-      },
-      {
-        "author": "AReallyGoodName",
-        "score": 3,
-        "body": "And two more cities without immigrant city gives +2 on its own. You need 4 more cities to get to the same production as placing cupola\n\n\nCupola: +4mc more mc over immi which is 0 prod\n\n\n1 city subdequently placed. The cupola city play has 5mc prod vs 2mc\n\n1 more: 6mc vs 4mc prod (cupola city play still ahead by 2)\n\n1 more again: 7mc prod vs 6mc prod (cupola city play still ahead by 1)\n\n1 more again: finally even for cuoola vs immigrant city.\n\n\nThe fact is 4 cities going down after immigrant city before the end game is an extraordinarily unusual situation. There's not a lot of good city cards in the deck and standard project cities are generally a cery poor play even as tharsis with immigrant city.",
-        "depth": 3
-      },
-      {
-        "author": "krucsikosmancsli",
-        "score": 1,
-        "body": "Ah, I see it, you're right.",
-        "depth": 4
-      },
-      {
-        "author": "icehawk84",
-        "score": 1,
-        "body": "Decent late-game card. Bad if played early.",
-        "depth": 0
-      },
-      {
-        "author": "Iceman_B",
-        "score": 4,
-        "body": "How come?",
-        "depth": 1
-      },
-      {
-        "author": "icehawk84",
-        "score": 3,
-        "body": "You lose valuable MC and energy production which severely hurts your development early on. In the late game that doesn't matter much, and it simply becomes a cheap city and steel dump.",
-        "depth": 2
-      },
-      {
-        "author": "Iceman_B",
-        "score": 8,
-        "body": "Interesting take. If Im playing a 4p or 5p game, I'm playing this ASAP and preferably try to couple it with a card that brings my Energy prod up again.  \n\nThe MC hike on other cities is pretty much guaranteed in a big game.",
-        "depth": 3
-      },
-      {
-        "author": "icehawk84",
-        "score": 5,
-        "body": "I'm speaking mostly with competitive 2p/3p games in mind. Playing Immigrant City early is a classic beginner mistake in those games, because not enough cities are played to justify the early production hit.",
-        "depth": 4
-      },
-      {
-        "author": "Sir_Stash",
-        "score": 4,
-        "body": "Yup. I also play mostly 2/3 player games and this card, if it's in my initial draft, stands a decent chance of getting cut (not instant; I'm willing to hold a couple late game cards if it makes sense). It's almost always too expensive early on in those games. I might play it early if I've got a ton of excess energy production from Preludes in a 2/3 player game, to be fair. That's about the only situation I'm dropping it early.\n\nIf I'm in the rare 4/5 player game, I'm playing this card ASAP.\n\nReally, this card's value is heavily dependent on player count. Late game card in small games, very strong early game card in larger games.",
-        "depth": 5
-      },
-      {
-        "author": "icehawk84",
-        "score": 3,
-        "body": "Yeah, that makes sense, though I would be curious to see how it performs in higher player counts. I know it has a really bad win rate when played in the first 3 gens in 3p, so I wouldn't expect it to be *that* great early even in 4p, but I don't have data to back up that suspicion.",
-        "depth": 6
-      },
-      {
-        "author": "xTonyLeo",
-        "score": 1,
-        "body": "Interesting, I always thought of it as a good early since it locks in mayor, or you get at least +3 production (2 if you count the -1).",
-        "depth": 1
-      },
-      {
-        "author": "icehawk84",
-        "score": 2,
-        "body": "It's a common misconception. At least in 2p/3p games. Turns out the production hit from Immigrant City really hurts your early development.\n\nMayor is just not claimed that often. It's the worst milestone by far.",
-        "depth": 2
-      },
-      {
-        "author": "xTonyLeo",
-        "score": 1,
-        "body": "I never thought about which milestones are best to claim. What order would you rank the milestones?",
-        "depth": 3
-      },
-      {
-        "author": "icehawk84",
-        "score": 5,
-        "body": "Terraformer has the best win rate ahead of Gardener. Planner and Builder are okay, but clearly worse. Planner is especially bad if you claim it too early. Mayor is by far the worst.\n\nI have published data on this at https://www.tfmstats.com/milestones It's based on 40k games played on BGA.",
-        "depth": 4
-      },
-      {
-        "author": "xTonyLeo",
-        "score": 5,
-        "body": "Terraformer makes sense since its also income, sweet site. Thanks for sharing",
-        "depth": 5
-      },
-      {
-        "author": "Mitnichar",
-        "score": 2,
-        "body": "For competitive 2p, that card is great if you got some card cities even better with production corp.\nIf you can make place 5+ cities in 1-2 gens with the mindset to block as much as possible tiles for cities, you could force opponent to build some and crippling his economy and that way to prolong the game. With this strategy it is good to hate draft all cards that create oxygen with energy so to force other side to make forests and thus the need for cities arise.",
-        "depth": 0
-      },
-      {
-        "author": "Caspar2627",
-        "score": 3,
-        "body": "Competitive 2p and dropping 5+ cities in gen 1-2 is mutually exclusive.",
-        "depth": 1
-      },
-      {
-        "author": "Mitnichar",
-        "score": 2,
-        "body": "I meant in the next gen or two, not the first one and second gen.",
-        "depth": 2
-      }
-    ]
-  },
-  {
-    "id": "1n914xk",
-    "title": "[COTD] Ecology Research | 5 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 18,
-    "num_comments": 5,
-    "created_utc": 1757066571.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/P7B89MRCXV)\n\nToday's card is [Ecology Research](https://ssimeonoff.github.io/cards-list#C09) (#C09):\n\nAutomated card (Green) | Colonies expansion\n\nCost: 21 | Requirements: None | Tags: Science, Animal, Microbe, Plant\n\nIncrease your plant production 1 step per colony you have. Add 1 animal TO ANOTHER CARD and 2 microbes TO ANOTHER CARD. 1 VP",
-    "permalink": "/r/TerraformingMarsGame/comments/1n914xk/cotd_ecology_research_5_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n914xk/cotd_ecology_research_5_sept_2025/",
-    "comments": [
-      {
-        "author": "icehawk84",
-        "score": 8,
-        "body": "With bio combos, this can be a huge point bomb of 5 points or more and can also give you enough plants to score some further points. With Meat Industries and/or GMO Contract, it can get completely out of hand.\n\nIt's also funny that you can make some totally unexpected milestone snipes with the tags. Not that I'd recommend that.",
-        "depth": 0
-      },
-      {
-        "author": "zoukon",
-        "score": 6,
-        "body": "There is also a plant production milestone, so if the stars align with random milestones, this can be a huge sniper.",
-        "depth": 1
-      },
-      {
-        "author": "AnMiWr",
-        "score": 4,
-        "body": "This can be excellent if your board is setup correctly- doesn’t mean it’s usually a good card",
-        "depth": 0
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 2,
-        "body": "Fine card\n\nIf you have max use for everything amd have many stations then the ceiling is crazy high. Most of the time the card is on the fair side though.\n\nOverall if it gives me one extra point from resources and one extra greenery, then it is already somewhat playable.",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1n863uz",
-    "title": "[COTD] Public Baths | 4 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 18,
-    "num_comments": 12,
-    "created_utc": 1756980426.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/UPJCX85SDb)\n\nThe newer promo cards are so boring and dull. Today's card is [Public Baths](https://ssimeonoff.github.io/cards-list#X70) (#X70):\n\nAutomated card (Green) | Seasonal promo pack 2024\n\nCost: 6 | Requirements: 6 oceans | Tags: Building\n\nGain 6 MC. 1 VP\n\nNote: Links and card images for newer promo cards may not work as expected or be correct. For the accurate card information, please refer to the text above.",
-    "permalink": "/r/TerraformingMarsGame/comments/1n863uz/cotd_public_baths_4_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n863uz/cotd_public_baths_4_sept_2025/",
-    "comments": [
-      {
-        "author": "Fredrick_18241",
-        "score": 11,
-        "body": "Turn 3 steal into 6M€ for 3 M€ and you get a point. It’s not very exciting but I do think it’s worth drafting",
-        "depth": 0
-      },
-      {
-        "author": "thenewjuniorexecutiv",
-        "score": 4,
-        "body": "Converting metal to money is the main reason to play this before end game. \n\nOtherwise it's just another link in an engine builder's points chain.",
-        "depth": 1
-      },
-      {
-        "author": "Shoddy-Bag-293",
-        "score": 5,
-        "body": "It is a card. A 666 card to be precise.",
-        "depth": 0
-      },
-      {
-        "author": "AnMiWr",
-        "score": 3,
-        "body": "Boring but ok",
-        "depth": 0
-      },
-      {
-        "author": "icehawk84",
-        "score": 3,
-        "body": "Weird one. The in-game price of a VP is 7 MC, as in \\[Breathing Filters\\], but this card gives you a much cheaper VP for 3 MC that can even be paid for with steel, and it only has an irrelevant minimum requirement. It kind of breaks with the game's pricing principles.",
-        "depth": 0
-      },
-      {
-        "author": "SammyBear",
-        "score": 4,
-        "body": "It does, but in a way that I think is good. It's not massive or game warping. If you've got too much steel it's pretty much free (or if you pay for it in steel you weren't going to use, it earns you 3M€). But it's still relatively low impact, and the real price you're paying is the opportunity cost of drafting it. If you draw into it, then it's free at the right time, but still maybe not as good as something you actively want. It's uninteresting in a really interesting way!",
-        "depth": 1
-      },
-      {
-        "author": "AReallyGoodName",
-        "score": 2,
-        "body": "Card: **[Breathing Filters](https://ssimeonoff.github.io/cards-list#114)**\n\nCost: 11MC\n\nDescription: Requires 7% oxygen. 2 VP.\n\nTags: Science",
-        "depth": 1
-      },
-      {
-        "author": "Sir_Stash",
-        "score": 2,
-        "body": "That's 14 MC (11 + 3) for 2 VP, or 7 MC/VP.\n\nThis one is 9 MC (6 + 3) for 6 MC (effectively dropping the cost to 3 MC) and 1 VP, making it effectively 3 MC/VP.\n\nIt's literally more than twice as cost-effective. The two aren't really comparable.",
-        "depth": 2
-      },
-      {
-        "author": "Strijder20",
-        "score": 2,
-        "body": "Dust Seals is usually taken as the comparison point, at 5 MC for a VP.\n\n\nThis card has a quite stringent requirement which makes it bad early on but it's obviously quite efficient once you can play it.\n\n\nBut so are Trees, Birds, and Kelp Farming.",
-        "depth": 1
-      },
-      {
-        "author": "SammyBear",
-        "score": 3,
-        "body": "I also think that 5 for a point is what a lot of game pricing is based off of, but this can vary quite a lot. Late-game cards sometimes charge more, the effective cost of a science tag swings wildly, etc.\n\nDust Seals is one of the worse cards in the game, because it's a fairly priced point you have to commit to early. If you draw it then it's fine at 3 for a point.\n\nBut I typically view standard projects as a good baseline. SP costs +4, a point costs 5, a money prod costs 5 (thus a TR costs 10), and a tile costs 4. This works for all the terraforming (asteroid is TR+4, ocean is TR+tile+4, greenery is TR+tile+point+4) and leads to derived values of energy at 7 and a city at 16 (with 4 baked in for the tile).",
-        "depth": 2
-      },
-      {
-        "author": "icehawk84",
-        "score": 2,
-        "body": "Yeah, I think that's the wrong comparison. Dust Seals is cheaper than the 7 MC base cost of a VP because of its requirement. VP cards are discounted when they have max requirements while production cards like Trees and Kelp are discounted when they have minimum requirements.",
-        "depth": 2
-      }
-    ]
-  },
-  {
-    "id": "1n7aqq5",
-    "title": "[COTD] Atalanta Planitia Lab | 3 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 18,
-    "num_comments": 8,
-    "created_utc": 1756893895.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/aM3bnua6jy)\n\nToday's card is [Atalanta Planitia Lab](https://ssimeonoff.github.io/cards-list#216) (#216):\n\nAutomated card (Green) | Venus Next expansion\n\nCost: 10 | Requirements: 3 Science tags | Tags: Venus, Science\n\nDraw 2 cards. 2 VP",
-    "permalink": "/r/TerraformingMarsGame/comments/1n7aqq5/cotd_atalanta_planitia_lab_3_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n7aqq5/cotd_atalanta_planitia_lab_3_sept_2025/",
-    "comments": [
-      {
-        "author": "Futuralis",
-        "score": 10,
-        "body": "Perfectly fine card to keep building towards bigger and better things. 2VP, 2 cards, 2 useful tags.",
-        "depth": 0
-      },
-      {
-        "author": "AnMiWr",
-        "score": 5,
-        "body": "If it fits in your build then it’s great - if not skip",
-        "depth": 0
-      },
-      {
-        "author": "Krazyguy75",
-        "score": 5,
-        "body": "Atlanta Plantation Lab, got it.",
-        "depth": 0
-      },
-      {
-        "author": "BelowAverageTimeline",
-        "score": 3,
-        "body": "Good early/mid payoff card for science. If you have the tags, you're very happy to see it. It's also a very playable Venus card, which is actually somewhat rare if you're playing with limited expansions. That can help turn on some of the other better Venus cards.\n\nThat being said, I'm not sure I'd keep this cold in a starting hand. I think it's slightly too large a gamble to be an auto-keep if you don't at least have some existing science potential.",
-        "depth": 0
-      },
-      {
-        "author": "SoupsBane",
-        "score": 3,
-        "body": "Compared to gene repair, another 3 science tag requirement card, you’re paying 2 less for 2 cards instead of 2Mc prod.  I’d say at the point you play those two, card draw is more useful than 2Mc prod.  Card draw is also useful for the entire game, so lab never gets less useful. \n\nThis makes planitia lab a strong science tag to feed your way to quantum extractor/mass converter or AGT.  If you look at it in terms of raw value you’re paying 13MC for 2 points and a science tag which is already pretty solid (see breathing filters at 14mc for the same benefits) and in addition you get to draw 2 cards which has a value of 4-6.  \n\nGenerally speaking this card is a keep if you have need for science tags.",
-        "depth": 0
-      },
-      {
-        "author": "CaptainCFloyd",
-        "score": 1,
-        "body": "You're undervaluing card draw. A random card is worth at least 4 MC, many would even say 5.",
-        "depth": 1
-      },
-      {
-        "author": "icehawk84",
-        "score": 4,
-        "body": "One of the better engine cards in the Venus deck. Not quite as good as Research, but still pretty good.",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1n6fmsi",
-    "title": "[COTD] Astra Mechanica | 2 Sept, 2025",
-    "author": "Enson_Chan",
-    "score": 22,
-    "num_comments": 18,
-    "created_utc": 1756808103.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/yTnWhjN8V8)\n\nToday's card is [Astra Mechanica](https://ssimeonoff.github.io/cards-list#X51) (#X51):\n\nAutomated card (Green) | Prelude 2 Kickstarter promo pack\n\nCost: 7 | Requirements: None | Tags: Science\n\nChoose 2 project cards from your event pile and put them into your hand. THEY MAY NOT BE CARDS THAT PLACE SPECIAL TILES.\n\nNote: Links and card images for Prelude 2 cards may not work as expected or be correct. For the accurate card information, please refer to the text above\n\nSide question: What are your favorite cards to use this on?",
-    "permalink": "/r/TerraformingMarsGame/comments/1n6fmsi/cotd_astra_mechanica_2_sept_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n6fmsi/cotd_astra_mechanica_2_sept_2025/",
-    "comments": [
-      {
-        "author": "ElderAlter",
-        "score": 23,
-        "body": "There are obviously better cards to use it on, depending on circumstances, but it is very funny to use it to pull Law Suit from your event pile, if Law Suit was played against you that turn.  Because that means that you can play it back on whoever played it on you.",
-        "depth": 0
-      },
-      {
-        "author": "Chance_Breakfast4848",
-        "score": 6,
-        "body": "It's just straight up one of the best targets in 1v1. That's 2vp and 4mc, which is better than the vast majority of events will get you.",
-        "depth": 1
-      },
-      {
-        "author": "Blackgaze",
-        "score": 6,
-        "body": "**NO U**",
-        "depth": 1
-      },
-      {
-        "author": "geekdumb",
-        "score": 1,
-        "body": "It would be fun if the card had an option that of out had already been in a discard pile the negative vp increased. Could call it Counter Suit.",
-        "depth": 1
-      },
-      {
-        "author": "zoukon",
-        "score": 10,
-        "body": "One of the cards I dread the most passing in a draft. There are 4 potentially insane targets that are very good under specific circumstances: GHG shipment, Solar probe, red tourism wave and soil studies. In most cases the best targets will be money back or rebate cards like investment loan, harvest, conscription. Big hitters like NRA, GIA and Imported nitrogen can be great too, but are generally on the expensive side. \n\n\n\nThe funniest is to pick up law suit.",
-        "depth": 0
-      },
-      {
-        "author": "snakelauncher",
-        "score": 6,
-        "body": "you forgot an important one, bribed committee !",
-        "depth": 1
-      },
-      {
-        "author": "ThainEshKelch",
-        "score": 6,
-        "body": "I played it with \\[Giant Ice Asteroid\\]. 8TR from two cards in one turn, thank you very much.\n\nOne of the best cards in the game. Instant pick. Only cards I believe to be as good to use it on would be \\[Nitrogen-rich Asteroid\\] or \\[Large Convoy\\], but they are more situational.",
-        "depth": 0
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 5,
-        "body": "Situational card, mostly pretty good\n\nYou need red cards played, else this is absolute trash. But if you happen to have played some excellent red cards, drawing them and playing again is extremely good. Paying the 7MC for getting two cards I want is very nice price, even the full 10 is not bad.\n\nThe asteroids that rise temperature or place oceans are generally good targets if titanium is available. I also have pretty decent experience with pairing this with some of the cheapest red cards in 1v1 - Virus, Sabotage etc. are very annoying to face twice. Recurring them with this card might not be the most efficient play, but you still hit the opponent more that you hit yourself and it might very easily delay some bigger plays that the opponent planned to do.\n\nYou can also get some cards that give negative points back to hand. Like Bribed Comitee... the possibilities are pretty large.\n\nAlso if you have some event cards synergies, then the efficiency of this goes up by a ton.\n\nOverall the card is mostly great in 1v1, where all the interaction cards can be re-used vs one opponent only. In more players where Virus-ing somebody is not so strong it is a bit more situational, but there are still good targets that make the card worth it. And it also has science tag!",
-        "depth": 0
-      },
-      {
-        "author": "Mitnichar",
-        "score": 4,
-        "body": "If you have excees titanium and discounts you can end the game 1-2 generations earlier OR upgrade your economy so much that the opposing players just accept defeat.",
-        "depth": 0
-      },
-      {
-        "author": "Robofish19",
-        "score": 4,
-        "body": "Usually broken, always a consideration when drafting, getting Large Convoy for another round of ocean ( if available) and 4 animals or NRA plant production and TR/Temperature raise is beautiful when it goes off, worst case it can give you one or two extra TR, makes for a really strong card in the hands of terraformers.",
-        "depth": 0
-      },
-      {
-        "author": "icehawk84",
-        "score": 3,
-        "body": "If you're Ecoline with GIA and Deimos in your event pile, this could be winning on the spot.",
-        "depth": 0
-      },
-      {
-        "author": "BentonSancho",
-        "score": 4,
-        "body": "Well, as long as it's the original Deimos Down that doesn't place a tile.",
-        "depth": 1
-      },
-      {
-        "author": "marekt14",
-        "score": 3,
-        "body": "I love this card.\n\nOnce I had venusian animals, full science engine with like 12+ tags, including Carbon Nanosystems, Mars U and olympus conference. Took back Solar Probe (1 card per 3 science tags and Tech Demonstration (2 cards). This suddenly became a 3point enabler with like 8 cards drawn.. Love this so much",
-        "depth": 0
-      },
-      {
-        "author": "Blackgaze",
-        "score": 3,
-        "body": "My favorite Prelude 2 card, so many event combos.\n\nFeels great when you have event effects and discounts, and get F R E E S H I T",
-        "depth": 0
-      },
-      {
-        "author": "TharsisRoverPets",
-        "score": 3,
-        "body": "This card is so strong. The best targets are any events with negative VPs (don't play them, 10 MC for 2 VPs in the last generation is already an above-average rate and that ignores the Science tag), or any good events without VPs. Ironically, Large Convoy is not the best with this since you lose the 2 VPs on the replay.\n\nHitting Imported Nitrogen with full synergies + Bribed Committee is probably the dream play.\n\nThe really mean play is to Virus/Sabotage someone twice.",
-        "depth": 0
-      },
-      {
-        "author": "ReaperJim",
-        "score": 4,
-        "body": "Great with negative VP too, love using this with conscription",
-        "depth": 0
-      },
-      {
-        "author": "FeedTheOx",
-        "score": 1,
-        "body": "Feels quite expensive at 7+3 cost for two cards? Granted they are probably useful cards, but it still doesn't feel like a fantastic deal",
-        "depth": 0
-      },
-      {
-        "author": "zoukon",
-        "score": 5,
-        "body": "Do not sleep on this card, it is one of the best cards in the game.",
-        "depth": 1
-      }
-    ]
-  },
-  {
-    "id": "1n4qxda",
-    "title": "[COTD] Medical Lab | 31 Aug, 2025",
-    "author": "Enson_Chan",
-    "score": 18,
-    "num_comments": 11,
-    "created_utc": 1756634711.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/uujoglKKBC)\n\nToday's card is [Medical Lab](https://ssimeonoff.github.io/cards-list#207) (#207):\n\nAutomated card (Green) | Corporate Era\n\nCost: 13 | Requirements: None | Tags: Science, Building\n\nIncrease your MC production 1 step per 2 building tags you have, including this. 1 VP\n\nSide question: How does this work thematically?",
-    "permalink": "/r/TerraformingMarsGame/comments/1n4qxda/cotd_medical_lab_31_aug_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n4qxda/cotd_medical_lab_31_aug_2025/",
-    "comments": [
-      {
-        "author": "icehawk84",
-        "score": 14,
-        "body": "Pretty good multi-purpose card. Can give a decent amount of production, enables science payoffs, allows you to draw with Mars U and Olympus, can be used in the fight for Builder and Banker, and it provides a VP. Especially good for steel corps like Mining Guild.",
-        "depth": 0
-      },
-      {
-        "author": "Agreeable_Hat",
-        "score": 7,
-        "body": "Yeah, it can really pop off, but often it's just not amazing in most of my games\n\nHad a MG with lots of building tags + a wild tag drop it + Robo Workforce early once, though, that was just nasty",
-        "depth": 1
-      },
-      {
-        "author": "icehawk84",
-        "score": 3,
-        "body": "Agreed. It's rare that it's amazing, but the science and building tags gives it enough utility that it's often the second or even first priority in a mid-game draft.",
-        "depth": 2
-      },
-      {
-        "author": "Aerospider",
-        "score": 8,
-        "body": "Side answer:\n\nJust off the top of my head -\n\nMedical Lab creates efficiency savings by reducing debilitation caused by injury and by creating supplements/bioware to improve worker functioning.\n\nBuilding projects are generally more manpower-heavy, so those are the projects that see noticeable efficiency savings.\n\nOr something.",
-        "depth": 0
-      },
-      {
-        "author": "rri75",
-        "score": 6,
-        "body": "Flavour text hints that providing medical services can be both noble, and lucrative. So, the more infrastructure you have built on mars (cities, energy, roads...) the larger the population, and the health sector's economy.",
-        "depth": 0
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 3,
-        "body": "Mediocre card\n\nIt feels like the ceiling is high, but having enough building tags early enough is not so common (preludes can help a bit). So it's mostly a mid game science tag that gives some cash back and is payable with steel... sometimes good, sometimes very meh.\n\nIt is also somewhat better when the tags are relevant for the milestone/award chase.",
-        "depth": 0
-      },
-      {
-        "author": "AnMiWr",
-        "score": 4,
-        "body": "Situationally brilliant otherwise B- not exactly a cheap science tag but if you are building heavy this rocks",
-        "depth": 0
-      },
-      {
-        "author": "fuzzyplastic",
-        "score": 3,
-        "body": "Great in big engine games. The highish cost can cause too much of a drag if you aren’t rich - most games I play this I already have a good engine and this card compounds.",
-        "depth": 0
-      },
-      {
-        "author": "Mitnichar",
-        "score": 3,
-        "body": "If you manage to have 10-15 building tags till gen 3, by gen 4  you could ramp up 5-8/10 easy banks.",
-        "depth": 0
-      },
-      {
-        "author": "RegretCommon",
-        "score": 3,
-        "body": "there's the odd game where you can play it for 5+ cash prod and copy immediately with robotic work force which always feels great, otherwise it's solid enough but nothing spectacular. a mix of a number of goodish things, some cash prod, a science tag, a vp, payable with steel. but most of these come with some kind of caveat; the cash prod can't hit early when you need it most, the science tag is rather expensive, single point rarely matters. being payable with steel bumps this to playabilty even when you don't get all that much prod",
-        "depth": 0
-      },
-      {
-        "author": "BelowAverageTimeline",
-        "score": 2,
-        "body": "Above average card. Science tag, relevant for several awards/milestones, has some scaling payoff in the right setup, good steel dump.\n\n\nIt's not an insta-take for every game, but there are plenty of spots where you're happy to see it.",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1n3xvwo",
-    "title": "[COTD] Aridor on a Stick | 30 Aug, 2025",
-    "author": "Enson_Chan",
-    "score": 14,
-    "num_comments": 14,
-    "created_utc": 1756548338.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/DywK5Wx0KB)\n\nToday's card is [Interplanetary Trade](https://ssimeonoff.github.io/cards-list#X05) (#X05):\n\nAutomated card (Green) | Turmoil Kickstarter promo\n\nCost: 27 | Requirements: None | Tags: Space\n\nIncrease your MC production 1 step for each unique tag you have in play, including this. 1 VP",
-    "permalink": "/r/TerraformingMarsGame/comments/1n3xvwo/cotd_aridor_on_a_stick_30_aug_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n3xvwo/cotd_aridor_on_a_stick_30_aug_2025/",
-    "comments": [
-      {
-        "author": "Krazyguy75",
-        "score": 9,
-        "body": "Why the heck is this 30 cost? That's priced as if you are hitting 7 tags regularly in the early game.",
-        "depth": 0
-      },
-      {
-        "author": "CaptainCFloyd",
-        "score": 6,
-        "body": "That is not at all uncommon. You'll usually be able to get 4 different tags from preludes alone, and then there's the corporation and whatever you have in your hand. I've played this for a 8 MC production increase in gen 1.",
-        "depth": 1
-      },
-      {
-        "author": "Krazyguy75",
-        "score": 1,
-        "body": "Yeah, but it's priced as if the *average* in the earlygame is 7. Like, by midgame, it wants you to have like 14, and lategame like 21. That's how this is priced.\n\nNot \"if everything goes perfectly this is 7+\", but \"on any given gen 1 you should have 7+\".",
-        "depth": 2
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 8,
-        "body": "Weaker, situational card with annoying design\n\nEarly game it is situational to have enough (at least 6+) different tags to make it worth it (preludes somewhat help but not always), later it is usually just not enough for one point.\n\nBut the worst part is the counting of tags. It gets so annoying when playing with the physical game.",
-        "depth": 0
-      },
-      {
-        "author": "krucsikosmancsli",
-        "score": 8,
-        "body": "I make smaller groups for the tags when I count them, so it is easier to me. Something like this:  \n\\- 3 bio tags (microbe, plant, animal)  \n\\- 3 planets (earth, jovian, venus)  \n\\- 3 resource types (steel, titanium, energy a.k.a. building, space, power)  \n\\- this leaves two more... science and city",
-        "depth": 1
-      },
-      {
-        "author": "snakelauncher",
-        "score": 11,
-        "body": "and don't forget that you can have one more if you have a wild tag (in addition to all these types of tags) and count this wild tag as an event tag to reach +12 MC prod (or +11 without Venus Next)",
-        "depth": 2
-      },
-      {
-        "author": "Enson_Chan",
-        "score": 3,
-        "body": "I thought you're wrong until I found that they changed the rule\n\nSource: https://boardgamegeek.com/thread/3293976/questions-about-wild-tags",
-        "depth": 3
-      },
-      {
-        "author": "krucsikosmancsli",
-        "score": 1,
-        "body": "wow, I didn't know that :O",
-        "depth": 3
-      },
-      {
-        "author": "Enson_Chan",
-        "score": 3,
-        "body": "That's exactly how I count as well. For science and city, I classify them as strategy paths (engine and ground game)\n\nOr you can get the base game rulebook and the list is printed on one of the pages (and remember Venus tag if you have Venus Next)",
-        "depth": 2
-      },
-      {
-        "author": "icehawk84",
-        "score": 6,
-        "body": "Way too expensive. It could have been acceptable if you could play it for 7-8 prod in gen 1, but realistically it's going to take a few gens before you have that many tags.\n\nI could see a desperate PhoboLog who's swimming in titanium play this for like 5 prod gen 2, but that would usually mean something has gone wrong already.",
-        "depth": 0
-      },
-      {
-        "author": "ThainEshKelch",
-        "score": 4,
-        "body": "Only really worth playing if you have unlimited Titanium.\n\nI think it should either have 3VP, or a cost of around 22.",
-        "depth": 0
-      },
-      {
-        "author": "Jilian8",
-        "score": 6,
-        "body": "I've never seen this card and wow, is it bad. It should cost, like, 18 at most.",
-        "depth": 0
-      },
-      {
-        "author": "snakelauncher",
-        "score": 2,
-        "body": "it's a promo card from the Turmoil promo pack",
-        "depth": 1
-      },
-      {
-        "author": "Jilian8",
-        "score": 2,
-        "body": "Yes I did see that in the post",
-        "depth": 2
-      }
-    ]
-  },
-  {
-    "id": "1n33h0l",
-    "title": "[COTD] Immigration Shuttles | 29 Aug, 2025",
-    "author": "Enson_Chan",
-    "score": 22,
-    "num_comments": 12,
-    "created_utc": 1756462378.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/CrnZVfzSf5)\n\nToday's card is [Immigration Shuttles](https://ssimeonoff.github.io/cards-list#198) (#198):\n\nAutomated card (Green) | Base game\n\nCost: 31 | Requirements: None | Tags: Earth, Space\n\nIncrease your MC production 5 steps. 1 VP per 3 city tiles in play.",
-    "permalink": "/r/TerraformingMarsGame/comments/1n33h0l/cotd_immigration_shuttles_29_aug_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n33h0l/cotd_immigration_shuttles_29_aug_2025/",
-    "comments": [
-      {
-        "author": "ThainEshKelch",
-        "score": 14,
-        "body": "Expensive card. Usually not worth playing, unless you are bathing in Titanium or Mars is riddled with citites.",
-        "depth": 0
-      },
-      {
-        "author": "AvailableQuiet3215",
-        "score": 9,
-        "body": "Average (or a bit below average) card in a vacuum, but earth and space tags with 20+ cost and vp based on cities make it somehow almost always ok, whether it is the common discounts, rebates, titanium sink, awards/milestones or such, somehow I more often find a place for it than I would think at first (but it is an important factor that my group prefer engine building strats over rush)",
-        "depth": 0
-      },
-      {
-        "author": "icehawk84",
-        "score": 9,
-        "body": "From a 2p perspective, this is a D-tier card at best. Maybe even F.",
-        "depth": 0
-      },
-      {
-        "author": "FieldMouse007",
-        "score": 6,
-        "body": "Weak card\n\nUnless I am swimming in titanium this is rarely a good pick. Early game it is very expensive for 5 income and lategame this is very expensive points. The sweet spot when it gives just fine amount of MC back so the cost per VP is decent is very narrow.\n\nIt is okay-ish if you don't have any good cards on hand and you expect a longer game. It is very good only when the players aren't very good and just spam cities everywhere.\n\nIt is also somewhat playable in solo, where you know how long the game will be so in the part of the game where you invest heavily into the income and you know it will pay off - and you don't have any better cards to invest into.",
-        "depth": 0
-      },
-      {
-        "author": "AnMiWr",
-        "score": 3,
-        "body": "Totally game specific - got tons of titanium sitting around? It’s great! Board full of cities ! It’s great! Etc!",
-        "depth": 0
-      },
-      {
-        "author": "BelowAverageTimeline",
-        "score": 3,
-        "body": "Below average card, but still marginally playable in spots.\n\nIt's really too expensive to play early, which unfortunately is when you'd want to play it for the MC production. You can really only play it if you have nothing else going on (and even then, it might be better to wait for new cards).\n\nIt can be playable (with rebates, titanium, etc) as a final gen sort of play in specific games where there is something like a Tharsis or Credicor that likes placing cities. This is the primary use case from my experience\n\nIt's maybe playable if it gets milestone/award value, but I've never actually run into this use case in my games yet.",
-        "depth": 0
-      },
-      {
-        "author": "7flamestrikes",
-        "score": 2,
-        "body": "Banker swing letssssss gooooooo\nAnd your opponent will just play [Zeppelins]",
-        "depth": 0
-      },
-      {
-        "author": "Powerful-Motor537",
-        "score": 3,
-        "body": "Omg, this card totally is worth it.. 5mc not bad, great early. \nWe play 4-5 players end up with 20+ cites, 7vp, sometimes  8vp.",
-        "depth": 0
-      },
-      {
-        "author": "matschultz",
-        "score": 3,
-        "body": "5 mc production will recoup your base costs if played early and my 2 to 3 person games normally end up with a minimum of 9 to 12 cities.",
-        "depth": 0
-      },
-      {
-        "author": "Agreeable_Hat",
-        "score": 13,
-        "body": "That's an absurd amount of cities in a 2P game, but hey",
-        "depth": 1
-      },
-      {
-        "author": "Aerospider",
-        "score": 3,
-        "body": "Agreed, but you do get players who pick Tharsis or Ecoline and obsess over city scoring the whole game",
-        "depth": 2
-      },
-      {
-        "author": "Erikrtheread",
-        "score": 3,
-        "body": "Solo player. This is an ok consolation prize if you get shunted into phoblog and can't use your titanium pool, or as point Luna with their titanium production and card draw. The only other reason this gets played is \"win more\" in the last round. I hardly ever draft or play this card.",
-        "depth": 0
-      }
-    ]
-  },
-  {
-    "id": "1n284vb",
-    "title": "[COTD] Noctis City | 28 Aug, 2025",
-    "author": "Enson_Chan",
-    "score": 21,
-    "num_comments": 17,
-    "created_utc": 1756375303.0,
-    "selftext": "[Previous COTD](https://www.reddit.com/r/TerraformingMarsGame/s/NAmswhpU15)\n\nToday's card is [Noctis City](https://ssimeonoff.github.io/cards-list#017) (#017):\n\nAutomated card (Green) | Base game\n\nCost: 18 | Requirements: None | Tags: City, Building\n\nDecrease your energy production 1 step and increase your MC production 3 steps.\n\n- On Tharsis board: Place a city tile ON THE NOCTIS CITY RESERVED AREA, disregarding normal placement restrictions.\n- On any other board: Place a city tile (following normal placement restrictions).\n\nSide question: If you were to designate a Noctis City spot on the remaining boards, which space would it be?",
-    "permalink": "/r/TerraformingMarsGame/comments/1n284vb/cotd_noctis_city_28_aug_2025/",
-    "url": "https://reddit.com/r/TerraformingMarsGame/comments/1n284vb/cotd_noctis_city_28_aug_2025/",
-    "comments": [
-      {
-        "author": "AnMiWr",
-        "score": 12,
-        "body": "Cheap way to get a city - on original board quite a nice spot - good card imho",
-        "depth": 0
-      },
-      {
-        "author": "icehawk84",
-        "score": 8,
-        "body": "Very strong on Tharsis. It's a surprise city and late-game steel dump that will usually score 3-4 points. Having it on hand also allows you to convert on the plants surrounding the reserved area before placing a city and start walking around towards the oceans, which is often something you want to do anyway.\n\nOn other maps, it's not that great.",
-        "depth": 0
-      },
-      {
-        "author": "blast4past",
-        "score": 5,
-        "body": "It’s still one of the cheapest cities to put down on any map.",
-        "depth": 1
-      },
-      {
-        "author": "icehawk84",
-        "score": 2,
-        "body": "It's not unplayable, but it's not the powerhouse it is on Tharsis and it's not as good as what I would consider decent cities like Cupola, Domed Crater or Open City.",
-        "depth": 2
-      },
-      {
-        "author": "blast4past",
-        "score": 5,
-        "body": "Why do you consider those cities better? Cupola is only 2MC cheaper for the same energy prod cost and MC prod gain, but has a max oxygen limit of 9 which to me very much outweighs the cheaper cost. \n\nNot sure how domed crater can be consider an upgrade, costs 6 MC more for +3 plants and an oxygen limit of 7. \n\nOpen city is the only one which can be considered an upgrade, but it has a higher cost and with an oxygen requirement if 12 risks not being playable until good city spots are all gone.",
-        "depth": 3
-      },
-      {
-        "author": "icehawk84",
-        "score": 6,
-        "body": "Cupola is a better early-game city because it's cheaper.\n\nOpen City is a better late-game city because it gives you plants and a VP.\n\nThe 3 plants from Domed alone is worth 6 MC, and often more, because you can usually put it down on a plant spot and get an instant conversion, which is worth a lot. But the card also has a VP.",
-        "depth": 4
-      },
-      {
-        "author": "blast4past",
-        "score": 3,
-        "body": "We can never guarantee the order in which we draw cards. Cupola is better early game yes, but in every game there comes a point where it becomes unplayable (excl inventrix, adaptive tech, special design combo) unlike noctis city, which is always playable up until the final city spot is gone.\n\nAnd I do think that’s worth more than 2MC",
-        "depth": 5
-      },
-      {
-        "author": "nageyoyo",
-        "score": 1,
-        "body": "when you factor in the energy cost (valued at 7MC for 1 energy) it’s comparable to a standard project city on other maps, if not worse",
-        "depth": 2
-      },
-      {
-        "author": "blast4past",
-        "score": 6,
-        "body": "It shouldn’t be considered a direct cost like that though. If you play it on the final generation then the 1 energy production is uncosted unless you’re competing for a specific award. \n\nIf it’s not the final generation, then you get +3 MC production, which offsets quite a bit of the energy production cost, and almost entirely if it’s third final gen or earlier.",
-        "depth": 3
-      },
-      {
-        "author": "thenewjuniorexecutiv",
-        "score": 4,
-        "body": "It's possibly the least surprising city in the deck. If it's not in my hand, I assume it's in an opponent's and avoid putting greeneries next to it if I have an equivalent option.",
-        "depth": 1
-      },
-      {
-        "author": "Ill-Wish-3150",
-        "score": 3,
-        "body": "Decent enough, if you are building a lot of cities/forests you can do some fun stuff with it on tharsis board",
-        "depth": 0
-      },
-      {
-        "author": "j_la",
-        "score": 3,
-        "body": "I just got a nice combo with commercial district on BGA. If I draw urbanized area, that’ll be nice",
-        "depth": 0
-      },
-      {
-        "author": "Phiteros",
-        "score": 2,
-        "body": "I have long dreamed of trying to create the most urbanized area possible by combining the cards which allow you to place cities next to other cities in just the right order.",
-        "depth": 1
-      },
-      {
-        "author": "j_la",
-        "score": 2,
-        "body": "I’m sad to report I got impatient and put a greenery in instead of",
-        "depth": 2
-      },
-      {
-        "author": "Blackgaze",
-        "score": 3,
-        "body": "For the longest time I thought this card when NOT played on Tharsis meant it did not obey city restrictions and could be placed like any normal special tile (due to its message).\n\nIt wasn't until I played the TFM app that I realised I did this wrong, and the restriction was ONLY for the Tharsis spot, and acted like every other city",
-        "depth": 0
-      },
-      {
-        "author": "Mitnichar",
-        "score": -4,
-        "body": "Good one but not as good as corporation stronghold due to cost.",
         "depth": 0
       }
     ]
