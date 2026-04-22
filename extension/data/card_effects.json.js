@@ -1774,8 +1774,7 @@ const TM_CARD_EFFECTS = {
   "cd": 3
  },
  "Soil Studies": {
-  "c": 4,
-  "grn": 1
+  "c": 13
  },
  "Neptunian Power Consultants": {
   "c": 10,

@@ -4267,9 +4267,6 @@ var TM_CARD_DATA = {
   }
  },
  "Soil Studies": {
-  "behavior": {
-   "greenery": 1
-  },
   "tags": [
    "microbe",
    "plant"

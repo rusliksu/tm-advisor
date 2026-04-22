@@ -145,6 +145,17 @@ assert.strictEqual(effects['Colonial Representation'].infl, 1, 'Colonial Represe
 assert.strictEqual(effects['High Circles'].infl, 1, 'High Circles should keep the permanent +1 influence effect');
 assert.strictEqual(effects['Event Analysts'].infl, 1, 'Event Analysts should keep the permanent +1 influence effect');
 assert.strictEqual(effects['Election Sponsorship'].infl, 1, 'Election Sponsorship should keep the permanent +1 influence effect');
+assert.strictEqual(effects['Soil Studies'].c, 13, 'Soil Studies should keep its printed 13 MC cost');
+assert.strictEqual(
+  Object.prototype.hasOwnProperty.call(effects['Soil Studies'], 'grn'),
+  false,
+  'Soil Studies should not be modeled as placing a greenery',
+);
+assert.strictEqual(
+  !!(cardData['Soil Studies'].behavior && cardData['Soil Studies'].behavior.greenery),
+  false,
+  'Soil Studies card_data should not expose fake greenery behavior',
+);
 assert.strictEqual(
   Object.prototype.hasOwnProperty.call(effects['Extractor Balloons'], 'vn'),
   false,

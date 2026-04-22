@@ -703,6 +703,10 @@ def main() -> int:
     assert bot.effect_parser.get("Red Ships").actions == [
         {"cost": "free", "effect": "gain 1 MC per ocean-adjacent city or special tile"}
     ], bot.effect_parser.get("Red Ships").actions
+    soil_eff = bot.effect_parser.get("Soil Studies")
+    assert soil_eff is not None
+    assert "greenery" not in soil_eff.placement, soil_eff.placement
+    assert bot.db.get_generated_effect("Soil Studies").get("c") == 13, bot.db.get_generated_effect("Soil Studies")
     assert bot.effect_parser.get("Symbiotic Fungus").actions == [
         {"cost": "free", "effect": "add 1 microbe to another card"}
     ], bot.effect_parser.get("Symbiotic Fungus").actions

@@ -125,6 +125,9 @@ const MANUAL_EFFECT_PATCHES = {
   // Turmoil action: spend MC to place a delegate. Delegate placement is not a
   // cash loss action, so keep it as semantic actionChoices only.
   'Martian Media Center': {remove: ['actMC']},
+  // Dynamic plant payout per Venus tag, plant tag, and owned colony. This does
+  // not place a greenery, and stale grn/cost data inflated advisor value.
+  'Soil Studies': {remove: ['grn'], set: {c: 13}},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},
