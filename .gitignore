@@ -63,6 +63,7 @@ data/prelude_evaluations_missing.json
 data/project_evaluations_calibration.json
 
 # Temp working files
+.tmp/
 temp_b64_*.txt
 temp_*.json
 data/evaluations.json.backup
@@ -71,6 +72,8 @@ data/bga_*.txt
 
 # Game log raw data (keep games_db.json, ignore raw snapshots)
 data/game_logs/*.jsonl
+data/game_logs/auto_watch/
+data/game_logs/live-logging/
 data/game_logs/player*.json
 data/game_logs/choice_logs/
 data/game_logs/game_api_test.json
@@ -112,6 +115,8 @@ fix_logger.py
 
 # Shadow bot logs
 data/shadow/
+scripts/shadow.jsonl
+scripts/analyze_shadow.py
 
 # Game fetch/watch data
 data/game_logs/tm-fetch-*.json
