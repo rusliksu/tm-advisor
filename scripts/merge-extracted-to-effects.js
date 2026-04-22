@@ -104,6 +104,9 @@ const MANUAL_EFFECT_PATCHES = {
   // Board-scaled action. Static actMC=4 is only an old estimate and is not
   // factual card text.
   'Red Ships': {remove: ['actMC']},
+  // Corporation action reuses another already-used blue-card action; it is not
+  // a fixed MC payout.
+  'Viron': {remove: ['actMC']},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},

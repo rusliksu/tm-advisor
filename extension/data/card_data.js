@@ -7659,11 +7659,14 @@ var TM_CARD_DATA = {
   }
  },
  "Viron": {
-  "action": {
-   "stock": {
-    "megacredits": 3
+  "actionChoices": [
+   {
+    "label": "Use a blue card action that has already been used this generation",
+    "conditional": true,
+    "reuseActionCard": true,
+    "cardType": "active"
    }
-  },
+  ],
   "tags": [
    "microbe"
   ]

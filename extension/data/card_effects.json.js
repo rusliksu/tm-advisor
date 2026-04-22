@@ -3308,8 +3308,7 @@ const TM_CARD_EFFECTS = {
   "mc": 4
  },
  "Viron": {
-  "c": 9,
-  "actMC": 3
+  "c": 9
  },
  "Last Resort Ingenuity": {
   "c": 4

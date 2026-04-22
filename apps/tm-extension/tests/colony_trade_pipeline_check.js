@@ -435,6 +435,9 @@ assert.strictEqual(cardData['Factorum'].actionChoices[0].conditional, true, 'Fac
 assert.strictEqual(cardData['Factorum'].actionChoices[0].production.energy, 1, 'Factorum production branch should increase energy production');
 assert.strictEqual(cardData['Factorum'].actionChoices[1].stock.megacredits, -3, 'Factorum draw branch should pay 3 MC');
 assert.strictEqual(cardData['Factorum'].actionChoices[1].tagConstraint, 'building', 'Factorum draw branch should draw a building card');
+assert.strictEqual(hasOwn(effects['Viron'], 'actMC'), false, 'Viron should not expose action reuse as static MC income');
+assert.strictEqual(hasOwn(cardData['Viron'] || {}, 'action'), false, 'Viron should not expose action reuse as a flat stock action');
+assert.strictEqual(cardData['Viron'].actionChoices[0].reuseActionCard, true, 'Viron should expose blue-action reuse semantically');
 assert.strictEqual(cardData['Tycho Magnetics'].actionChoices[0].drawCardRatio.keepMax, 1, 'Tycho Magnetics should preserve its keep-1 draw action');
 assert.strictEqual(cardData['Kuiper Cooperative'].actionChoices[0].addResourcesPerTag.tag, 'space', 'Kuiper Cooperative should add asteroids per space tag');
 assert.strictEqual(hasOwn(effects['Stormcraft Incorporated'], 'hp'), false, 'Stormcraft Incorporated should not expose false heat production');

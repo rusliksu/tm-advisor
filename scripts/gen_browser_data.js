@@ -147,6 +147,14 @@ const ACTION_CHOICES = {
       tagConstraint: 'building',
     },
   ],
+  'Viron': [
+    {
+      label: 'Use a blue card action that has already been used this generation',
+      conditional: true,
+      reuseActionCard: true,
+      cardType: 'active',
+    },
+  ],
   'Tycho Magnetics': [
     {
       label: 'Spend any amount of energy to draw that many cards and keep 1',
