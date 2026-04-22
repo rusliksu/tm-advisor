@@ -13,6 +13,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 
 from tm_advisor.action_ordering import get_action_advice  # noqa: E402
+from tm_advisor.analysis import _dedupe_alerts  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -70,8 +71,30 @@ def assert_no_wrong_cross_card_leaks() -> None:
     assert any("plant" in line.lower() for line in greenhouses_lines), greenhouses_lines
 
 
+def assert_value_trade_alert_suppresses_track_only_trade_first() -> None:
+    alerts = _dedupe_alerts([
+        "🚀 Trade Miranda (+11.1 MC net, 1 Animals) [energy]",
+        "⚡ Trade FIRST: Callisto (contested — opponents haven't passed)",
+        "🔥 TR из 11 heat (+1 temp, +1 TR)",
+    ])
+
+    assert "🚀 Trade Miranda (+11.1 MC net, 1 Animals) [energy]" in alerts, alerts
+    assert all("Trade FIRST: Callisto" not in alert for alert in alerts), alerts
+    assert "🔥 TR из 11 heat (+1 temp, +1 TR)" in alerts, alerts
+
+
+def assert_track_only_trade_first_survives_without_value_trade() -> None:
+    alerts = _dedupe_alerts([
+        "⚡ Trade FIRST: Callisto (contested — opponents haven't passed)",
+    ])
+
+    assert alerts == ["⚡ Trade FIRST: Callisto (contested — opponents haven't passed)"], alerts
+
+
 def main() -> None:
     assert_no_wrong_cross_card_leaks()
+    assert_value_trade_alert_suppresses_track_only_trade_first()
+    assert_track_only_trade_first_survives_without_value_trade()
     print("advisor action-ordering regression checks: OK")
 
 
