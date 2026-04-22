@@ -599,6 +599,12 @@ def heartbeat_contract(recommendation: str, result: dict, summary: dict) -> dict
     }
 
 
+def target_server(identifier_or_url: str, server_override: str | None = None) -> tuple[str, str]:
+    identifier, url_server = extract_identifier(identifier_or_url)
+    server = server_override or url_server or os.getenv("TM_BASE_URL") or DEFAULT_SERVER
+    return identifier, server
+
+
 def watch_once(
     identifier: str,
     server: str,
@@ -622,6 +628,97 @@ def watch_once(
     }
 
 
+def watch_many(
+    identifiers_or_urls: list[str],
+    server_override: str | None,
+    stale_after: int,
+    include_claude: bool = True,
+) -> dict:
+    items = []
+    for raw_target in identifiers_or_urls:
+        identifier, server = target_server(raw_target, server_override)
+        try:
+            data = watch_once(identifier, server, "", stale_after, include_claude=include_claude)
+        except Exception as exc:
+            data = {
+                "audit": {"target": identifier, "server": server, "issues": [{"check": "watch-error"}]},
+                "summary": {
+                    "target": identifier,
+                    "server": server,
+                    "records": 0,
+                    "recommendation": "watch-error",
+                },
+                "recommendation": "watch-error",
+                "heartbeat": {
+                    "decision": "notify",
+                    "message": f"{identifier}: advisor watch failed: {exc}",
+                },
+                "log_path": str(default_log_path(identifier)),
+            }
+        data["input"] = raw_target
+        items.append(data)
+
+    heartbeat = aggregate_heartbeat_contract(items)
+    return {
+        "items": items,
+        "heartbeat": heartbeat,
+        "targets": identifiers_or_urls,
+    }
+
+
+def aggregate_heartbeat_contract(items: list[dict]) -> dict:
+    if not items:
+        return {
+            "decision": "notify",
+            "message": "No games were provided to watch.",
+            "remaining_targets": [],
+            "done_targets": [],
+        }
+
+    notify_items = [item for item in items if (item.get("heartbeat") or {}).get("decision") == "notify"]
+    done_items = [item for item in items if (item.get("heartbeat") or {}).get("decision") == "delete"]
+    done_item_ids = {id(item) for item in done_items}
+    remaining_items = [item for item in items if id(item) not in done_item_ids]
+
+    def _target(item: dict) -> str:
+        return (item.get("summary") or {}).get("target") or (item.get("audit") or {}).get("target") or "?"
+
+    done_targets = [_target(item) for item in done_items]
+    remaining_targets = [_target(item) for item in remaining_items]
+
+    if notify_items:
+        targets = ", ".join(_target(item) for item in notify_items)
+        return {
+            "decision": "notify",
+            "message": f"Advisor issues or watch errors in: {targets}. Keep heartbeat and inspect.",
+            "remaining_targets": remaining_targets,
+            "done_targets": done_targets,
+        }
+    if len(done_items) == len(items):
+        return {
+            "decision": "delete",
+            "message": "All watched games are terminal or stale; delete heartbeat.",
+            "remaining_targets": [],
+            "done_targets": done_targets,
+        }
+    if done_items:
+        return {
+            "decision": "update",
+            "message": (
+                f"Remove completed/stale games ({', '.join(done_targets)}); "
+                f"keep watching: {', '.join(remaining_targets)}."
+            ),
+            "remaining_targets": remaining_targets,
+            "done_targets": done_targets,
+        }
+    return {
+        "decision": "continue",
+        "message": "All watched games are active and advisor issues were not detected.",
+        "remaining_targets": remaining_targets,
+        "done_targets": [],
+    }
+
+
 def format_watch_once(data: dict) -> str:
     lines = [
         f"Advisor watch once: {data.get('log_path', '?')}",
@@ -632,6 +729,28 @@ def format_watch_once(data: dict) -> str:
         f"heartbeat_decision: {(data.get('heartbeat') or {}).get('decision')}",
         f"heartbeat_message: {(data.get('heartbeat') or {}).get('message')}",
     ]
+    return "\n".join(lines)
+
+
+def format_watch_many(data: dict) -> str:
+    items = data.get("items") or []
+    heartbeat = data.get("heartbeat") or {}
+    lines = [f"Advisor watch many: {len(items)} target(s)"]
+    for item in items:
+        summary = item.get("summary") or {}
+        item_heartbeat = item.get("heartbeat") or {}
+        lines.append(
+            f"- {summary.get('target') or '?'}: "
+            f"{(summary.get('last_state') or {}).get('label', '?')}, "
+            f"recommendation={summary.get('recommendation') or item.get('recommendation')}, "
+            f"heartbeat_decision={item_heartbeat.get('decision')}"
+        )
+    lines.append(f"heartbeat_decision: {heartbeat.get('decision')}")
+    lines.append(f"heartbeat_message: {heartbeat.get('message')}")
+    remaining = heartbeat.get("remaining_targets") or []
+    done = heartbeat.get("done_targets") or []
+    lines.append(f"remaining_targets: {', '.join(remaining) if remaining else '-'}")
+    lines.append(f"done_targets: {', '.join(done) if done else '-'}")
     return "\n".join(lines)
 
 
@@ -691,6 +810,15 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--watch-many",
+        nargs="+",
+        metavar="ID_OR_URL",
+        help=(
+            "Run watch-once for multiple games and print one aggregate heartbeat "
+            "decision. Uses default JSONL paths per game."
+        ),
+    )
+    parser.add_argument(
         "--server",
         default=None,
         help="TM server base URL. Defaults to URL host, TM_BASE_URL, or herokuapp.",
@@ -734,13 +862,21 @@ def main(argv: list[str] | None = None) -> int:
             print(format_summary(summary))
         return 0
 
+    stale_after = max(0, args.stale_after)
+    if args.watch_many:
+        data = watch_many(args.watch_many, args.server, stale_after, include_claude=not args.skip_claude)
+        if args.json:
+            print(json.dumps(data, ensure_ascii=False, indent=2))
+        else:
+            print(format_watch_many(data))
+        has_issues = any((item.get("audit") or {}).get("issues") for item in data.get("items") or [])
+        return 1 if has_issues else 0
+
     if not args.identifier:
         print("Advisor live audit failed: identifier is required unless --summary is used", file=sys.stderr)
         return 2
 
-    identifier, url_server = extract_identifier(args.identifier)
-    server = args.server or url_server or os.getenv("TM_BASE_URL") or DEFAULT_SERVER
-    stale_after = max(0, args.stale_after)
+    identifier, server = target_server(args.identifier, args.server)
 
     if args.watch_once:
         try:
