@@ -1771,6 +1771,58 @@ function expansionHtml(exp) {{
 }}
 
 let currentModalCard = null;
+const cardEls = Array.from(document.querySelectorAll('.card'));
+const tierRows = Array.from(document.querySelectorAll('.tier-row')).map((row) => ({{
+    row: row,
+    tier: row.dataset.tier || '',
+    countEl: row.querySelector('.tier-count'),
+    visibleCount: 0,
+}}));
+const tierRowsByTier = new Map(tierRows.map((meta) => [meta.tier, meta]));
+const cardRecords = cardEls.map((el) => {{
+    const name = el.dataset.name;
+    const card = cardsData[name] || null;
+    return {{
+        el: el,
+        name: name,
+        card: card,
+        tags: card && Array.isArray(card.tags) ? card.tags : [],
+        expansion: card ? card.expansion || '' : '',
+        mechanics: card && Array.isArray(card.mechanics) ? card.mechanics : [],
+        roles: card && Array.isArray(card.roles) ? card.roles : [],
+        tier: card ? card.tier || '' : '',
+        searchText: card ? (((card.name_ru || '') + ' ' + (card.name || '')).trim()).toLowerCase() : '',
+    }};
+}});
+const totalCards = cardRecords.length;
+const filterCountEl = document.getElementById('filterCount');
+const searchInputEl = document.getElementById('searchInput');
+const sortSelectEl = document.getElementById('sortSelect');
+const runSearchEl = document.getElementById('runSearch');
+const resetFiltersEl = document.getElementById('resetFilters');
+const modalOverlayEl = document.getElementById('modalOverlay');
+const modalEl = document.getElementById('modal');
+let filterApplyTimer = 0;
+let hashUpdateTimer = 0;
+
+function normalizeSearchValue(value) {{
+    return (value || '').toLowerCase().trim();
+}}
+
+function scheduleApplyFilters() {{
+    window.clearTimeout(filterApplyTimer);
+    filterApplyTimer = window.setTimeout(() => {{
+        filterApplyTimer = 0;
+        applyFilters();
+    }}, 120);
+}}
+
+function flushScheduledFilters() {{
+    if (filterApplyTimer) {{
+        window.clearTimeout(filterApplyTimer);
+        filterApplyTimer = 0;
+    }}
+}}
 
 function getVisibleCards() {{
     return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
@@ -1878,8 +1930,8 @@ function openModal(cardName) {{
         }});
     }});
 
-    document.getElementById('modalOverlay').classList.add('active');
-    document.getElementById('modal').scrollTop = 0;
+    modalOverlayEl.classList.add('active');
+    modalEl.scrollTop = 0;
     history.replaceState(null, '', '#' + encodeURIComponent(cardName));
 }}
 
@@ -1908,7 +1960,7 @@ function copyCardLink(cardName) {{
 
 function closeModal() {{
     const lastCard = currentModalCard;
-    document.getElementById('modalOverlay').classList.remove('active');
+    modalOverlayEl.classList.remove('active');
     currentModalCard = null;
     history.replaceState(null, '', window.location.pathname + window.location.search);
     // Scroll to and highlight the card in the grid
@@ -1939,34 +1991,34 @@ let searchQuery = '';
 
 function applyFilters() {{
     let shown = 0;
-    let total = 0;
+    const hasSearch = Boolean(searchQuery);
+    const hasTagFilters = activeTagFilters.size > 0;
+    const hasExpFilters = activeExpFilters.size > 0;
+    const hasMechanicFilters = activeMechanicFilters.size > 0;
+    const hasRoleFilters = activeRoleFilters.size > 0;
+    const hasTierFilters = activeTierFilters.size > 0;
 
-    document.querySelectorAll('.card').forEach(el => {{
-        total++;
-        const name = el.dataset.name;
-        const card = cardsData[name];
-        if (!card) return;
+    for (const tierMeta of tierRows) {{
+        tierMeta.visibleCount = 0;
+    }}
 
-        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
-        const cardExp = el.dataset.expansion || '';
-        const cardMechanics = el.dataset.mechanics ? el.dataset.mechanics.split(',') : [];
-        const cardRoles = el.dataset.roles ? el.dataset.roles.split(',') : [];
-        const cardTier = card.tier;
-        const displayName = (card.name_ru || '') + ' ' + card.name;
+    for (const record of cardRecords) {{
+        const card = record.card;
+        if (!card) continue;
 
         let visible = true;
 
         // Search filter
-        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {{
+        if (hasSearch && !record.searchText.includes(searchQuery)) {{
             visible = false;
         }}
 
         // Tag filter (AND: card must have ALL selected tags)
-        if (visible && activeTagFilters.size > 0) {{
+        if (visible && hasTagFilters) {{
             for (const tag of activeTagFilters) {{
                 if (tag === '_none') {{
-                    if (cardTags.length > 0) {{ visible = false; break; }}
-                }} else if (!cardTags.includes(tag)) {{
+                    if (record.tags.length > 0) {{ visible = false; break; }}
+                }} else if (!record.tags.includes(tag)) {{
                     visible = false;
                     break;
                 }}
@@ -1974,25 +2026,25 @@ function applyFilters() {{
         }}
 
         // Expansion filter (OR: card must match any selected expansion)
-        if (visible && activeExpFilters.size > 0) {{
-            if (!activeExpFilters.has(cardExp)) {{
+        if (visible && hasExpFilters) {{
+            if (!activeExpFilters.has(record.expansion)) {{
                 visible = false;
             }}
         }}
 
         // Mechanics filter (AND)
-        if (visible && activeMechanicFilters.size > 0) {{
+        if (visible && hasMechanicFilters) {{
             for (const mechanic of activeMechanicFilters) {{
-                if (!cardMechanics.includes(mechanic)) {{
+                if (!record.mechanics.includes(mechanic)) {{
                     visible = false;
                     break;
                 }}
             }}
         }}
 
-        if (visible && activeRoleFilters.size > 0) {{
+        if (visible && hasRoleFilters) {{
             for (const role of activeRoleFilters) {{
-                if (!cardRoles.includes(role)) {{
+                if (!record.roles.includes(role)) {{
                     visible = false;
                     break;
                 }}
@@ -2000,43 +2052,58 @@ function applyFilters() {{
         }}
 
         // Tier filter
-        if (visible && activeTierFilters.size > 0) {{
-            if (!activeTierFilters.has(cardTier)) {{
+        if (visible && hasTierFilters) {{
+            if (!activeTierFilters.has(record.tier)) {{
                 visible = false;
             }}
         }}
 
-        el.classList.toggle('filtered-out', !visible);
-        if (visible) shown++;
-    }});
+        const shouldHide = !visible;
+        if (record.el.classList.contains('filtered-out') !== shouldHide) {{
+            record.el.classList.toggle('filtered-out', shouldHide);
+        }}
+        if (visible) {{
+            shown++;
+            const tierMeta = tierRowsByTier.get(record.tier);
+            if (tierMeta) {{
+                tierMeta.visibleCount += 1;
+            }}
+        }}
+    }}
 
     // Hide empty tier rows
-    document.querySelectorAll('.tier-row').forEach(row => {{
-        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
-        row.classList.toggle('hidden', visibleCards.length === 0);
-        const countEl = row.querySelector('.tier-count');
-        if (countEl) countEl.textContent = visibleCards.length;
-    }});
+    for (const tierMeta of tierRows) {{
+        const shouldHideRow = tierMeta.visibleCount === 0;
+        if (tierMeta.row.classList.contains('hidden') !== shouldHideRow) {{
+            tierMeta.row.classList.toggle('hidden', shouldHideRow);
+        }}
+        if (tierMeta.countEl) {{
+            const nextCount = String(tierMeta.visibleCount);
+            if (tierMeta.countEl.textContent !== nextCount) {{
+                tierMeta.countEl.textContent = nextCount;
+            }}
+        }}
+    }}
 
-    const countEl = document.getElementById('filterCount');
     const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size || activeRoleFilters.size;
-    countEl.textContent = hasFilters ? '{l_shown}: ' + shown + ' {l_of} ' + total : '';
+    filterCountEl.textContent = hasFilters ? '{l_shown}: ' + shown + ' {l_of} ' + totalCards : '';
 }}
 
 // Search
-document.getElementById('searchInput').addEventListener('input', (e) => {{
-    searchQuery = e.target.value.toLowerCase().trim();
-    applyFilters();
+searchInputEl.addEventListener('input', () => {{
+    searchQuery = normalizeSearchValue(searchInputEl.value);
+    scheduleApplyFilters();
 }});
-document.getElementById('searchInput').addEventListener('keydown', (e) => {{
+searchInputEl.addEventListener('keydown', (e) => {{
     if (e.key === 'Enter') {{
-        searchQuery = e.target.value.toLowerCase().trim();
+        flushScheduledFilters();
+        searchQuery = normalizeSearchValue(searchInputEl.value);
         applyFilters();
     }}
 }});
-document.getElementById('runSearch').addEventListener('click', () => {{
-    const input = document.getElementById('searchInput');
-    searchQuery = input.value.toLowerCase().trim();
+runSearchEl.addEventListener('click', () => {{
+    flushScheduledFilters();
+    searchQuery = normalizeSearchValue(searchInputEl.value);
     applyFilters();
 }});
 
@@ -2064,21 +2131,21 @@ setupChipFilters('mechanicFilters', activeMechanicFilters, 'mechanic');
 setupChipFilters('roleFilters', activeRoleFilters, 'role');
 
 // Reset
-document.getElementById('resetFilters').addEventListener('click', () => {{
+resetFiltersEl.addEventListener('click', () => {{
+    flushScheduledFilters();
     searchQuery = '';
     activeTagFilters.clear();
     activeExpFilters.clear();
     activeTierFilters.clear();
     activeMechanicFilters.clear();
     activeRoleFilters.clear();
-    document.getElementById('searchInput').value = '';
+    searchInputEl.value = '';
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
-    updateHash();
 }});
 
 // --- URL Hash ---
-function updateHash() {{
+function writeHashNow() {{
     if (currentModalCard) return; // don't overwrite card hash while modal is open
     const parts = [];
     if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
@@ -2088,6 +2155,14 @@ function updateHash() {{
     if (activeMechanicFilters.size) parts.push('mech=' + [...activeMechanicFilters].map(encodeURIComponent).join(','));
     if (activeRoleFilters.size) parts.push('role=' + [...activeRoleFilters].map(encodeURIComponent).join(','));
     history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
+}}
+
+function updateHash() {{
+    window.clearTimeout(hashUpdateTimer);
+    hashUpdateTimer = window.setTimeout(() => {{
+        hashUpdateTimer = 0;
+        writeHashNow();
+    }}, 80);
 }}
 
 function loadFromHash() {{
@@ -2105,7 +2180,7 @@ function loadFromHash() {{
 
     if (params.q) {{
         searchQuery = decodeURIComponent(params.q).toLowerCase();
-        document.getElementById('searchInput').value = decodeURIComponent(params.q);
+        searchInputEl.value = decodeURIComponent(params.q);
     }}
     if (params.tier) {{
         params.tier.split(',').forEach(t => {{
@@ -2153,7 +2228,7 @@ applyFilters = function() {{
 }};
 
 // Sorting
-document.getElementById('sortSelect').addEventListener('change', (e) => {{
+sortSelectEl.addEventListener('change', (e) => {{
     const mode = e.target.value;
     document.querySelectorAll('.tier-cards').forEach(container => {{
         const cards = [...container.querySelectorAll('.card')];
@@ -2187,8 +2262,8 @@ document.querySelectorAll('.card').forEach(el => {{
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
 document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
-document.getElementById('modalOverlay').addEventListener('click', (e) => {{
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
+modalOverlayEl.addEventListener('click', (e) => {{
+    if (e.target === modalOverlayEl) closeModal();
 }});
 document.addEventListener('keydown', (e) => {{
     if (e.key === 'Escape') closeModal();
@@ -2202,13 +2277,12 @@ document.addEventListener('keydown', (e) => {{
 (function() {{
     let touchStartX = 0;
     let touchStartY = 0;
-    const modal = document.getElementById('modal');
-    if (!modal) return;
-    modal.addEventListener('touchstart', (e) => {{
+    if (!modalEl) return;
+    modalEl.addEventListener('touchstart', (e) => {{
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
     }}, {{passive: true}});
-    modal.addEventListener('touchend', (e) => {{
+    modalEl.addEventListener('touchend', (e) => {{
         if (!currentModalCard) return;
         const dx = e.changedTouches[0].clientX - touchStartX;
         const dy = e.changedTouches[0].clientY - touchStartY;
@@ -2251,14 +2325,13 @@ document.addEventListener('keydown', (e) => {{
 
 // Touch swipe for modal navigation
 (function() {{
-    const overlay = document.getElementById('modalOverlay');
     let touchStartX = 0;
     let touchStartY = 0;
-    overlay.addEventListener('touchstart', (e) => {{
+    modalOverlayEl.addEventListener('touchstart', (e) => {{
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
     }}, {{passive: true}});
-    overlay.addEventListener('touchend', (e) => {{
+    modalOverlayEl.addEventListener('touchend', (e) => {{
         const dx = e.changedTouches[0].screenX - touchStartX;
         const dy = e.changedTouches[0].screenY - touchStartY;
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {{
@@ -2278,7 +2351,7 @@ document.addEventListener('keydown', (e) => {{
     if (currentModalCard || document.activeElement.tagName === 'INPUT') return;
     if (e.key === '/') {{
         e.preventDefault();
-        document.getElementById('searchInput').focus();
+        searchInputEl.focus();
     }}
     if (e.key === 'j' || e.key === 'k') {{
         const tiers = Array.from(document.querySelectorAll('.tier-row'));
