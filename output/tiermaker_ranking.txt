@@ -635,7 +635,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    60  Nitrogen from Titan
    60  Water Import From Europa
    60  City Parks
-   60  Capital
    60  Martian Culture
    60  Public Sponsored Grant
    60  Red City
@@ -785,6 +784,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    50  Lava Tube Settlement
    50  Microgravity Nutrition
    50  Special Design
+   50  Capital
    50  Designed Organisms
    50  Lobby Halls
    50  Tunneling Loophole
