@@ -23,12 +23,60 @@ from scripts.tm_advisor.analysis import (  # noqa: E402
 from scripts.tm_advisor.colony_advisor import (  # noqa: E402
     analyze_trade_options, colony_strategy_advice,
 )
+from scripts.tm_advisor.draft_play_advisor import play_hold_advice  # noqa: E402
 from scripts.tm_advisor.economy import resource_values, game_phase  # noqa: E402
 from scripts.tm_advisor.opponent_intent import (  # noqa: E402
     analyze_opponent_intents, format_opponent_intent_warnings,
 )
 from scripts.tm_advisor.requirements import RequirementsChecker  # noqa: E402
 from scripts.tm_advisor.shared_data import resolve_data_path  # noqa: E402
+
+
+def _advisor_score_from_play_advice(row: dict) -> int | None:
+    priority = row.get("priority")
+    if priority is None:
+        return None
+    try:
+        priority = int(priority)
+    except (TypeError, ValueError):
+        return None
+
+    action = row.get("action", "")
+    play_value = row.get("play_value_now", 0) or 0
+    base = 100 - priority * 10
+    if action == "PLAY":
+        base += min(float(play_value), 9)
+    elif action == "HOLD":
+        base -= 5
+    elif action == "SELL":
+        base -= 10
+    return max(0, min(100, round(base)))
+
+
+def _merge_play_advice(hand_cards: list[dict], play_advice: list[dict]) -> list[dict]:
+    by_name = {row.get("name"): row for row in play_advice if row.get("name")}
+    for card in hand_cards:
+        advice = by_name.get(card.get("name"))
+        if not advice:
+            card["advisor_score"] = card.get("effective_score")
+            continue
+        card["play_action"] = advice.get("action")
+        card["play_priority"] = advice.get("priority")
+        card["play_value_now"] = advice.get("play_value_now")
+        card["play_reason"] = advice.get("reason")
+        card["advisor_score"] = _advisor_score_from_play_advice(advice)
+
+    if by_name:
+        hand_cards.sort(
+            key=lambda c: (
+                -(c.get("advisor_score") if c.get("advisor_score") is not None else c.get("effective_score", 0)),
+                c.get("play_priority", 99),
+                c.get("name", ""),
+            )
+        )
+    else:
+        hand_cards.sort(key=lambda c: c["effective_score"], reverse=True)
+    return hand_cards
 
 
 def snapshot(player_id: str) -> dict:
@@ -147,8 +195,15 @@ def snapshot(player_id: str) -> dict:
             "req_ok": req_ok,
             "req_reason": req_reason,
         })
-    hand_cards.sort(key=lambda c: c["effective_score"], reverse=True)
+    play_advice = []
+    try:
+        play_advice = play_hold_advice(state.cards_in_hand or [], state, synergy, req_checker)
+    except Exception:
+        play_advice = []
+    hand_cards = _merge_play_advice(hand_cards, play_advice)
     result["hand"] = hand_cards
+    if play_advice:
+        result["play_advice"] = play_advice
 
     if current_draft:
         draft_cards = []
