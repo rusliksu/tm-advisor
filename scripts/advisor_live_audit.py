@@ -569,6 +569,36 @@ def watch_recommendation(result: dict, summary: dict) -> str:
     return "continue"
 
 
+def heartbeat_contract(recommendation: str, result: dict, summary: dict) -> dict:
+    target = summary.get("target") or result.get("target") or "?"
+    last_state = (summary.get("last_state") or {}).get("label", "?")
+    if recommendation == "inspect-issues":
+        return {
+            "decision": "notify",
+            "message": f"{target}: advisor issues found at {last_state}; inspect and fix.",
+        }
+    if recommendation == "stop-heartbeat-terminal":
+        return {
+            "decision": "delete",
+            "message": f"{target}: terminal state reached ({last_state}); delete heartbeat.",
+        }
+    if recommendation == "stop-heartbeat-stale":
+        stale = summary.get("stale") or {}
+        stable_runs = stale.get("stable_runs", "?")
+        threshold = stale.get("threshold", "?")
+        return {
+            "decision": "delete",
+            "message": (
+                f"{target}: stale live state at {last_state} "
+                f"({stable_runs}/{threshold} identical checks); delete heartbeat."
+            ),
+        }
+    return {
+        "decision": "continue",
+        "message": f"{target}: {last_state}; no advisor issues.",
+    }
+
+
 def watch_once(
     identifier: str,
     server: str,
@@ -582,10 +612,12 @@ def watch_once(
     result["log_path"] = str(log_path)
     summary = summarize_jsonl(log_path, stale_after)
     recommendation = watch_recommendation(result, summary)
+    heartbeat = heartbeat_contract(recommendation, result, summary)
     return {
         "audit": result,
         "summary": summary,
         "recommendation": recommendation,
+        "heartbeat": heartbeat,
         "log_path": str(log_path),
     }
 
@@ -597,6 +629,8 @@ def format_watch_once(data: dict) -> str:
         "",
         format_summary(data.get("summary") or {}),
         f"watch_recommendation: {data.get('recommendation')}",
+        f"heartbeat_decision: {(data.get('heartbeat') or {}).get('decision')}",
+        f"heartbeat_message: {(data.get('heartbeat') or {}).get('message')}",
     ]
     return "\n".join(lines)
 
