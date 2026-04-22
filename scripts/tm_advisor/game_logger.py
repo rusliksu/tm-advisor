@@ -42,7 +42,7 @@ class GameLogger:
     def init_game_session(self, state):
         """Инициализирует game session ID и per-game лог при первом подключении."""
         player_names = sorted([state.me.name] + [o.name for o in state.opponents])
-        self._game_session_id = f"g{state.game_age}_{state.me.name}"
+        self._game_session_id = self._stable_game_session_id(state)
         os.makedirs(self._game_log_path, exist_ok=True)
 
         # Per-game detail log
@@ -75,6 +75,13 @@ class GameLogger:
         # Write game start to each player log
         for pname in self._player_log_paths:
             self.log_player_event(pname, "game_start", game_start_data)
+
+    @staticmethod
+    def _stable_game_session_id(state) -> str:
+        game_id = str(getattr(state, "game_id", "") or "").strip()
+        if game_id:
+            return game_id
+        return f"g{state.game_age}_{state.me.name}"
 
     def log_offer(self, phase: str, card_names: list[str], state, extra: dict = None):
         """Логирует предложение карт в JSONL (offers_log)."""
