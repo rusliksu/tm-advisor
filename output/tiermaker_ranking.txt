@@ -115,11 +115,11 @@ TERRAFORMING MARS TIER LIST — RANKING
 --- A Tier ---
    85  High Circles
    84  Great Aquifer
+   84  Suitable Infrastructure
    84  Central Reservoir
    82  UNMI Contractor
    82  Experimental Forest
    82  Planetary Alliance
-   82  Suitable Infrastructure
    82  Tunneling Operation
    81  Geological Expertise
    80  Allied Bank
@@ -127,6 +127,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    80  Metals Company
    80  Double Down
    80  Hydrogen Bombardment
+   80  Aerospace Mission
 
 --- B Tier ---
    79  Vital Colony
@@ -139,7 +140,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    76  Valuable Gases
    76  Deepwater Dome
    75  Metal-Rich Asteroid
-   75  Aerospace Mission
    74  Strategic Base Planning
    74  Supply Drop
    74  Corridors of Power

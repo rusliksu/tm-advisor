@@ -16,17 +16,17 @@
 
 ---
 
-## A-Tier (14) — Почти всегда берём
+## A-Tier (15) — Почти всегда берём
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
 | High Circles | 85 | Earth | Top Turmoil prelude |
 | Great Aquifer | 84 | — | Top-tier prelude on raw value |
+| Suitable Infrastructure | 84 | — | Upper-A engine prelude with a real floor and excellent upside |
 | Central Reservoir | 84 | Building | Сочетает сильный базовый эффект океана с полноценным входом в underground econom |
 | UNMI Contractor | 82 | Earth | Still one of the strongest generic preludes: 3 TR, a card, and an Earth tag is h |
 | Experimental Forest | 82 | Plant | Excellent prelude for ground play |
 | Planetary Alliance | 82 | Earth, Jovian, Venus | Three useful tags plus 2 TR and two selected cards is a very high-ceiling prelud |
-| Suitable Infrastructure | 82 | — | Strong engine prelude with a real floor and excellent upside |
 | Tunneling Operation | 82 | Building | Сильнейшая utility/economy прелюдия Underworld: и разворачивает механику, и сраз |
 | Geological Expertise | 81 | — | Комбинирует доступ к Underworld board и лучший тип card selection, поэтому почти |
 | Allied Bank | 80 | Earth | One of the best production preludes |
@@ -34,10 +34,11 @@
 | Metals Company | 80 | — | Near-universal pick |
 | Double Down | 80 | — | Pure ceiling multiplier |
 | Hydrogen Bombardment | 80 | — | One of the best Pathfinders preludes |
+| Aerospace Mission | 80 | — | Strong contextual colony opener rather than a merely decent one |
 
 ---
 
-## B-Tier (34) — Хорош с синергией
+## B-Tier (33) — Хорош с синергией
 
 | Прелюдия | Score | Теги | Ключевое |
 |----------|-------|------|----------|
@@ -51,7 +52,6 @@
 | Valuable Gases | 76 | — | High-variance prelude with a huge ceiling and a bad floor |
 | Deepwater Dome | 76 | Plant, Building | Стабильная сильная прелюдия без сложных условий |
 | Metal-Rich Asteroid | 75 | — | High value prelude (~30 MC when metals are spent) |
-| Aerospace Mission | 75 | — | Decent colony opener |
 | Strategic Base Planning | 74 | City, Building, Space | Strong in the right context: city + colony for 3 MC is excellent efficiency |
 | Supply Drop | 74 | — | High raw value (~27 MC) when you can spend all resources |
 | Corridors of Power | 74 | Earth | 1 TR + 4 MC + card draw engine via party leader |
@@ -193,6 +193,20 @@
 
 ---
 
+### Suitable Infrastructure (#?) — 84/A
+
+Теги: — | Дополнение: ?
+
+**Экономика:** 5 steel = 10 MC now. Ongoing: once per action, +2 MC whenever you increase any production. In a normal engine game this often triggers 7-10 times for ~14-20 MC, and repeated production actions can push it higher. Building tag ~2 MC. Total ~26-32 MC with a high ceiling in production-heavy starts.
+
+**Почему A (84):** Upper-A engine prelude with a real floor and excellent upside. The COTD discussion is unusually positive: the steel is already useful, and the refund becomes a strong cash engine when the opener can chain cheap production cards or repeatable production actions. It is not a colony card; its best colony-adjacent use is with effects that increase production while placing colonies, such as Poseidon or Europa trades. The main failure mode is still a hand with weak steel conversion and no plan to keep taking production actions.
+
+**Синергии:** Manutech, Robinson Industries, Mining Guild, Poseidon, Lakefront Resorts, Space Mirrors, Immigrant City, Europa colony
+
+**Когда брать:** High priority in production-heavy starts, especially with cheap prod cards, repeated production actions, or corps like Manutech, Robinson, Mining Guild, Poseidon, and Lakefront that keep triggering the refund. Downgrade it when the opener is mostly space/science tempo and neither the 5 steel nor the ongoing refund will convert quickly.
+
+---
+
 ### Central Reservoir (#UP09) — 84/A
 
 Теги: Building | Дополнение: Underworld
@@ -246,20 +260,6 @@
 **Синергии:** Saturn Systems, Point Luna, Aridor, Solarnet, Morning Star Inc.
 
 **Когда брать:** Usually strong when Venus is in the game. Especially valuable with Saturn Systems, Point Luna, Solarnet, or any opener that cares about tag count and tag diversity.
-
----
-
-### Suitable Infrastructure (#?) — 82/A
-
-Теги: — | Дополнение: ?
-
-**Экономика:** 5 steel = 10 MC now. Ongoing: once per action, +2 MC whenever you increase any production. In a normal engine game this often triggers 6-10 times for ~12-20 MC. Building tag ~2 MC. Total ~24-32 MC with a high ceiling in production-heavy starts.
-
-**Почему A (82):** Strong engine prelude with a real floor and excellent upside. 5 steel matters when the opener can actually convert it, but the real payoff is the ongoing refund on repeated production bumps: cheap prod cards, production preludes, and blue actions that keep nudging production up. Community discussion pushes it into the upper prelude tier when you can chain these small increases instead of just sitting on steel; the main failure mode is a hand with weak steel conversion and no plan to keep taking production actions.
-
-**Синергии:** Manutech, Robinson Industries, Acquired Company, Mining Area, Business Empire
-
-**Когда брать:** High priority in production-heavy starts, especially with cheap prod cards, repeated production actions, or corps like Manutech and Robinson that keep triggering the refund. Downgrade it when the opener is mostly space/science tempo and neither the 5 steel nor the ongoing refund will convert quickly.
 
 ---
 
@@ -358,6 +358,20 @@
 **Синергии:** CrediCor, Lakefront Resorts
 
 **Когда брать:** Almost always strong. Especially good in Space or Venus starts, but the baseline package is powerful enough for many generic openers too.
+
+---
+
+### Aerospace Mission (#?) — 80/A
+
+Теги: — | Дополнение: ?
+
+**Экономика:** Two colonies on gen 1 equal roughly 34 MC of standard colony-project value. The 14 MC payment reduces that to about 20 MC plus a Space tag before placement bonuses, tempo, and future trade leverage. With premium production/card colonies such as Luna, Triton, Ceres, Ganymede, Callisto, or Pluto, the practical value often lands in the upper prelude range.
+
+**Почему A (80):** Strong contextual colony opener rather than a merely decent one. Two immediate colonies can lock two premium rows before opponents contest the slots, stack placement bonuses, and create repeated trade targets for the rest of the game. The cash hit is real, so weak colony pools or low-cash starts still punish it, but in Colonies games with Luna, Triton, Ceres, Pluto, Ganymede, or even Callisto, it deserves A-tier treatment.
+
+**Синергии:** Poseidon, Aridor, Luna colony, Triton colony, Ceres colony, Pluto colony, Ganymede colony, Callisto colony, Cryo-Sleep
+
+**Когда брать:** Pick with colony-heavy corps or when at least two premium colonies are available, especially Luna, Triton, Ceres, Pluto, or Ganymede. Callisto is a smaller but real positive when it turns on trade tempo. Skip if the colony pool is weak or the 14 MC payment breaks your gen 1 plan.
 
 ---
 
@@ -498,20 +512,6 @@
 **Синергии:** Phobolog, Mining Area, Mining Rights, Steel Works, Titan Air-scrapping
 
 **Когда брать:** When you have building and space cards to spend the metals. Almost always a strong pick.
-
----
-
-### Aerospace Mission (#?) — 75/B
-
-Теги: — | Дополнение: ?
-
-**Экономика:** Two colonies on gen 1 equal roughly 34 MC of standard colony-project value. The 14 MC cost reduces that to about 20+ MC plus a Space tag, with real value rising if the colonies keep generating useful bonuses and trade access.
-
-**Почему B (75):** Decent colony opener. Two early colonies can create real tempo through placement bonuses, trade access, and long-term economy, and the prelude gets much better with corps like Poseidon or Aridor. The downside is the heavy cash hit and dependence on colony quality. Premium colony rows make it strong; weak rows leave it merely fair.
-
-**Синергии:** Poseidon, Aridor, Titan colony, Cryo-Sleep
-
-**Когда брать:** Pick with colony-heavy corps or when two premium colonies such as Luna, Titan, Ganymede, or Europa are available. Skip if the colony pool is weak.
 
 ---
 
