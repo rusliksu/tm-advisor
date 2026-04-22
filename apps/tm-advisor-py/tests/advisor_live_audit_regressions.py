@@ -101,6 +101,7 @@ def main() -> None:
 
     assert audit.safe_log_name("https://host/game?id=gabc123") == "https_host_game_id_gabc123"
     assert audit.default_log_path("gabc123").name == "gabc123.jsonl"
+    assert audit.resolve_summary_path("gabc123").name == "gabc123.jsonl"
 
     result = {
         "target": "gabc123",
@@ -168,6 +169,55 @@ def main() -> None:
     assert terminal_stale["stable_runs"] == 3, terminal_stale
     assert terminal_stale["terminal"] is True, terminal_stale
     assert terminal_stale["is_stale"] is False, terminal_stale
+
+    progressed_records = [
+        audit.jsonl_record({
+            **result,
+            "issues": [],
+            "players": [{**result["players"][0], "generation": 1, "phase": "research", "game_age": 10}],
+        }),
+        audit.jsonl_record({
+            **result,
+            "issues": [],
+            "players": [{**result["players"][0], "generation": 2, "phase": "action", "game_age": 20}],
+        }),
+        audit.jsonl_record({
+            **result,
+            "issues": [],
+            "players": [{**result["players"][0], "generation": 2, "phase": "action", "game_age": 21}],
+        }),
+    ]
+    progressed_summary = audit.summarize_records(progressed_records, stale_after=3)
+    assert progressed_summary["records"] == 3, progressed_summary
+    assert progressed_summary["timeline"] == ["gen 1 research", "gen 2 action"], progressed_summary
+    assert progressed_summary["last_state"]["label"] == "gen 2 action", progressed_summary
+    assert progressed_summary["issues_total"] == 0, progressed_summary
+    assert progressed_summary["recommendation"] == "continue", progressed_summary
+
+    stale_summary = audit.summarize_records([record, record, record], stale_after=3)
+    assert stale_summary["stale"]["is_stale"] is True, stale_summary
+    assert stale_summary["recommendation"] == "inspect-issues", stale_summary
+
+    clean_stale_record = audit.jsonl_record({**result, "issues": []})
+    clean_stale_summary = audit.summarize_records([clean_stale_record, clean_stale_record, clean_stale_record], 3)
+    assert clean_stale_summary["recommendation"] == "stop-heartbeat-stale", clean_stale_summary
+
+    terminal_summary = audit.summarize_records([terminal_record, terminal_record, terminal_record], 3)
+    assert terminal_summary["recommendation"] == "stop-heartbeat-terminal", terminal_summary
+    formatted = audit.format_summary(terminal_summary)
+    assert "records: 3" in formatted, formatted
+    assert "recommendation: stop-heartbeat-terminal" in formatted, formatted
+
+    with tempfile.TemporaryDirectory() as tmp:
+        log_path = Path(tmp) / "summary.jsonl"
+        for item in progressed_records:
+            audit.append_jsonl_record(item, log_path)
+        summary = audit.summarize_jsonl(log_path, stale_after=3)
+        assert summary["path"] == str(log_path), summary
+        assert summary["records"] == 3, summary
+
+    empty_summary = audit.summarize_records([], stale_after=3)
+    assert empty_summary["recommendation"] == "no-data", empty_summary
 
     print("advisor live audit regression checks: OK")
 
