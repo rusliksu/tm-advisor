@@ -9,6 +9,7 @@
     "advisor:cli": "python apps/tm-advisor-py/entrypoints/tm_advisor.py",
     "advisor:postgame": "python tools/advisor/postgame-summary.py",
     "advisor:snapshot": "python apps/tm-advisor-py/entrypoints/advisor_snapshot.py",
+    "advisor:live-audit": "python scripts/advisor_live_audit.py",
     "advisor:check-workflow": "node tools/advisor/sync-workflow.js --check",
     "advisor:sync-workflow": "node tools/advisor/sync-workflow.js",
     "check:all": "node tools/architecture/run-suite.js check:all",
