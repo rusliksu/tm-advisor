@@ -764,7 +764,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    52  Regolith Eaters
    52  Sub-zero Salt Fish
    52  Solar Power
-   52  Magnetic Field Dome
    52  Thermophiles
    52  Agro-Drones
    52  Data Leak
@@ -825,6 +824,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    44  Aerosport Tournament
    42  Supermarkets
    42  Cloud Seeding
+   42  Magnetic Field Dome
    42  Black Polar Dust
    42  Banned Delegate
    42  Icy Impactors
