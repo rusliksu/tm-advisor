@@ -8327,17 +8327,18 @@
   },
   "Banned Delegate": {
     "name": "Banned Delegate",
-    "score": 42,
+    "score": 48,
     "tier": "D",
     "type": "project",
-    "economy": "0+3=3 MC for removing 1 delegate. Value: 0-5 MC depending on timing (can secure chairman = 1 TR, or swing a party ruling). No tags. Chairman requirement is harsh.",
-    "reasoning": "Narrow Turmoil interaction card. Per COTD community, 'nothing gamebreaking but fun for cheap.' Can easily provide 1 VP for 3 MC which is solid economy. The Chairman requirement is not as hard as it seems in 3P. Experienced players appreciate the political disruption potential. Best as a free draw, low draft priority.",
+    "economy": "0+3=3 MC for removing one non-leader delegate. The floor is low because it has no tags and requires you to already be Chairman, but a good timing can protect a Chairman TR, secure a wanted ruling policy, or force an opponent into a 5-10 MC lobbying response.",
+    "reasoning": "Cheap but narrow Turmoil interaction. COTD frames it as nothing gamebreaking, but often worth the 3 MC when it preserves a Chairman point/influence or swings the next ruling policy. That is better than bottom-D filler, especially as a free draw or with event rebates. The Chairman requirement and all-expansions deck dilution still keep it out of C tier.",
     "synergies": [
       "Corridors of Power",
       "Rise To Power",
-      "Media Group"
+      "Media Group",
+      "Interplanetary Cinematics"
     ],
-    "when_to_pick": "Very low priority. Only if you are frequently Chairman and need to manipulate party politics.",
+    "when_to_pick": "Draft late or keep as a free draw when you are already investing in Turmoil control, expect to be Chairman, or need a specific ruling policy. Skip in non-political games and most opening hands.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1e5efhg/cotd_banned_delegate_17_jul_2024/"
   },
   "Designed Microorganisms": {

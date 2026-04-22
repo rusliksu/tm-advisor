@@ -801,6 +801,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    48  Vote Of No Confidence
    48  Water Splitting Plant
    48  Hackers
+   48  Banned Delegate
    48  Steelworks
    48  Small Comet
    48  Terraforming Robots
@@ -826,7 +827,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    42  Cloud Seeding
    42  Magnetic Field Dome
    42  Black Polar Dust
-   42  Banned Delegate
    42  Icy Impactors
    42  Land Claim
    42  Magnetic Field Generators
