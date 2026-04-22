@@ -4536,14 +4536,20 @@
   },
   "Investment Loan": {
     "name": "Investment Loan",
-    "score": 64,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
+    "opening_hand_bias": 2,
+    "opening_hand_note": "Worth keeping when it unlocks a concrete early play or milestone; otherwise it can sit in hand until the -1 MC production matters less.",
     "economy": "3 MC + 3 MC card = 6 MC cost. Gain 10 MC. -1 MC prod (~5 MC gen 1). Net: +4 MC immediate minus ongoing production loss. Earth tag. Event tag.",
-    "reasoning": "Strong tempo card. Per COTD community, 'gets passed far too often' — experienced players consider it near-autopick. The -1 MC-prod is a real cost but the 10 MC enables playing a good economy card a turn earlier, stealing a milestone, or surprise-ending the game. Almost always worth buying once drafted.",
+    "reasoning": "Strong tempo card. Per COTD community, it gets passed far too often: the -1 MC production is a real cost, but 10 MC now can play a good economy/plant card a generation earlier, secure a milestone, or surprise-end the game. TFMStats supports low B rather than C: played stats are positive, and starting-hand keeps are meaningfully better than skips despite not being automatic. Best drafted early and often held until the cash spike has a concrete payoff.",
     "synergies": [
       "Earth Office",
-      "Media Group"
+      "Media Group",
+      "Interplanetary Cinematics",
+      "Teractor",
+      "Point Luna",
+      "Solar Logistics"
     ],
     "when_to_pick": "When you need 10 MC now to play a key card a generation earlier. Better mid-late game when -1 MC-prod matters less. Great with event rebates.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1d2ftem/cotd_investment_loan_28_may_2024/"
