@@ -1239,16 +1239,18 @@
     "score": 73,
     "tier": "B",
     "type": "prelude",
-    "economy": "3 titanium is worth about 9 MC. Space tag adds about 1 MC. Effect: +2 MC per colony trade. 5-8 trades in a game means about 10-16 MC. Total value is about 20-26 MC.",
-    "reasoning": "Colony-oriented prelude with a decent base. Three titanium on gen 1 helps fund space cards, and the +2 MC per trade creates steady income in real Colonies games. In 3P, 5-8 trades is a reasonable range, so the ongoing effect often adds meaningful money. Without Colonies, though, it collapses to little more than titanium plus a Space tag.",
+    "economy": "3 titanium is worth about 9 MC, and the Space tag adds about 1 MC. The ongoing discount is 2 MC for each Jovian, Earth, or Venus tag you play, including multiple qualifying tags on the same card. With 3 discounted tags it is only a modest 16 MC package; with 5-6+ discounted tags it reaches normal-to-good prelude value.",
+    "reasoning": "COTD points to a situational B-tier engine prelude, not a colony card. The floor is just 3 titanium plus a Space tag, so weak hands should not overvalue it. The ceiling is real in planet-tag starts: Earth/Venus/Jovian shells can turn repeated tag discounts into a meaningful snowball, while the titanium helps pay for the early space/Jovian cards that make the line work.",
     "synergies": [
-      "Poseidon",
-      "Trade Fleet",
-      "Titan colony",
-      "Luna colony",
-      "Saturn Systems"
+      "Point Luna",
+      "Teractor",
+      "Morning Star Inc.",
+      "Saturn Systems",
+      "PhoboLog",
+      "Earth/Venus/Jovian tag engines",
+      "Public Spaceline"
     ],
-    "when_to_pick": "Pick in games with strong colonies where you expect to trade actively. Three titanium on gen 1 plus the ongoing trade bonus is a solid combination. Without Colonies, it is weak.",
+    "when_to_pick": "Pick when your starting hand already contains several Earth, Venus, or Jovian tags, or your corporation rewards those tags. It is a speculative trap if you only have generic space cards and no clear planet-tag follow-up.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1p4j61q/cotd_space_lanes_23_nov_2025/"
   },
   "Aquifer Turbines": {

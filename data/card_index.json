@@ -8226,11 +8226,11 @@
     ],
     "module": "prelude2",
     "expansion": "Prelude 2",
-    "description": "Gain 3 titanium.",
+    "description": "Gain 3 titanium. When you play a Jovian, Earth, or Venus tag, you pay 2 M€ less for it.",
     "hasAction": false,
     "compatibility": [],
     "startingMegaCredits": 0,
-    "description_ru": "Получите 3 титана."
+    "description_ru": "Получите 3 титана. Когда вы разыгрываете тег Юпитера, Земли или Венеры, вы платите на 2 M€ меньше за него."
   },
   "Terraforming Deal": {
     "name": "Terraforming Deal",
