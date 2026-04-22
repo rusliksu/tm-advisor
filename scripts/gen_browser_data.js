@@ -274,6 +274,43 @@ const ACTION_CHOICES = {
       stockPerTag: { tag: 'science', megacredits: 1 },
     },
   ],
+  'Think Tank': [
+    {
+      label: 'Spend 2 MC to place 1 data on any card',
+      stock: { megacredits: -2 },
+      addResources: 1,
+      resourceType: 'data',
+      target: 'any',
+    },
+  ],
+  'Electro Catapult': [
+    {
+      label: 'Spend 1 plant to gain 7 MC',
+      stock: { plants: -1, megacredits: 7 },
+    },
+    {
+      label: 'Spend 1 steel to gain 7 MC',
+      stock: { steel: -1, megacredits: 7 },
+    },
+  ],
+  'Directed Heat Usage': [
+    {
+      label: 'Spend 3 heat to gain 4 MC',
+      stock: { heat: -3, megacredits: 4 },
+    },
+    {
+      label: 'Spend 3 heat to gain 2 plants',
+      stock: { heat: -3, plants: 2 },
+    },
+  ],
+  'Martian Rails': [
+    {
+      label: 'Spend 1 energy to gain 1 MC for each city tile on Mars',
+      dynamic: true,
+      stock: { energy: -1 },
+      stockPerBoard: { per: 'mars_city_tile', megacredits: 1 },
+    },
+  ],
   'Red Ships': [
     {
       label: 'Gain 1 MC for each city and special tile adjacent to an ocean',
@@ -321,6 +358,43 @@ const ACTION_CHOICES = {
       variable: true,
       stockRatio: { titanium: -1, megacredits: 4 },
       maxSpend: { titanium: 4 },
+    },
+  ],
+  'Grey Market Exploitation': [
+    {
+      label: 'Spend 1 MC to gain 1 standard resource',
+      stock: { megacredits: -1 },
+      gainStandardResource: 1,
+    },
+    {
+      label: 'Spend 1 corruption to gain 3 of the same standard resource',
+      spendCorruption: 1,
+      gainStandardResource: 3,
+      sameStandardResource: true,
+    },
+  ],
+  'Personal Spacecruiser': [
+    {
+      label: 'Spend 1 energy to gain 2 MC for each corruption resource you have',
+      dynamic: true,
+      stock: { energy: -1 },
+      stockPerPlayerResource: { resourceType: 'corruption', megacredits: 2 },
+    },
+  ],
+  'Battery Factory': [
+    {
+      label: 'Spend 1 energy to gain 1 MC for each power tag you have',
+      dynamic: true,
+      stock: { energy: -1 },
+      stockPerTag: { tag: 'power', megacredits: 1 },
+    },
+  ],
+  'Martian Express': [
+    {
+      label: 'Remove all wares here to gain 1 MC for each ware removed',
+      conditional: true,
+      spendResourcesHere: 'all',
+      stockPerResourceHere: { resourceType: 'ware', megacredits: 1 },
     },
   ],
   'Mohole Lake': [
@@ -749,6 +823,7 @@ const RESOURCE_TYPE_OVERRIDES = {
   'Search for Life Underground': 'science',
   'Space Privateers': 'fighter',
   'Stem Field Subsidies': 'data',
+  'Think Tank': 'data',
   'Titan Manufacturing Colony': 'tool',
 };
 

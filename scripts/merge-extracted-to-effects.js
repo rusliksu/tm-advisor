@@ -116,6 +116,12 @@ const MANUAL_EFFECT_PATCHES = {
   'HE3 Refinery': {remove: ['actMC']},
   'Steel Market Monopolists': {remove: ['actMC']},
   'Titanium Market Monopolists': {remove: ['actMC']},
+  'Martian Rails': {remove: ['actMC', 'actEN']},
+  'Battery Factory': {remove: ['actMC', 'actEN']},
+  'Personal Spacecruiser': {remove: ['actMC', 'actEN']},
+  'Martian Express': {remove: ['actMC']},
+  'Grey Market Exploitation': {remove: ['actMC']},
+  'Think Tank': {remove: ['actMC', 'cd']},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},

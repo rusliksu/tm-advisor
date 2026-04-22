@@ -488,16 +488,41 @@ assert.strictEqual(cardData['Floating Trade Hub'].actionChoices[0].addResources,
 assert.strictEqual(cardData['Floating Trade Hub'].actionChoices[1].standardResourceChoice, true, 'Floating Trade Hub conversion branch should choose a standard resource');
 assert.strictEqual(cardData['Electro Catapult'].action.stock.megacredits, 7, 'Electro Catapult action should keep the 7 MC payout');
 assert.strictEqual(cardData['Electro Catapult'].action.stock.plants, -1, 'Electro Catapult action should expose its plant/steel spend cost');
+assert.strictEqual(cardData['Electro Catapult'].actionChoices.length, 2, 'Electro Catapult should preserve plant and steel cost branches');
+assert.strictEqual(cardData['Electro Catapult'].actionChoices[1].stock.steel, -1, 'Electro Catapult second branch should spend steel');
 assert.strictEqual(cardData['Directed Heat Usage'].action.stock.megacredits, 4, 'Directed Heat Usage action should keep the 4 MC payout');
 assert.strictEqual(cardData['Directed Heat Usage'].action.stock.heat, -3, 'Directed Heat Usage action should expose its heat cost');
-assert.strictEqual(cardData['Martian Rails'].action.stock.megacredits, 3, 'Martian Rails should keep the dynamic MC heuristic');
-assert.strictEqual(cardData['Martian Rails'].action.stock.energy, -1, 'Martian Rails should expose its energy cost');
+assert.strictEqual(cardData['Directed Heat Usage'].actionChoices.length, 2, 'Directed Heat Usage should preserve MC and plant branches');
+assert.strictEqual(cardData['Directed Heat Usage'].actionChoices[1].stock.plants, 2, 'Directed Heat Usage second branch should gain plants');
+assert.strictEqual(hasOwn(effects['Martian Rails'], 'actMC'), false, 'Martian Rails should not expose city-count scaling as static MC income');
+assert.strictEqual(hasOwn(cardData['Martian Rails'] || {}, 'action'), false, 'Martian Rails should not expose a cost-only static action');
+assert.strictEqual(cardData['Martian Rails'].actionChoices[0].stock.energy, -1, 'Martian Rails dynamic action should expose its energy cost');
+assert.strictEqual(cardData['Martian Rails'].actionChoices[0].stockPerBoard.per, 'mars_city_tile', 'Martian Rails should scale with Mars city tiles');
 assert.strictEqual(cardData['Space Elevator'].action.stock.megacredits, 5, 'Space Elevator action should keep the 5 MC payout');
 assert.strictEqual(cardData['Space Elevator'].action.stock.steel, -1, 'Space Elevator action should expose its steel cost');
-assert.strictEqual(cardData['Personal Spacecruiser'].action.stock.megacredits, 2, 'Personal Spacecruiser should keep the corruption MC heuristic');
-assert.strictEqual(cardData['Personal Spacecruiser'].action.stock.energy, -1, 'Personal Spacecruiser should expose its energy cost');
-assert.strictEqual(cardData['Battery Factory'].action.stock.megacredits, 2, 'Battery Factory should keep the power-tag MC heuristic');
-assert.strictEqual(cardData['Battery Factory'].action.stock.energy, -1, 'Battery Factory should expose its energy cost');
+for (const name of ['Battery Factory', 'Personal Spacecruiser']) {
+  assert.strictEqual(hasOwn(effects[name], 'actMC'), false, name + ' should not expose dynamic scaling as static MC income');
+  assert.strictEqual(hasOwn(cardData[name] || {}, 'action'), false, name + ' should not expose a cost-only static action');
+}
+assert.strictEqual(cardData['Battery Factory'].actionChoices[0].stock.energy, -1, 'Battery Factory dynamic action should expose its energy cost');
+assert.strictEqual(cardData['Battery Factory'].actionChoices[0].stockPerTag.tag, 'power', 'Battery Factory should scale with power tags');
+assert.strictEqual(cardData['Personal Spacecruiser'].actionChoices[0].stock.energy, -1, 'Personal Spacecruiser dynamic action should expose its energy cost');
+assert.strictEqual(cardData['Personal Spacecruiser'].actionChoices[0].stockPerPlayerResource.resourceType, 'corruption', 'Personal Spacecruiser should scale with corruption');
+assert.strictEqual(hasOwn(effects['Martian Express'], 'actMC'), false, 'Martian Express should not expose ware conversion as static MC income');
+assert.strictEqual(hasOwn(cardData['Martian Express'] || {}, 'action'), false, 'Martian Express should not expose a flat stock action');
+assert.strictEqual(cardData['Martian Express'].actionChoices[0].spendResourcesHere, 'all', 'Martian Express should remove all wares');
+assert.strictEqual(cardData['Martian Express'].actionChoices[0].stockPerResourceHere.resourceType, 'ware', 'Martian Express should scale with wares here');
+assert.strictEqual(hasOwn(effects['Grey Market Exploitation'], 'actMC'), false, 'Grey Market Exploitation should not expose resource choice as static MC loss');
+assert.strictEqual(hasOwn(cardData['Grey Market Exploitation'] || {}, 'action'), false, 'Grey Market Exploitation should not expose a cost-only static action');
+assert.strictEqual(cardData['Grey Market Exploitation'].actionChoices.length, 2, 'Grey Market Exploitation should preserve both standard-resource branches');
+assert.strictEqual(cardData['Grey Market Exploitation'].actionChoices[0].gainStandardResource, 1, 'Grey Market first branch should gain one standard resource');
+assert.strictEqual(cardData['Grey Market Exploitation'].actionChoices[1].spendCorruption, 1, 'Grey Market second branch should spend corruption');
+assert.strictEqual(hasOwn(effects['Think Tank'], 'actMC'), false, 'Think Tank should not expose paid data placement as static MC loss');
+assert.strictEqual(hasOwn(effects['Think Tank'], 'cd'), false, 'Think Tank should not expose the requirement-flex text as a card draw');
+assert.strictEqual(hasOwn(cardData['Think Tank'] || {}, 'behavior'), false, 'Think Tank should not draw a card on play');
+assert.strictEqual(hasOwn(cardData['Think Tank'] || {}, 'action'), false, 'Think Tank should not expose a cost-only static action');
+assert.strictEqual(cardData['Think Tank'].resourceType, 'data', 'Think Tank should expose data resources');
+assert.strictEqual(cardData['Think Tank'].actionChoices[0].addResources, 1, 'Think Tank action should add one data');
 for (const name of ['Industrial Center', 'Industrial Center:ares']) {
   assert.strictEqual(hasOwn(effects[name], 'sp'), false, name + ' should not expose steel production on play');
   assert.strictEqual(effects[name].actMC, -7, name + ' action should spend 7 MC');

@@ -1061,9 +1061,7 @@ const TM_CARD_EFFECTS = {
   "tr": 2
  },
  "Think Tank": {
-  "c": 12,
-  "cd": 1,
-  "actMC": -2
+  "c": 12
  },
  "Venera Base": {
   "c": 21,
@@ -2234,9 +2232,7 @@ const TM_CARD_EFFECTS = {
   "vp": 1
  },
  "Martian Rails": {
-  "c": 13,
-  "actMC": 3,
-  "actEN": -1
+  "c": 13
  },
  "Business Contacts": {
   "c": 7,
@@ -4227,8 +4223,7 @@ const TM_CARD_EFFECTS = {
   "vp": 0
  },
  "Grey Market Exploitation": {
-  "c": 4,
-  "actMC": -1
+  "c": 4
  },
  "Excavator Leasing": {
   "c": 8
@@ -4244,9 +4239,7 @@ const TM_CARD_EFFECTS = {
   "vp": -2
  },
  "Personal Spacecruiser": {
-  "c": 12,
-  "actMC": 2,
-  "actEN": -1
+  "c": 12
  },
  "Chemical Factory": {
   "c": 18
@@ -4263,9 +4256,7 @@ const TM_CARD_EFFECTS = {
   "c": 14
  },
  "Battery Factory": {
-  "c": 8,
-  "actMC": 2,
-  "actEN": -1
+  "c": 8
  },
  "Voltaic Metallurgy": {
   "c": 8
@@ -4275,7 +4266,6 @@ const TM_CARD_EFFECTS = {
  },
  "Martian Express": {
   "c": 5,
-  "actMC": 2,
   "vp": 1
  },
  "Detective TV Series": {

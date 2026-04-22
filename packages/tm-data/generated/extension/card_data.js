@@ -1429,6 +1429,22 @@ var TM_CARD_DATA = {
     "plants": -1
    }
   },
+  "actionChoices": [
+   {
+    "label": "Spend 1 plant to gain 7 MC",
+    "stock": {
+     "plants": -1,
+     "megacredits": 7
+    }
+   },
+   {
+    "label": "Spend 1 steel to gain 7 MC",
+    "stock": {
+     "steel": -1,
+     "megacredits": 7
+    }
+   }
+  ],
   "vp": {
    "type": "static",
    "vp": 1
@@ -2478,17 +2494,18 @@ var TM_CARD_DATA = {
   }
  },
  "Think Tank": {
-  "behavior": {
-   "stock": {
-    "cards": 1
-   },
-   "drawCard": 1
-  },
-  "action": {
-   "stock": {
-    "megacredits": -2
+  "actionChoices": [
+   {
+    "label": "Spend 2 MC to place 1 data on any card",
+    "stock": {
+     "megacredits": -2
+    },
+    "addResources": 1,
+    "resourceType": "data",
+    "target": "any"
    }
-  }
+  ],
+  "resourceType": "data"
  },
  "Venera Base": {
   "behavior": {
@@ -4134,7 +4151,23 @@ var TM_CARD_DATA = {
     "megacredits": 4,
     "heat": -3
    }
-  }
+  },
+  "actionChoices": [
+   {
+    "label": "Spend 3 heat to gain 4 MC",
+    "stock": {
+     "heat": -3,
+     "megacredits": 4
+    }
+   },
+   {
+    "label": "Spend 3 heat to gain 2 plants",
+    "stock": {
+     "heat": -3,
+     "plants": 2
+    }
+   }
+  ]
  },
  "Hospitals": {
   "behavior": {
@@ -5298,12 +5331,19 @@ var TM_CARD_DATA = {
   ]
  },
  "Martian Rails": {
-  "action": {
-   "stock": {
-    "megacredits": 3,
-    "energy": -1
+  "actionChoices": [
+   {
+    "label": "Spend 1 energy to gain 1 MC for each city tile on Mars",
+    "dynamic": true,
+    "stock": {
+     "energy": -1
+    },
+    "stockPerBoard": {
+     "per": "mars_city_tile",
+     "megacredits": 1
+    }
    }
-  },
+  ],
   "tags": [
    "building"
   ]
@@ -9580,11 +9620,21 @@ var TM_CARD_DATA = {
   ]
  },
  "Grey Market Exploitation": {
-  "action": {
-   "stock": {
-    "megacredits": -1
+  "actionChoices": [
+   {
+    "label": "Spend 1 MC to gain 1 standard resource",
+    "stock": {
+     "megacredits": -1
+    },
+    "gainStandardResource": 1
+   },
+   {
+    "label": "Spend 1 corruption to gain 3 of the same standard resource",
+    "spendCorruption": 1,
+    "gainStandardResource": 3,
+    "sameStandardResource": true
    }
-  },
+  ],
   "tags": [
    "crime"
   ]
@@ -9653,12 +9703,19 @@ var TM_CARD_DATA = {
   ]
  },
  "Personal Spacecruiser": {
-  "action": {
-   "stock": {
-    "megacredits": 2,
-    "energy": -1
+  "actionChoices": [
+   {
+    "label": "Spend 1 energy to gain 2 MC for each corruption resource you have",
+    "dynamic": true,
+    "stock": {
+     "energy": -1
+    },
+    "stockPerPlayerResource": {
+     "resourceType": "corruption",
+     "megacredits": 2
+    }
    }
-  },
+  ],
   "tags": [
    "crime",
    "space"
@@ -9739,12 +9796,19 @@ var TM_CARD_DATA = {
   ]
  },
  "Battery Factory": {
-  "action": {
-   "stock": {
-    "megacredits": 2,
-    "energy": -1
+  "actionChoices": [
+   {
+    "label": "Spend 1 energy to gain 1 MC for each power tag you have",
+    "dynamic": true,
+    "stock": {
+     "energy": -1
+    },
+    "stockPerTag": {
+     "tag": "power",
+     "megacredits": 1
+    }
    }
-  },
+  ],
   "tags": [
    "power",
    "building"
@@ -9790,11 +9854,17 @@ var TM_CARD_DATA = {
   ]
  },
  "Martian Express": {
-  "action": {
-   "stock": {
-    "megacredits": 2
+  "actionChoices": [
+   {
+    "label": "Remove all wares here to gain 1 MC for each ware removed",
+    "conditional": true,
+    "spendResourcesHere": "all",
+    "stockPerResourceHere": {
+     "resourceType": "ware",
+     "megacredits": 1
+    }
    }
-  },
+  ],
   "vp": {
    "type": "static",
    "vp": 1
