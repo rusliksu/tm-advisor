@@ -5804,11 +5804,13 @@
   },
   "Lake Marineris": {
     "name": "Lake Marineris",
-    "score": 76,
+    "score": 72,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": -5,
+    "opening_hand_note": "Strong when the temperature/ocean timing lines up, but not a generic opener keep: starting-hand stats are weak when merely offered, and oceans can disappear before 0 C.",
     "economy": "18 MC + 3 MC card = 21 MC. Full value is 2 VP plus 2 oceans: 2 TR, 2 VP, and two placement bonuses, usually about 28-34 MC before any ocean payoffs. Even with only one ocean left, 1 ocean + 2 VP can still be serviceable. No tags and the 0 C timing gate are the real costs.",
-    "reasoning": "Raised after COTD and TFMStats both point to an underrated timing card: Lake Marineris is rank 11/264 by avgEloChange, and experienced COTD comments call it one of the best cards when it gets both oceans. The old C score overstated the brick risk and even incorrectly implied steel payment. The risk is still real because it needs temperature at 0 C while oceans remain, so it belongs in high B rather than A.",
+    "reasoning": "Raised from C but kept in low B after balancing two signals. Played stats and COTD both say the payoff is excellent when it gets both oceans, and the old text even incorrectly implied steel payment. But the timing restriction is harsh: the card needs temperature at 0 C while oceans remain, and starting-hand stats are weak when it is merely offered. It is a strong tactical punish for heat-rush games, not a generic high-B keep.",
     "synergies": [
       "Special Design",
       "Arctic Algae",
@@ -5817,7 +5819,7 @@
       "Sagitta",
       "Heat rush"
     ],
-    "when_to_pick": "Speculate in the opening hand when temperature is likely to move or your hand can push heat. Draft strongly when temperature is approaching 0 C and at least one or two oceans remain; downgrade sharply in metas where oceans vanish before heat.",
+    "when_to_pick": "Do not keep generically in the opening hand. Speculate only when your hand/table can push heat or the meta tends to leave oceans open. Draft strongly when temperature is approaching 0 C and at least one or two oceans remain; downgrade sharply once oceans are racing ahead of heat.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1i44gxy/cotd_lake_marineris_18_jan_2025/"
   },
   "Lichen": {

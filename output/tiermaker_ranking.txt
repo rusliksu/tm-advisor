@@ -300,7 +300,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    76  Cartel
    76  Asteroid Mining Consortium
    76  Mining Rights
-   76  Lake Marineris
    76  Geological Expedition
    76  Venera Base
    76  Mining Area:ares
@@ -380,6 +379,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    72  Aerial Mappers
    72  Miranda Resort
    72  Inventors' Guild
+   72  Lake Marineris
    72  Pollinators
    72  High Temp. Superconductors
    72  Bio-Fertilizer Facility
