@@ -1336,7 +1336,7 @@ def _generate_alerts(state) -> list[str]:
         # 1 VP per 4 microbes
         "Tardigrades": (1, 4),
         # 1 VP per 3 microbes
-        "Decomposers": (1, 3), "Symbiotic Fungus": (1, 3), "Extremophiles": (1, 3),
+        "Decomposers": (1, 3), "Extremophiles": (1, 3),
         # 1 VP per 2 microbes
         "Ants": (1, 2),
         # 1 VP per 2 animals
@@ -2060,7 +2060,7 @@ def _vp_projection(state) -> list[str]:
         }
         # Cards that add extra resources of a type each gen
         RESOURCE_ADDERS = {
-            "animal": {"Symbiotic Fungus", "Ecological Zone"},
+            "animal": {"Ecological Zone"},
             "microbe": {"Symbiotic Fungus", "Decomposers", "Ants"},
         }
         tableau_names_set = {c.get("name", "") for c in p.tableau}
@@ -2374,8 +2374,6 @@ def _build_action_chains(db, req_checker, hand: list[dict], state) -> list[str]:
                 triggers.append("Decomposers +microbe")
             elif tname == "Viral Enhancers" and ("plant" in card_tags or "microbe" in card_tags or "animal" in card_tags):
                 triggers.append("Viral Enhancers trigger")
-            elif tname == "Symbiotic Fungus" and "microbe" in card_tags:
-                triggers.append("Symbiotic Fungus +microbe")
             elif tname == "Media Group" and info.get("type") == "event":
                 triggers.append("Media Group +3 MC")
             elif tname == "Mars University" and "science" in card_tags:
