@@ -1059,9 +1059,14 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         pushLine = '<div style="font-size:10px;opacity:0.85">TR: ' + _pushParts.join(' \u2192 ') + _pushAdvice + '</div>';
       }
     }
+    var secondaryTiming = incomeLine + cardGapLine + paramLine + maAlert;
+    var secondaryTimingHtml = secondaryTiming
+      ? '<details class="tm-advisor-more tm-advisor-timing-more"><summary>context</summary>' + secondaryTiming + '</details>'
+      : '';
+
     el.innerHTML = '<div class="tm-advisor-timing tm-dz-' + timing.dangerZone + '">' +
       dzIcon + ' Gen ' + gen + ' | ' + timing.steps + ' \u0448\u0430\u0433\u043e\u0432, ~' + displayEstimatedGens + ' \u043f\u043e\u043a.' + handCount +
-      budgetLine + incomeLine + cardGapLine + paramLine + pushLine + maAlert +
+      budgetLine + pushLine + secondaryTimingHtml +
       '</div>';
   }
 
@@ -1148,9 +1153,13 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     }
 
     if (warnings.length === 0) { el.innerHTML = ''; return; }
-    var html = '<div style="margin:3px 0;padding:3px 4px;background:rgba(243,156,18,0.12);border-radius:3px;border-left:2px solid #f39c12;font-size:10px">';
-    for (var wi = 0; wi < warnings.length; wi++) {
-      html += '<div style="padding:1px 0;color:#f5c842">' + warnings[wi] + '</div>';
+    var maxWarnings = 2;
+    var html = '<div class="tm-advisor-warnings">';
+    for (var wi = 0; wi < warnings.length && wi < maxWarnings; wi++) {
+      html += '<div>' + warnings[wi] + '</div>';
+    }
+    if (warnings.length > maxWarnings) {
+      html += '<div class="tm-advisor-muted">+' + (warnings.length - maxWarnings) + ' more</div>';
     }
     html += '</div>';
     el.innerHTML = html;
@@ -1247,12 +1256,12 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       for (var si = 0; si < strats.length; si++) {
         tags.push(strats[si].icon + ' ' + strats[si].label);
       }
-      lines.push('<b>' + _esc(pName) + '</b>: ' + tags.join(' + '));
+      lines.push('<span class="tm-advisor-chip"><b>' + _esc(pName) + '</b>: ' + tags.join(' + ') + '</span>');
     }
     if (lines.length === 0) { el.innerHTML = ''; return; }
-    el.innerHTML = '<div style="font-size:10px;margin-top:3px;padding:3px 4px;background:rgba(255,255,255,0.05);border-radius:3px;border-left:2px solid #e67e22">' +
-      '<div style="font-size:9px;opacity:0.5;margin-bottom:1px">\uD83D\uDD0D Opp strategies</div>' +
-      lines.join('<br>') + '</div>';
+    el.innerHTML = '<div class="tm-advisor-minor-section tm-advisor-opp-strat">' +
+      '<span class="tm-advisor-section-label">\uD83D\uDD0D Opp</span> ' +
+      lines.join(' ') + '</div>';
   }
 
   function normalizeBotActionLabel(title) {
@@ -1268,6 +1277,134 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (low.indexOf('award') >= 0 || low.indexOf('fund') >= 0) return 'Fund award';
     if (low.indexOf('colony') >= 0 || low.indexOf('build') >= 0) return 'Build colony';
     return raw || 'Action';
+  }
+
+  function advisorDetectMyCorp(state) {
+    var tableau = state && state.thisPlayer && Array.isArray(state.thisPlayer.tableau)
+      ? state.thisPlayer.tableau
+      : [];
+    var corpData = (typeof TM_CORPS !== 'undefined' && TM_CORPS) ? TM_CORPS : null;
+    for (var i = 0; i < tableau.length; i++) {
+      var card = tableau[i];
+      var name = '';
+      if (typeof card === 'string') name = card;
+      else if (card && typeof card === 'object') name = card.name || card.card || card.cardName || card.id || '';
+      name = String(name || '').trim();
+      if (!name || name === 'Merger') continue;
+      if (corpData && corpData[name]) return name;
+    }
+    var corpCard = state && state.thisPlayer ? (state.thisPlayer.corporationCard || state.thisPlayer.corpCard) : null;
+    if (corpCard) {
+      var corpName = typeof corpCard === 'string'
+        ? corpCard
+        : (corpCard.name || corpCard.card || corpCard.cardName || '');
+      corpName = String(corpName || '').trim();
+      if (corpName && corpName !== 'Merger') return corpName;
+    }
+    return '';
+  }
+
+  function advisorFtnRow(gl) {
+    var table = (typeof TM_FTN_TABLE !== 'undefined' && TM_FTN_TABLE) ? TM_FTN_TABLE : null;
+    var fallback = [7, 5, 5];
+    if (!table || !table.length) return fallback;
+    return table[gl] || table[table.length - 1] || fallback;
+  }
+
+  function advisorIsGreeneryTile(tileType) {
+    return tileType === 1 || tileType === 'greenery';
+  }
+
+  function formatSignedInt(value) {
+    if (typeof value !== 'number' || !isFinite(value)) return '';
+    var rounded = Math.round(value);
+    return (rounded > 0 ? '+' : '') + rounded;
+  }
+
+  function standardProjectToneClass(adj) {
+    if (typeof adj !== 'number' || !isFinite(adj)) return '';
+    if (adj >= 70) return ' tm-advisor-sp-row--good';
+    if (adj >= 55) return ' tm-advisor-sp-row--ok';
+    return ' tm-advisor-sp-row--bad';
+  }
+
+  function buildStandardProjectsHint(state) {
+    var spModule = (typeof TM_CONTENT_STANDARD_PROJECTS !== 'undefined' && TM_CONTENT_STANDARD_PROJECTS)
+      ? TM_CONTENT_STANDARD_PROJECTS
+      : null;
+    var sc = (typeof TM_SCORING_CONFIG !== 'undefined' && TM_SCORING_CONFIG)
+      ? TM_SCORING_CONFIG
+      : null;
+    if (!state || !state.thisPlayer || !state.game || !spModule || typeof spModule.computeAllSP !== 'function' || !sc) {
+      return null;
+    }
+    var gensLeft = typeof TM_ADVISOR.estimateGensLeft === 'function' ? TM_ADVISOR.estimateGensLeft(state) : 0;
+    if (typeof gensLeft !== 'number' || !isFinite(gensLeft)) gensLeft = 0;
+    var result = spModule.computeAllSP({
+      pv: state,
+      gensLeft: gensLeft,
+      myCorp: advisorDetectMyCorp(state),
+      ftnRow: advisorFtnRow,
+      isGreeneryTile: advisorIsGreeneryTile,
+      sc: sc
+    });
+    if (!result || !Array.isArray(result.all) || result.all.length === 0) return null;
+    return {
+      gensLeft: gensLeft,
+      best: result.best || null,
+      items: result.all.slice(0, 3)
+    };
+  }
+
+  function renderStandardProjectHint(hint) {
+    if (!hint || !hint.items || hint.items.length === 0) return '';
+    var best = hint.best || hint.items[0];
+    var html = '<div class="tm-advisor-bot-hint tm-advisor-sp-hint">' +
+      '<div class="tm-advisor-bot-title">\u2699 Standard actions' +
+      (typeof hint.gensLeft === 'number' && isFinite(hint.gensLeft)
+        ? ' <span class="tm-advisor-sp-gl">(GL~' + Math.round(hint.gensLeft) + ')</span>'
+        : '') +
+      '</div>';
+    if (best) {
+      html += '<div class="tm-advisor-bot-main"><b>' + _esc(best.name || '') + '</b>' +
+        (typeof best.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(best.score) + ')</span>' : '') +
+        (typeof best.net === 'number' ? ' <span class="tm-advisor-sp-net">' + formatSignedInt(best.net) + ' MC</span>' : '') +
+        '</div>';
+    }
+
+    var detailItems = [];
+    for (var i = 0; i < hint.items.length; i++) {
+      var item = hint.items[i];
+      if (best && item && best.name && item.name === best.name) continue;
+      detailItems.push(item);
+    }
+
+    if (detailItems.length > 0) {
+      html += '<details class="tm-advisor-more tm-advisor-sp-more"><summary>+' + detailItems.length + ' SP</summary>';
+      html += '<div class="tm-advisor-sp-list">';
+    }
+    for (var di = 0; di < detailItems.length; di++) {
+      var item = detailItems[di];
+      var reasonRows = Array.isArray(item.reasonRows) ? item.reasonRows : [];
+      var reasonJson = '';
+      try { reasonJson = JSON.stringify(reasonRows); } catch (e) { reasonJson = ''; }
+      html += '<div class="tm-advisor-sp-row' + standardProjectToneClass(item.adj) + '"' +
+        (reasonRows.length ? ' data-tm-reason-rows="' + _esc(reasonJson) + '"' : '') +
+        (item.reasons && item.reasons.length ? ' data-tm-reasons="' + _esc(item.reasons.join('|')) + '"' : '') +
+        '>' +
+        '<div class="tm-advisor-sp-head">' +
+          '<span class="tm-advisor-sp-name">' + _esc((item.icon ? item.icon + ' ' : '') + (item.name || '')) + '</span>' +
+          '<span class="tm-advisor-sp-score">' + (typeof item.adj === 'number' ? Math.round(item.adj) : '') + '</span>' +
+        '</div>' +
+        '<div class="tm-advisor-sp-meta">' +
+          (typeof item.net === 'number' ? '<span class="tm-advisor-sp-net">' + formatSignedInt(item.net) + ' MC</span>' : '') +
+          (item.detail ? '<span class="tm-advisor-sp-detail">' + _esc(item.detail) + '</span>' : '') +
+        '</div>' +
+      '</div>';
+    }
+    if (detailItems.length > 0) html += '</div></details>';
+    html += '</div>';
+    return html;
   }
 
   function buildBotActionHint(state) {
@@ -1326,6 +1463,11 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason) + '</div>' +
         (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
       '</div>';
+    }
+
+    var spHint = buildStandardProjectsHint(state);
+    if (spHint) {
+      html += renderStandardProjectHint(spHint);
     }
 
     // Award funding advisor
@@ -1690,8 +1832,16 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (myInfluence > 0) delInfo += ' infl:' + myInfluence;
     lines.push(delInfo);
 
-    el.innerHTML = '<div style="font-size:11px;margin-top:4px;padding:3px 0;border-top:1px solid rgba(255,255,255,0.1)">' +
-      lines.join('<br>') + '</div>';
+    var primaryTurmoil = lines.shift() || '';
+    var actionTurmoil = lines.shift() || '';
+    var moreTurmoil = lines.length
+      ? '<details class="tm-advisor-more tm-advisor-turmoil-more"><summary>details</summary>' + lines.join('<br>') + '</details>'
+      : '';
+    el.innerHTML = '<div class="tm-advisor-minor-section tm-advisor-turmoil-line">' +
+      '<div>' + primaryTurmoil + '</div>' +
+      (actionTurmoil ? '<div class="tm-advisor-turmoil-action">' + actionTurmoil + '</div>' : '') +
+      moreTurmoil +
+      '</div>';
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -1972,7 +2122,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     // Key S/A cards (top 8)
     var keyHtml = '';
     var saCards = (analysis.tierCards.S || []).concat(analysis.tierCards.A || []);
-    var shown = Math.min(saCards.length, 8);
+    var shown = Math.min(saCards.length, 3);
     for (var k = 0; k < shown; k++) {
       var c = saCards[k];
       keyHtml += '<span style="display:inline-block;margin:1px 3px;padding:1px 5px;' +
@@ -1988,7 +2138,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var synCards = analysis.synCards || [];
     var usedSources = {};  // track which tableau cards already shown as source
     var synShown = 0;
-    for (var s = 0; s < synCards.length && synShown < 5; s++) {
+    for (var s = 0; s < synCards.length && synShown < 2; s++) {
       var sc = synCards[s];
       // Filter out matches whose sources are all already used
       var newMatches = [];
@@ -2009,9 +2159,13 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       'Draft 4: S+A ' + (analysis.draftP.sa * 100).toFixed(0) + '% | ' +
       'B+ ' + (analysis.draftP.bPlus * 100).toFixed(0) + '%</span>';
 
+    var deckDetails = draftHtml +
+      (keyHtml ? '<div class="tm-advisor-deck-keys">' + keyHtml + '</div>' : '') +
+      (synHtml ? '<div class="tm-advisor-deck-synergy">' + synHtml + '</div>' : '');
+
     el.innerHTML =
-      '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:6px;padding-top:4px">' +
-        '<div style="font-size:12px;font-weight:bold;margin-bottom:3px">' +
+      '<div class="tm-advisor-deck-section">' +
+        '<div class="tm-advisor-deck-head">' +
           '\uD83C\uDCCF Deck: ' + analysis.deckSize +
           ' <span style="opacity:0.7;font-weight:normal">(' +
           '<span style="color:#FFBF7F">SA ' + (deckSize > 0 ? ((tcScaled.S + tcScaled.A) / deckSize * 100).toFixed(0) : 0) + '%</span>' +
@@ -2022,9 +2176,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         '<div style="display:flex;height:18px;border-radius:3px;overflow:hidden;margin-bottom:3px">' +
           barHtml +
         '</div>' +
-        draftHtml +
-        (keyHtml ? '<div style="margin-top:3px;line-height:20px">' + keyHtml + '</div>' : '') +
-        (synHtml ? '<div style="margin-top:3px;border-top:1px solid rgba(255,255,255,0.06);padding-top:2px">' + synHtml + '</div>' : '') +
+        '<details class="tm-advisor-more tm-advisor-deck-more"><summary>details</summary>' + deckDetails + '</details>' +
       '</div>';
   }
 

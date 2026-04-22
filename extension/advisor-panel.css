@@ -5,7 +5,7 @@
   top: 50%;
   right: 8px;
   transform: translateY(-50%);
-  width: 310px;
+  width: 325px;
   max-height: 70vh;
   overflow-y: auto;
   background: rgba(12, 12, 25, 0.96);
@@ -14,11 +14,20 @@
   border-radius: 8px;
   padding: 10px 14px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   z-index: 10002;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
   transition: width 0.2s, opacity 0.2s;
   line-height: 1.4;
+}
+
+.tm-advisor-body {
+  display: grid;
+  gap: 5px;
+}
+
+.tm-advisor-body > div:empty {
+  display: none;
 }
 
 .tm-advisor-panel.tm-advisor-dragging {
@@ -59,7 +68,7 @@
 }
 
 .tm-advisor-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   color: #f1c40f;
   cursor: pointer;
@@ -74,7 +83,7 @@
   background: none;
   border: 1px solid #555;
   color: #aaa;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1;
   padding: 2px 6px;
   border-radius: 3px;
@@ -88,8 +97,8 @@
 
 /* Timing block */
 .tm-advisor-timing {
-  margin-bottom: 8px;
-  padding: 8px 10px;
+  margin-bottom: 0;
+  padding: 7px 10px;
   border-radius: 6px;
   font-size: 15px;
   font-weight: bold;
@@ -114,7 +123,7 @@
 }
 
 .tm-advisor-timing-detail {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: normal;
   color: #aaa;
   margin-top: 4px;
@@ -131,7 +140,7 @@
   padding: 4px 8px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.04);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.6;
   color: #ccc;
 }
@@ -153,7 +162,7 @@
 
 /* Section headers in alerts */
 .tm-alert-section {
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   opacity: 0.35;
@@ -170,12 +179,12 @@
 
 /* Action checklist */
 .tm-advisor-actions {
-  margin-top: 6px;
+  margin-top: 0;
   padding: 4px 8px;
   border-radius: 4px;
   background: rgba(52, 152, 219, 0.08);
   border-left: 2px solid #3498db;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
   color: #aad;
 }
@@ -185,14 +194,14 @@
 }
 
 .tm-advisor-bot-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   margin-bottom: 2px;
   color: #d6e9ff;
 }
 
 .tm-advisor-bot-main {
-  font-size: 12px;
+  font-size: 13px;
   color: #f3f8ff;
 }
 
@@ -202,12 +211,12 @@
 
 .tm-advisor-bot-score {
   color: #7fc8ff;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .tm-advisor-bot-reason,
 .tm-advisor-bot-alt {
-  font-size: 10px;
+  font-size: 12px;
   color: #9fb8d1;
 }
 
@@ -215,12 +224,93 @@
   margin-top: 1px;
 }
 
+.tm-advisor-sp-hint {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tm-advisor-sp-gl {
+  color: #7fa6c6;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.tm-advisor-sp-list {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tm-advisor-sp-more .tm-advisor-sp-list {
+  margin-top: 3px;
+}
+
+.tm-advisor-sp-row {
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.tm-advisor-sp-row--good {
+  border-color: rgba(46, 204, 113, 0.35);
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.tm-advisor-sp-row--ok {
+  border-color: rgba(241, 196, 15, 0.3);
+  background: rgba(241, 196, 15, 0.08);
+}
+
+.tm-advisor-sp-row--bad {
+  border-color: rgba(231, 76, 60, 0.25);
+  background: rgba(231, 76, 60, 0.06);
+}
+
+.tm-advisor-sp-head,
+.tm-advisor-sp-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tm-advisor-sp-name {
+  color: #eef6ff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tm-advisor-sp-score {
+  color: #7fc8ff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tm-advisor-sp-meta {
+  margin-top: 1px;
+  font-size: 11px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-sp-net {
+  color: #d6e9ff;
+  white-space: nowrap;
+}
+
+.tm-advisor-sp-detail {
+  flex: 1 1 auto;
+  text-align: right;
+  color: #8ea7bf;
+}
+
 /* Pass indicator */
 .tm-advisor-pass {
-  margin-top: 8px;
+  margin-top: 0;
   padding: 6px 10px;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .tm-advisor-pass-safe {
@@ -240,7 +330,7 @@
 
 /* VP Lead */
 .tm-advisor-vp-lead {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   margin-top: 4px;
 }
@@ -256,11 +346,11 @@
 }
 
 .tm-advisor-compact .tm-advisor-vp-lead {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .tm-advisor-compact .tm-advisor-timing {
-  font-size: 13px;
+  font-size: 14px;
   padding: 5px 8px;
   margin-bottom: 4px;
 }
@@ -268,7 +358,7 @@
 .tm-advisor-compact .tm-advisor-pass {
   margin-top: 4px;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* Compact alerts — inline */
@@ -282,22 +372,113 @@
 }
 
 .tm-advisor-compact .tm-advisor-actions {
-  font-size: 10px;
+  font-size: 11px;
   padding: 2px 6px;
 }
 
 /* Details/Summary toggle */
-.tm-advisor-alerts details summary {
+.tm-advisor-panel details summary {
   cursor: pointer;
   list-style: none;
+  color: #9fb8d1;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
-.tm-advisor-alerts details summary::-webkit-details-marker {
+.tm-advisor-panel details summary::-webkit-details-marker {
   display: none;
 }
 
-.tm-advisor-alerts details[open] summary {
-  opacity: 0.3;
+.tm-advisor-panel details[open] summary {
+  margin-bottom: 3px;
+  opacity: 0.85;
+}
+
+.tm-advisor-more {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: normal;
+  color: #b8c1d4;
+}
+
+.tm-advisor-more > div {
+  font-weight: normal;
+}
+
+.tm-advisor-panel [style*="font-size:9px"] {
+  font-size: 10px !important;
+}
+
+.tm-advisor-panel [style*="font-size:10px"] {
+  font-size: 11px !important;
+}
+
+.tm-advisor-panel [style*="font-size:11px"] {
+  font-size: 12px !important;
+}
+
+.tm-advisor-panel [style*="font-size:12px"] {
+  font-size: 13px !important;
+}
+
+.tm-advisor-warnings {
+  margin: 0;
+  padding: 3px 5px;
+  background: rgba(243,156,18,0.12);
+  border-radius: 3px;
+  border-left: 2px solid #f39c12;
+  font-size: 11px;
+  color: #f5c842;
+}
+
+.tm-advisor-muted {
+  color: #9ea7b8;
+  opacity: 0.7;
+}
+
+.tm-advisor-minor-section,
+.tm-advisor-deck-section {
+  margin-top: 0;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.tm-advisor-section-label {
+  color: #9ea7b8;
+  font-weight: 600;
+}
+
+.tm-advisor-chip {
+  display: inline-block;
+  margin: 1px 2px 1px 0;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.05);
+  color: #d8dceb;
+}
+
+.tm-advisor-turmoil-action {
+  color: #f1c40f;
+}
+
+.tm-advisor-deck-head {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.tm-advisor-deck-keys {
+  margin-top: 3px;
+  line-height: 20px;
+}
+
+.tm-advisor-deck-synergy {
+  margin-top: 3px;
+  padding-top: 2px;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 /* Scrollbar */
