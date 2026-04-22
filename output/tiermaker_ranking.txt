@@ -739,6 +739,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    55  Asteroid Deflection System
    55  Diversity Support
    55  Adapted Lichen
+   55  Law Suit
    55  Great Escarpment Consortium
    55  Power Infrastructure
    55  Impactor Swarm
@@ -758,7 +759,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    54  Induced Tremor
    52  Self-replicating Robots
    52  Interplanetary Trade
-   52  Law Suit
    52  Outdoor Sports
    52  Red Tourism Wave
    52  Regolith Eaters
