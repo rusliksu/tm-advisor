@@ -133,6 +133,8 @@ def _filter_alerts_against_play_advice(alerts: list[str], play_advice: list[dict
             if action != "PLAY" and (
                 alert.startswith(f"⚠️ {name} В РУКЕ")
                 or alert.startswith(f"🎯 Play {name} EARLY")
+                or alert.startswith(f"⏰ {name}:")
+                or f"PLAY {name} NOW" in alert
             ):
                 skip = True
                 break
