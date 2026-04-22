@@ -300,6 +300,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    76  Cartel
    76  Asteroid Mining Consortium
    76  Mining Rights
+   76  Lake Marineris
    76  Geological Expedition
    76  Venera Base
    76  Mining Area:ares
@@ -467,7 +468,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    67  Strip Mine
    67  Rover Construction
    67  Giant Solar Shade
-   67  Lake Marineris
    67  Venus Trade Hub
    67  Corporate Stronghold
    67  Venus Allies

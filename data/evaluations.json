@@ -5804,17 +5804,20 @@
   },
   "Lake Marineris": {
     "name": "Lake Marineris",
-    "score": 67,
-    "tier": "C",
+    "score": 76,
+    "tier": "B",
     "type": "project",
-    "economy": "18 MC + 3 MC card = 21 MC. 2 VP + 2 oceans (2 TR + placement bonuses). At full value: ~24-28 MC. But requires 0C AND 2 ocean spots available. No tags = -3 to -5 penalty.",
-    "reasoning": "When played for full value (both oceans), it's one of the best cards in the game — per COTD community, 'what's not to like?' at 21 MC for 4 VP + 2 ocean bonuses. But the 0C requirement + needing 2 ocean spots makes full value uncommon in 3P where oceans fill fast. Experienced players note even 1 ocean + 2 VP for 21 MC is acceptable, especially with Lakefront. Steel-payable helps.",
+    "economy": "18 MC + 3 MC card = 21 MC. Full value is 2 VP plus 2 oceans: 2 TR, 2 VP, and two placement bonuses, usually about 28-34 MC before any ocean payoffs. Even with only one ocean left, 1 ocean + 2 VP can still be serviceable. No tags and the 0 C timing gate are the real costs.",
+    "reasoning": "Raised after COTD and TFMStats both point to an underrated timing card: Lake Marineris is rank 11/264 by avgEloChange, and experienced COTD comments call it one of the best cards when it gets both oceans. The old C score overstated the brick risk and even incorrectly implied steel payment. The risk is still real because it needs temperature at 0 C while oceans remain, so it belongs in high B rather than A.",
     "synergies": [
       "Special Design",
       "Arctic Algae",
-      "Kelp Farming"
+      "Kelp Farming",
+      "Lakefront Resorts",
+      "Sagitta",
+      "Heat rush"
     ],
-    "when_to_pick": "Speculate in opening hand if you plan to rush temperature. Draft mid-game only if oceans remain near 0C temp.",
+    "when_to_pick": "Speculate in the opening hand when temperature is likely to move or your hand can push heat. Draft strongly when temperature is approaching 0 C and at least one or two oceans remain; downgrade sharply in metas where oceans vanish before heat.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1i44gxy/cotd_lake_marineris_18_jan_2025/"
   },
   "Lichen": {
