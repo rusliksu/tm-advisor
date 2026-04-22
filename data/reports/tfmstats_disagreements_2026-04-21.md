@@ -35,7 +35,7 @@ No actionable manual-review rows remain.
 | Protected Habitats | Already has local opener penalty | 70 B | 26 | -44 | 0.31 | 0.49 | -0.36 | 94% | 11298 |
 | Tropical Resort | Already has local opener penalty | 56 C | 13 | -43 | 0.52 | 0.43 | -1.49 | 7% | 11136 |
 | Lava Tube Settlement | Already low local score; deprioritize score cut | 50 D | 7 | -43 | -0.07 | 0.30 | -0.57 | 58% | 10395 |
-| Caretaker Contract | Already has local opener penalty | 54 C | 12 | -42 | 0.45 | 0.44 | -1.76 | 1% | 11414 |
+| Caretaker Contract | Already has local opener penalty | 54 D | 12 | -42 | 0.45 | 0.44 | -1.76 | 1% | 11414 |
 | Solar Power | Already low local score; deprioritize score cut | 52 D | 10 | -42 | 0.04 | 0.45 | -0.68 | 41% | 11425 |
 | SF Memorial | Already has local opener penalty | 55 C | 14 | -41 | 0.28 | 0.31 | -0.46 | 52% | 10268 |
 | Soletta | Already has local opener penalty | 50 D | 10 | -40 | -0.66 | 0.42 | -0.40 | 45% | 11455 |

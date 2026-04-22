@@ -19,6 +19,15 @@ const VALID_TIERS = new Set(['S', 'A', 'B', 'C', 'D', 'F']);
 const evaluationsPath = path.join(ROOT, 'data', 'evaluations.json');
 const cotdLookupPath = path.join(ROOT, 'data', 'cotd_lookup.json');
 
+function scoreToTier(score) {
+  if (score >= 90) return 'S';
+  if (score >= 80) return 'A';
+  if (score >= 70) return 'B';
+  if (score >= 55) return 'C';
+  if (score >= 35) return 'D';
+  return 'F';
+}
+
 function loadJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
@@ -66,6 +75,11 @@ function validateEvaluations(evaluations, cotdLookup) {
       }
       if (!VALID_TIERS.has(card.tier)) {
         pushLimited(errors, `${name}: invalid tier "${card.tier}"`);
+      } else {
+        const expectedTier = scoreToTier(card.score);
+        if (card.tier !== expectedTier) {
+          pushLimited(errors, `${name}: tier "${card.tier}" does not match score ${card.score}; expected "${expectedTier}"`);
+        }
       }
     }
 
