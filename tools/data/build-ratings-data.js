@@ -6,7 +6,29 @@ function truncate(text, maxLen) {
   return text.length > maxLen ? text.slice(0, maxLen - 3) + '...' : text;
 }
 
-function buildRatingsFromEvaluations(evaluations) {
+function normalizeName(name) {
+  return String(name || '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function buildNormalizedLookup(items) {
+  const normalized = new Map();
+  for (const [key, value] of Object.entries(items || {})) {
+    const normalizedKey = normalizeName(key);
+    if (normalizedKey && typeof value === 'string' && value.trim() && !normalized.has(normalizedKey)) {
+      normalized.set(normalizedKey, value.trim());
+    }
+  }
+  return normalized;
+}
+
+function buildRatingsFromEvaluations(evaluations, options = {}) {
+  const advisorNotesRu = options.advisorNotesRu || {};
+  const advisorNotesRuNormalized = buildNormalizedLookup(advisorNotesRu);
+  const descriptionRuByName = options.descriptionRuByName || {};
+  const descriptionRuByNameNormalized = buildNormalizedLookup(descriptionRuByName);
   const ratings = {};
 
   for (const [key, card] of Object.entries(evaluations)) {
@@ -16,6 +38,14 @@ function buildRatingsFromEvaluations(evaluations) {
     if (score === null || score === undefined || !tier) continue;
 
     const entry = {s: score, t: tier};
+
+    const noteRu = truncate(
+      advisorNotesRu[name] || advisorNotesRuNormalized.get(normalizeName(name)) || '',
+      120
+    );
+    if (noteRu) {
+      entry.nr = noteRu;
+    }
 
     const openingBias = card.opening_hand_bias;
     if (Number.isInteger(openingBias) && openingBias !== 0) {
@@ -37,7 +67,10 @@ function buildRatingsFromEvaluations(evaluations) {
       entry.w = whenToPick;
     }
 
-    const descriptionRu = card.description_ru || '';
+    const descriptionRu = card.description_ru
+      || descriptionRuByName[name]
+      || descriptionRuByNameNormalized.get(normalizeName(name))
+      || '';
     if (descriptionRu) {
       entry.dr = descriptionRu;
     }
