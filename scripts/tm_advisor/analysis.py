@@ -1182,9 +1182,9 @@ def _generate_alerts(state) -> list[str]:
     # === 2. Colony trade one-liner ===
     if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
         try:
-            from .colony_advisor import analyze_trade_options
+            from .colony_advisor import analyze_trade_options, is_actionable_trade_hint
             tr = analyze_trade_options(state)
-            if tr.get("best_hint") and "невыгоден" not in tr["best_hint"].lower():
+            if is_actionable_trade_hint(tr.get("best_hint")):
                 best = tr["trades"][0] if tr["trades"] else None
                 rec = f"🚀 {tr['best_hint']}"
                 if best:
@@ -1376,7 +1376,9 @@ def _dedupe_alerts(alerts: list[str]) -> list[str]:
     deduped = []
     seen = set()
     has_value_trade_alert = any(
-        alert.startswith("🚀 Trade ") or alert.startswith("🚀 Best trade")
+        alert.startswith("🚀 Trade ")
+        or alert.startswith("🚀 Best trade")
+        or alert.startswith("🚀 Сначала ")
         for alert in alerts
     )
 
@@ -1390,7 +1392,12 @@ def _dedupe_alerts(alerts: list[str]) -> list[str]:
             trade_targets = alert.removeprefix("⚡ Trade FIRST: ").split("(", 1)[0].strip()
             targets = [t.strip() for t in trade_targets.split(",") if t.strip()]
             if any(
-                prev.startswith("🚀 Trade ") and any(target in prev for target in targets)
+                (
+                    prev.startswith("🚀 Trade ")
+                    or prev.startswith("🚀 Best trade")
+                    or prev.startswith("🚀 Сначала ")
+                )
+                and any(target in prev for target in targets)
                 for prev in deduped
             ):
                 continue
