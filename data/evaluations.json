@@ -4215,11 +4215,13 @@
   },
   "Invention Contest": {
     "name": "Invention Contest",
-    "score": 70,
+    "score": 72,
     "tier": "B",
     "type": "project",
+    "opening_hand_bias": 4,
+    "opening_hand_note": "Strong starting-hand buy for engine/science plans, but not an automatic gen 1 play if 5 MC delays production or the drawn card cannot matter soon.",
     "economy": "2 MC + 3 MC card = 5 MC for 1 curated card (look at 3, keep 1). Card value ~3-4 MC, but curated selection worth more. Science tag ~3-5 MC. Event tag.",
-    "reasoning": "Per COTD community, curated draw (look 3 pick 1) is materially better than random draw, and the Science/Event tags make the 5 MC total cost easy to discount or turn into extra triggers. 2026 COTD nuance: strong opening-hand buy for engine/2P plans, but not an automatic gen 1 play if the new card cannot be used soon or 3 MC delays production.",
+    "reasoning": "Per COTD community, curated draw (look 3 pick 1) is materially better than random draw, and the Science/Event tags make the 5 MC total cost easy to discount or turn into extra triggers. TFMStats supports a small bump: it is kept from starting hands about 90% of the time and kept starts are meaningfully positive. The 2026 COTD nuance still matters: this is a strong opening-hand buy for engine/2P plans, but not an automatic gen 1 play if the new card cannot be used soon or 3 MC delays production.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
