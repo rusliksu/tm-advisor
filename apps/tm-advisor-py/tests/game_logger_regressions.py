@@ -21,13 +21,36 @@ def load_logger_module():
     return module
 
 
-def make_state(game_id: str):
-    me = SimpleNamespace(name="Ruslan")
+def make_player(name: str, *, hand_size: int = 0):
+    return SimpleNamespace(
+        name=name,
+        corp="Inventrix",
+        tr=20,
+        mc=30,
+        tags={},
+        raw={
+            "cardsInHandNbr": hand_size,
+            "actionsThisGeneration": [],
+            "tableau": [{"name": "Inventrix"}],
+        },
+    )
+
+
+def make_state(game_id: str, hand: list[str] | None = None):
+    hand = hand or []
+    me = make_player("Ruslan", hand_size=len(hand))
     return SimpleNamespace(
         game_id=game_id,
         game_age=1370,
+        generation=3,
+        oxygen=4,
+        temperature=-18,
+        oceans=2,
+        venus=8,
+        phase="action",
         me=me,
-        opponents=[SimpleNamespace(name="Alice")],
+        opponents=[make_player("Alice", hand_size=5)],
+        cards_in_hand=[{"name": name} for name in hand],
         board_name="hellas",
         is_wgt=True,
         is_draft=True,
@@ -57,7 +80,23 @@ def main() -> None:
         assert first_event["game_id"] == "gbe04cd365122"
         assert first_event["event"] == "game_start"
 
+        logger.diff_and_log_state(make_state("gbe04cd365122", ["Comet", "Trees"]))
+        logger.diff_and_log_state(make_state("gbe04cd365122", ["Comet", "Asteroid"]))
+        events = [
+            json.loads(line)
+            for line in game_log.read_text(encoding="utf-8").splitlines()
+        ]
+        state_diff = [event for event in events if event["event"] == "state_diff"][-1]
+        hand_changes = state_diff["player_changes"]["Ruslan"]
+        assert hand_changes["hand_added"] == ["Asteroid"]
+        assert hand_changes["hand_removed"] == ["Trees"]
+
     assert module.GameLogger._stable_game_session_id(make_state("")) == "g1370_Ruslan"
+    logger = module.GameLogger("unused", "unused")
+    initial = logger.snapshot_state(make_state("gbe04cd365122", ["Comet", "Trees"]))
+    assert initial["players"]["Ruslan"]["hand"] == ["Comet", "Trees"]
+    assert "hand" not in initial["players"]["Alice"]
+
     print("advisor game logger regression checks: OK")
 
 
