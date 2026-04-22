@@ -89,6 +89,8 @@ def main() -> None:
             "⚠️ Ecological Zone В РУКЕ gen 5! Ongoing эффект теряет value каждый gen. ИГРАЙ СЕЙЧАС или ПРОДАЙ",
             "🎯 Play Herbivores EARLY: trigger-карта, каждый ход оппонентов = бонус",
             "⚠️ GHG Producing Bacteria без Extreme-Cold Fungus = медленный action (2 хода на 1 TR/O₂). Рассмотри продажу.",
+            "⏰ Greenhouses: gain plants per city on Mars — играй ПОСЛЕДНИМ действием",
+            "🌿 PLAY Greenhouses NOW: последний gen, max городов на карте!",
             "💰 Income: MC 0+TR 22",
         ],
         [
@@ -97,6 +99,7 @@ def main() -> None:
             {"name": "Noctis City", "action": "HOLD", "priority": 6},
             {"name": "Ecological Zone", "action": "HOLD", "priority": 6},
             {"name": "Herbivores", "action": "SELL", "priority": 9},
+            {"name": "Greenhouses", "action": "SELL", "priority": 9},
         ],
     )
     assert filtered_alerts == ["⏳ Noctis City — обычно late city", "💰 Income: MC 0+TR 22"], filtered_alerts
