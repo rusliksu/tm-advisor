@@ -132,7 +132,7 @@ def build_player_state(player_id: str, snapshot_fn, base_url: str) -> dict:
 
 
 def card_score(card: dict) -> int | None:
-    return card.get("effective_score", card.get("adjusted_score", card.get("base_score")))
+    return card.get("advisor_score", card.get("effective_score", card.get("adjusted_score", card.get("base_score"))))
 
 
 def draft_score(card: dict) -> int | None:

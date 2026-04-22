@@ -92,6 +92,7 @@ function run() {
   runPythonScript('late_colony_regressions.py');
   runPythonScript('late_draw_regressions.py');
   runPythonScript('endgame_allocation_regressions.py');
+  runPythonScript('snapshot_regressions.py');
   runPythonScript('opponent_intent_regressions.py');
   runPythonScript('microbe_resource_regressions.py');
   runPythonScript('astra_consistency_regressions.py');
