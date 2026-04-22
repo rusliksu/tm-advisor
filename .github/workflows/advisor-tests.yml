@@ -6,6 +6,7 @@ on:
     paths:
       - 'apps/tm-advisor-py/**'
       - 'scripts/tm_advisor/**'
+      - 'scripts/watch_live_game.py'
       - 'packages/tm-advisor-js/**'
       - 'packages/tm-data/generated/extension/**'
       - 'data/**'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'apps/tm-advisor-py/**'
       - 'scripts/tm_advisor/**'
+      - 'scripts/watch_live_game.py'
       - 'packages/tm-advisor-js/**'
       - 'packages/tm-data/generated/extension/**'
       - 'data/**'
