@@ -57,6 +57,17 @@ def main() -> None:
     ], [])
     assert [card["name"] for card in fallback] == ["B", "A"], fallback
 
+    class FakeDb:
+        def get_info(self, name):
+            return {"cost": 4} if name == "Harvest" else {}
+
+    assert snapshot._is_action_phase("action")
+    assert not snapshot._is_action_phase("drafting")
+    assert snapshot._snapshot_card_cost(
+        {"cost": 0}, FakeDb(), "Harvest", action_phase=False) == 4
+    assert snapshot._snapshot_card_cost(
+        {"cost": 0}, FakeDb(), "Harvest", action_phase=True) == 0
+
     print("advisor snapshot regression checks: OK")
 
 

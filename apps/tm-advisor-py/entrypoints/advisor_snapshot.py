@@ -79,6 +79,21 @@ def _merge_play_advice(hand_cards: list[dict], play_advice: list[dict]) -> list[
     return hand_cards
 
 
+def _is_action_phase(phase: str | None) -> bool:
+    return str(phase or "").lower() == "action"
+
+
+def _snapshot_card_cost(card: dict, db: CardDatabase, name: str, action_phase: bool) -> int:
+    raw_cost = card.get("cost", 0)
+    if action_phase:
+        return raw_cost
+    info = db.get_info(name) or {}
+    printed = info.get("cost")
+    if isinstance(printed, (int, float)):
+        return int(printed)
+    return raw_cost
+
+
 def snapshot(player_id: str) -> dict:
     eval_path = str(resolve_data_path("evaluations.json"))
     db = CardDatabase(eval_path)
@@ -95,6 +110,7 @@ def snapshot(player_id: str) -> dict:
     gens_left = _estimate_remaining_gens(state)
     phase = game_phase(gens_left, state.generation)
     rv = resource_values(gens_left)
+    action_phase = _is_action_phase(state.phase)
 
     player_tags = dict(me.tags) if me.tags else {}
     tableau_names = [c.get("name", "") for c in (me.tableau or [])]
@@ -184,7 +200,8 @@ def snapshot(player_id: str) -> dict:
         combo_bonus = combo.get_hand_synergy_bonus(name, tableau_names, player_tags)
         hand_cards.append({
             "name": name,
-            "cost": card.get("cost", 0),
+            "cost": _snapshot_card_cost(card, db, name, action_phase),
+            "calculated_cost": card.get("cost", 0),
             "tags": card_tags,
             "base_score": base_score,
             "adjusted_score": adj_score,
@@ -196,10 +213,11 @@ def snapshot(player_id: str) -> dict:
             "req_reason": req_reason,
         })
     play_advice = []
-    try:
-        play_advice = play_hold_advice(state.cards_in_hand or [], state, synergy, req_checker)
-    except Exception:
-        play_advice = []
+    if action_phase:
+        try:
+            play_advice = play_hold_advice(state.cards_in_hand or [], state, synergy, req_checker)
+        except Exception:
+            play_advice = []
     hand_cards = _merge_play_advice(hand_cards, play_advice)
     result["hand"] = hand_cards
     if play_advice:
