@@ -370,6 +370,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    72  Research Coordination
    72  Venusian Animals
    72  Colonial Representation
+   72  Business Contacts
    72  Rim Freighters
    72  Invention Contest
    72  Mine
@@ -421,7 +422,6 @@ TERRAFORMING MARS TIER LIST — RANKING
 
 --- C Tier ---
    69  Ceres Tech Market
-   69  Business Contacts
    69  Freyja Biodomes
    69  Io Mining Industries
    69  Saturn Surfing

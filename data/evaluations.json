@@ -3869,15 +3869,20 @@
   },
   "Business Contacts": {
     "name": "Business Contacts",
-    "score": 69,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
+    "opening_hand_bias": 4,
+    "opening_hand_note": "Strong starting-hand buy for engine/card-hungry plans, but usually hold it if playing 10 MC now delays production, TR, or a key milestone.",
     "economy": "7+3=10 MC for 2 chosen cards (6-8 MC, seeing 4 = better selection). Earth tag (2-3 MC). Net ~8-11 MC value. Event synergies.",
-    "reasoning": "Look at 4, keep 2 за 10 MC. Per COTD: 'excellent card, you'll most likely find something useful'. Опытные игроки отмечают: не всегда играть — 10-2=8 MC effective cost может hurt если tight on money. Лучше mid-game когда economy стабильна. Earth + Event теги дают синергии. Community sentiment позитивнее нашей оценки — возможен пересмотр вверх.",
+    "reasoning": "Look at 4, keep 2 for 10 MC. COTD consensus is positive but timing-sensitive: the selection is strong and often finds one or two relevant cards, while playing it early at full price can be a mistake if money is tight. TFMStats supports moving it into low B: it is kept from starting hands about 90% of the time, kept starts are positive, and played stats are solid. Best as mid-game/card-hungry draw or with Earth/Event discounts and rebates.",
     "synergies": [
       "Media Group",
+      "Interplanetary Cinematics",
       "Earth Office",
-      "Sponsors"
+      "Teractor",
+      "Point Luna",
+      "Solar Logistics"
     ],
     "when_to_pick": "Gen 1-4 when searching for specific engine pieces. Good with Earth tag synergies and event cashbacks.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1hchu6r/cotd_business_contacts_12_dec_2024/"
