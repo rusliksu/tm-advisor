@@ -37,6 +37,7 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
     phase = game_phase(gens_left, state.generation)
     income = me.mc_prod + me.tr
     hand_size = len(state.cards_in_hand or [])
+    db = getattr(synergy, 'db', None)
 
     # Opponent milestone pressure: if opponent can claim, we need MC reserve
     opp_milestone_threat = _opponent_milestone_threat(state)
@@ -45,7 +46,7 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
     scored = []
     for card in cards:
         name = card["name"]
-        tags = card.get("tags", [])
+        tags = _card_tags(card, db)
         cost_play = card.get("cost", card.get("calculatedCost", 0))
         score = synergy.adjusted_score(
             name, tags, me.corp, state.generation, me.tags, state, context="draft")
@@ -404,7 +405,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
     results = []
     for card in hand:
         name = card["name"]
-        tags = card.get("tags", [])
+        tags = _card_tags(card, db)
         cost = card.get("cost", card.get("calculatedCost", 0))
         score = synergy.adjusted_score(
             name, tags, me.corp, state.generation, me.tags, state, context="play")
@@ -597,7 +598,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         steel_sim, ti_sim = me.steel, me.titanium
         for r in play_sequence:
             card_data = next((c for c in hand if c["name"] == r["name"]), {})
-            card_tags = card_data.get("tags", [])
+            card_tags = _card_tags(card_data, db)
             card_cost = card_data.get("cost", card_data.get("calculatedCost", 0))
             eff, _ = _effective_cost(
                 card_cost, card_tags, me,
@@ -626,7 +627,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         if r["action"] != "PLAY":
             continue
         card_data = next((c for c in hand if c["name"] == r["name"]), {})
-        card_tags = card_data.get("tags", [])
+        card_tags = _card_tags(card_data, db)
         if "Event" not in card_tags:
             continue
         # Event card: tags disappear after play. Check milestone/award impact.
@@ -805,15 +806,17 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
         }
         for card in state.cards_in_hand:
             name = card["name"]
-            tags = card.get("tags", [])
+            tags = _card_tags(card, db)
             cost = card.get("cost", card.get("calculatedCost", 0))
             score = synergy.adjusted_score(
                 name, tags, me.corp, state.generation, me.tags, state)
             req_ok, _ = req_checker.check(name, state)
 
-            if not _card_cost_is_calculated(card):
-                cost, _ = _effective_cost(
-                    cost, tags, me, tableau_discounts=tableau_discounts)
+            cost, _ = _effective_cost(
+                cost, tags, me,
+                tableau_discounts=tableau_discounts,
+                discounts_already_applied=_card_cost_is_calculated(card),
+            )
 
             if not req_ok or cost > budget:
                 continue
@@ -996,7 +999,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             cname = card["name"]
             if cname in play_allocation_names:
                 continue
-            ctags = card.get("tags", [])
+            ctags = _card_tags(card, db)
             cscore = synergy.adjusted_score(
                 cname, ctags, me.corp, state.generation, me.tags, state)
             # Cards with no immediate VP value → sell
@@ -1048,7 +1051,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
         weak_cards = []
         for card in state.cards_in_hand:
             cname = card["name"]
-            ctags = card.get("tags", [])
+            ctags = _card_tags(card, db)
             cscore = synergy.adjusted_score(
                 cname, ctags, me.corp, state.generation, me.tags, state)
             if cscore < 45:
@@ -1323,8 +1326,9 @@ def _add_milestone_progress(warnings, ms_name, current_score, state, me,
                                        "energy_prod", "unique_tags",
                                        "req_cards", "expensive_cards"):
         # Tag-based milestone
+        db = getattr(synergy, 'db', None)
         for card in hand:
-            card_tags = [t.lower() for t in card.get("tags", [])]
+            card_tags = [t.lower() for t in _card_tags(card, db)]
             target_tag = tag_or_metric.lower()
             if target_tag == "bio_tags":
                 if any(t in card_tags for t in ("plant", "microbe", "animal")):
@@ -1679,6 +1683,18 @@ def _collect_tableau_discounts(tableau) -> dict:
 def _card_cost_is_calculated(card: dict) -> bool:
     """True when API already included fixed discounts in the card cost."""
     return bool(card.get("cost_is_calculated"))
+
+
+def _card_tags(card: dict, db=None) -> list[str]:
+    """Return API tags, falling back to card DB tags when player API omits them."""
+    tags = card.get("tags", []) or []
+    if tags:
+        return tags
+    name = card.get("name", "")
+    if not name or not db:
+        return []
+    info = db.get_info(name) or {}
+    return list(info.get("tags", []) or [])
 
 
 def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=None,
