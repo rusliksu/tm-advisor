@@ -206,12 +206,12 @@ TERRAFORMING MARS TIER LIST — RANKING
    50  Early Settlement
    48  Orbital Construction Yard
    48  Mohole Excavation
-   48  Preservation Program
    48  Research Grant
    46  Venus Contract
    45  Donation
    45  Nobel Prize
    44  Loan
+   42  Preservation Program
    42  Galilean Mining
    40  Biofuels
    38  Biosphere Support

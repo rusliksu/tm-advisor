@@ -1801,15 +1801,18 @@
   },
   "Preservation Program": {
     "name": "Preservation Program",
-    "score": 48,
+    "score": 42,
     "tier": "D",
     "type": "prelude",
-    "economy": "5 TR is about 35 MC in combined MC production and VP. No tags is effectively a 3 MC penalty. Total raw package is around 32 MC, though the value is heavily back-loaded.",
-    "reasoning": "Looks impressive because 5 TR is a big number, but most of the value is delayed MC production and endgame VP rather than immediate tempo. That makes it much worse than it first appears unless you specifically exploit the TR count. The best homes are Pristar, Double Down, or extreme rush shells; otherwise it is usually weaker than cleaner preludes.",
+    "economy": "5 TR gives 5 MC production and 5 VP, but no immediate cash, cards, tags, tiles, or resources. The ongoing effect that ignores your first TR gain in each action phase generation can erase several of those TR if you terraform normally, so the raw 5 TR headline overstates the practical value.",
+    "reasoning": "Niche combo prelude rather than a normal opener. COTD consensus is harsh: rarely playable, often worse than cleaner engine preludes, and mostly included for Pristar/Double Down style cases. It can still spike with Double Down because the copied direct effect gives more TR without copying the downside, or with Pristar/engine plans that barely gain TR in the action phase. Without that context, the delayed income and future skipped TR make it a weak D pick.",
     "synergies": [
-      "Terraforming Deal"
+      "Double Down",
+      "Pristar",
+      "Terraforming Deal",
+      "UNMI Contractor"
     ],
-    "when_to_pick": "Pick in pure TR-rush starts, with Pristar, or when 5 TR meaningfully pushes a milestone or a synergy like Terraforming Deal. Skip it in normal engine starts.",
+    "when_to_pick": "Pick with Double Down, Pristar, or a concrete early milestone/TR-synergy plan that will not need repeated action-phase terraforming. Otherwise skip for almost any cleaner economy, card-draw, tag, tile, or production prelude.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1nxq53d/cotd_preservation_program_4_oct_2025/"
   },
   "Venus Contract": {
