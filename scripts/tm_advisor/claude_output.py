@@ -13,6 +13,10 @@ from .colony_advisor import analyze_trade_options, analyze_settlement, is_action
 from .draft_play_advisor import draft_buy_advice, play_hold_advice, mc_allocation_advice
 
 
+def _is_action_phase(phase: str | None) -> bool:
+    return str(phase or "").lower() in ("action", "")
+
+
 class ClaudeOutput:
     """Форматирует snapshot как Markdown для анализа Claude."""
 
@@ -50,6 +54,7 @@ class ClaudeOutput:
     def format(self, state) -> str:
         lines = []
         a = lines.append
+        is_action_phase = _is_action_phase(state.phase)
 
         # Header
         a(f"# TM Game Snapshot — Gen {state.generation}, Phase: {state.phase}")
@@ -268,12 +273,12 @@ class ClaudeOutput:
             a("")
 
             # Trade methods
-            if trade_result["methods"]:
+            if is_action_phase and trade_result["methods"]:
                 method_strs = [f"{m['cost_desc']} ({m['cost_mc']} MC)" for m in trade_result["methods"]]
                 a(f"**Способы торговли:** {' │ '.join(method_strs)}")
                 a("")
 
-            if trade_result["best_hint"]:
+            if is_action_phase and trade_result["best_hint"]:
                 label = "Рекомендация" if is_actionable_trade_hint(trade_result["best_hint"]) else "Статус"
                 a(f"**{label}:** {trade_result['best_hint']}")
 
@@ -312,17 +317,18 @@ class ClaudeOutput:
                 a("")
 
             # Settlement analysis
-            settlements = analyze_settlement(state)
-            if settlements:
-                a("### Поселение (17 MC SP)")
-                a("")
-                for s in settlements[:3]:
-                    worth = "✅" if s["worth_it"] else "❌"
-                    a(f"- {worth} **{s['name']}**: {s['slots']} слота, "
-                      f"build={s['build_bonus']} ({s['build_mc']} MC), "
-                      f"future colony bonus ~{s['future_value']} MC → "
-                      f"total {s['total_value']} MC (ROI gen {s['roi_gens']}+)")
-                a("")
+            if is_action_phase:
+                settlements = analyze_settlement(state)
+                if settlements:
+                    a("### Поселение (17 MC SP)")
+                    a("")
+                    for s in settlements[:3]:
+                        worth = "✅" if s["worth_it"] else "❌"
+                        a(f"- {worth} **{s['name']}**: {s['slots']} слота, "
+                          f"build={s['build_bonus']} ({s['build_mc']} MC), "
+                          f"future colony bonus ~{s['future_value']} MC → "
+                          f"total {s['total_value']} MC (ROI gen {s['roi_gens']}+)")
+                    a("")
 
         # Timing estimate
         gens_left = _estimate_remaining_gens(state)
@@ -375,7 +381,6 @@ class ClaudeOutput:
 
         # ── Draft Buy / Play-Hold Advice ──
         is_buy_phase = state.phase == "research"
-        is_action_phase = state.phase in ("action", "")
 
         if is_buy_phase and wf:
             wf_cards = self._extract_all_wf_cards(wf)
@@ -498,28 +503,29 @@ class ClaudeOutput:
                 a(tip)
             a("")
 
-        alerts = _generate_alerts(state)
-        if alerts:
-            a("## Рекомендации")
-            a("")
-            for alert in alerts:
-                a(f"- {alert}")
-            a("")
+        if is_action_phase:
+            alerts = _generate_alerts(state)
+            if alerts:
+                a("## Рекомендации")
+                a("")
+                for alert in alerts:
+                    a(f"- {alert}")
+                a("")
 
-        gens_left_sp = _estimate_remaining_gens(state)
-        _energy_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
-        sp_list = sp_efficiency(gens_left_sp, state.me.tableau if state.me else None,
-                                has_energy_sinks=_energy_sinks)
-        affordable_sps = [(n, r, g) for n, r, g in sp_list
-                          if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
-        if affordable_sps:
-            a("## Стандартные проекты")
-            a("")
-            for name, ratio, gives in affordable_sps[:4]:
-                cost = STANDARD_PROJECTS[name]["cost"]
-                eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
-                a(f"- **{name}** {cost} MC → {gives} [{eff}]")
-            a("")
+            gens_left_sp = _estimate_remaining_gens(state)
+            _energy_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
+            sp_list = sp_efficiency(gens_left_sp, state.me.tableau if state.me else None,
+                                    has_energy_sinks=_energy_sinks)
+            affordable_sps = [(n, r, g) for n, r, g in sp_list
+                              if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
+            if affordable_sps:
+                a("## Стандартные проекты")
+                a("")
+                for name, ratio, gives in affordable_sps[:4]:
+                    cost = STANDARD_PROJECTS[name]["cost"]
+                    eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
+                    a(f"- **{name}** {cost} MC → {gives} [{eff}]")
+                a("")
 
         if state.cards_in_hand and self.req_checker:
             req_hints = _forecast_requirements(state, self.req_checker, state.cards_in_hand)
@@ -530,7 +536,7 @@ class ClaudeOutput:
                     a(f"- {h}")
                 a("")
 
-        if state.has_colonies:
+        if is_action_phase and state.has_colonies:
             trade_result = analyze_trade_options(state)
             profitable = [t for t in trade_result["trades"] if t["net_profit"] > 0]
             if profitable:

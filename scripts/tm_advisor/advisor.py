@@ -1109,30 +1109,32 @@ class AdvisorBot:
 
     def _show_game_context(self, state: GameState):
         """Показать стратегию, алерты, milestones, awards, colonies, opponents, SP."""
+        is_action_phase = str(state.phase or "").lower() in ("action", "")
         tips = strategy_advice(state)
         if tips:
             self.display.section("📊 Стратегия:")
             for tip in tips:
                 print(f"  {Fore.CYAN}{tip}{Style.RESET_ALL}")
 
-        alerts = _generate_alerts(state)
-        if alerts:
-            self.display.section("⚡ Рекомендации:")
-            for alert in alerts:
-                print(f"  {Fore.YELLOW}{Style.BRIGHT}{alert}{Style.RESET_ALL}")
+        if is_action_phase:
+            alerts = _generate_alerts(state)
+            if alerts:
+                self.display.section("⚡ Рекомендации:")
+                for alert in alerts:
+                    print(f"  {Fore.YELLOW}{Style.BRIGHT}{alert}{Style.RESET_ALL}")
 
-        gens_left = _estimate_remaining_gens(state)
-        _e_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
-        sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None,
-                                has_energy_sinks=_e_sinks)
-        affordable_sps = [(n, r, g) for n, r, g in sp_list
-                          if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
-        if affordable_sps:
-            self.display.section("🔨 Стандартные проекты:")
-            for name, ratio, gives in affordable_sps[:4]:
-                cost = STANDARD_PROJECTS[name]["cost"]
-                eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
-                print(f"    {name:<18s} {cost:2d} MC → {gives:<30s} [{eff}]")
+            gens_left = _estimate_remaining_gens(state)
+            _e_sinks = check_energy_sinks(state.me, has_colonies=state.has_colonies)
+            sp_list = sp_efficiency(gens_left, state.me.tableau if state.me else None,
+                                    has_energy_sinks=_e_sinks)
+            affordable_sps = [(n, r, g) for n, r, g in sp_list
+                              if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
+            if affordable_sps:
+                self.display.section("🔨 Стандартные проекты:")
+                for name, ratio, gives in affordable_sps[:4]:
+                    cost = STANDARD_PROJECTS[name]["cost"]
+                    eff = "отлично" if ratio >= 0.6 else "ок" if ratio >= 0.5 else "слабо"
+                    print(f"    {name:<18s} {cost:2d} MC → {gives:<30s} [{eff}]")
 
         hand = state.cards_in_hand
         if hand:
@@ -1149,7 +1151,7 @@ class AdvisorBot:
                 for h in req_hints[:5]:
                     print(f"    {h}")
 
-        if state.has_colonies:
+        if is_action_phase and state.has_colonies:
             from .colony_advisor import format_trade_hints, format_settlement_hints
             trade_hints = format_trade_hints(state)
             if trade_hints:

@@ -93,6 +93,7 @@ function run() {
   runPythonScript('late_draw_regressions.py');
   runPythonScript('endgame_allocation_regressions.py');
   runPythonScript('snapshot_regressions.py');
+  runPythonScript('claude_output_regressions.py');
   runPythonScript('watch_live_game_regressions.py');
   runPythonScript('game_logger_regressions.py');
   runPythonScript('opponent_intent_regressions.py');
