@@ -15,6 +15,7 @@ import re
 from .analysis import _estimate_remaining_gens, _score_to_tier, _estimate_vp, _estimate_hidden_vp_buffer
 from .economy import resource_values, game_phase
 from .constants import TABLEAU_DISCOUNT_CARDS, GLOBAL_EVENTS, PARTY_POLICIES, CORP_DISCOUNTS
+from .opponent_intent import format_opponent_intent_warnings
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -365,65 +366,8 @@ def _dedupe_and_cap_warnings(warnings: list[str]) -> list[str]:
 
 
 def _opponent_threats(state) -> list[str]:
-    """Predict opponent actions this turn: milestones, awards, trades.
-
-    Returns list of ⏰ urgency warnings.
-    """
-    threats = []
-    me = state.me
-    color_names = state.color_names
-
-    # 1. Opponent milestone claims
-    claimed_count = sum(1 for m in state.milestones if m.get("claimed_by"))
-    if claimed_count < 3:
-        for m in state.milestones:
-            if m.get("claimed_by"):
-                continue
-            for color, sc in m.get("scores", {}).items():
-                if color == me.color:
-                    continue
-                if isinstance(sc, dict) and sc.get("claimable"):
-                    # Check if opponent can afford (8 MC)
-                    opp = next((o for o in state.opponents if o.color == color), None)
-                    if opp and opp.mc >= 8:
-                        name = color_names.get(color, color)
-                        threats.append(
-                            f"⏰ {name} может заявить {m['name']}! "
-                            f"Claim first или потеряешь слот.")
-
-    # 2. Opponent award funding
-    funded = sum(1 for a in state.awards if a.get("funded_by"))
-    if funded < 3:
-        cost_award = [8, 14, 20][funded]
-        for a in state.awards:
-            if a.get("funded_by"):
-                continue
-            for opp in state.opponents:
-                if opp.mc < cost_award:
-                    continue
-                opp_val = a.get("scores", {}).get(opp.color, 0)
-                my_val = a.get("scores", {}).get(me.color, 0)
-                if opp_val > my_val + 2:
-                    name = color_names.get(opp.color, opp.color)
-                    threats.append(
-                        f"⏰ {name} может фондировать {a['name']} "
-                        f"(лидирует {opp_val} vs {my_val})")
-                    break  # one per award
-
-    # 3. Opponent colony trades (blocking good tracks)
-    if state.colonies_data:
-        for opp in state.opponents:
-            if opp.energy >= 3 or opp.mc >= 9:
-                for col in state.colonies_data:
-                    track = col.get("track", 0)
-                    if track >= 5:
-                        threats.append(
-                            f"⏰ {color_names.get(opp.color, '?')} может "
-                            f"trade {col['name']} (track {track})")
-                        break
-                break  # only one opponent warning
-
-    return threats[:5]  # cap at 5
+    """Predict opponent actions this turn from public state and recent actions."""
+    return format_opponent_intent_warnings(state)
 
 
 # ═══════════════════════════════════════════════════════════════
