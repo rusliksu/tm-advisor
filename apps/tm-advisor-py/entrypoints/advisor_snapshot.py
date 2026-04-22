@@ -106,6 +106,7 @@ def _snapshot_trade_payload(trade: dict) -> dict | None:
 
 
 def _filter_alerts_against_play_advice(alerts: list[str], play_advice: list[dict]) -> list[str]:
+    advice_by_name = {row.get("name"): row for row in play_advice if row.get("name")}
     play_now = set()
     for row in play_advice:
         if not row.get("name") or row.get("action") != "PLAY":
@@ -116,11 +117,26 @@ def _filter_alerts_against_play_advice(alerts: list[str], play_advice: list[dict
             continue
         if priority <= 3:
             play_now.add(row.get("name"))
-    if not play_now:
+    if not advice_by_name:
         return alerts
     result = []
     for alert in alerts:
-        if any(alert.startswith(f"📊 {name}:") or alert.startswith(f"⏳ {name}") for name in play_now):
+        skip = False
+        for name, advice in advice_by_name.items():
+            action = advice.get("action")
+            if name in play_now and (alert.startswith(f"📊 {name}:") or alert.startswith(f"⏳ {name}")):
+                skip = True
+                break
+            if name in play_now and alert.startswith(f"⚠️ {name} ") and "продаж" in alert.lower():
+                skip = True
+                break
+            if action != "PLAY" and (
+                alert.startswith(f"⚠️ {name} В РУКЕ")
+                or alert.startswith(f"🎯 Play {name} EARLY")
+            ):
+                skip = True
+                break
+        if skip:
             continue
         result.append(alert)
     return result
