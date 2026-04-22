@@ -89,6 +89,7 @@ function run() {
   runPythonScript('late_scoring_regressions.py');
   runPythonScript('late_colony_regressions.py');
   runPythonScript('late_draw_regressions.py');
+  runPythonScript('endgame_allocation_regressions.py');
   runPythonScript('astra_consistency_regressions.py');
   console.log('advisor regression checks: OK');
 }

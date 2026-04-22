@@ -2,7 +2,7 @@
 
 import os
 
-from colorama import Fore, Style
+from .colorama_compat import Fore, Style
 
 from .constants import (
     TIER_COLORS, COLOR_MAP, PARTY_POLICIES, GLOBAL_EVENTS,

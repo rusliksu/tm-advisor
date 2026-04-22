@@ -1,7 +1,7 @@
 """Все dict-константы и конфигурационные данные TM Advisor."""
 
 import os
-from colorama import Fore, Style
+from .colorama_compat import Fore, Style
 
 
 BASE_URL = os.getenv("TM_BASE_URL", "https://tm.knightbyte.win")

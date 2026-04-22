@@ -1,6 +1,6 @@
 """TM Advisor — модульный советник для Terraforming Mars."""
 
-from colorama import init
+from .colorama_compat import init
 init()
 
 from .advisor import AdvisorBot
