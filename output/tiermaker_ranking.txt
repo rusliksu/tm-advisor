@@ -374,6 +374,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    72  Rim Freighters
    72  Invention Contest
    72  Mine
+   72  Investment Loan
    72  Titan Shuttles
    72  Soil Studies
    72  Acquired Company
@@ -515,7 +516,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    65  Casino
    65  Thiolava Vents
    64  Flooding
-   64  Investment Loan
    64  Directed Heat Usage
    64  Floyd Continuum
    64  Towing A Comet
