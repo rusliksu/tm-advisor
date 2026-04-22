@@ -2051,10 +2051,26 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left, source_eff=N
 
     # Parse value
     has_direct_payoff = False
-    mc_m = re.search(r'(\d+)\s*(?:mc|m€|megacredit)', effect_str)
-    if mc_m:
-        mc_value += int(mc_m.group(1))
+    scaling_mc_m = re.search(r'gain\s+(\d+)\s*(?:mc|m€|megacredit)\s*(?:per|for each)\s+(.+)', effect_str)
+    if scaling_mc_m:
+        per_mc = int(scaling_mc_m.group(1))
+        scale_target = scaling_mc_m.group(2).lower()
+        est_count = 3
+        if "city" in scale_target or "tile" in scale_target:
+            est_count = 4
+        elif "tag" in scale_target:
+            est_count = 5
+        elif "colony" in scale_target or "colon" in scale_target:
+            est_count = 3
+        elif "card" in scale_target:
+            est_count = 5
+        mc_value += per_mc * est_count * 0.5
         has_direct_payoff = True
+    else:
+        mc_m = re.search(r'(\d+)\s*(?:mc|m€|megacredit)', effect_str)
+        if mc_m:
+            mc_value += int(mc_m.group(1))
+            has_direct_payoff = True
 
     if "tr" in effect_str and "raise" in effect_str:
         mc_value += rv["tr"]
@@ -2670,7 +2686,33 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
                         value += net * action_gens
                 continue
 
-            # MC-generating actions (Red Ships, Martian Rails, etc.)
+            # Scaling MC actions: "gain X MC per/for each Y".
+            # Check before flat "gain X MC" so dynamic actions don't collapse to 1 MC.
+            scale_match = _re.search(r'gain\s+(\d+)\s*m[c€$]\s*(?:per|for each)\s+(.+)', act_full)
+            if scale_match:
+                per_mc = int(scale_match.group(1))
+                # Estimate count based on what it scales with
+                scale_target = scale_match.group(2).lower()
+                est_count = 3  # default conservative estimate
+                if 'city' in scale_target or 'tile' in scale_target:
+                    est_count = 4  # ~4 cities/tiles mid-game
+                elif 'tag' in scale_target:
+                    est_count = 5  # ~5 matching tags
+                elif 'colony' in scale_target or 'colon' in scale_target:
+                    est_count = 3
+                elif 'card' in scale_target:
+                    est_count = 5
+                est_mc = per_mc * est_count
+                if act_cost == "free" or act_cost == "":
+                    value += est_mc * action_gens * 0.5  # discount for variance
+                else:
+                    act_mc_cost = explicit_mc_cost if explicit_mc_cost is not None else 3
+                    net = est_mc - act_mc_cost
+                    if net > 0:
+                        value += net * action_gens * 0.4
+                continue
+
+            # MC-generating actions (flat actions like Electro Catapult).
             mc_match = _re.search(r'gain\s+(\d+)\s*m[c€$]', act_eff)
             if mc_match:
                 mc_gain = int(mc_match.group(1))
@@ -2703,32 +2745,6 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
                     if net > 0:
                         value += net * action_gens * 0.7
                 continue
-
-            # Scaling MC actions: "gain X MC per/for each Y"
-            if not mc_match:
-                scale_match = _re.search(r'gain\s+(\d+)\s*m[c€$]\s*(?:per|for each)\s+(.+)', act_full)
-                if scale_match:
-                    per_mc = int(scale_match.group(1))
-                    # Estimate count based on what it scales with
-                    scale_target = scale_match.group(2).lower()
-                    est_count = 3  # default conservative estimate
-                    if 'city' in scale_target or 'tile' in scale_target:
-                        est_count = 4  # ~4 cities/tiles mid-game
-                    elif 'tag' in scale_target:
-                        est_count = 5  # ~5 matching tags
-                    elif 'colony' in scale_target or 'colon' in scale_target:
-                        est_count = 3
-                    elif 'card' in scale_target:
-                        est_count = 5
-                    est_mc = per_mc * est_count
-                    if act_cost == "free" or act_cost == "":
-                        value += est_mc * action_gens * 0.5  # discount for variance
-                    else:
-                        act_mc_cost = explicit_mc_cost if explicit_mc_cost is not None else 3
-                        net = est_mc - act_mc_cost
-                        if net > 0:
-                            value += net * action_gens * 0.4
-                    continue
 
             # Spend-to-gain actions: "spend X resource to gain Y MC"
             if not mc_match:

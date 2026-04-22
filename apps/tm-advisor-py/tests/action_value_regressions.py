@@ -943,6 +943,27 @@ def main() -> int:
         source_eff=bot.effect_parser.get("Business Network"),
     )
     assert look_cost == 0 and 0 < look_value < resource_values(5)["card"], (look_cost, look_value)
+    red_ships_cost, red_ships_value = _estimate_action_value(
+        "free",
+        "gain 1 MC per ocean-adjacent city or special tile",
+        action_me,
+        resource_values(5),
+        5,
+        source_eff=bot.effect_parser.get("Red Ships"),
+    )
+    assert red_ships_cost == 0 and red_ships_value > 1.0, (red_ships_cost, red_ships_value)
+    assert _estimate_card_value_rich(
+        "Red Ships",
+        75,
+        2,
+        [],
+        "draft",
+        5,
+        resource_values(5),
+        effect_parser=bot.effect_parser,
+        db=bot.db,
+        me=action_me,
+    ) > 4.0
     action_rich_me = type("ActionRichMe", (), {"mc": 31, "energy": 4, "energy_prod": 2, "plants": 2, "heat": 12, "steel": 5, "titanium": 9})()
     assert _estimate_action_value(
         "3 energy", "raise oxygen 1 step", action_rich_me, endgame_rv, 1, source_eff=water_splitting_eff
