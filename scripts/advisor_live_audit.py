@@ -558,6 +558,49 @@ def format_summary(summary: dict) -> str:
     return "\n".join(lines)
 
 
+def watch_recommendation(result: dict, summary: dict) -> str:
+    if result.get("issues"):
+        return "inspect-issues"
+    if summary.get("terminal"):
+        return "stop-heartbeat-terminal"
+    stale = summary.get("stale") or {}
+    if stale.get("is_stale"):
+        return "stop-heartbeat-stale"
+    return "continue"
+
+
+def watch_once(
+    identifier: str,
+    server: str,
+    log_path_value: str,
+    stale_after: int,
+    include_claude: bool = True,
+) -> dict:
+    result = audit_live(identifier, server, include_claude=include_claude)
+    log_path = resolve_log_path(log_path_value, identifier)
+    write_jsonl_log_with_stale(result, log_path, stale_after)
+    result["log_path"] = str(log_path)
+    summary = summarize_jsonl(log_path, stale_after)
+    recommendation = watch_recommendation(result, summary)
+    return {
+        "audit": result,
+        "summary": summary,
+        "recommendation": recommendation,
+        "log_path": str(log_path),
+    }
+
+
+def format_watch_once(data: dict) -> str:
+    lines = [
+        f"Advisor watch once: {data.get('log_path', '?')}",
+        format_report(data.get("audit") or {}),
+        "",
+        format_summary(data.get("summary") or {}),
+        f"watch_recommendation: {data.get('recommendation')}",
+    ]
+    return "\n".join(lines)
+
+
 def format_report(result: dict) -> str:
     players = result.get("players") or []
     issues = result.get("issues") or []
@@ -604,6 +647,14 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         "--summary",
         metavar="PATH_OR_ID",
         help="Summarize an advisor live audit JSONL log and exit.",
+    )
+    parser.add_argument(
+        "--watch-once",
+        action="store_true",
+        help=(
+            "Run live audit, append JSONL, summarize the updated log, and print "
+            "a heartbeat recommendation."
+        ),
     )
     parser.add_argument(
         "--server",
@@ -655,6 +706,29 @@ def main(argv: list[str] | None = None) -> int:
 
     identifier, url_server = extract_identifier(args.identifier)
     server = args.server or url_server or os.getenv("TM_BASE_URL") or DEFAULT_SERVER
+    stale_after = max(0, args.stale_after)
+
+    if args.watch_once:
+        try:
+            data = watch_once(
+                identifier,
+                server,
+                args.log_jsonl if args.log_jsonl is not None else "",
+                stale_after,
+                include_claude=not args.skip_claude,
+            )
+        except Exception as exc:
+            if args.json:
+                print(json.dumps({"error": str(exc)}, ensure_ascii=False, indent=2))
+            else:
+                print(f"Advisor watch once failed: {exc}", file=sys.stderr)
+            return 2
+
+        if args.json:
+            print(json.dumps(data, ensure_ascii=False, indent=2))
+        else:
+            print(format_watch_once(data))
+        return 1 if (data.get("audit") or {}).get("issues") else 0
 
     try:
         result = audit_live(identifier, server, include_claude=not args.skip_claude)
@@ -670,7 +744,7 @@ def main(argv: list[str] | None = None) -> int:
         log_path = write_jsonl_log_with_stale(
             result,
             resolve_log_path(args.log_jsonl, identifier),
-            max(0, args.stale_after),
+            stale_after,
         )
         result["log_path"] = str(log_path)
 
