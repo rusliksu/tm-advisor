@@ -934,16 +934,28 @@ def main() -> int:
 
     decomposers_eff = bot.effect_parser.get("Decomposers")
     venusian_animals_eff = bot.effect_parser.get("Venusian Animals")
+    thiolava_eff = bot.effect_parser.get("Thiolava Vents")
+    martian_repository_eff = bot.effect_parser.get("Martian Repository")
+    research_hub_eff = bot.effect_parser.get("Research & Development Hub")
+    anthozoa_eff = bot.effect_parser.get("Anthozoa")
     birds_mid_eff = bot.effect_parser.get("Birds")
     ants_mid_eff = bot.effect_parser.get("Ants")
     assert decomposers_eff is not None
     assert venusian_animals_eff is not None
+    assert thiolava_eff is not None
+    assert martian_repository_eff is not None
+    assert research_hub_eff is not None
+    assert anthozoa_eff is not None
     assert birds_mid_eff is not None
     assert ants_mid_eff is not None
     assert decomposers_eff.actions == [], decomposers_eff.actions
     assert venusian_animals_eff.actions == [], venusian_animals_eff.actions
+    assert venusian_animals_eff.adds_resources == [], venusian_animals_eff.adds_resources
     assert decomposers_eff.triggers, decomposers_eff.triggers
     assert venusian_animals_eff.triggers, venusian_animals_eff.triggers
+    assert thiolava_eff.triggers, thiolava_eff.triggers
+    assert martian_repository_eff.vp_per == {"amount": 1, "per": "3 resources"}, martian_repository_eff.vp_per
+    assert anthozoa_eff.vp_per == {"amount": 1, "per": "2 resources"}, anthozoa_eff.vp_per
 
     mid_rv = resource_values(6)
 
@@ -972,11 +984,17 @@ def main() -> int:
         ],
     )
     venusian_animals_value = rich_value("Venusian Animals")
+    thiolava_value = rich_value("Thiolava Vents")
+    martian_repository_value = rich_value("Martian Repository")
+    research_hub_value = rich_value("Research & Development Hub")
     birds_value = rich_value("Birds")
     ants_value = rich_value("Ants")
     assert decomposers_no_shell < 2.5, decomposers_no_shell
     assert decomposers_shell > decomposers_no_shell + 1.5, (decomposers_no_shell, decomposers_shell)
-    assert venusian_animals_value < 8.0, venusian_animals_value
+    assert venusian_animals_value < 4.0, venusian_animals_value
+    assert thiolava_value > 8.5, thiolava_value
+    assert martian_repository_value == 0, martian_repository_value
+    assert research_hub_value == 0, research_hub_value
     assert ants_value < birds_value, (ants_value, birds_value)
 
     state = build_state()
