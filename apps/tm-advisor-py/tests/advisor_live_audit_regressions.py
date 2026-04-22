@@ -208,6 +208,20 @@ def main() -> None:
     assert "records: 3" in formatted, formatted
     assert "recommendation: stop-heartbeat-terminal" in formatted, formatted
 
+    assert audit.watch_recommendation({"issues": [{"check": "x"}]}, terminal_summary) == "inspect-issues"
+    assert audit.watch_recommendation({"issues": []}, terminal_summary) == "stop-heartbeat-terminal"
+    assert audit.watch_recommendation({"issues": []}, clean_stale_summary) == "stop-heartbeat-stale"
+    assert audit.watch_recommendation({"issues": []}, progressed_summary) == "continue"
+
+    watch_output = audit.format_watch_once({
+        "audit": {**result, "stale": clean_stale_summary["stale"]},
+        "summary": clean_stale_summary,
+        "recommendation": "stop-heartbeat-stale",
+        "log_path": "tmp.jsonl",
+    })
+    assert "Advisor watch once:" in watch_output, watch_output
+    assert "watch_recommendation: stop-heartbeat-stale" in watch_output, watch_output
+
     with tempfile.TemporaryDirectory() as tmp:
         log_path = Path(tmp) / "summary.jsonl"
         for item in progressed_records:
