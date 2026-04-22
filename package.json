@@ -99,6 +99,7 @@
     "extension:sync-utils": "node tools/extension/sync-utils.js",
     "extension:sync-vue-bridge": "node tools/extension/sync-vue-bridge.js",
     "extension:syntax": "node apps/tm-extension/tests/syntax_check.js",
+    "extension:test-advisor-panel": "node apps/tm-extension/tests/advisor_panel_bot_hint_check.js",
     "extension:test-colony-trade": "node apps/tm-extension/tests/colony_trade_pipeline_check.js",
     "test": "node tools/data/test-synergy-rules.js",
     "test:bot": "node apps/tm-smartbot/tests/regressions.js",

@@ -1089,14 +1089,17 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   }
 
   // ── Strategy variance warnings ──
-  function renderVarianceWarnings(state) {
-    var el = document.getElementById('tm-advisor-variance');
-    if (!el) return;
-    if (!state || !state.thisPlayer) { el.innerHTML = ''; return; }
+  function collectVarianceWarnings(state) {
+    if (!state || !state.thisPlayer) return [];
     var tp = state.thisPlayer;
     var gen = (state.game && state.game.generation) || 1;
     var tableau = tp.tableau || [];
     var warnings = [];
+    var timing = (TM_ADVISOR && typeof TM_ADVISOR.endgameTiming === 'function')
+      ? TM_ADVISOR.endgameTiming(state)
+      : null;
+    var isEndgame = String((state.game && state.game.phase) || '').toLowerCase() === 'endgame';
+    var isLastGen = !!(timing && typeof timing.estimatedGens === 'number' && timing.estimatedGens <= 1);
 
     // Build card name set from tableau
     var tabSet = {};
@@ -1133,7 +1136,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     // (d) Low production after gen 3
     var mcProd = tp.megaCreditProduction || tp.megaCreditsProduction || 0;
-    if (gen >= 3 && mcProd < 5) {
+    if (gen >= 3 && mcProd < 5 && !isEndgame && !isLastGen) {
       warnings.push('\uD83D\uDCC9 Low production (MC-prod ' + mcProd + ') \u2014 consider engine cards');
     }
 
@@ -1151,6 +1154,15 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       }
       if (vpCount >= 5 && !hasEngine) warnings.push('\u26A0 VP cards (' + vpCount + ') without engine \u2014 expensive plays');
     }
+
+    return warnings;
+  }
+
+  function renderVarianceWarnings(state) {
+    var el = document.getElementById('tm-advisor-variance');
+    if (!el) return;
+    if (!state || !state.thisPlayer) { el.innerHTML = ''; return; }
+    var warnings = collectVarianceWarnings(state);
 
     if (warnings.length === 0) { el.innerHTML = ''; return; }
     var maxWarnings = 2;
@@ -1447,6 +1459,48 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     };
   }
 
+  function buildBotHintStatus(state, rankedActions) {
+    if (!state || !state.thisPlayer) return null;
+    var wf = state._waitingFor;
+    if (!wf) {
+      return {
+        title: 'No live action prompt',
+        reason: 'Standard actions below are context-only until waitingFor is captured'
+      };
+    }
+    if (wf.type !== 'or') {
+      return {
+        title: 'Prompt: ' + normalizeBotActionLabel(wf.title || wf.type || ''),
+        reason: 'Bot action ranking only supports action-choice prompts'
+      };
+    }
+    if (!wf.options || wf.options.length === 0) {
+      return {
+        title: 'No action options',
+        reason: 'Current waitingFor has no rankable options'
+      };
+    }
+    if (rankedActions && rankedActions.length === 0) {
+      return {
+        title: 'No ranked bot action',
+        reason: 'Current action prompt returned no ranked actions'
+      };
+    }
+    return null;
+  }
+
+  function renderBotHintCard(botHint, isStatus) {
+    if (!botHint) return '';
+    return '<div class="tm-advisor-bot-hint' + (isStatus ? ' tm-advisor-bot-status' : '') + '">' +
+      '<div class="tm-advisor-bot-title">\uD83E\uDD16 Bot hint</div>' +
+      '<div class="tm-advisor-bot-main"><b>' + _esc(botHint.title) + '</b>' +
+      (typeof botHint.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(botHint.score) + ')</span>' : '') +
+      '</div>' +
+      '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason || '') + '</div>' +
+      (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
+    '</div>';
+  }
+
   function renderActions(state) {
     var el = document.getElementById('tm-advisor-actions');
     if (!el) return;
@@ -1454,18 +1508,13 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     var html = '';
     var botHint = buildBotActionHint(state);
+    var spHint = buildStandardProjectsHint(state);
     if (botHint) {
-      html += '<div class="tm-advisor-bot-hint">' +
-        '<div class="tm-advisor-bot-title">\uD83E\uDD16 Bot hint</div>' +
-        '<div class="tm-advisor-bot-main"><b>' + _esc(botHint.title) + '</b>' +
-        (typeof botHint.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(botHint.score) + ')</span>' : '') +
-        '</div>' +
-        '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason) + '</div>' +
-        (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
-      '</div>';
+      html += renderBotHintCard(botHint, false);
+    } else if (spHint) {
+      html += renderBotHintCard(buildBotHintStatus(state), true);
     }
 
-    var spHint = buildStandardProjectsHint(state);
     if (spHint) {
       html += renderStandardProjectHint(spHint);
     }
@@ -2215,6 +2264,16 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         });
       } catch (e) {}
     }
+  }
+
+  if (typeof window !== 'undefined' && window.__TM_ADVISOR_PANEL_TEST_HOOKS__) {
+    window.__TM_ADVISOR_PANEL_TEST__ = {
+      buildBotActionHint: buildBotActionHint,
+      buildBotHintStatus: buildBotHintStatus,
+      collectVarianceWarnings: collectVarianceWarnings,
+      renderBotHintCard: renderBotHintCard,
+      renderStandardProjectHint: renderStandardProjectHint
+    };
   }
 
   // ══════════════════════════════════════════════════════════════
