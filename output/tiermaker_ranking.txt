@@ -777,7 +777,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    50  Martian Lumber Corp
    50  Release of Inert Gases
    50  Stanford Torus
-   50  Carbonate Processing
    50  GHG Shipment
    50  Ishtar Mining
    50  Lava Tube Settlement
@@ -807,6 +806,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    48  Terraforming Robots
    48  Desperate Measures
    46  Mining Expedition
+   46  Carbonate Processing
    46  Callisto Penal Mines
    46  Forced Precipitation
    45  GHG Import From Venus

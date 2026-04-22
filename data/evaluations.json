@@ -7722,18 +7722,23 @@
   },
   "Carbonate Processing": {
     "name": "Carbonate Processing",
-    "score": 50,
+    "score": 46,
     "tier": "D",
     "type": "project",
-    "economy": "6+3=9 MC + 1 energy-prod (7.5 MC) = 16.5 MC effective. 3 heat-prod (12 MC) + Building tag (1-2 MC). Net ~13 MC for 16.5 MC cost. Overpays.",
-    "reasoning": "Converting energy to heat production. Per COTD community, 'good IF played gen 1, IF you don't need energy for something better.' Significantly worse with Colonies since energy is needed for trading (3 energy = trade action). Good for controlling heat track pace. Experienced players: 'C without Colonies, D with them.'",
+    "economy": "6+3=9 MC plus 1 energy production (~7 MC) is about 16 MC for 3 heat production and a Building tag. That can be fair in generation 1 with cheap energy/steel, but if you need a Standard Project power plant the real cost jumps to 20 MC, and with Colonies the lost energy production has a major trade-action opportunity cost.",
+    "reasoning": "Narrow early heat-rush card, not a generic economy keep. COTD is mixed: it can control the heat track when played in generation 1 with spare energy, but multiple experienced comments call it weak/situational and specifically worse with Colonies. TFMStats supports the downgrade: kept opening hands underperform, while not-kept starts are roughly neutral. It should stay above final-generation-only energy dumps, but below the stronger D cards.",
     "synergies": [
       "UNMI",
+      "Helion",
+      "Factorum",
       "Caretaker Contract",
-      "GHG Factories"
+      "Thermalist"
     ],
-    "when_to_pick": "Gen 1 only, for dedicated heat rush with excess energy-prod. Otherwise skip.",
-    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1i9juk7/cotd_carbonate_processing_25_jan_2025/"
+    "when_to_pick": "Keep only for a generation 1 heat-rush plan with cheap existing energy production, steel to spend, and low need for colony trading or power requirements. Skip if you must buy energy with a Standard Project, if Colonies trading pressure matters, or after the first couple generations.",
+    "backtest_note": "TFMStats: 46.5% opening keep rate, kept starts -0.30 Elo, not-kept starts +0.02 Elo, played win rate 43.6%. The card is kept too often; reward only the narrow early rush context.",
+    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1i9juk7/cotd_carbonate_processing_25_jan_2025/",
+    "opening_hand_bias": -4,
+    "opening_hand_note": "Conditional opener: keep with cheap energy plus heat-rush payoff, downgrade hard if it delays colony trading or requires Standard Project power."
   },
   "Cloud Seeding": {
     "name": "Cloud Seeding",
