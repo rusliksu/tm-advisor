@@ -547,6 +547,53 @@ def build_last_gen_discounted_tectonic_state() -> GameState:
     })
 
 
+def build_endgame_immediate_low_score_city_state() -> GameState:
+    hand = [
+        {"name": "Underground City", "calculatedCost": 13, "tags": ["City", "Building"]},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 76,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 19,
+        "steelProduction": 1,
+        "titaniumProduction": 0,
+        "plantProduction": 2,
+        "energyProduction": 7,
+        "heatProduction": 3,
+        "terraformRating": 42,
+        "cardsInHandNbr": len(hand),
+        "tableau": [{"name": "Cheung Shing MARS"}],
+        "tags": {
+            "building": 4,
+            "city": 1,
+        },
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 9,
+            "phase": "action",
+            "oxygenLevel": 13,
+            "temperature": 6,
+            "oceans": 8,
+            "venusScaleLevel": 30,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
 def build_end_triggered_noise_state() -> GameState:
     me = {
         "color": "red",
@@ -1239,6 +1286,31 @@ def main() -> int:
     assert tectonic_last["action"] == "PLAY", tectonic_last
     assert "steel" in tectonic_last["reason"], tectonic_last
     assert "income" not in tectonic_last["reason"], tectonic_last
+
+    low_score_city_state = build_endgame_immediate_low_score_city_state()
+    low_score_city_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            low_score_city_state.cards_in_hand, low_score_city_state, bot.synergy, bot.req_checker
+        )
+    }
+    underground_city = low_score_city_advice["Underground City"]
+    assert underground_city["action"] == "PLAY", underground_city
+    assert underground_city["play_value_now"] > 13, underground_city
+    low_score_city_alloc = mc_allocation_advice(
+        low_score_city_state, bot.synergy, bot.req_checker
+    )
+    assert any(
+        a["action"].startswith("Play Underground City")
+        for a in low_score_city_alloc["allocations"]
+    ), low_score_city_alloc["allocations"]
+    assert all(
+        not (
+            a.get("type") == "sell"
+            and "Underground City" in a.get("action", "")
+        )
+        for a in low_score_city_alloc["allocations"]
+    ), low_score_city_alloc["allocations"]
 
     end_triggered_state = build_end_triggered_noise_state()
     assert is_game_end_triggered(end_triggered_state)

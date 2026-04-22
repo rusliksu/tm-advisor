@@ -644,16 +644,28 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             hand_cards=state.cards_in_hand)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
-        # SELL: low score card (but allow early game speculation)
+        # SELL: low score card (but allow early game speculation and immediate payoff)
         if score < 40 and phase != "early":
-            results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
-                                  play_value, 0, eff_cost, 9))
-            continue
+            net_play_value = play_value - eff_cost
+            has_immediate_value = _has_endgame_immediate_value(
+                name, effect_parser, allow_placement=True
+            )
+            if net_play_value <= 0 and not has_immediate_value:
+                results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
+                                      play_value, 0, eff_cost, 9))
+                continue
 
         # Production in endgame = bad
         is_production = _is_production_card(tags, name, effect_parser=effect_parser, db=db)
+        has_endgame_nonplacement_value = _has_endgame_immediate_value(
+            name, effect_parser, allow_placement=False
+        )
+        has_endgame_immediate_value = _has_endgame_immediate_value(
+            name, effect_parser, allow_placement=True
+        )
         if (is_production and gens_left <= 2 and
-                not _has_endgame_immediate_value(name, effect_parser, allow_placement=False)):
+                not has_endgame_nonplacement_value and
+                (not has_endgame_immediate_value or play_value <= eff_cost)):
             results.append(_entry(name, "SELL", "production в endgame бесполезна",
                                   play_value * 0.2, 0, eff_cost, 9))
             continue
@@ -661,9 +673,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         # Last gen: only play if immediate VP/TR or conversion fuel
         if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
             # Check if card gives immediate TR, placement, or resources
-            has_immediate_value = _has_endgame_immediate_value(
-                name, effect_parser, allow_placement=True
-            )
+            has_immediate_value = has_endgame_immediate_value
             if not has_immediate_value and score < 70:
                 sell_reason = f"last gen: no immediate VP (sell +1 MC)"
                 results.append(_entry(name, "SELL", sell_reason,
@@ -1148,9 +1158,16 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
     # 8. Endgame sell-all optimization
     if phase == "endgame" and gens_left <= 1 and state.cards_in_hand and synergy:
+        play_allocation_names = {
+            a["action"][5:]
+            for a in allocations
+            if a.get("type") == "card" and a.get("action", "").startswith("Play ")
+        }
         sellable = []
         for card in state.cards_in_hand:
             cname = card["name"]
+            if cname in play_allocation_names:
+                continue
             ctags = card.get("tags", [])
             cscore = synergy.adjusted_score(
                 cname, ctags, me.corp, state.generation, me.tags, state)
