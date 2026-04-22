@@ -48,11 +48,13 @@ function rememberDescription(lookup, normalizedLookup, name, description) {
   lookup[name] = normalizedDescription;
 }
 
-function buildDescriptionRuByName() {
+function buildDescriptionRuByName(options = {}) {
   const lookup = {};
   const normalizedLookup = new Set();
   const localePath = path.resolve(ROOT, '..', 'terraforming-mars', 'assets', 'locales', 'ru.json');
-  const localeStrings = loadOptionalJson(localePath, {});
+  const localeStrings = options.includeExternalLocales === true
+    ? loadOptionalJson(localePath, {})
+    : {};
 
   function resolveLocalizedDescription(entry) {
     if (!entry || typeof entry !== 'object') return '';
@@ -93,7 +95,9 @@ function buildSyncedRatings(evaluationsOverride) {
   const advisorNotesRu = fs.existsSync(advisorNotesRuPath)
     ? JSON.parse(fs.readFileSync(advisorNotesRuPath, 'utf8'))
     : {};
-  const descriptionRuByName = buildDescriptionRuByName();
+  const descriptionRuByName = buildDescriptionRuByName({
+    includeExternalLocales: process.env.TM_INCLUDE_EXTERNAL_LOCALES === '1',
+  });
   return buildRatingsFromEvaluations(evaluations, {advisorNotesRu, descriptionRuByName});
 }
 

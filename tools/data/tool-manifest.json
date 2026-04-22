@@ -4,11 +4,16 @@
     "tools/data/build-ratings-data.js",
     "tools/data/build-extension.py",
     "tools/data/check-canonical.js",
+    "tools/data/import-tfmstats.js",
+    "tools/data/report-tfmstats-disagreements.js",
     "tools/data/sync-extension-generated.js",
     "tools/data/sync-bot-generated.js",
     "tools/data/sync-ratings.js",
+    "tools/data/test-build-ratings-data.js",
     "tools/data/test-synergy-rules.js",
     "scripts/build_extension_data.py",
+    "scripts/import-tfmstats.js",
+    "scripts/report-tfmstats-disagreements.js",
     "scripts/sync-extension-generated.js",
     "scripts/sync-bot-generated.js",
     "scripts/sync-ratings.js",
@@ -18,11 +23,14 @@
     {
       "path": "package.json",
       "contains": [
-        "\"test\": \"node tools/data/test-synergy-rules.js\"",
+        "\"test\": \"node tools/data/test-synergy-rules.js && node tools/data/test-build-ratings-data.js\"",
         "\"data:build-extension\": \"python tools/data/build-extension.py\"",
         "\"data:check-canonical\": \"node tools/data/check-canonical.js\"",
         "\"data:check-bot-generated\": \"node tools/data/sync-bot-generated.js --check\"",
         "\"data:check-extension-generated\": \"node tools/data/sync-extension-generated.js --check\"",
+        "\"data:check-tfmstats\": \"node tools/data/import-tfmstats.js --check\"",
+        "\"data:import-tfmstats\": \"node tools/data/import-tfmstats.js --write\"",
+        "\"data:report-tfmstats\": \"node tools/data/report-tfmstats-disagreements.js\"",
         "\"data:sync-bot-generated\": \"node tools/data/sync-bot-generated.js\"",
         "\"data:sync-ratings\": \"node tools/data/sync-ratings.js\"",
         "\"data:sync-extension-generated\": \"node tools/data/sync-extension-generated.js\""
@@ -41,6 +49,20 @@
         "import runpy",
         "\"tools\" / \"data\" / \"build-extension.py\"",
         "runpy.run_path(str(ENTRYPOINT), run_name=\"__main__\")"
+      ]
+    },
+    {
+      "path": "scripts/import-tfmstats.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'data', 'import-tfmstats.js');",
+        "require(CANONICAL).main(process.argv.slice(2)).then((code) => process.exit(code));"
+      ]
+    },
+    {
+      "path": "scripts/report-tfmstats-disagreements.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'data', 'report-tfmstats-disagreements.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
       ]
     },
     {
