@@ -17,6 +17,7 @@
   ],
   "output_files": [
     "tierlist_all.html",
+    "tierlist_all_ru.html",
     "tierlist_ceos.html",
     "tierlist_ceos_ru.html",
     "tierlist_corporations.html",

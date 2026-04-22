@@ -7,7 +7,7 @@
 <meta property="og:title" content="Corporations Tier List — Terraforming Mars">
 <meta property="og:description" content="Terraforming Mars card tier list for 3P / WGT / All Expansions">
 <meta property="og:type" content="website">
-<meta name="tm-tierlist-build" content="2026-04-21T21:07:35Z">
+<meta name="tm-tierlist-build" content="2026-04-22T07:48:26Z">
 <link rel="icon" type="image/png" href="../favicon.png">
 <link rel="icon" type="image/x-icon" href="../favicon.ico">
 <style>
@@ -1021,7 +1021,7 @@ body {
 
 <nav class="top-nav">
     <a class="nav-link nav-back" href="../index.html">← Back</a>
-    <div class="nav-links"><span class="nav-link active">Corporations</span><a class="nav-link" href="tierlist_preludes.html">Preludes</a><a class="nav-link" href="tierlist_projects.html">Projects</a><a class="nav-link" href="tierlist_ceos.html">CEOs</a></div>
+    <div class="nav-links"><a class="nav-link" href="tierlist_all.html">All Cards</a><span class="nav-link active">Corporations</span><a class="nav-link" href="tierlist_preludes.html">Preludes</a><a class="nav-link" href="tierlist_projects.html">Projects</a><a class="nav-link" href="tierlist_ceos.html">CEOs</a></div>
     <a class="nav-link nav-lang" href="tierlist_corporations_ru.html">RU</a>
 </nav>
 
@@ -1077,7 +1077,7 @@ body {
                 <div class="card ctype-corporation" data-name="Point Luna" data-tags="Space,Earth" data-expansion="Prelude" data-mechanics="" data-roles="" data-score="90"><div class="card-thumb" aria-label="Point Luna" role="img" style="background-image:url('sprites/tierlist_corporations_cards.webp');background-size:960px 800px;background-position:-0px -0px"></div><div class="card-score" style="background:#FF7F7F;color:#101828">90</div><div class="card-tooltip">Point Luna</div></div>
             </div>
         </div>
-        
+
 
         <div class="tier-row" id="tier-A" data-tier="A">
             <div class="tier-label" style="background-color: #FFBF7F">
@@ -1097,7 +1097,7 @@ body {
 <div class="card" data-name="SolBank" data-tags="" data-expansion="" data-mechanics="Claim" data-roles="" data-score="80"><div class="card-thumb" aria-label="SolBank" role="img" style="background-image:url('sprites/tierlist_corporations_cards.webp');background-size:960px 800px;background-position:-800px -0px"></div><div class="card-score" style="background:#FFBF7F;color:#101828">80</div><div class="card-tooltip">SolBank</div></div>
             </div>
         </div>
-        
+
 
         <div class="tier-row" id="tier-B" data-tier="B">
             <div class="tier-label" style="background-color: #FFDF7F">
@@ -1134,7 +1134,7 @@ body {
 <div class="card" data-name="Nanotech Industries" data-tags="" data-expansion="" data-mechanics="" data-roles="" data-score="70"><div class="card-thumb" aria-label="Nanotech Industries" role="img" style="background-image:url('sprites/tierlist_corporations_cards.webp');background-size:960px 800px;background-position:-80px -300px"></div><div class="card-score" style="background:#FFDF7F;color:#101828">70</div><div class="card-tooltip">Nanotech Industries</div></div>
             </div>
         </div>
-        
+
 
         <div class="tier-row" id="tier-C" data-tier="C">
             <div class="tier-label" style="background-color: #BFFF7F">
@@ -1184,7 +1184,7 @@ body {
 <div class="card" data-name="Agricola Inc" data-tags="" data-expansion="" data-mechanics="" data-roles="" data-score="55"><div class="card-thumb" aria-label="Agricola Inc" role="img" style="background-image:url('sprites/tierlist_corporations_cards.webp');background-size:960px 800px;background-position:-400px -600px"></div><div class="card-score" style="background:#BFFF7F;color:#101828">55</div><div class="card-tooltip">Agricola Inc</div></div>
             </div>
         </div>
-        
+
 
         <div class="tier-row" id="tier-D" data-tier="D">
             <div class="tier-label" style="background-color: #7FFF7F">
@@ -1206,7 +1206,7 @@ body {
 <div class="card ctype-corporation" data-name="Terralabs Research" data-tags="Science,Earth" data-expansion="Turmoil" data-mechanics="" data-roles="" data-score="38"><div class="card-thumb" aria-label="Terralabs Research" role="img" style="background-image:url('sprites/tierlist_corporations_cards.webp');background-size:960px 800px;background-position:-400px -700px"></div><div class="card-score" style="background:#7FFF7F;color:#101828">38</div><div class="card-tooltip">Terralabs Research</div></div>
             </div>
         </div>
-        
+
 </div>
 
 <div class="footer">
@@ -1285,58 +1285,6 @@ function expansionHtml(exp) {
 }
 
 let currentModalCard = null;
-const cardEls = Array.from(document.querySelectorAll('.card'));
-const tierRows = Array.from(document.querySelectorAll('.tier-row')).map((row) => ({
-    row: row,
-    tier: row.dataset.tier || '',
-    countEl: row.querySelector('.tier-count'),
-    visibleCount: 0,
-}));
-const tierRowsByTier = new Map(tierRows.map((meta) => [meta.tier, meta]));
-const cardRecords = cardEls.map((el) => {
-    const name = el.dataset.name;
-    const card = cardsData[name] || {};
-    return {
-        el: el,
-        name: name,
-        card: card,
-        tags: Array.isArray(card.tags) ? card.tags : [],
-        expansion: card.expansion || '',
-        mechanics: Array.isArray(card.mechanics) ? card.mechanics : [],
-        roles: Array.isArray(card.roles) ? card.roles : [],
-        tier: card.tier || '',
-        searchText: (((card.name_ru || '') + ' ' + (card.name || '')).trim()).toLowerCase(),
-    };
-});
-const totalCards = cardRecords.length;
-const filterCountEl = document.getElementById('filterCount');
-const searchInputEl = document.getElementById('searchInput');
-const sortSelectEl = document.getElementById('sortSelect');
-const runSearchEl = document.getElementById('runSearch');
-const resetFiltersEl = document.getElementById('resetFilters');
-const modalOverlayEl = document.getElementById('modalOverlay');
-const modalEl = document.getElementById('modal');
-let filterApplyTimer = 0;
-let hashUpdateTimer = 0;
-
-function normalizeSearchValue(value) {
-    return (value || '').toLowerCase().trim();
-}
-
-function scheduleApplyFilters() {
-    window.clearTimeout(filterApplyTimer);
-    filterApplyTimer = window.setTimeout(() => {
-        filterApplyTimer = 0;
-        applyFilters();
-    }, 120);
-}
-
-function flushScheduledFilters() {
-    if (filterApplyTimer) {
-        window.clearTimeout(filterApplyTimer);
-        filterApplyTimer = 0;
-    }
-}
 
 function getVisibleCards() {
     return Array.from(document.querySelectorAll('.card:not(.filtered-out)')).map(el => el.dataset.name);
@@ -1444,8 +1392,8 @@ function openModal(cardName) {
         });
     });
 
-    modalOverlayEl.classList.add('active');
-    modalEl.scrollTop = 0;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('modal').scrollTop = 0;
     history.replaceState(null, '', '#' + encodeURIComponent(cardName));
 }
 
@@ -1474,7 +1422,7 @@ function copyCardLink(cardName) {
 
 function closeModal() {
     const lastCard = currentModalCard;
-    modalOverlayEl.classList.remove('active');
+    document.getElementById('modalOverlay').classList.remove('active');
     currentModalCard = null;
     history.replaceState(null, '', window.location.pathname + window.location.search);
     // Scroll to and highlight the card in the grid
@@ -1505,34 +1453,34 @@ let searchQuery = '';
 
 function applyFilters() {
     let shown = 0;
-    const hasSearch = Boolean(searchQuery);
-    const hasTagFilters = activeTagFilters.size > 0;
-    const hasExpFilters = activeExpFilters.size > 0;
-    const hasMechanicFilters = activeMechanicFilters.size > 0;
-    const hasRoleFilters = activeRoleFilters.size > 0;
-    const hasTierFilters = activeTierFilters.size > 0;
+    let total = 0;
 
-    for (const tierMeta of tierRows) {
-        tierMeta.visibleCount = 0;
-    }
+    document.querySelectorAll('.card').forEach(el => {
+        total++;
+        const name = el.dataset.name;
+        const card = cardsData[name];
+        if (!card) return;
 
-    for (const record of cardRecords) {
-        const card = record.card;
-        if (!card) continue;
+        const cardTags = el.dataset.tags ? el.dataset.tags.split(',') : [];
+        const cardExp = el.dataset.expansion || '';
+        const cardMechanics = el.dataset.mechanics ? el.dataset.mechanics.split(',') : [];
+        const cardRoles = el.dataset.roles ? el.dataset.roles.split(',') : [];
+        const cardTier = card.tier;
+        const displayName = (card.name_ru || '') + ' ' + card.name;
 
         let visible = true;
 
         // Search filter
-        if (hasSearch && !record.searchText.includes(searchQuery)) {
+        if (searchQuery && !displayName.toLowerCase().includes(searchQuery)) {
             visible = false;
         }
 
         // Tag filter (AND: card must have ALL selected tags)
-        if (visible && hasTagFilters) {
+        if (visible && activeTagFilters.size > 0) {
             for (const tag of activeTagFilters) {
                 if (tag === '_none') {
-                    if (record.tags.length > 0) { visible = false; break; }
-                } else if (!record.tags.includes(tag)) {
+                    if (cardTags.length > 0) { visible = false; break; }
+                } else if (!cardTags.includes(tag)) {
                     visible = false;
                     break;
                 }
@@ -1540,25 +1488,25 @@ function applyFilters() {
         }
 
         // Expansion filter (OR: card must match any selected expansion)
-        if (visible && hasExpFilters) {
-            if (!activeExpFilters.has(record.expansion)) {
+        if (visible && activeExpFilters.size > 0) {
+            if (!activeExpFilters.has(cardExp)) {
                 visible = false;
             }
         }
 
         // Mechanics filter (AND)
-        if (visible && hasMechanicFilters) {
+        if (visible && activeMechanicFilters.size > 0) {
             for (const mechanic of activeMechanicFilters) {
-                if (!record.mechanics.includes(mechanic)) {
+                if (!cardMechanics.includes(mechanic)) {
                     visible = false;
                     break;
                 }
             }
         }
 
-        if (visible && hasRoleFilters) {
+        if (visible && activeRoleFilters.size > 0) {
             for (const role of activeRoleFilters) {
-                if (!record.roles.includes(role)) {
+                if (!cardRoles.includes(role)) {
                     visible = false;
                     break;
                 }
@@ -1566,58 +1514,43 @@ function applyFilters() {
         }
 
         // Tier filter
-        if (visible && hasTierFilters) {
-            if (!activeTierFilters.has(record.tier)) {
+        if (visible && activeTierFilters.size > 0) {
+            if (!activeTierFilters.has(cardTier)) {
                 visible = false;
             }
         }
 
-        const shouldHide = !visible;
-        if (record.el.classList.contains('filtered-out') !== shouldHide) {
-            record.el.classList.toggle('filtered-out', shouldHide);
-        }
-        if (visible) {
-            shown++;
-            const tierMeta = tierRowsByTier.get(record.tier);
-            if (tierMeta) {
-                tierMeta.visibleCount += 1;
-            }
-        }
-    }
+        el.classList.toggle('filtered-out', !visible);
+        if (visible) shown++;
+    });
 
     // Hide empty tier rows
-    for (const tierMeta of tierRows) {
-        const shouldHideRow = tierMeta.visibleCount === 0;
-        if (tierMeta.row.classList.contains('hidden') !== shouldHideRow) {
-            tierMeta.row.classList.toggle('hidden', shouldHideRow);
-        }
-        if (tierMeta.countEl) {
-            const nextCount = String(tierMeta.visibleCount);
-            if (tierMeta.countEl.textContent !== nextCount) {
-                tierMeta.countEl.textContent = nextCount;
-            }
-        }
-    }
+    document.querySelectorAll('.tier-row').forEach(row => {
+        const visibleCards = row.querySelectorAll('.card:not(.filtered-out)');
+        row.classList.toggle('hidden', visibleCards.length === 0);
+        const countEl = row.querySelector('.tier-count');
+        if (countEl) countEl.textContent = visibleCards.length;
+    });
 
+    const countEl = document.getElementById('filterCount');
     const hasFilters = searchQuery || activeTagFilters.size || activeExpFilters.size || activeTierFilters.size || activeMechanicFilters.size || activeRoleFilters.size;
-    filterCountEl.textContent = hasFilters ? 'Shown: ' + shown + ' of ' + totalCards : '';
+    countEl.textContent = hasFilters ? 'Shown: ' + shown + ' of ' + total : '';
 }
 
 // Search
-searchInputEl.addEventListener('input', () => {
-    searchQuery = normalizeSearchValue(searchInputEl.value);
-    scheduleApplyFilters();
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    applyFilters();
 });
-searchInputEl.addEventListener('keydown', (e) => {
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-        flushScheduledFilters();
-        searchQuery = normalizeSearchValue(searchInputEl.value);
+        searchQuery = e.target.value.toLowerCase().trim();
         applyFilters();
     }
 });
-runSearchEl.addEventListener('click', () => {
-    flushScheduledFilters();
-    searchQuery = normalizeSearchValue(searchInputEl.value);
+document.getElementById('runSearch').addEventListener('click', () => {
+    const input = document.getElementById('searchInput');
+    searchQuery = input.value.toLowerCase().trim();
     applyFilters();
 });
 
@@ -1645,21 +1578,21 @@ setupChipFilters('mechanicFilters', activeMechanicFilters, 'mechanic');
 setupChipFilters('roleFilters', activeRoleFilters, 'role');
 
 // Reset
-resetFiltersEl.addEventListener('click', () => {
-    flushScheduledFilters();
+document.getElementById('resetFilters').addEventListener('click', () => {
     searchQuery = '';
     activeTagFilters.clear();
     activeExpFilters.clear();
     activeTierFilters.clear();
     activeMechanicFilters.clear();
     activeRoleFilters.clear();
-    searchInputEl.value = '';
+    document.getElementById('searchInput').value = '';
     document.querySelectorAll('.filter-chip.active').forEach(c => c.classList.remove('active'));
     applyFilters();
+    updateHash();
 });
 
 // --- URL Hash ---
-function writeHashNow() {
+function updateHash() {
     if (currentModalCard) return; // don't overwrite card hash while modal is open
     const parts = [];
     if (searchQuery) parts.push('q=' + encodeURIComponent(searchQuery));
@@ -1669,14 +1602,6 @@ function writeHashNow() {
     if (activeMechanicFilters.size) parts.push('mech=' + [...activeMechanicFilters].map(encodeURIComponent).join(','));
     if (activeRoleFilters.size) parts.push('role=' + [...activeRoleFilters].map(encodeURIComponent).join(','));
     history.replaceState(null, '', parts.length ? '#' + parts.join('&') : location.pathname);
-}
-
-function updateHash() {
-    window.clearTimeout(hashUpdateTimer);
-    hashUpdateTimer = window.setTimeout(() => {
-        hashUpdateTimer = 0;
-        writeHashNow();
-    }, 80);
 }
 
 function loadFromHash() {
@@ -1694,7 +1619,7 @@ function loadFromHash() {
 
     if (params.q) {
         searchQuery = decodeURIComponent(params.q).toLowerCase();
-        searchInputEl.value = decodeURIComponent(params.q);
+        document.getElementById('searchInput').value = decodeURIComponent(params.q);
     }
     if (params.tier) {
         params.tier.split(',').forEach(t => {
@@ -1742,7 +1667,7 @@ applyFilters = function() {
 };
 
 // Sorting
-sortSelectEl.addEventListener('change', (e) => {
+document.getElementById('sortSelect').addEventListener('change', (e) => {
     const mode = e.target.value;
     document.querySelectorAll('.tier-cards').forEach(container => {
         const cards = [...container.querySelectorAll('.card')];
@@ -1776,8 +1701,8 @@ document.querySelectorAll('.card').forEach(el => {
 document.getElementById('modalClose').addEventListener('click', closeModal);
 document.getElementById('modalPrev').addEventListener('click', () => navigateModal(-1));
 document.getElementById('modalNext').addEventListener('click', () => navigateModal(1));
-modalOverlayEl.addEventListener('click', (e) => {
-    if (e.target === modalOverlayEl) closeModal();
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
 });
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeModal();
@@ -1791,12 +1716,13 @@ document.addEventListener('keydown', (e) => {
 (function() {
     let touchStartX = 0;
     let touchStartY = 0;
-    if (!modalEl) return;
-    modalEl.addEventListener('touchstart', (e) => {
+    const modal = document.getElementById('modal');
+    if (!modal) return;
+    modal.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
     }, {passive: true});
-    modalEl.addEventListener('touchend', (e) => {
+    modal.addEventListener('touchend', (e) => {
         if (!currentModalCard) return;
         const dx = e.changedTouches[0].clientX - touchStartX;
         const dy = e.changedTouches[0].clientY - touchStartY;
@@ -1839,13 +1765,14 @@ document.addEventListener('keydown', (e) => {
 
 // Touch swipe for modal navigation
 (function() {
+    const overlay = document.getElementById('modalOverlay');
     let touchStartX = 0;
     let touchStartY = 0;
-    modalOverlayEl.addEventListener('touchstart', (e) => {
+    overlay.addEventListener('touchstart', (e) => {
         touchStartX = e.changedTouches[0].screenX;
         touchStartY = e.changedTouches[0].screenY;
     }, {passive: true});
-    modalOverlayEl.addEventListener('touchend', (e) => {
+    overlay.addEventListener('touchend', (e) => {
         const dx = e.changedTouches[0].screenX - touchStartX;
         const dy = e.changedTouches[0].screenY - touchStartY;
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
@@ -1865,7 +1792,7 @@ document.addEventListener('keydown', (e) => {
     if (currentModalCard || document.activeElement.tagName === 'INPUT') return;
     if (e.key === '/') {
         e.preventDefault();
-        searchInputEl.focus();
+        document.getElementById('searchInput').focus();
     }
     if (e.key === 'j' || e.key === 'k') {
         const tiers = Array.from(document.querySelectorAll('.tier-row'));

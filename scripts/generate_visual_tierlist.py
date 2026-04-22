@@ -1,6 +1,6 @@
 """
 Генератор визуальных HTML тир-листов для Terraforming Mars.
-Создаёт 3 standalone HTML файла: корпорации, прелюдии, проектные карты.
+Создаёт standalone HTML файлы: все карты, корпорации, прелюдии, проектные карты, CEO.
 Поддержка --ru для русских названий карт.
 """
 
@@ -36,6 +36,7 @@ TIER_COLORS = {
 }
 
 CARD_TYPES = {
+    "all": {"title": "Полный тир-лист", "title_en": "Full Tier List", "types": None},
     "corporations": {"title": "Тир-лист корпораций", "title_en": "Corporations Tier List", "types": {"corporation"}},
     "preludes": {"title": "Тир-лист прелюдий", "title_en": "Preludes Tier List", "types": {"prelude"}},
     "projects": {"title": "Тир-лист проектных карт", "title_en": "Project Cards Tier List", "types": {"active", "automated", "event", "project"}},
@@ -43,6 +44,7 @@ CARD_TYPES = {
 }
 
 NAV_LINKS = {
+    "all": {"label_ru": "Все карты", "label_en": "All Cards"},
     "corporations": {"label_ru": "Корпорации", "label_en": "Corporations"},
     "preludes": {"label_ru": "Прелюдии", "label_en": "Preludes"},
     "projects": {"label_ru": "Проекты", "label_en": "Projects"},
@@ -219,7 +221,7 @@ def get_cards_for_category(category, evaluations, card_index, names_ru=None):
 
     for name, ev in evaluations.items():
         card_type = resolve_card_type(name, ev, card_index)
-        if card_type not in allowed_types:
+        if allowed_types is not None and card_type not in allowed_types:
             continue
 
         tier = ev.get("tier", "C")
@@ -262,6 +264,10 @@ def escape(text):
     if isinstance(text, list):
         text = ", ".join(str(x) for x in text)
     return html.escape(str(text)) if text else ""
+
+
+def strip_trailing_whitespace(text):
+    return "\n".join(line.rstrip() for line in text.splitlines()) + "\n"
 
 
 def build_nav_html(current_category):
@@ -367,6 +373,9 @@ def build_sprite_atlas(category, tiers, image_mapping):
             "coords": {},
         }
 
+    max_webp_dimension = 16383
+    max_rows = max(1, max_webp_dimension // thumb_h)
+    cols = max(cols, (len(sprite_cards) + max_rows - 1) // max_rows)
     rows = (len(sprite_cards) + cols - 1) // cols
     sheet_w = cols * thumb_w
     sheet_h = rows * thumb_h
@@ -2315,6 +2324,8 @@ def generate_ranking_txt(evaluations, card_index):
              "Формат: 3P / WGT / All Expansions"]
 
     for cat_key, cat_info in category_map.items():
+        if cat_key == "all":
+            continue
         allowed_types = cat_info["types"]
         cards_by_tier = {t: [] for t in TIER_ORDER}
 
@@ -2369,7 +2380,7 @@ def main():
             if tiers[t]:
                 print(f"  {t}: {len(tiers[t])} карт")
 
-        html_content = generate_html(category, tiers, image_mapping, cross_page_map)
+        html_content = strip_trailing_whitespace(generate_html(category, tiers, image_mapping, cross_page_map))
         output_name = f"tierlist_{category}{suffix}.html"
         for output_path in [SITE_OUTPUT_DIR / output_name, PUBLISH_OUTPUT_DIR / output_name]:
             with open(output_path, "w", encoding="utf-8") as f:
