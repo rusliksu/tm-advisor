@@ -14,6 +14,7 @@ import json
 import os
 import re
 import sys
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -23,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = ROOT / "scripts"
 DEFAULT_SERVER = "https://terraforming-mars.herokuapp.com"
 DEFAULT_LOG_DIR = ROOT / "data" / "advisor_live_audit"
+DEFAULT_STALE_AFTER = 6
 
 for path in (ROOT, SCRIPTS_DIR):
     if str(path) not in sys.path:
@@ -293,20 +295,23 @@ def audit_live(identifier: str, server: str, include_claude: bool = True) -> dic
         snapshot = deps["advisor_snapshot"].snapshot(player_id)
         label = player_label(snapshot, player_id)
         phase = live_phase_from_snapshot(snapshot)
-        players.append({
+        player_entry = {
             "id": player_id,
             "label": label,
             "generation": (snapshot.get("game") or {}).get("generation"),
             "phase": phase,
-        })
+        }
 
         player_issues = audit_snapshot_payload(label, snapshot)
         if include_claude:
             raw = client.get_player_state(player_id)
             state = deps["GameState"](raw)
+            player_entry["game_age"] = state.game_age
+            player_entry["undo_count"] = state.undo_count
             rendered = formatter.format(state)
             player_issues.extend(audit_claude_output(label, state.phase, rendered))
 
+        players.append(player_entry)
         all_issues.extend(player_issues)
 
     return {
@@ -343,10 +348,87 @@ def jsonl_record(result: dict) -> dict:
     }
 
 
-def write_jsonl_log(result: dict, path: Path) -> Path:
+def append_jsonl_record(record: dict, path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(jsonl_record(result), ensure_ascii=False, sort_keys=True) + "\n")
+        fh.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+    return path
+
+
+def write_jsonl_log(result: dict, path: Path) -> Path:
+    return append_jsonl_record(jsonl_record(result), path)
+
+
+def read_recent_jsonl(path: Path, limit: int) -> list[dict]:
+    if limit <= 0 or not path.exists():
+        return []
+
+    rows = deque(maxlen=limit)
+    with path.open("r", encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                rows.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return list(rows)
+
+
+def record_state_fingerprint(record: dict) -> dict:
+    players = record.get("players") or []
+    player_fingerprints = []
+    for player in players:
+        player_fingerprints.append({
+            "id": player.get("id"),
+            "generation": player.get("generation"),
+            "phase": player.get("phase"),
+            "game_age": player.get("game_age"),
+            "undo_count": player.get("undo_count"),
+        })
+    return {
+        "generation": record.get("generation"),
+        "phases": sorted(str(phase) for phase in (record.get("phases") or [])),
+        "players": sorted(player_fingerprints, key=lambda item: str(item.get("id") or "")),
+    }
+
+
+def record_is_terminal(record: dict) -> bool:
+    phases = record.get("phases") or []
+    return bool(phases) and all(is_terminal_phase(phase) for phase in phases)
+
+
+def assess_stale(records: list[dict], threshold: int) -> dict | None:
+    if threshold <= 0 or not records:
+        return None
+
+    latest = records[-1]
+    latest_fp = record_state_fingerprint(latest)
+    stable_runs = 0
+    for record in reversed(records):
+        if record_state_fingerprint(record) != latest_fp:
+            break
+        stable_runs += 1
+
+    terminal = record_is_terminal(latest)
+    return {
+        "is_stale": stable_runs >= threshold and not terminal,
+        "stable_runs": stable_runs,
+        "threshold": threshold,
+        "terminal": terminal,
+        "fingerprint": latest_fp,
+    }
+
+
+def write_jsonl_log_with_stale(result: dict, path: Path, stale_after: int) -> Path:
+    record = jsonl_record(result)
+    previous = read_recent_jsonl(path, max(0, stale_after - 1))
+    stale = assess_stale(previous + [record], stale_after)
+    if stale:
+        record["stale"] = stale
+        result["stale"] = stale
+    append_jsonl_record(record, path)
     return path
 
 
@@ -359,8 +441,14 @@ def format_report(result: dict) -> str:
         f"Advisor live audit: {result.get('target')} @ {result.get('server')}",
         f"Gen {gen}, phase(s): {', '.join(phases)}, players: {len(players)}",
     ]
+    stale = result.get("stale") or {}
     if not issues:
         lines.append("OK: recurring advisor regressions not detected.")
+        if stale.get("is_stale"):
+            lines.append(
+                f"STALE: same live state for {stale['stable_runs']} checks "
+                f"(threshold {stale['threshold']}); stop or refresh the heartbeat."
+            )
         return "\n".join(lines)
 
     lines.append(f"Issues: {len(issues)}")
@@ -368,6 +456,11 @@ def format_report(result: dict) -> str:
         lines.append(
             f"- [{item['check']}] {item['player']}: {item['message']} "
             f"(fix: {item['module']})"
+        )
+    if stale.get("is_stale"):
+        lines.append(
+            f"STALE: same live state for {stale['stable_runs']} checks "
+            f"(threshold {stale['threshold']}); stop or refresh the heartbeat."
         )
     return "\n".join(lines)
 
@@ -398,6 +491,15 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
             "data/advisor_live_audit/<target>.jsonl."
         ),
     )
+    parser.add_argument(
+        "--stale-after",
+        type=int,
+        default=DEFAULT_STALE_AFTER,
+        help=(
+            "When used with --log-jsonl, mark the run stale after N identical "
+            f"live-state records. Use 0 to disable. Default: {DEFAULT_STALE_AFTER}."
+        ),
+    )
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     return parser.parse_args(argv)
 
@@ -418,7 +520,11 @@ def main(argv: list[str] | None = None) -> int:
 
     log_path = None
     if args.log_jsonl is not None:
-        log_path = write_jsonl_log(result, resolve_log_path(args.log_jsonl, identifier))
+        log_path = write_jsonl_log_with_stale(
+            result,
+            resolve_log_path(args.log_jsonl, identifier),
+            max(0, args.stale_after),
+        )
         result["log_path"] = str(log_path)
 
     if args.json:
