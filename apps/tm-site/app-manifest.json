@@ -17,6 +17,7 @@
     "apps/tm-site/src/favicon.png",
     "apps/tm-site/src/og-image.png",
     "apps/tm-site/src/output/tierlist_all.html",
+    "apps/tm-site/src/output/tierlist_all_ru.html",
     "apps/tm-site/src/output/tierlist_ceos.html",
     "apps/tm-site/src/output/tierlist_ceos_ru.html",
     "apps/tm-site/src/output/tierlist_corporations.html",
@@ -85,6 +86,10 @@
     {
       "path": "output/tierlist_all.html",
       "source": "apps/tm-site/src/output/tierlist_all.html"
+    },
+    {
+      "path": "output/tierlist_all_ru.html",
+      "source": "apps/tm-site/src/output/tierlist_all_ru.html"
     },
     {
       "path": "output/tierlist_ceos.html",
