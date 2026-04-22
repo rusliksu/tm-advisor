@@ -213,14 +213,23 @@ def main() -> None:
     assert audit.watch_recommendation({"issues": []}, clean_stale_summary) == "stop-heartbeat-stale"
     assert audit.watch_recommendation({"issues": []}, progressed_summary) == "continue"
 
+    assert audit.heartbeat_contract("inspect-issues", {"target": "gabc123"}, terminal_summary)["decision"] == "notify"
+    assert audit.heartbeat_contract(
+        "stop-heartbeat-terminal", {"target": "gabc123"}, terminal_summary)["decision"] == "delete"
+    assert audit.heartbeat_contract(
+        "stop-heartbeat-stale", {"target": "gabc123"}, clean_stale_summary)["decision"] == "delete"
+    assert audit.heartbeat_contract("continue", {"target": "gabc123"}, progressed_summary)["decision"] == "continue"
+
     watch_output = audit.format_watch_once({
         "audit": {**result, "stale": clean_stale_summary["stale"]},
         "summary": clean_stale_summary,
         "recommendation": "stop-heartbeat-stale",
+        "heartbeat": audit.heartbeat_contract("stop-heartbeat-stale", result, clean_stale_summary),
         "log_path": "tmp.jsonl",
     })
     assert "Advisor watch once:" in watch_output, watch_output
     assert "watch_recommendation: stop-heartbeat-stale" in watch_output, watch_output
+    assert "heartbeat_decision: delete" in watch_output, watch_output
 
     with tempfile.TemporaryDirectory() as tmp:
         log_path = Path(tmp) / "summary.jsonl"
