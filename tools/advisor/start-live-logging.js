@@ -26,9 +26,7 @@ function usage() {
     '  --help                Show this help',
     '',
     'After game end:',
-    '  node bot/shadow-merge.js <gameId>',
-    '  node bot/shadow-analyze.js data/shadow/merged/merged-<gameId>.jsonl',
-    '  python tools/advisor/postgame-summary.py <gameId> --base-url <server-url>',
+    '  npm run advisor:finish-live-logging -- <gameId> --server-url <server-url> --json',
   ].join('\n');
 }
 
