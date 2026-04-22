@@ -7618,16 +7618,21 @@
   },
   "Law Suit": {
     "name": "Law Suit",
-    "score": 52,
-    "tier": "D",
+    "score": 55,
+    "tier": "C",
     "type": "project",
-    "economy": "2 MC + 3 MC card = 5 MC. Steal 3 MC from attacker + give them -1 VP. Net: 3 MC gained + 1 VP denied to opponent. Requires being attacked this generation. Earth tag.",
-    "reasoning": "Conditional and unreliable reactive card. Per COTD community, the mind-game value is underrated — just knowing it was drafted can deter attacks. In 3P, experienced players note it feels bad to be targeted because 'they have Law Suit.' The 3 MC steal + VP penalty is modest but the deterrent effect has real value.",
+    "economy": "2 MC + 3 MC card = 5 MC. If triggered, you steal 3 MC from the attacker and put this into their event pile, effectively adding a -1 VP penalty to that player. In 2P this is a meaningful swing; in 3P+ the one-opponent damage is less reliable. Earth tag and event rebates can make the play close to free.",
+    "reasoning": "Reactive but better than bottom-D filler. COTD is mixed: the reward is minor and the card can be dead, but in 2P it is a real hedge against common plant/production attacks, and in draft its existence can discourage attacks even when not played. Do not overvalue table-talk or showing the card; the stable value is the cheap swing when the trigger is likely, especially with discounts/rebates.",
     "synergies": [
-      "Media Group"
+      "Media Group",
+      "Interplanetary Cinematics",
+      "Earth Office",
+      "Point Luna"
     ],
-    "when_to_pick": "In 2P games when you expect to be attacked. In 3P, only as a free draw or if you know you'll be targeted.",
-    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1lsxni8/cotd_law_suit_6_jul_2025/"
+    "when_to_pick": "Keep in 2P when attacks are likely, when you are ahead with vulnerable plants/production, or when rebates make it cheap. In 3P+ prefer it as a free draw or late draft hedge; skip most opening hands where the trigger is speculative.",
+    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1lsxni8/cotd_law_suit_6_jul_2025/",
+    "opening_hand_bias": -2,
+    "opening_hand_note": "Conditional opener: keep mainly in 2P or when your start is likely to invite attacks; otherwise it can sit dead for too long."
   },
   "Outdoor Sports": {
     "name": "Outdoor Sports",
