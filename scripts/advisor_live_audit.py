@@ -333,6 +333,17 @@ def resolve_log_path(value: str, identifier: str) -> Path:
     return path
 
 
+def resolve_summary_path(value: str) -> Path:
+    path = Path(value)
+    if not path.is_absolute():
+        path = ROOT / path
+    if path.exists() or value.endswith(".jsonl") or any(sep in value for sep in ("/", "\\")):
+        return path
+
+    identifier, _server = extract_identifier(value)
+    return default_log_path(identifier)
+
+
 def jsonl_record(result: dict) -> dict:
     players = result.get("players") or []
     return {
@@ -374,6 +385,10 @@ def read_recent_jsonl(path: Path, limit: int) -> list[dict]:
             except json.JSONDecodeError:
                 continue
     return list(rows)
+
+
+def read_jsonl(path: Path) -> list[dict]:
+    return read_recent_jsonl(path, 1_000_000)
 
 
 def record_state_fingerprint(record: dict) -> dict:
@@ -432,6 +447,117 @@ def write_jsonl_log_with_stale(result: dict, path: Path, stale_after: int) -> Pa
     return path
 
 
+def record_state_label(record: dict) -> str:
+    generation = record.get("generation")
+    gen_label = f"gen {generation}" if generation is not None else "gen ?"
+    phases = ", ".join(str(phase) for phase in (record.get("phases") or ["?"]))
+    return f"{gen_label} {phases}"
+
+
+def timeline_transitions(records: list[dict]) -> list[str]:
+    transitions = []
+    previous = None
+    for record in records:
+        label = record_state_label(record)
+        if label == previous:
+            continue
+        transitions.append(label)
+        previous = label
+    return transitions
+
+
+def summarize_records(records: list[dict], stale_after: int = DEFAULT_STALE_AFTER) -> dict:
+    if not records:
+        return {
+            "records": 0,
+            "issues_total": 0,
+            "issue_checks": {},
+            "timeline": [],
+            "last_state": None,
+            "terminal": False,
+            "stale": None,
+            "recommendation": "no-data",
+        }
+
+    issue_checks = {}
+    issues_total = 0
+    for record in records:
+        issues = record.get("issues") or []
+        issues_total += int(record.get("issue_count", len(issues)) or 0)
+        for item in issues:
+            check = item.get("check") or "unknown"
+            issue_checks[check] = issue_checks.get(check, 0) + 1
+
+    latest = records[-1]
+    stale = assess_stale(records, stale_after)
+    terminal = record_is_terminal(latest)
+    if issues_total:
+        recommendation = "inspect-issues"
+    elif terminal:
+        recommendation = "stop-heartbeat-terminal"
+    elif stale and stale.get("is_stale"):
+        recommendation = "stop-heartbeat-stale"
+    else:
+        recommendation = "continue"
+
+    return {
+        "records": len(records),
+        "target": latest.get("target"),
+        "server": latest.get("server"),
+        "started_at": records[0].get("recorded_at"),
+        "last_recorded_at": latest.get("recorded_at"),
+        "timeline": timeline_transitions(records),
+        "last_state": {
+            "generation": latest.get("generation"),
+            "phases": latest.get("phases") or [],
+            "label": record_state_label(latest),
+        },
+        "issues_total": issues_total,
+        "issue_checks": issue_checks,
+        "terminal": terminal,
+        "stale": stale,
+        "recommendation": recommendation,
+    }
+
+
+def summarize_jsonl(path: Path, stale_after: int = DEFAULT_STALE_AFTER) -> dict:
+    summary = summarize_records(read_jsonl(path), stale_after)
+    summary["path"] = str(path)
+    return summary
+
+
+def format_summary(summary: dict) -> str:
+    lines = [f"Advisor live audit summary: {summary.get('path', '?')}"]
+    records = summary.get("records", 0)
+    if not records:
+        lines.append("records: 0")
+        lines.append("recommendation: no-data")
+        return "\n".join(lines)
+
+    lines.append(f"target: {summary.get('target') or '?'}")
+    lines.append(f"records: {records}")
+    timeline = summary.get("timeline") or []
+    lines.append(f"timeline: {' -> '.join(timeline) if timeline else '?'}")
+    lines.append(f"last_state: {(summary.get('last_state') or {}).get('label', '?')}")
+    issue_checks = summary.get("issue_checks") or {}
+    issue_suffix = ""
+    if issue_checks:
+        issue_suffix = " (" + ", ".join(f"{k}: {v}" for k, v in sorted(issue_checks.items())) + ")"
+    lines.append(f"issues: {summary.get('issues_total', 0)}{issue_suffix}")
+    stale = summary.get("stale") or {}
+    if stale:
+        stale_text = (
+            f"{str(bool(stale.get('is_stale'))).lower()} "
+            f"({stale.get('stable_runs', 0)}/{stale.get('threshold', 0)} identical checks)"
+        )
+    else:
+        stale_text = "disabled"
+    lines.append(f"terminal: {str(bool(summary.get('terminal'))).lower()}")
+    lines.append(f"stale: {stale_text}")
+    lines.append(f"recommendation: {summary.get('recommendation')}")
+    return "\n".join(lines)
+
+
 def format_report(result: dict) -> str:
     players = result.get("players") or []
     issues = result.get("issues") or []
@@ -469,7 +595,16 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Audit live Terraforming Mars advisor output for recurring regressions.",
     )
-    parser.add_argument("identifier", help="Game/player id or Terraforming Mars URL")
+    parser.add_argument(
+        "identifier",
+        nargs="?",
+        help="Game/player id or Terraforming Mars URL. Not required with --summary.",
+    )
+    parser.add_argument(
+        "--summary",
+        metavar="PATH_OR_ID",
+        help="Summarize an advisor live audit JSONL log and exit.",
+    )
     parser.add_argument(
         "--server",
         default=None,
@@ -506,6 +641,18 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
+    if args.summary:
+        summary = summarize_jsonl(resolve_summary_path(args.summary), max(0, args.stale_after))
+        if args.json:
+            print(json.dumps(summary, ensure_ascii=False, indent=2))
+        else:
+            print(format_summary(summary))
+        return 0
+
+    if not args.identifier:
+        print("Advisor live audit failed: identifier is required unless --summary is used", file=sys.stderr)
+        return 2
+
     identifier, url_server = extract_identifier(args.identifier)
     server = args.server or url_server or os.getenv("TM_BASE_URL") or DEFAULT_SERVER
 
