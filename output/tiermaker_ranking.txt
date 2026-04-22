@@ -371,6 +371,7 @@ TERRAFORMING MARS TIER LIST — RANKING
    72  Venusian Animals
    72  Colonial Representation
    72  Rim Freighters
+   72  Invention Contest
    72  Mine
    72  Titan Shuttles
    72  Soil Studies
@@ -406,7 +407,6 @@ TERRAFORMING MARS TIER LIST — RANKING
    70  Martian Zoo
    70  Technology Demonstration
    70  Noctis Farming
-   70  Invention Contest
    70  Jovian Lanterns
    70  Lagrange Observatory
    70  Neptunian Power Consultants
