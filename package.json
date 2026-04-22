@@ -95,7 +95,7 @@
     "extension:sync-utils": "node tools/extension/sync-utils.js",
     "extension:sync-vue-bridge": "node tools/extension/sync-vue-bridge.js",
     "extension:syntax": "node apps/tm-extension/tests/syntax_check.js",
-    "test": "node tools/data/test-synergy-rules.js",
+    "test": "node tools/data/test-synergy-rules.js && node tools/data/test-build-ratings-data.js",
     "test:bot": "node apps/tm-smartbot/tests/regressions.js",
     "test:brain-core": "node tools/brain/test-core.js",
     "test:advisor": "node apps/tm-advisor-py/tests/advisor_regressions.js",
