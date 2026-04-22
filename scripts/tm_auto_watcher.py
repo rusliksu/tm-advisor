@@ -32,6 +32,11 @@ from scripts.tm_advisor.constants import BASE_URL
 
 LOG_DIR = Path(__file__).resolve().parent.parent / "data" / "game_logs" / "auto_watch"
 LOG_DIR.mkdir(parents=True, exist_ok=True)
+ADVISOR_ENTRYPOINT = Path(__file__).resolve().parent.parent / "apps" / "tm-advisor-py" / "entrypoints" / "tm_advisor.py"
+RUNTIME_DB_CANDIDATES = [
+    Path("/home/openclaw/tm-runtime/prod/shared/db/game.db"),
+    Path("/home/openclaw/terraforming-mars/db/game.db"),
+]
 
 logging.basicConfig(
     level=logging.INFO,
@@ -64,11 +69,7 @@ class GameWatcher:
         log_path = LOG_DIR / f"watch_{self.game_id}_{name}_{ts}.jsonl"
         self.log_paths[pid] = log_path
 
-        cmd = [
-            sys.executable,
-            "-m", "scripts.tm_advisor.main",
-            pid, "--events",
-        ]
+        cmd = build_advisor_cmd(pid)
 
         log.info(f"Starting advisor for {name} ({pid[:12]}) in {self.game_id}")
 
@@ -83,14 +84,14 @@ class GameWatcher:
 
     def is_alive(self) -> bool:
         """Check if any advisor process is still running."""
-        for pid, proc in self.processes.items():
+        for proc in self.processes.values():
             if proc.poll() is None:
                 return True
         return False
 
     def stop(self):
         """Stop all advisor processes."""
-        for pid, proc in self.processes.items():
+        for proc in self.processes.values():
             if proc.poll() is None:
                 proc.terminate()
                 try:
@@ -106,12 +107,13 @@ class GameWatcher:
                 query_db_local, extract_drafts, enrich_with_scores,
                 load_evaluations, reconstruct_packs,
             )
-            db_path = "/home/openclaw/terraforming-mars/db/game.db"
-            if not Path(db_path).exists():
-                log.warning(f"game.db not found at {db_path}")
+            db_path = next((path for path in RUNTIME_DB_CANDIDATES if path.exists()), None)
+            if db_path is None:
+                joined = ", ".join(str(path) for path in RUNTIME_DB_CANDIDATES)
+                log.warning(f"game.db not found in any known location: {joined}")
                 return
 
-            rows = query_db_local(db_path, self.game_id)
+            rows = query_db_local(str(db_path), self.game_id)
             if not rows:
                 log.warning(f"No draft saves for {self.game_id}")
                 return
@@ -124,7 +126,6 @@ class GameWatcher:
             if evals:
                 enrich_with_scores(drafts, evals)
 
-            # Save draft history
             draft_path = LOG_DIR / f"drafts_{self.game_id}.json"
             with open(draft_path, "w", encoding="utf-8") as f:
                 json.dump({
@@ -137,6 +138,12 @@ class GameWatcher:
 
         except Exception as e:
             log.error(f"Draft extraction failed for {self.game_id}: {e}")
+
+
+def build_advisor_cmd(player_id: str) -> list[str]:
+    if ADVISOR_ENTRYPOINT.exists():
+        return [sys.executable, str(ADVISOR_ENTRYPOINT), player_id, "--events"]
+    return [sys.executable, "-m", "scripts.tm_advisor.main", player_id, "--events"]
 
 
 class AutoWatcher:
@@ -175,9 +182,21 @@ class AutoWatcher:
             for g in data:
                 if isinstance(g, dict):
                     gid = g.get("gameId") or g.get("id", "")
+                    participants = g.get("participantIds")
                     players = g.get("players", g.get("playerCount", 0))
                     phase = g.get("phase", "")
-                    if gid and phase != "end" and (isinstance(players, int) and players >= 2 or isinstance(players, list) and len(players) >= 2):
+                    if isinstance(participants, list):
+                        participant_count = sum(
+                            1 for participant in participants
+                            if isinstance(participant, str) and participant.startswith("p")
+                        )
+                    elif isinstance(players, list):
+                        participant_count = len(players)
+                    elif isinstance(players, int):
+                        participant_count = players
+                    else:
+                        participant_count = 0
+                    if gid and phase != "end" and participant_count >= 2:
                         games.append(g)
                 elif isinstance(g, str):
                     # Just game IDs
