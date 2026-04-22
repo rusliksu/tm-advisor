@@ -110,6 +110,38 @@ class CardEffectParser:
     _SELF_ADD_RESOURCES = {"Animal", "Microbe", "Floater", "Science", "Fighter", "Asteroid",
                            "Data", "Orbital", "Robot", "Venusian Habitat", "Agenda", "Seed"}
 
+    def _parse_owned_scale_sources(self, scale_text: str) -> list[dict]:
+        """Parse owned tag/colony sources from a "per/for each" gain clause."""
+        scales: list[dict] = []
+        text = scale_text.lower()
+
+        # "per Venus tag, plant tag, and colony you have"
+        for tag_m in re.finditer(r'\b([a-z][\w-]*)\s+tags?\b', text):
+            tag = tag_m.group(1)
+            if tag in ("city", "tile", "underground"):
+                # These usually refer to global board objects, not owned tableau tags.
+                continue
+            scales.append({"kind": "tag", "name": tag})
+
+        # "per planet tag" = Earth/Jovian/Venus tags you have.
+        if re.search(r'\bplanet\s+tags?\b', text):
+            scales.append({"kind": "planet_tags"})
+
+        # Only count colonies when the clause says they belong to the player.
+        if re.search(r'\bcolon(?:y|ies)\b', text) and re.search(r'\byou\s+(?:have|own)\b', text):
+            scales.append({"kind": "colony"})
+
+        # Dedupe while preserving order.
+        deduped = []
+        seen = set()
+        for scale in scales:
+            key = (scale.get("kind"), scale.get("name"))
+            if key in seen:
+                continue
+            seen.add(key)
+            deduped.append(scale)
+        return deduped
+
     def _parse_all(self):
         """Парсит все карты из card_info."""
         for name, info in self.db.card_info.items():
@@ -487,8 +519,30 @@ class CardEffectParser:
         if "look at the top card" in desc_lower and "take" in desc_lower:
             eff.draws_cards += 1
 
+        # --- Scaled immediate gains ---
+        # Example: "Gain 1 plant per Venus tag, plant tag, and colony you have."
+        scaled_gain_spans = []
+        for m in re.finditer(
+            r'gain\s+(\d+)\s*([\w€]+)\s+(?:per each|per|for each)\s+(.+?)(?:\.|$)',
+            desc_lower
+        ):
+            amount = int(m.group(1))
+            res_raw = m.group(2).lower()
+            res = self._PROD_ALIASES.get(res_raw, res_raw)
+            scales = self._parse_owned_scale_sources(m.group(3))
+            if not scales:
+                continue
+            eff.scaled_gains_resources.append({
+                "resource": res,
+                "amount": amount,
+                "scales": scales,
+            })
+            scaled_gain_spans.append((m.start(), m.end()))
+
         # --- Immediate gains ---
         for m in re.finditer(r'gain\s+(\d+)\s+([\w€]+)', desc_lower):
+            if any(start <= m.start() < end for start, end in scaled_gain_spans):
+                continue
             amount = int(m.group(1))
             res_raw = m.group(2).lower()
             res = self._PROD_ALIASES.get(res_raw, res_raw)

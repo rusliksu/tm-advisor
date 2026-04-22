@@ -18,6 +18,7 @@ class CardEffect:
         "discount", "triggers", "actions",
         "tag_scaling", "placement", "attacks",
         "draws_cards", "gains_resources",
+        "scaled_gains_resources",
     )
 
     def __init__(self, name: str):
@@ -37,6 +38,7 @@ class CardEffect:
         self.attacks: list[str] = []           # ["-2 plant-prod", "-3 MC-prod"]
         self.draws_cards: int = 0              # сколько карт draw
         self.gains_resources: dict = {}        # {mc: 5, plant: 3, ...} immediate
+        self.scaled_gains_resources: list[dict] = []  # [{resource, amount, scales}]
 
 
 class PlayerInfo:
@@ -291,6 +293,7 @@ class GameState:
                     "name": _strip_ares(c.get("name", "???")),
                     "tags": c.get("tags", []),
                     "cost": c.get("calculatedCost", c.get("cost", 0)),
+                    "cost_is_calculated": "calculatedCost" in c,
                 })
             elif isinstance(c, str):
                 result.append({"name": _strip_ares(c), "tags": [], "cost": 0})

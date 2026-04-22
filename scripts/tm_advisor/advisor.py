@@ -752,7 +752,9 @@ class AdvisorBot:
                 card_tags = cd.get("tags", [])
                 # Use effective cost with discounts + steel/ti
                 eff, pay_hint_str = _effective_cost(
-                    cost, card_tags, me, tableau_discounts=tab_discs)
+                    cost, card_tags, me,
+                    tableau_discounts=tab_discs,
+                    discounts_already_applied=cd.get("cost_is_calculated", False))
                 if not req_ok:
                     mark = f"⛔ {req_reason}"
                 elif eff <= me.mc:

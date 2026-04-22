@@ -67,6 +67,100 @@ def build_endgame_state() -> GameState:
     })
 
 
+def build_calculated_cost_state() -> GameState:
+    hand = [
+        {"name": "Underground City", "calculatedCost": 13, "tags": ["City", "Building"]},
+        {"name": "Corona Extractor", "calculatedCost": 3, "tags": ["Space", "Power"]},
+        {"name": "Hackers", "calculatedCost": 0, "tags": []},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 12,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 19,
+        "steelProduction": 7,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 7,
+        "heatProduction": 3,
+        "terraformRating": 42,
+        "cardsInHandNbr": len(hand),
+        "tableau": [
+            {"name": "Cheung Shing MARS"},
+            {"name": "Earth Catapult"},
+        ],
+        "tags": {"building": 8, "science": 4, "power": 4, "city": 1},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 9,
+            "phase": "action",
+            "oxygenLevel": 13,
+            "temperature": 6,
+            "oceans": 8,
+            "venusScaleLevel": 30,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
+def build_soil_studies_state() -> GameState:
+    hand = [
+        {"name": "Soil Studies", "calculatedCost": 8, "tags": []},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 12,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 1,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 19,
+        "steelProduction": 1,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 7,
+        "heatProduction": 3,
+        "terraformRating": 42,
+        "cardsInHandNbr": len(hand),
+        "coloniesCount": 3,
+        "tableau": [{"name": "Cheung Shing MARS"}],
+        "tags": {"venus": 1, "plant": 1, "microbe": 2},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 9,
+            "phase": "action",
+            "oxygenLevel": 13,
+            "temperature": -4,
+            "oceans": 8,
+            "venusScaleLevel": 30,
+            "milestones": [],
+            "awards": [],
+            "colonies": [{"name": "Luna"}, {"name": "Ceres"}, {"name": "Triton"}],
+            "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
 def main() -> None:
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
     parser = CardEffectParser(db)
@@ -94,6 +188,67 @@ def main() -> None:
         not a.get("action", "").startswith("Play Venus Shuttles")
         for a in allocation
     ), allocation
+
+    calculated_cost_state = build_calculated_cost_state()
+    calculated_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            calculated_cost_state.cards_in_hand,
+            calculated_cost_state,
+            synergy,
+            req_checker,
+        )
+    }
+    underground = calculated_advice["Underground City"]
+    assert underground["action"] == "HOLD", underground
+    assert "13 MC eff > 12" in underground["reason"], underground
+    assert "-2 discount" not in underground["reason"], underground
+    hackers = calculated_advice["Hackers"]
+    assert hackers["action"] == "SELL", hackers
+
+    calculated_alloc = mc_allocation_advice(
+        calculated_cost_state, synergy, req_checker)["allocations"]
+    assert all(
+        not a.get("action", "").startswith("Play Corona Extractor")
+        for a in calculated_alloc
+    ), calculated_alloc
+    assert all(
+        not a.get("action", "").startswith("Play Hackers")
+        for a in calculated_alloc
+    ), calculated_alloc
+
+    soil_eff = parser.get("Soil Studies")
+    assert soil_eff is not None
+    assert soil_eff.gains_resources.get("plant", 0) == 0, soil_eff.gains_resources
+    assert soil_eff.scaled_gains_resources == [{
+        "resource": "plant",
+        "amount": 1,
+        "scales": [
+            {"kind": "tag", "name": "venus"},
+            {"kind": "tag", "name": "plant"},
+            {"kind": "colony"},
+        ],
+    }], soil_eff.scaled_gains_resources
+    greenhouses_eff = parser.get("Greenhouses")
+    assert greenhouses_eff is not None
+    assert greenhouses_eff.gains_resources.get("plant", 0) == 1, greenhouses_eff.gains_resources
+    assert greenhouses_eff.scaled_gains_resources == [], greenhouses_eff.scaled_gains_resources
+
+    soil_state = build_soil_studies_state()
+    soil_advice = {
+        row["name"]: row
+        for row in play_hold_advice(soil_state.cards_in_hand, soil_state, synergy, req_checker)
+    }
+    soil = soil_advice["Soil Studies"]
+    assert soil["action"] == "SELL", soil
+    assert "value 2.5 < cost 8" in soil["reason"], soil
+    assert soil["play_value_now"] >= 2.5, soil
+
+    soil_alloc = mc_allocation_advice(soil_state, synergy, req_checker)["allocations"]
+    assert all(
+        not a["action"].startswith("Play Soil Studies")
+        for a in soil_alloc
+    ), soil_alloc
 
     print("advisor endgame allocation regression checks: OK")
 
