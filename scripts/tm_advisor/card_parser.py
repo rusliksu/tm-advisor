@@ -416,6 +416,17 @@ class CardEffectParser:
             ' ',
             desc_immediate,
         )
+        desc_immediate = re.sub(
+            r'\b(?:when|whenever|after|each time)\s+.+?(?:\.|$)',
+            ' ',
+            desc_immediate,
+        )
+        desc_immediate = re.sub(
+            r'\bfor every\s+[^.|]+?\s+you\s+play\s*(?:\([^)]*\))?\s*,?\s*'
+            r'(?:add|put|gain|draw|place|remove|increase|decrease)\s+.+?(?:\.|$)',
+            ' ',
+            desc_immediate,
+        )
 
         # --- Resource placement: "Add N resource to ..." ---
         # Supports: "add 3 microbes or 2 animals to ANOTHER card"
@@ -578,6 +589,21 @@ class CardEffectParser:
             eff.tr_gain += 1
 
         # --- VP ---
+        def normalize_vp_per(per_text: str) -> str:
+            raw = str(per_text or "").strip()
+            low = raw.lower()
+            resource_words = (
+                "resource", "animal", "microbe", "floater", "data",
+                "hydroelectric", "preservation", "journalism", "ware",
+                "activist", "robot", "habitat", "asteroid", "fighter",
+            )
+            if any(word in low for word in resource_words):
+                num_match = re.search(r'\b(\d+(?:\.\d+)?)\b', low)
+                if num_match:
+                    return f"{num_match.group(1)} resources"
+                return "resource"
+            return raw
+
         vp = info.get("victoryPoints", "")
         if vp:
             vp_str = str(vp)
@@ -585,7 +611,7 @@ class CardEffectParser:
                 parts = vp_str.split("/")
                 try:
                     vp_amount = int(parts[0].strip())
-                    per = parts[1].strip()
+                    per = normalize_vp_per(parts[1].strip())
                     eff.vp_per = {"amount": vp_amount, "per": per}
                 except ValueError:
                     pass
@@ -597,9 +623,9 @@ class CardEffectParser:
                         eff.vp_per = {"amount": 0, "per": "special"}
 
         # Check description for VP patterns too
-        for m in re.finditer(r'(\d+)\s+vp\s+(?:per|for each)\s+(.+?)(?:\.|$)', desc_immediate):
+        for m in re.finditer(r'(\d+)\s+vp\s+(?:per|for each|for every)\s+(.+?)(?:\.|$)', desc_immediate):
             if not eff.vp_per:
-                eff.vp_per = {"amount": int(m.group(1)), "per": m.group(2).strip()}
+                eff.vp_per = {"amount": int(m.group(1)), "per": normalize_vp_per(m.group(2).strip())}
 
         # --- Discounts ---
         for m in re.finditer(r'(?:you\s+)?pay\s+(\d+)\s+m[€c]\s+less\s+(?:for\s+)?(?:it|them)?', desc_lower):
@@ -624,6 +650,7 @@ class CardEffectParser:
             r'(?:also\s+|either\s+)?'
             r'(?:'
             r'add|gain|raise|increase|decrease|draw|place|remove|lose|pay|spend'
+            r'|put'
             r'|you\s+(?:may|can|pay|gain|get|draw|lose|spend)'
             r'|that\s+player'
             r')'
@@ -698,6 +725,21 @@ class CardEffectParser:
                     includes_self = bool(m.group("self"))
                     if not any(t["on"] == trigger and t["effect"] == effect_text for t in eff.triggers):
                         eff.triggers.append({"on": trigger, "effect": effect_text, "self": includes_self})
+
+        # "For every science or Mars tag you play (including these), add ..."
+        # appears on several fan/pathfinder cards without a leading Effect:.
+        for m in re.finditer(
+            r'(?:^|[.!|]\s*)for every\s+(.+?\s+tag)\s+you\s+play\s*'
+            r'(?:\((including\s+(?:this|these))\))?\s*,?\s*'
+            r'(' + _verb_pat + r')\s+'
+            r'(.+?)(?:\.|$)',
+            desc_lower,
+        ):
+            trigger = f"play a {m.group(1).strip()}"
+            effect_text = (m.group(3) + " " + m.group(4)).strip()
+            includes_self = bool(m.group(2))
+            if not any(t["on"] == trigger and t["effect"] == effect_text for t in eff.triggers):
+                eff.triggers.append({"on": trigger, "effect": effect_text, "self": includes_self})
 
         # --- Actions ---
         for m in re.finditer(

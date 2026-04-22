@@ -2288,13 +2288,16 @@ def _estimate_trigger_hits(trig, card_name, card_tags, gens_left,
     trigger_text = (trig.get("on", "") or "").lower()
     trigger_tags = _extract_trigger_tags(trigger_text)
     current_tags = {str(tag).lower() for tag in (card_tags or [])}
-    includes_self = bool(trig.get("self")) and any(tag in current_tags for tag in trigger_tags)
+    self_marker = bool(trig.get("self"))
+    includes_self = self_marker and (
+        not trigger_tags or any(tag in current_tags for tag in trigger_tags)
+    )
 
     if "standard project" in trigger_text:
         return _estimate_standard_project_hits(gens_left)
 
     if not trigger_tags:
-        return 0
+        return 1 if includes_self else 0
 
     max_future_hits = max(0, gens_left - (1 if includes_self else 0))
     future_hits = min(
@@ -2322,7 +2325,10 @@ def _resource_vp_token_value(eff, rv) -> float:
     if "resource" not in per:
         return 0.0
     amount = float(eff.vp_per.get("amount", 1) or 1)
-    divisor_match = re.search(r"(\d+(?:\.\d+)?)\s+resources?", per)
+    divisor_match = re.search(
+        r"(\d+(?:\.\d+)?)\s+(?:resources?|animals?|microbes?|floaters?|data|asteroids?|fighters?)",
+        per,
+    )
     divisor = float(divisor_match.group(1)) if divisor_match else 1.0
     if divisor <= 0:
         divisor = 1.0
@@ -2345,6 +2351,13 @@ def _self_resource_action_rate(eff) -> float:
     return rate
 
 
+def _is_resource_vp_without_self_action(eff) -> bool:
+    if not eff or not getattr(eff, "vp_per", None):
+        return False
+    per = str(eff.vp_per.get("per", "") or "").lower()
+    return "resource" in per and _self_resource_action_rate(eff) <= 0
+
+
 def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
                           tableau_tags=None, hand_cards=None, db=None):
     effect_text = (trig.get("effect", "") or "").lower()
@@ -2358,9 +2371,11 @@ def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
         return 0.0
 
     resource_token_value = _resource_vp_token_value(eff, rv)
-    if resource_token_value > 0 and ("to this card" in effect_text or "here" in effect_text):
+    if resource_token_value > 0 and (
+        "to this card" in effect_text or "on this card" in effect_text or "here" in effect_text
+    ):
         add_match = re.search(
-            r"add\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|data|resource)",
+            r"(?:add|put)\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|data|resource)",
             effect_text,
         )
         if add_match:
@@ -2416,6 +2431,8 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                 value *= _late_game_engine_multiplier(eff, gens_left)
             if value > 0:
                 return value
+            if _is_resource_vp_without_self_action(eff):
+                return max(0.0, value)
 
     # Fallback: score heuristic (with late-game engine penalty for high-score cards)
     return _estimate_card_value(score, cost, tags, phase, gens_left, rv)
