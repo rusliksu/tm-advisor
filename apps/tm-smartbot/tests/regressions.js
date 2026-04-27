@@ -1017,6 +1017,37 @@ function testCardPlaySeesMegaCreditsFromState() {
   assert.ok(input.index !== 2, 'bot with 40 MC should not pass — must play card or SP');
 }
 
+function testUnaffordableStandardProjectFallbackDoesNotPickPowerPlant() {
+  const wf = {
+    type: 'or',
+    title: 'Take your next action',
+    options: [
+      {title: 'Play project card', type: 'card', cards: []},
+      {title: 'Standard projects', type: 'card', cards: [{name: 'Power Plant:SP'}]},
+      {title: 'Confirm', type: 'option'},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'orange',
+      megaCredits: 1,
+      steel: 0, titanium: 1, heat: 0, plants: 0, energy: 0,
+      tableau: [], cardsInHand: [],
+      tags: {}, terraformRating: 22,
+      megacreditProduction: 0,
+    },
+    players: [{color: 'orange'}, {color: 'red'}, {color: 'blue'}],
+    game: {
+      generation: 2,
+      oxygenLevel: 0, temperature: -30, oceans: 0, venusScaleLevel: 0,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'or');
+  assert.notStrictEqual(input.index, 1, 'bot must not enter Standard projects when every SP is unaffordable');
+}
+
 function run() {
   testKeepPassDraftUsesDraftRatingNotPlayEv();
   testJovianLanternsKeepsImmediateFloaters();
@@ -1050,6 +1081,7 @@ function run() {
   testAwardFundingBranchDoesNotUseStepsBeforeInit();
   testMegaCreditsNormalizationCamelCase();
   testCardPlaySeesMegaCreditsFromState();
+  testUnaffordableStandardProjectFallbackDoesNotPickPowerPlant();
   testSmartPayLeavesOneFloaterForStratosphericBirdsWhenSingleSource();
   testSmartPayCanSpendAllFloatersForStratosphericBirdsWhenMultipleSources();
   testBuyPhaseRelaxesReserveWhenHandStarved();

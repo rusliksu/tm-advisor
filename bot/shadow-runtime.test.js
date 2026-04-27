@@ -14,6 +14,7 @@ const {
   multisetAdded,
   pollShadowSession,
   resolvePendingEntry,
+  shouldCreatePredictionForSummary,
   summarizeAction,
   summarizeObservedAction,
 } = require('./shadow-runtime');
@@ -141,6 +142,29 @@ function testStateSummaryExtractsMessageTitle() {
   assert.strictEqual(summary.inputSeq, 4);
 }
 
+function testSolarPhaseStalePromptDoesNotCreatePrediction() {
+  const summary = buildStateSummary({
+    game: {gameId: 'g3', generation: 2, phase: 'solar', activePlayer: 'red', inputSeq: 12},
+    thisPlayer: {
+      name: 'Ruslan',
+      color: 'red',
+      megaCredits: 11,
+      terraformRating: 20,
+      tableau: [],
+      actionsThisGeneration: [],
+    },
+    cardsInHand: [{name: 'Cloud Tourism'}],
+    waitingFor: {
+      type: 'or',
+      title: 'Take your next action',
+      options: [{title: 'Play project card', type: 'card', cards: [{name: 'Cloud Tourism'}]}],
+    },
+  }, {playerId: 'p3'});
+
+  assert.notStrictEqual(summary.workflowHash, 'idle');
+  assert.strictEqual(shouldCreatePredictionForSummary(summary), false);
+}
+
 function testSummarizeActionOptionWithoutIndex() {
   assert.strictEqual(summarizeAction({type: 'option'}), 'option');
   assert.strictEqual(summarizeAction({type: 'option', index: 2}), 'option[2]');
@@ -263,6 +287,7 @@ async function main() {
   testObservedDraftPick();
   testStateSummaryNormalizesMegaCredits();
   testStateSummaryExtractsMessageTitle();
+  testSolarPhaseStalePromptDoesNotCreatePrediction();
   testSummarizeActionOptionWithoutIndex();
   testGetPlayersToPollUsesAllPlayersDuringInputBurst();
   testResolvePendingEntryUsesInputSeqForPlayerActed();

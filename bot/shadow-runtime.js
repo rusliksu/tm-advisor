@@ -365,6 +365,13 @@ function phaseNeedsAllPlayers(phase) {
   return SIMULTANEOUS_PHASES.has(phase);
 }
 
+function shouldCreatePredictionForSummary(summary) {
+  if (!summary || summary.workflowHash === 'idle') return false;
+  const phase = String(summary.phase || '').toLowerCase();
+  if (phase === 'solar' || phase === 'production') return false;
+  return true;
+}
+
 function getPlayersToPoll(session, game) {
   const ids = new Set();
   for (const [playerId, state] of session.playerState.entries()) {
@@ -520,7 +527,7 @@ function processObservedState(session, playerMeta, rawState, options = {}) {
     }
   }
 
-  if (!options.terminal && summary.workflowHash !== 'idle') {
+  if (!options.terminal && shouldCreatePredictionForSummary(summary)) {
     playerState.pendingShadow = buildPredictionEntry(session, playerMeta, rawState, summary);
     playerState.pendingSummary = summary;
   }
@@ -695,6 +702,7 @@ module.exports = {
   primeShadowSession,
   resolvePendingEntry,
   runSingleGameCli,
+  shouldCreatePredictionForSummary,
   stopShadowSession,
   startShadowSession,
   stateSignature,
