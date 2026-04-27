@@ -146,7 +146,10 @@ def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, playe
             action = "KEEP"
         else:
             gap = best["score"] - card["score"]
-            reason = f"хуже {best['name']} на {gap:.0f}"
+            if abs(gap) < 0.5:
+                reason = f"примерно равно {best['name']}, но слот keep уже занят"
+            else:
+                reason = f"хуже {best['name']} на {gap:.0f}"
             action = "PASS"
         card_advice.append({
             "name": card["name"],

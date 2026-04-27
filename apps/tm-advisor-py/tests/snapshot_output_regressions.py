@@ -8,6 +8,7 @@ import importlib.util
 import json
 import tempfile
 import sys
+from types import SimpleNamespace
 from pathlib import Path
 
 
@@ -27,6 +28,15 @@ def advisor_db():
 def load_postgame_summary_module():
     path = ROOT / "tools" / "advisor" / "postgame-summary.py"
     spec = importlib.util.spec_from_file_location("postgame_summary_regression", path)
+    assert spec is not None and spec.loader is not None, path
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_advisor_entrypoint_module():
+    path = ROOT / "apps" / "tm-advisor-py" / "entrypoints" / "advisor_snapshot.py"
+    spec = importlib.util.spec_from_file_location("advisor_snapshot_entrypoint_regression", path)
     assert spec is not None and spec.loader is not None, path
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -375,6 +385,30 @@ def build_regular_keep_pass_raw_state() -> dict:
     raw["game"]["phase"] = "drafting"
     raw["thisPlayer"]["megaCredits"] = 42
     return raw
+
+
+def test_keep_pass_tie_reason_is_not_misleading() -> None:
+    class FlatSynergy:
+        def adjusted_score(self, name, tags, corp_name, generation, player_tags, state, context):
+            return 77
+
+    entrypoint = load_advisor_entrypoint_module()
+    draft_advice, _ = entrypoint._keep_pass_draft_advice(
+        [
+            {"name": "Viral Enhancers", "calculatedCost": 9, "tags": ["Plant"]},
+            {"name": "Medical Lab", "calculatedCost": 13, "tags": ["Building"]},
+        ],
+        SimpleNamespace(generation=1),
+        FlatSynergy(),
+        None,
+        "unknown",
+        {},
+    )
+    rows = draft_advice["card_advice"]
+    assert rows[0]["action"] == "KEEP", rows
+    assert rows[1]["action"] == "PASS", rows
+    assert "примерно равно Viral Enhancers" in rows[1]["reason"], rows
+    assert "хуже Viral Enhancers на 0" not in rows[1]["reason"], rows
 
 
 def build_psychrophiles_payment_raw_state() -> dict:
@@ -871,6 +905,7 @@ def main():
     assert {row["action"] for row in regular_keep_advice[1:]} == {"PASS"}, regular_keep_advice
     assert not regular_keep_snap["summary"]["best_move"].startswith("Draft: Купи"), regular_keep_snap["summary"]
     assert "trade" not in regular_keep_snap, regular_keep_snap.get("trade")
+    test_keep_pass_tie_reason_is_not_misleading()
 
     psychrophiles_snap = advisor_snapshot.snapshot_from_raw(build_psychrophiles_payment_raw_state())
     psychrophiles_advice = {row["name"]: row for row in psychrophiles_snap["hand_advice"]}
