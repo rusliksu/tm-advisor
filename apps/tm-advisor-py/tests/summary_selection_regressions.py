@@ -42,6 +42,38 @@ spec.loader.exec_module(advisor_snapshot)
 
 
 def main():
+    non_action_prompt_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "late", "generation": 7},
+            "trade": {},
+            "alerts": [],
+            "current_prompt": "Resolve current prompt: Select player to remove up to ${0} plants",
+        },
+        [
+            {
+                "name": "Venus Allies",
+                "action": "PLAY",
+                "reason": "strong card",
+                "play_value_now": 30.0,
+                "priority": 2,
+            },
+        ],
+        {"allocations": []},
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert non_action_prompt_summary["best_move"].startswith("Resolve current prompt:"), non_action_prompt_summary
+
+    assert advisor_snapshot._should_build_action_plan(
+        types.SimpleNamespace(
+            phase="action",
+            waiting_for={
+                "type": "or",
+                "title": {"message": "Select player to remove up to ${0} plants"},
+            },
+        )
+    ) is False
+
     result = {
         "game": {"phase": "early", "generation": 2},
         "trade": {"hint": "Trade Europa (+16 MC net)"},
@@ -237,6 +269,37 @@ def main():
         draft_card_advice=None,
     )
     assert mid_milestone_alert_summary["best_move"].startswith("PLAY Venera Base"), mid_milestone_alert_summary
+
+    safe_mid_milestone_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "mid", "generation": 4},
+            "trade": {},
+            "alerts": ["🏆 ЗАЯВИ Pioneer! (8 MC = 5 VP)"],
+        },
+        [
+            {
+                "name": "Research Colony",
+                "action": "PLAY",
+                "reason": "colony + cards",
+                "play_value_now": 24.0,
+                "priority": 2,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Claim Pioneer",
+                    "cost": 8,
+                    "value_mc": 8,
+                    "priority": 1,
+                    "type": "milestone",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert safe_mid_milestone_summary["best_move"].startswith("PLAY Research Colony"), safe_mid_milestone_summary
 
     turmoil_summary = advisor_snapshot._build_summary_block(
         result,

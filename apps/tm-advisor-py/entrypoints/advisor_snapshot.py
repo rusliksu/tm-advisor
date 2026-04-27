@@ -185,6 +185,55 @@ def _should_show_trade_hint(state: GameState) -> bool:
     return bool(waiting.get("type"))
 
 
+def _workflow_title_text(value) -> str:
+    if isinstance(value, dict):
+        message = value.get("message")
+        if message:
+            return str(message)
+        data = value.get("data")
+        if data:
+            return " ".join(str(item.get("value", "")) for item in data if isinstance(item, dict)).strip()
+        return ""
+    return str(value or "")
+
+
+def _waiting_prompt_text(waiting: dict | None) -> str:
+    if not waiting:
+        return ""
+    parts = [
+        _workflow_title_text(waiting.get("title")),
+        _workflow_title_text(waiting.get("message")),
+        _workflow_title_text(waiting.get("label")),
+        _workflow_title_text(waiting.get("buttonLabel")),
+    ]
+    return " ".join(part for part in parts if part).strip()
+
+
+def _is_main_action_prompt(state: GameState) -> bool:
+    waiting = state.waiting_for or {}
+    if not waiting:
+        return True
+    if waiting.get("type") != "or":
+        return False
+    prompt_text = _waiting_prompt_text(waiting).lower()
+    return "take your first action" in prompt_text or "take your next action" in prompt_text
+
+
+def _should_build_action_plan(state: GameState) -> bool:
+    live_phase = str(state.phase or "").lower()
+    return live_phase == "action" and _is_main_action_prompt(state)
+
+
+def _current_prompt_hint(state: GameState) -> str | None:
+    waiting = state.waiting_for or {}
+    if not waiting or _is_draft_like_card_prompt(state) or _is_main_action_prompt(state):
+        return None
+    prompt_text = _waiting_prompt_text(waiting)
+    if not prompt_text:
+        prompt_text = str(waiting.get("type") or "current prompt")
+    return f"Resolve current prompt: {prompt_text}"
+
+
 def _truncate_summary_text(text: str, max_len: int = 96) -> str:
     raw = " ".join(str(text or "").split()).strip()
     if not raw:
@@ -324,8 +373,8 @@ def _build_summary_block(
                     best_play
                     and not is_race
                     and phase_name in ("early", "mid")
-                    and best_play_priority <= 1
-                    and best_play_value >= 35
+                    and best_play_priority <= 2
+                    and best_play_value >= 20
                 ):
                     continue
                 return alert
@@ -364,15 +413,13 @@ def _build_summary_block(
                     continue
             if kind == "milestone":
                 action = str(entry.get("action", "") or "")
-                allocation_value = float(entry.get("value_mc", 0) or 0)
                 is_race = "ГОНКА" in action or "⚠" in action
                 if (
                     best_play
                     and not is_race
                     and phase_name in ("early", "mid")
-                    and best_play_priority <= 1
-                    and best_play_value >= 35
-                    and allocation_value + 15 < best_play_value
+                    and best_play_priority <= 2
+                    and best_play_value >= 15
                 ):
                     continue
             if kind == "action":
@@ -407,13 +454,15 @@ def _build_summary_block(
 
     summary = {
         "focus": f"{result['game']['phase']} / gen {result['game']['generation']}",
-        "best_move": None,
+        "best_move": result.get("current_prompt"),
         "hand": [],
         "draft": [],
         "trade": None,
         "alerts": list(result.get("alerts", [])[:3]),
         "lines": [],
     }
+    if summary["best_move"]:
+        summary["lines"].append(summary["best_move"])
 
     if hand_advice:
         summary["hand"] = [_format_play_summary_line(entry) for entry in hand_advice[:5]]
@@ -519,6 +568,7 @@ def snapshot_from_raw(raw: dict) -> dict:
     state = GameState(raw)
     me = state.me
     is_game_over = str(state.phase or "").lower() == "end"
+    should_build_action_plan = not is_game_over and _should_build_action_plan(state)
 
     gens_left = _estimate_remaining_gens(state)
     phase = game_phase(gens_left, state.generation)
@@ -583,6 +633,9 @@ def snapshot_from_raw(raw: dict) -> dict:
             "hand_count": len(state.cards_in_hand or []),
         },
     }
+    current_prompt = _current_prompt_hint(state)
+    if current_prompt:
+        result["current_prompt"] = current_prompt
 
     show_initial_draft = (
         state.phase == "initial_drafting"
@@ -601,7 +654,7 @@ def snapshot_from_raw(raw: dict) -> dict:
         }
 
     hand_cards = []
-    hand_advice = [] if is_game_over else play_hold_advice(state.cards_in_hand or [], state, synergy, req_checker)
+    hand_advice = [] if not should_build_action_plan else play_hold_advice(state.cards_in_hand or [], state, synergy, req_checker)
     hand_advice_queues = _build_advice_queues(hand_advice)
     allocation_plan = None
     draft_plan = None
@@ -658,7 +711,7 @@ def snapshot_from_raw(raw: dict) -> dict:
             entry["description_first"] = bool(meta.get("description_first"))
     result["hand_advice"] = hand_advice
 
-    if not is_game_over:
+    if should_build_action_plan:
         try:
             allocation_plan = mc_allocation_advice(state, synergy, req_checker)
             result["allocation"] = allocation_plan
@@ -742,7 +795,7 @@ def snapshot_from_raw(raw: dict) -> dict:
         for c in combos_found[:10]
     ]
 
-    if is_game_over:
+    if not should_build_action_plan:
         result["alerts"] = []
     else:
         try:
