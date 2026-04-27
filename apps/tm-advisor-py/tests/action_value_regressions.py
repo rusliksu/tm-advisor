@@ -18,6 +18,7 @@ from tm_advisor.constants import FREE_TRADE_CARDS  # noqa: E402
 from tm_advisor.draft_play_advisor import (  # noqa: E402
     _estimate_action_value,
     _estimate_card_value_rich,
+    _value_from_effects,
     mc_allocation_advice,
     play_hold_advice,
 )
@@ -551,6 +552,7 @@ def build_endgame_immediate_low_score_city_state() -> GameState:
     hand = [
         {"name": "Underground City", "calculatedCost": 13, "tags": ["City", "Building"]},
         {"name": "Venus Shuttles", "calculatedCost": 6, "tags": ["Venus"]},
+        {"name": "Symbiotic Fungus", "calculatedCost": 0, "tags": ["Microbe"]},
     ]
     me = {
         "color": "red",
@@ -569,10 +571,19 @@ def build_endgame_immediate_low_score_city_state() -> GameState:
         "heatProduction": 3,
         "terraformRating": 42,
         "cardsInHandNbr": len(hand),
-        "tableau": [{"name": "Cheung Shing MARS"}],
+        "tableau": [{"name": "Cheung Shing MARS"}, {"name": "Imported Nutrients"}],
         "tags": {
-            "building": 4,
-            "city": 1,
+            "building": 20,
+            "space": 5,
+            "science": 8,
+            "power": 6,
+            "earth": 5,
+            "jovian": 2,
+            "plant": 1,
+            "microbe": 2,
+            "animal": 2,
+            "city": 2,
+            "event": 9,
         },
     }
     return GameState({
@@ -720,6 +731,21 @@ def main() -> int:
     assert energy_eff.production_change == {}, energy_eff.production_change
     assert energy_eff.gains_resources == {}, energy_eff.gains_resources
     assert len(energy_eff.actions) == 2, energy_eff.actions
+    lunar_exports_eff = bot.effect_parser.get("Lunar Exports")
+    assert lunar_exports_eff is not None
+    assert lunar_exports_eff.production_change == {"mc": 5}, lunar_exports_eff.production_change
+    pets_eff = bot.effect_parser.get("Pets")
+    assert pets_eff is not None
+    pets_value = _value_from_effects(
+        pets_eff,
+        14,
+        resource_values(14),
+        "early",
+        card_name="Pets",
+        card_tags=["Earth", "Animal"],
+        db=bot.db,
+    )
+    assert pets_value > 3.5, pets_value
 
     floyd_eff = bot.effect_parser.get("Floyd Continuum")
     assert floyd_eff is not None
@@ -727,6 +753,111 @@ def main() -> int:
     assert floyd_eff.actions == [
         {"cost": "free", "effect": "gain 3 MC per completed terraforming parameter"}
     ], floyd_eff.actions
+    ender_eff = bot.effect_parser.get("Ender")
+    assert ender_eff is not None
+    assert ender_eff.draws_cards == 0, ender_eff.draws_cards
+    assert ender_eff.actions == [], ender_eff.actions
+    tate_eff = bot.effect_parser.get("Tate")
+    assert tate_eff is not None
+    assert tate_eff.draws_cards == 0, tate_eff.draws_cards
+    assert tate_eff.actions == [], tate_eff.actions
+    sponsored_eff = bot.effect_parser.get("Sponsored Academies")
+    assert sponsored_eff is not None
+    assert sponsored_eff.draws_cards == 3, sponsored_eff.draws_cards
+    assert sponsored_eff.discards_cards == 1, sponsored_eff.discards_cards
+    assert sponsored_eff.opponents_draw_cards == 1, sponsored_eff.opponents_draw_cards
+    sponsored_rv = resource_values(6)
+    sponsored_wide_hand = _value_from_effects(
+        sponsored_eff,
+        6,
+        sponsored_rv,
+        "mid",
+        card_name="Sponsored Academies",
+        hand_cards=[
+            {"name": "Sponsored Academies"},
+            {"name": "low-value A"},
+            {"name": "low-value B"},
+            {"name": "low-value C"},
+            {"name": "low-value D"},
+        ],
+    )
+    sponsored_tight_hand = _value_from_effects(
+        sponsored_eff,
+        6,
+        sponsored_rv,
+        "mid",
+        card_name="Sponsored Academies",
+        hand_cards=[{"name": "Sponsored Academies"}, {"name": "only other card"}],
+    )
+    assert round(sponsored_wide_hand, 2) == round(3 * sponsored_rv["card"] - 1.0 + sponsored_rv["vp"], 2), sponsored_wide_hand
+    assert round(sponsored_tight_hand, 2) == round(3 * sponsored_rv["card"] - 2.5 + sponsored_rv["vp"], 2), sponsored_tight_hand
+    assert sponsored_wide_hand > 2 * sponsored_rv["card"], sponsored_wide_hand
+    assert sponsored_tight_hand < sponsored_wide_hand, (sponsored_tight_hand, sponsored_wide_hand)
+    spire_eff = bot.effect_parser.get("Spire")
+    assert spire_eff is not None
+    assert spire_eff.draws_cards == 4, spire_eff.draws_cards
+    assert spire_eff.discards_cards == 3, spire_eff.discards_cards
+    assert spire_eff.discard_after_draw is True, spire_eff.discard_after_draw
+    spire_value = _value_from_effects(
+        spire_eff,
+        6,
+        sponsored_rv,
+        "mid",
+        card_name="Spire",
+    )
+    assert round(spire_value, 2) == round(sponsored_rv["card"] + 3 * 0.75, 2), spire_value
+    assert spire_value < 4 * sponsored_rv["card"], spire_value
+    nanotech_eff = bot.effect_parser.get("Nanotech Industries")
+    assert nanotech_eff is not None
+    assert nanotech_eff.resource_holds is True, nanotech_eff.resource_holds
+    assert nanotech_eff.resource_type == "Science", nanotech_eff.resource_type
+    assert nanotech_eff.draws_cards == 3, nanotech_eff.draws_cards
+    assert nanotech_eff.discards_cards == 1, nanotech_eff.discards_cards
+    assert nanotech_eff.discard_after_draw is True, nanotech_eff.discard_after_draw
+    assert nanotech_eff.vp_per == {"amount": 1, "per": "2 resources"}, nanotech_eff.vp_per
+    assert nanotech_eff.actions == [
+        {"cost": "free", "effect": "add 1 science resource to any eligible card"}
+    ], nanotech_eff.actions
+    assert {"type": "Science", "amount": 1, "target": "any", "per_tag": None} in nanotech_eff.adds_resources, nanotech_eff.adds_resources
+    nanotech_value = _value_from_effects(
+        nanotech_eff,
+        6,
+        sponsored_rv,
+        "mid",
+        card_name="Nanotech Industries",
+    )
+    assert nanotech_value > 2 * sponsored_rv["card"], nanotech_value
+    assert nanotech_value < 30, nanotech_value
+    nanotech_action_cost, nanotech_action_value = _estimate_action_value(
+        "free",
+        "add 1 science resource to any eligible card",
+        type("NanotechMe", (), {"mc": 0, "energy": 0, "plants": 0, "heat": 0})(),
+        sponsored_rv,
+        6,
+        source_eff=nanotech_eff,
+    )
+    assert nanotech_action_cost == 0, nanotech_action_cost
+    assert round(nanotech_action_value, 2) == round(sponsored_rv["vp"] / 2, 2), nanotech_action_value
+    floater_urbanism_eff = bot.effect_parser.get("Floater-Urbanism")
+    assert floater_urbanism_eff is not None
+    assert floater_urbanism_eff.resource_type == "Venusian Habitat", floater_urbanism_eff.resource_type
+    assert floater_urbanism_eff.vp_per == {"amount": 1, "per": "resource"}, floater_urbanism_eff.vp_per
+    assert floater_urbanism_eff.actions == [
+        {
+            "cost": "1 floater from any card",
+            "effect": "add 1 Venusian Habitat to this card",
+            "conditional": True,
+        }
+    ], floater_urbanism_eff.actions
+    assert {"type": "Venusian Habitat", "amount": 1, "target": "this", "per_tag": None} in floater_urbanism_eff.adds_resources, floater_urbanism_eff.adds_resources
+    floater_urbanism_value = _value_from_effects(
+        floater_urbanism_eff,
+        6,
+        sponsored_rv,
+        "mid",
+        card_name="Floater-Urbanism",
+    )
+    assert floater_urbanism_value == 0, floater_urbanism_value
 
     power_infra_eff = bot.effect_parser.get("Power Infrastructure")
     assert power_infra_eff is not None
@@ -758,10 +889,14 @@ def main() -> int:
     assert bot.effect_parser.get("Symbiotic Fungus").actions == [
         {"cost": "free", "effect": "add 1 microbe to another card"}
     ], bot.effect_parser.get("Symbiotic Fungus").actions
+    assert not bot.effect_parser.get("Symbiotic Fungus").resource_holds, bot.effect_parser.get("Symbiotic Fungus").resource_holds
+    assert {"type": "Microbe", "amount": 1, "target": "another", "per_tag": None} in bot.effect_parser.get("Symbiotic Fungus").adds_resources, bot.effect_parser.get("Symbiotic Fungus").adds_resources
     assert bot.effect_parser.get("Extreme-Cold Fungus").actions == [
         {"cost": "free", "effect": "gain 1 plant", "choice_group": "or"},
         {"cost": "free", "effect": "add 2 microbes to another card", "choice_group": "or"},
     ], bot.effect_parser.get("Extreme-Cold Fungus").actions
+    assert not bot.effect_parser.get("Extreme-Cold Fungus").resource_holds, bot.effect_parser.get("Extreme-Cold Fungus").resource_holds
+    assert {"type": "Microbe", "amount": 2, "target": "another", "per_tag": None} in bot.effect_parser.get("Extreme-Cold Fungus").adds_resources, bot.effect_parser.get("Extreme-Cold Fungus").adds_resources
     assert bot.effect_parser.get("Industrial Center").actions == [
         {"cost": "7 MC", "effect": "increase steel production 1 step"}
     ], bot.effect_parser.get("Industrial Center").actions
@@ -803,6 +938,27 @@ def main() -> int:
     hospitals_eff = bot.effect_parser.get("Hospitals")
     maxwell_eff = bot.effect_parser.get("Maxwell Base")
     geologist_eff = bot.effect_parser.get("Geologist Team")
+    venus_shuttles_eff = bot.effect_parser.get("Venus Shuttles")
+    breeding_farms_eff = bot.effect_parser.get("BreedingFarms")
+    martian_culture_eff = bot.effect_parser.get("MartianCulture")
+    nobel_labs_eff = bot.effect_parser.get("NobelLabs")
+    venera_base_eff = bot.effect_parser.get("VeneraBase")
+    imported_nitrogen_eff = bot.effect_parser.get("Imported Nitrogen")
+    large_convoy_eff = bot.effect_parser.get("Large Convoy")
+    nitrogen_from_titan_eff = bot.effect_parser.get("Nitrogen from Titan")
+    air_scrapping_eff = bot.effect_parser.get("Air-Scrapping Expedition")
+    space_relay_eff = bot.effect_parser.get("SpaceRelay")
+    terraforming_robots_eff = bot.effect_parser.get("TerraformingRobots")
+    terraforming_control_eff = bot.effect_parser.get("TerraformingControlStation")
+    high_temp_superconductors_eff = bot.effect_parser.get("HighTempSuperconductors")
+    bioengineering_eff = bot.effect_parser.get("Bioengineering Enclosure")
+    cloud_vortex_eff = bot.effect_parser.get("Cloud Vortex Outpost")
+    applied_science_eff = bot.effect_parser.get("Applied Science")
+    board_eff = bot.effect_parser.get("Board of Directors")
+    aeron_eff = bot.effect_parser.get("Aeron Genomics")
+    demetron_eff = bot.effect_parser.get("Demetron Labs")
+    darkside_syndicate_eff = bot.effect_parser.get("The Darkside of The Moon Syndicate")
+    sfl_eff = bot.effect_parser.get("Search For Life")
     sflu_eff = bot.effect_parser.get("Search for Life Underground")
     assert septem_eff is not None
     assert robots_eff is not None
@@ -814,6 +970,27 @@ def main() -> int:
     assert hospitals_eff is not None
     assert maxwell_eff is not None
     assert geologist_eff is not None
+    assert venus_shuttles_eff is not None
+    assert breeding_farms_eff is not None
+    assert martian_culture_eff is not None
+    assert nobel_labs_eff is not None
+    assert venera_base_eff is not None
+    assert imported_nitrogen_eff is not None
+    assert large_convoy_eff is not None
+    assert nitrogen_from_titan_eff is not None
+    assert air_scrapping_eff is not None
+    assert space_relay_eff is not None
+    assert terraforming_robots_eff is not None
+    assert terraforming_control_eff is not None
+    assert high_temp_superconductors_eff is not None
+    assert bioengineering_eff is not None
+    assert cloud_vortex_eff is not None
+    assert applied_science_eff is not None
+    assert board_eff is not None
+    assert aeron_eff is not None
+    assert demetron_eff is not None
+    assert darkside_syndicate_eff is not None
+    assert sfl_eff is not None
     assert sflu_eff is not None
     assert septem_eff.actions == [{"cost": "free", "effect": "wild tag counts as any tag for this action", "conditional": True}], septem_eff.actions
     assert {"cost": "free", "effect": "link a Space or Building card from hand with 2 resources", "conditional": True} in robots_eff.actions, robots_eff.actions
@@ -828,9 +1005,60 @@ def main() -> int:
     assert hospitals_eff.actions == [{"cost": "1 disease", "effect": "gain 1 MC per city in play", "conditional": True}], hospitals_eff.actions
     assert maxwell_eff.actions == [{"cost": "free", "effect": "add 1 resource to another Venus card", "conditional": True}], maxwell_eff.actions
     assert geologist_eff.actions == [{"cost": "free", "effect": "identify 1 underground resource", "conditional": True}], geologist_eff.actions
+    assert venus_shuttles_eff.actions == [{"cost": "dynamic Venus tag discount", "effect": "raise venus 1 step", "conditional": True}], venus_shuttles_eff.actions
+    assert breeding_farms_eff.actions == [{"cost": "1 plant", "effect": "add 1 animal to any card"}], breeding_farms_eff.actions
+    assert martian_culture_eff.actions == [{"cost": "free", "effect": "add 1 data to any card"}], martian_culture_eff.actions
+    assert nobel_labs_eff.actions == [{"cost": "free", "effect": "add 2 microbes or 2 data or 2 floaters to any card"}], nobel_labs_eff.actions
+    assert venera_base_eff.actions == [{"cost": "free", "effect": "add 1 floater to any Venus card"}], venera_base_eff.actions
+    mid_rv = resource_values(5)
+    for one_shot_eff, one_shot_name in (
+        (imported_nitrogen_eff, "Imported Nitrogen"),
+        (large_convoy_eff, "Large Convoy"),
+        (nitrogen_from_titan_eff, "Nitrogen from Titan"),
+        (air_scrapping_eff, "Air-Scrapping Expedition"),
+    ):
+        value_gen_5 = _value_from_effects(one_shot_eff, 5, mid_rv, "mid", card_name=one_shot_name, db=bot.db)
+        value_gen_1 = _value_from_effects(one_shot_eff, 1, mid_rv, "mid", card_name=one_shot_name, db=bot.db)
+        assert round(value_gen_5, 2) == round(value_gen_1, 2), (one_shot_name, value_gen_5, value_gen_1)
+    assert _value_from_effects(imported_nitrogen_eff, 5, mid_rv, "mid", card_name="Imported Nitrogen", db=bot.db) < 30
+    assert _value_from_effects(air_scrapping_eff, 5, mid_rv, "mid", card_name="Air-Scrapping Expedition", db=bot.db) < 20
+    pathfinder_trigger_hand = [
+        {"name": "Mars Direct", "tags": ["MARS"]},
+        {"name": "Venus First", "tags": ["VENUS"]},
+        {"name": "Io Mining Industries", "tags": ["JOVIAN"]},
+        {"name": "Power Plant", "tags": ["POWER"]},
+    ]
+    assert space_relay_eff.triggers == [{"on": "you play a card with a jovian tag", "effect": "draw a card", "self": True}], space_relay_eff.triggers
+    assert terraforming_robots_eff.triggers == [{"on": "play a mars tag", "effect": "add 1 specialized robot on this card", "self": False}], terraforming_robots_eff.triggers
+    assert terraforming_control_eff.triggers == [{"on": "play a venus or mars tag", "effect": "pay 2 m€ less", "self": False}], terraforming_control_eff.triggers
+    assert high_temp_superconductors_eff.triggers == [{"on": "playing a power card, the standard project power plant, or the kelvinist ruling policy action", "effect": "pay 3m€ less", "self": False}], high_temp_superconductors_eff.triggers
+    assert high_temp_superconductors_eff.discount == {"Power": 3}, high_temp_superconductors_eff.discount
+    assert _value_from_effects(space_relay_eff, 6, resource_values(6), "mid", card_name="SpaceRelay", card_tags=["SPACE", "JOVIAN"], hand_cards=pathfinder_trigger_hand, db=bot.db) > 8
+    assert _value_from_effects(terraforming_robots_eff, 6, resource_values(6), "mid", card_name="TerraformingRobots", hand_cards=pathfinder_trigger_hand, db=bot.db) > 2
+    assert _value_from_effects(terraforming_control_eff, 6, resource_values(6), "mid", card_name="TerraformingControlStation", hand_cards=pathfinder_trigger_hand, db=bot.db) > 17
+    assert _value_from_effects(high_temp_superconductors_eff, 6, resource_values(6), "mid", card_name="HighTempSuperconductors", hand_cards=pathfinder_trigger_hand, db=bot.db) > 24
+    assert bioengineering_eff.actions == [{"cost": "1 animal", "effect": "add 1 animal to another card", "conditional": True}], bioengineering_eff.actions
+    assert bioengineering_eff.adds_resources == [{"type": "Animal", "amount": 2, "target": "this", "per_tag": None}], bioengineering_eff.adds_resources
+    assert cloud_vortex_eff.actions == [{"cost": "1 floater", "effect": "add 1 floater to another card", "conditional": True}], cloud_vortex_eff.actions
+    assert not cloud_vortex_eff.adds_resources, cloud_vortex_eff.adds_resources
+    assert {"cost": "1 science", "effect": "gain 1 standard resource", "conditional": True} in applied_science_eff.actions, applied_science_eff.actions
+    assert {"cost": "1 science", "effect": "add 1 resource to any card with a resource", "conditional": True} in applied_science_eff.actions, applied_science_eff.actions
+    assert not applied_science_eff.adds_resources, applied_science_eff.adds_resources
+    assert board_eff.actions == [{"cost": "free", "effect": "draw 1 prelude; discard it or pay 12 MC and 1 director to play it", "conditional": True}], board_eff.actions
+    assert aeron_eff.actions == [{"cost": "claimed underground token(s)", "effect": "add up to 2 animals to any card", "conditional": True}], aeron_eff.actions
+    assert not aeron_eff.adds_resources, aeron_eff.adds_resources
+    assert demetron_eff.actions == [{"cost": "3 data", "effect": "identify 3 underground resources and claim 1", "conditional": True}], demetron_eff.actions
+    assert not demetron_eff.adds_resources, demetron_eff.adds_resources
+    assert {"cost": "1 titanium", "effect": "add 1 syndicate fleet to this card"} in darkside_syndicate_eff.actions, darkside_syndicate_eff.actions
+    assert {"cost": "1 syndicate fleet", "effect": "steal 2 MC from each opponent", "conditional": True} in darkside_syndicate_eff.actions, darkside_syndicate_eff.actions
+    assert sfl_eff.resource_type == "Science", sfl_eff.resource_type
+    assert sfl_eff.vp_per == {}, sfl_eff.vp_per
+    assert sfl_eff.actions == [{"cost": "1 MC", "effect": "reveal top card; if microbe add 1 science resource here", "conditional": True}], sfl_eff.actions
+    assert not sfl_eff.adds_resources, sfl_eff.adds_resources
     assert sflu_eff.resource_type == "Science", sflu_eff.resource_type
-    assert sflu_eff.vp_per == {"amount": 0, "per": "special"}, sflu_eff.vp_per
+    assert sflu_eff.vp_per == {}, sflu_eff.vp_per
     assert sflu_eff.actions == [{"cost": "1 MC", "effect": "identify 1 underground resource; if microbe add 1 science resource here", "conditional": True}], sflu_eff.actions
+    assert not sflu_eff.adds_resources, sflu_eff.adds_resources
     chemical_eff = bot.effect_parser.get("Chemical Factory")
     theft_eff = bot.effect_parser.get("Corporate Theft")
     deep_foundations_eff = bot.effect_parser.get("Deep Foundations")
@@ -895,6 +1123,21 @@ def main() -> int:
     steelworks_eff = bot.effect_parser.get("Steelworks")
     ironworks_eff = bot.effect_parser.get("Ironworks")
     meltworks_eff = bot.effect_parser.get("Meltworks")
+    st_joseph_eff = bot.effect_parser.get("St. Joseph of Cupertino Mission")
+    viron_eff = bot.effect_parser.get("Viron")
+    martian_media_eff = bot.effect_parser.get("Martian Media Center")
+    grey_market_eff = bot.effect_parser.get("Grey Market Exploitation")
+    microgravimetry_eff = bot.effect_parser.get("Microgravimetry")
+    personal_spacecruiser_eff = bot.effect_parser.get("Personal Spacecruiser")
+    earthquake_eff = bot.effect_parser.get("Earthquake Machine")
+    martian_express_eff = bot.effect_parser.get("Martian Express")
+    exploitation_venus_eff = bot.effect_parser.get("Exploitation Of Venus")
+    underworld_standard_tech_eff = bot.effect_parser.get("Standard Technology:u")
+    arborist_eff = bot.effect_parser.get("Arborist Collective")
+    voltagon_eff = bot.effect_parser.get("Voltagon")
+    anthozoa_eff = bot.effect_parser.get("Anthozoa")
+    investigative_eff = bot.effect_parser.get("Investigative Journalism")
+    refugee_camps_eff = bot.effect_parser.get("Refugee Camps")
     assert dirigibles_eff is not None
     assert atmo_eff is not None
     assert sulphur_eff is not None
@@ -911,6 +1154,21 @@ def main() -> int:
     assert equatorial_eff is not None
     assert project_workshop_eff is not None
     assert bio_printing_eff is not None
+    assert st_joseph_eff is not None
+    assert viron_eff is not None
+    assert martian_media_eff is not None
+    assert grey_market_eff is not None
+    assert microgravimetry_eff is not None
+    assert personal_spacecruiser_eff is not None
+    assert earthquake_eff is not None
+    assert martian_express_eff is not None
+    assert exploitation_venus_eff is not None
+    assert underworld_standard_tech_eff is not None
+    assert arborist_eff is not None
+    assert voltagon_eff is not None
+    assert anthozoa_eff is not None
+    assert investigative_eff is not None
+    assert refugee_camps_eff is not None
     assert ore_processor_eff is not None
     assert steelworks_eff is not None
     assert ironworks_eff is not None
@@ -923,6 +1181,8 @@ def main() -> int:
     assert {"cost": "2 floaters", "effect": "raise venus 1 step"} in jet_stream_eff.actions, jet_stream_eff.actions
     assert {"cost": "2 floaters", "effect": "raise venus 1 step"} in extractor_eff.actions, extractor_eff.actions
     assert stratopolis_eff.actions == [{"cost": "free", "effect": "add 2 floaters to any Venus card"}], stratopolis_eff.actions
+    assert {"type": "Floater", "amount": 2, "target": "any", "per_tag": None, "tag_constraint": "Venus"} in stratopolis_eff.adds_resources, stratopolis_eff.adds_resources
+    assert not any(add["target"] == "this" and add["type"] == "Floater" for add in stratopolis_eff.adds_resources), stratopolis_eff.adds_resources
     assert {"cost": "6 MC", "effect": "add 1 asteroid to this card"} in rotator_eff.actions, rotator_eff.actions
     assert {"cost": "1 asteroid", "effect": "raise venus 1 step"} in rotator_eff.actions, rotator_eff.actions
     assert economic_espionage_eff.actions == [{"cost": "2 MC", "effect": "add 1 data to any card"}], economic_espionage_eff.actions
@@ -950,6 +1210,75 @@ def main() -> int:
             "conditional": True,
         },
     ], bio_printing_eff.actions
+    assert st_joseph_eff.resource_type != "Fighter", st_joseph_eff.resource_type
+    assert st_joseph_eff.vp_per == {}, st_joseph_eff.vp_per
+    assert st_joseph_eff.actions == [
+        {
+            "cost": "5 MC (steel may be used)",
+            "effect": "build 1 Cathedral in a city; city owner may pay 2 MC to draw 1 card",
+            "conditional": True,
+        },
+    ], st_joseph_eff.actions
+    assert viron_eff.actions == [
+        {
+            "cost": "used blue card action",
+            "effect": "use a blue card action that has already been used this generation",
+            "conditional": True,
+        },
+    ], viron_eff.actions
+    assert martian_media_eff.actions == [{"cost": "3 MC", "effect": "add 1 delegate to any party", "conditional": True}], martian_media_eff.actions
+    assert grey_market_eff.actions == [
+        {"cost": "1 MC", "effect": "gain 1 standard resource", "conditional": True},
+        {"cost": "1 corruption", "effect": "gain 3 of the same standard resource", "conditional": True},
+    ], grey_market_eff.actions
+    assert microgravimetry_eff.actions == [
+        {"cost": "2 energy", "effect": "identify 3 underground resources and claim 1", "conditional": True},
+    ], microgravimetry_eff.actions
+    assert personal_spacecruiser_eff.actions == [
+        {"cost": "1 energy", "effect": "gain 2 MC for each corruption resource you have", "conditional": True},
+    ], personal_spacecruiser_eff.actions
+    assert earthquake_eff.actions == [{"cost": "1 energy", "effect": "excavate 1 underground resource", "conditional": True}], earthquake_eff.actions
+    assert martian_express_eff.resource_type == "Ware", martian_express_eff.resource_type
+    assert martian_express_eff.actions == [
+        {"cost": "all ware resources", "effect": "gain 1 MC per ware removed", "conditional": True},
+    ], martian_express_eff.actions
+    assert exploitation_venus_eff.actions == [{"cost": "1 corruption", "effect": "raise venus 1 step", "conditional": True}], exploitation_venus_eff.actions
+    assert underworld_standard_tech_eff.actions == [
+        {
+            "cost": "used standard project",
+            "effect": "repeat a standard project already used this generation with cost reduced by 8 MC",
+            "conditional": True,
+        },
+    ], underworld_standard_tech_eff.actions
+    assert arborist_eff.resource_type == "Activist", arborist_eff.resource_type
+    assert arborist_eff.triggers == [
+        {
+            "on": "play an event card with base cost 14 or less",
+            "effect": "add an activist resource to this card",
+            "self": True,
+        },
+    ], arborist_eff.triggers
+    assert arborist_eff.actions == [
+        {
+            "cost": "2 activists",
+            "effect": "increase plant production 1 step and gain 2 plants",
+            "conditional": True,
+        },
+    ], arborist_eff.actions
+    assert voltagon_eff.actions == [{"cost": "8 energy", "effect": "raise oxygen or venus 1 step"}], voltagon_eff.actions
+    assert anthozoa_eff.actions == [{"cost": "1 plant", "effect": "add 1 animal to this card"}], anthozoa_eff.actions
+    assert {"type": "Animal", "amount": 1, "target": "this", "per_tag": None} in anthozoa_eff.adds_resources, anthozoa_eff.adds_resources
+    assert investigative_eff.resource_type == "Journalism", investigative_eff.resource_type
+    assert investigative_eff.actions == [
+        {
+            "cost": "5 MC and 1 corruption from another player",
+            "effect": "add 1 journalism resource to this card",
+            "conditional": True,
+        },
+    ], investigative_eff.actions
+    assert {"type": "Journalism", "amount": 1, "target": "this", "per_tag": None} in investigative_eff.adds_resources, investigative_eff.adds_resources
+    assert refugee_camps_eff.actions == [{"cost": "1 MC production", "effect": "add 1 camp resource to this card"}], refugee_camps_eff.actions
+    assert {"type": "Camp", "amount": 1, "target": "this", "per_tag": None} in refugee_camps_eff.adds_resources, refugee_camps_eff.adds_resources
     assert ore_processor_eff.actions == [{"cost": "4 energy", "effect": "gain 1 titanium and increase oxygen 1 step"}], ore_processor_eff.actions
     assert steelworks_eff.actions == [{"cost": "4 energy", "effect": "gain 2 steel and increase oxygen 1 step"}], steelworks_eff.actions
     assert ironworks_eff.actions == [{"cost": "4 energy", "effect": "gain 1 steel and raise oxygen 1 step"}], ironworks_eff.actions
@@ -959,6 +1288,7 @@ def main() -> int:
 
     false_vp_projection = "\n".join(_vp_projection(build_non_vp_resource_currency_state()))
     assert "actions" not in false_vp_projection, false_vp_projection
+    assert "Symbiotic Fungus" not in false_vp_projection, false_vp_projection
 
     action_me = type("ActionMe", (), {"mc": 31, "energy": 2, "plants": 2, "heat": 12, "steel": 5, "titanium": 9})()
     endgame_rv = resource_values(1)
@@ -1049,17 +1379,33 @@ def main() -> int:
     ) == (0, 0)
 
     decomposers_eff = bot.effect_parser.get("Decomposers")
+    eco_zone_eff = bot.effect_parser.get("Ecological Zone")
+    eco_zone_ares_eff = bot.effect_parser.get("Ecological Zone:ares")
+    arklight_eff = bot.effect_parser.get("Arklight")
+    pristar_eff = bot.effect_parser.get("Pristar")
+    neptunian_eff = bot.effect_parser.get("Neptunian Power Consultants")
     venusian_animals_eff = bot.effect_parser.get("Venusian Animals")
     thiolava_eff = bot.effect_parser.get("Thiolava Vents")
     martian_repository_eff = bot.effect_parser.get("Martian Repository")
+    solarpedia_eff = bot.effect_parser.get("Solarpedia")
+    pollinators_eff = bot.effect_parser.get("Pollinators")
+    pets_eff = bot.effect_parser.get("Pets")
     research_hub_eff = bot.effect_parser.get("Research & Development Hub")
     anthozoa_eff = bot.effect_parser.get("Anthozoa")
     birds_mid_eff = bot.effect_parser.get("Birds")
     ants_mid_eff = bot.effect_parser.get("Ants")
     assert decomposers_eff is not None
+    assert eco_zone_eff is not None
+    assert eco_zone_ares_eff is not None
+    assert arklight_eff is not None
+    assert pristar_eff is not None
+    assert neptunian_eff is not None
     assert venusian_animals_eff is not None
     assert thiolava_eff is not None
     assert martian_repository_eff is not None
+    assert solarpedia_eff is not None
+    assert pollinators_eff is not None
+    assert pets_eff is not None
     assert research_hub_eff is not None
     assert anthozoa_eff is not None
     assert birds_mid_eff is not None
@@ -1068,9 +1414,22 @@ def main() -> int:
     assert venusian_animals_eff.actions == [], venusian_animals_eff.actions
     assert venusian_animals_eff.adds_resources == [], venusian_animals_eff.adds_resources
     assert decomposers_eff.triggers, decomposers_eff.triggers
+    assert eco_zone_eff.triggers == [{"on": "play an animal or plant tag", "effect": "add an animal to this card", "self": True}], eco_zone_eff.triggers
+    assert eco_zone_ares_eff.triggers == [{"on": "play an animal or plant tag", "effect": "add an animal to this card", "self": True}], eco_zone_ares_eff.triggers
+    assert arklight_eff.triggers == [{"on": "play an animal or plant tag", "effect": "add 1 animal to this card", "self": True}], arklight_eff.triggers
+    assert pristar_eff.triggers == [{"on": "production phase if you did not get TR this generation", "effect": "add one preservation resource here and gain 6 M€", "self": False}], pristar_eff.triggers
+    assert neptunian_eff.triggers == [{"on": "any ocean is placed", "effect": "you may pay 5 M€ to raise energy production 1 step and add 1 hydroelectric resource to this card", "self": False}], neptunian_eff.triggers
     assert venusian_animals_eff.triggers, venusian_animals_eff.triggers
     assert thiolava_eff.triggers, thiolava_eff.triggers
     assert martian_repository_eff.vp_per == {"amount": 1, "per": "3 resources"}, martian_repository_eff.vp_per
+    assert solarpedia_eff.resource_type == "Data", solarpedia_eff.resource_type
+    assert solarpedia_eff.vp_per == {"amount": 1, "per": "6 resources"}, solarpedia_eff.vp_per
+    assert solarpedia_eff.actions == [{"cost": "free", "effect": "add 2 data to any card"}], solarpedia_eff.actions
+    assert solarpedia_eff.adds_resources == [{"type": "Data", "amount": 2, "target": "any", "per_tag": None}], solarpedia_eff.adds_resources
+    assert pollinators_eff.resource_type == "Animal", pollinators_eff.resource_type
+    assert pollinators_eff.vp_per == {"amount": 1, "per": "resource"}, pollinators_eff.vp_per
+    assert pollinators_eff.adds_resources == [{"type": "Animal", "amount": 1, "target": "this", "per_tag": None}], pollinators_eff.adds_resources
+    assert pets_eff.adds_resources == [{"type": "Animal", "amount": 1, "target": "this", "per_tag": None}], pets_eff.adds_resources
     assert anthozoa_eff.vp_per == {"amount": 1, "per": "2 resources"}, anthozoa_eff.vp_per
 
     mid_rv = resource_values(6)
@@ -1099,6 +1458,24 @@ def main() -> int:
             {"name": "Tardigrades", "tags": ["Microbe"]},
         ],
     )
+    eco_zone_no_shell = rich_value("Ecological Zone")
+    eco_zone_shell = rich_value(
+        "Ecological Zone",
+        hand=[
+            {"name": "Kelp Farming", "tags": ["Plant"]},
+            {"name": "Pets", "tags": ["Earth", "Animal"]},
+        ],
+    )
+    arklight_no_shell = rich_value("Arklight")
+    arklight_shell = rich_value(
+        "Arklight",
+        hand=[
+            {"name": "Kelp Farming", "tags": ["Plant"]},
+            {"name": "Pets", "tags": ["Earth", "Animal"]},
+        ],
+    )
+    pets_value = rich_value("Pets")
+    pollinators_value = rich_value("Pollinators")
     venusian_animals_value = rich_value("Venusian Animals")
     thiolava_value = rich_value("Thiolava Vents")
     martian_repository_value = rich_value("Martian Repository")
@@ -1107,6 +1484,11 @@ def main() -> int:
     ants_value = rich_value("Ants")
     assert decomposers_no_shell < 2.5, decomposers_no_shell
     assert decomposers_shell > decomposers_no_shell + 1.5, (decomposers_no_shell, decomposers_shell)
+    assert eco_zone_shell > eco_zone_no_shell + 1.5, (eco_zone_no_shell, eco_zone_shell)
+    assert arklight_shell > arklight_no_shell + 1.5, (arklight_no_shell, arklight_shell)
+    assert pets_value > 0, pets_value
+    assert pollinators_value > 0, pollinators_value
+    assert rich_value("Birds") < birds_value + 0.01, rich_value("Birds")
     assert venusian_animals_value < 4.0, venusian_animals_value
     assert thiolava_value > 8.5, thiolava_value
     assert martian_repository_value == 0, martian_repository_value
@@ -1301,6 +1683,9 @@ def main() -> int:
     venus_shuttles = low_score_city_advice["Venus Shuttles"]
     assert venus_shuttles["action"] == "SELL", venus_shuttles
     assert "no immediate VP" in venus_shuttles["reason"], venus_shuttles
+    symbiotic_fungus = low_score_city_advice["Symbiotic Fungus"]
+    assert symbiotic_fungus["action"] == "SELL", symbiotic_fungus
+    assert "no immediate VP" in symbiotic_fungus["reason"], symbiotic_fungus
     low_score_city_alloc = mc_allocation_advice(
         low_score_city_state, bot.synergy, bot.req_checker
     )
@@ -1319,6 +1704,16 @@ def main() -> int:
         not a["action"].startswith("Play Venus Shuttles")
         for a in low_score_city_alloc["allocations"]
     ), low_score_city_alloc["allocations"]
+    assert all(
+        not a["action"].startswith("Play Symbiotic Fungus")
+        for a in low_score_city_alloc["allocations"]
+    ), low_score_city_alloc["allocations"]
+    combos = bot.synergy.combo.analyze_tableau_combos(
+        ["Imported Nutrients"],
+        ["Symbiotic Fungus"],
+        low_score_city_state.me.tags,
+    )
+    assert all(c.get("type") != "resource_target" for c in combos), combos
 
     end_triggered_state = build_end_triggered_noise_state()
     assert is_game_end_triggered(end_triggered_state)

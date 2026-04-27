@@ -37,6 +37,20 @@ function testSummarizeNestedOptionKeepsOuterIndex() {
   assert.strictEqual(summary, 'option[3]');
 }
 
+function testSummarizeOptionIncludesPromptLabel() {
+  const summary = summarizePlayerInputAction({
+    type: 'or',
+    index: 1,
+    response: {type: 'option'},
+  }, {
+    promptOptions: [
+      {title: 'Spend 2X M€ to gain X energy', type: 'option'},
+      {title: 'Decrease energy production 1 step to gain 8 M€', type: 'option'},
+    ],
+  });
+  assert.strictEqual(summary, 'option[1]: Decrease energy production 1 step to gain 8 M€');
+}
+
 function testNormalizeHistoricalOptionSummary() {
   assert.strictEqual(normalizeActionSummaryText('option[undefined]'), 'option');
   assert.strictEqual(normalizeActionSummaryText('option[null]'), 'option');
@@ -153,6 +167,50 @@ function testMergeEntriesProducesMatchedAndInputOnlyRows() {
   assert.strictEqual(merged.mergedTurns[0].inputAction, 'play Sponsors');
   assert.strictEqual(merged.mergedTurns[0].inputs.length, 1);
   assert.strictEqual(merged.mergedTurns[1].matchStatus, 'input_only');
+}
+
+function testMergeEntriesCarriesOptionLabels() {
+  const shadowEntries = [{
+    gameId: 'g-label',
+    gen: 7,
+    playerId: 'p1',
+    player: 'Ruslan',
+    color: 'red',
+    phase: 'action',
+    promptType: 'or',
+    title: 'Select one option',
+    ts: '2026-04-09T14:00:00.000Z',
+    resolvedAt: '2026-04-09T14:00:08.000Z',
+    botAction: 'option[0]',
+    observedAction: 'resource delta mc',
+    playerActed: true,
+    status: 'resolved',
+  }];
+  const inputEntries = [{
+    source: 'player-input',
+    gameId: 'g-label',
+    generation: 7,
+    playerId: 'p1',
+    player: 'Ruslan',
+    color: 'red',
+    promptType: 'or',
+    promptTitle: 'Select one option',
+    promptButtonLabel: 'Confirm',
+    promptOptions: [
+      {title: 'Spend 2X M€ to gain X energy', type: 'option'},
+      {title: 'Decrease energy production 1 step to gain 8 M€', type: 'option'},
+    ],
+    ts: '2026-04-09T14:00:05.000Z',
+    result: 'accepted',
+    inputType: 'or',
+    isUndo: false,
+    playerAction: {type: 'or', index: 1, response: {type: 'option'}},
+    rawBody: '{"type":"or","index":1,"response":{"type":"option"}}',
+  }];
+
+  const merged = mergeEntries('g-label', shadowEntries, inputEntries);
+  assert.strictEqual(merged.mergedTurns[0].inputAction, 'option[1]: Decrease energy production 1 step to gain 8 M€');
+  assert.strictEqual(merged.mergedTurns[0].inputs[0].actionSummary, 'option[1]: Decrease energy production 1 step to gain 8 M€');
 }
 
 function testDraftTurnCanMatchMultipleInputsByObservedCards() {
@@ -809,9 +867,11 @@ function testSeqRangeMatchesInputsWithoutPromptHeuristics() {
 function main() {
   testSummarizeInitialCards();
   testSummarizeNestedOptionKeepsOuterIndex();
+  testSummarizeOptionIncludesPromptLabel();
   testNormalizeHistoricalOptionSummary();
   testMatchInputToShadowTurn();
   testMergeEntriesProducesMatchedAndInputOnlyRows();
+  testMergeEntriesCarriesOptionLabels();
   testDraftTurnCanMatchMultipleInputsByObservedCards();
   testActionTitlesNormalizeTogether();
   testBrokenDraftTitleGetsInferred();

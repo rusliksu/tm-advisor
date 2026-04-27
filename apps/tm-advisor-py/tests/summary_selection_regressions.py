@@ -155,6 +155,41 @@ def main():
     )
     assert early_award_summary["best_move"].startswith("PLAY Luna Metropolis"), early_award_summary
 
+    high_value_late_ordered_play_summary = advisor_snapshot._build_summary_block(
+        result,
+        [
+            {
+                "name": "Rego Plastics",
+                "action": "PLAY",
+                "reason": "ranked earlier but low immediate value",
+                "play_value_now": 1.0,
+                "priority": 2,
+            },
+            {
+                "name": "Giant Space Mirror",
+                "action": "PLAY",
+                "reason": "huge production swing",
+                "play_value_now": 72.0,
+                "priority": 3,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Fund Industrialist (MEDIUM, лид +2)",
+                    "cost": 8,
+                    "value_mc": 7,
+                    "priority": 2,
+                    "type": "award",
+                    "urgency": "MEDIUM",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert high_value_late_ordered_play_summary["best_move"].startswith("PLAY Giant Space Mirror"), high_value_late_ordered_play_summary
+
     early_milestone_summary = advisor_snapshot._build_summary_block(
         result,
         [

@@ -674,7 +674,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
             # Check if card gives immediate TR, placement, or resources
             has_immediate_value = has_endgame_immediate_value
-            if not has_immediate_value and score < 70:
+            if not has_immediate_value:
                 sell_reason = f"last gen: no immediate VP (sell +1 MC)"
                 results.append(_entry(name, "SELL", sell_reason,
                                       play_value * 0.1, 0, eff_cost, 9))
@@ -1007,7 +1007,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 has_immediate_value = _has_endgame_immediate_value(
                     name, effect_parser, allow_placement=True
                 )
-                if not has_immediate_value and score < 70:
+                if not has_immediate_value:
                     continue
 
             value_mc = _estimate_card_value_rich(
@@ -2287,7 +2287,7 @@ def _extract_trigger_tags(trigger_text: str) -> list[str]:
     low = (trigger_text or "").lower()
     tags = []
     for tag in _TRIGGER_TAGS:
-        if re.search(rf"\b{re.escape(tag)}\b(?:\s+tag|\s*,|\s+or\b|\s+and\b)", low):
+        if re.search(rf"\b{re.escape(tag)}\b(?:\s+(?:tag|card)|\s*,|\s+or\b|\s+and\b)", low):
             tags.append(tag)
     return tags
 
@@ -2333,6 +2333,9 @@ def _estimate_standard_project_hits(gens_left: int) -> int:
 def _estimate_trigger_hits(trig, card_name, card_tags, gens_left,
                            tableau_tags=None, hand_cards=None, db=None):
     trigger_text = (trig.get("on", "") or "").lower()
+    if "city" in trigger_text and "placed" in trigger_text:
+        return _estimate_city_trigger_hits(gens_left)
+
     trigger_tags = _extract_trigger_tags(trigger_text)
     current_tags = {str(tag).lower() for tag in (card_tags or [])}
     self_marker = bool(trig.get("self"))
@@ -2365,6 +2368,19 @@ def _estimate_trigger_hits(trig, card_name, card_tags, gens_left,
     return future_hits + (1 if includes_self else 0)
 
 
+def _estimate_city_trigger_hits(gens_left: int) -> int:
+    """Conservative future city placements for city-trigger engines like Pets."""
+    if gens_left <= 0:
+        return 0
+    if gens_left <= 2:
+        return 1
+    if gens_left <= 5:
+        return 2
+    if gens_left <= 9:
+        return 3
+    return 4
+
+
 def _resource_vp_token_value(eff, rv) -> float:
     if not eff or not getattr(eff, "vp_per", None):
         return 0.0
@@ -2385,6 +2401,22 @@ def _resource_vp_token_value(eff, rv) -> float:
 def _self_resource_action_rate(eff) -> float:
     if not eff or not getattr(eff, "actions", None):
         return 0.0
+    has_free_resource_action = any(
+        not act.get("conditional")
+        and str(act.get("cost", "") or "").strip().lower() in ("", "free", "0", "0 mc", "0 m€")
+        for act in eff.actions
+    )
+    structured_rate = 0.0
+    own_resource = str(getattr(eff, "resource_type", "") or "").lower()
+    if has_free_resource_action:
+        for add in getattr(eff, "adds_resources", []) or []:
+            add_type = str(add.get("type", "") or "").lower()
+            target = add.get("target")
+            if target == "this" or (target == "any" and own_resource and add_type == own_resource):
+                structured_rate += float(add.get("amount", 1) or 1)
+    if structured_rate > 0:
+        return structured_rate
+
     rate = 0.0
     for act in eff.actions:
         if act.get("conditional"):
@@ -2392,7 +2424,7 @@ def _self_resource_action_rate(eff) -> float:
         effect_text = (act.get("effect", "") or "").lower()
         if "to this card" not in effect_text and "here" not in effect_text:
             continue
-        add_match = re.search(r"add\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|data|resource)", effect_text)
+        add_match = re.search(r"add\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|science|data|resource)", effect_text)
         if add_match:
             rate += float(add_match.group(1) or 1)
     return rate
@@ -2403,6 +2435,78 @@ def _is_resource_vp_without_self_action(eff) -> bool:
         return False
     per = str(eff.vp_per.get("per", "") or "").lower()
     return "resource" in per and _self_resource_action_rate(eff) <= 0
+
+
+def _mandatory_discard_card_cost(hand_cards=None, card_name: str = "") -> float:
+    """Estimate the opportunity cost of discarding the worst pre-draw hand card."""
+    if not hand_cards:
+        return 1.0
+    discardable = 0
+    for card in hand_cards:
+        name = card.get("name", "") if isinstance(card, dict) else str(card)
+        if name and name == card_name:
+            continue
+        discardable += 1
+    if discardable <= 1:
+        return 2.5
+    if discardable <= 3:
+        return 1.5
+    return 1.0
+
+
+def _resource_add_mentions_action(add: dict, actions: list[dict]) -> bool:
+    """True when an adds_resources entry is the structured form of an action."""
+    if not add or not actions:
+        return False
+
+    add_type = str(add.get("type", "") or "").lower()
+    add_tokens = [
+        token.rstrip("s")
+        for token in re.findall(r"[a-z]+", add_type)
+        if token not in ("or", "to", "any", "another", "this", "card", "resource", "resources")
+    ]
+    add_amount = float(add.get("amount", 1) or 1)
+    add_target = str(add.get("target", "") or "").lower()
+
+    for act in actions:
+        text = f"{act.get('cost', '')} {act.get('effect', '')}".lower()
+        if "add" not in text:
+            continue
+        amount_match = re.search(r"add\s+(?:(\d+)|an?|one)\s+", text)
+        action_amount = float(amount_match.group(1) or 1) if amount_match else 1.0
+        if action_amount != add_amount:
+            continue
+        if add_tokens and not any(token in text for token in add_tokens):
+            continue
+        if add_target == "any" and "any" not in text:
+            continue
+        if add_target == "another" and "another" not in text:
+            continue
+        if add_target == "this" and "this" not in text and "here" not in text:
+            continue
+        return True
+    return False
+
+
+def _one_time_resource_add_value(add: dict, rv) -> float:
+    """Conservative value for resources placed by a one-shot card effect."""
+    amount = float(add.get("amount", 1) or 1)
+    per_tag = str(add.get("per_tag", "") or "")
+    if per_tag and per_tag != "_per_step":
+        amount *= 2.0
+    elif per_tag == "_per_step":
+        amount *= 2.0
+
+    res_type = str(add.get("type", "") or "").lower()
+    if "animal" in res_type or "microbe" in res_type or "floater" in res_type:
+        token_value = 2.0
+    elif "data" in res_type or "science" in res_type:
+        token_value = 1.5
+    elif "resource" in res_type:
+        token_value = 1.5
+    else:
+        token_value = 1.0
+    return amount * token_value
 
 
 def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
@@ -2422,9 +2526,14 @@ def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
         "to this card" in effect_text or "on this card" in effect_text or "here" in effect_text
     ):
         add_match = re.search(
-            r"(?:add|put)\s+(?:(\d+)|an?|one)\s+(microbe|animal|floater|data|resource)",
+            r"(?:add|put)\s+(?:(\d+)|an?|one)\s+(.+?)\s+(?:to|on)\s+this\s+card",
             effect_text,
         )
+        if not add_match:
+            add_match = re.search(
+                r"(?:add|put)\s+(?:(\d+)|an?|one)\s+(.+?)\s+here",
+                effect_text,
+            )
         if add_match:
             amount = float(add_match.group(1) or 1)
             return total_hits * amount * resource_token_value * 0.9
@@ -2450,7 +2559,7 @@ def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
         return total_hits * int(mc_match.group(1)) * 0.9
 
     discount_match = re.search(r'pay\s+(\d+)\s*m[€c]\s+less', effect_text)
-    if discount_match and trigger_tag:
+    if discount_match:
         return total_hits * int(discount_match.group(1)) * 0.9
 
     return 0.0
@@ -2581,7 +2690,15 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
 
     # Card draw
     if eff.draws_cards:
-        value += eff.draws_cards * rv["card"]
+        discards = getattr(eff, "discards_cards", 0) or 0
+        if discards and getattr(eff, "discard_after_draw", False):
+            kept_cards = max(0, eff.draws_cards - discards)
+            selection_bonus = min(discards, eff.draws_cards) * 0.75
+            value += kept_cards * rv["card"] + selection_bonus
+        else:
+            value += eff.draws_cards * rv["card"]
+        if discards and not getattr(eff, "discard_after_draw", False):
+            value -= discards * _mandatory_discard_card_cost(hand_cards, card_name)
 
     # Immediate resource gains
     for res, amount in eff.gains_resources.items():
@@ -2633,11 +2750,7 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
                     placer_tags = tableau_tags.get(res_type, tableau_tags.get(res_type + "s", 0))
                     if placer_tags > 0:
                         resources_per_gen += placer_tags * 0.4
-            immediate_resources = sum(
-                float(add.get("amount", 1) or 1)
-                for add in getattr(eff, "adds_resources", [])
-                if add.get("target") == "this"
-            )
+            immediate_resources = resources_per_gen
             if immediate_resources > 0 and resource_token_value > 0:
                 value += immediate_resources * resource_token_value
             # Subtract action opportunity cost (~2 MC/gen for using the action)
@@ -2658,14 +2771,13 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
         else:
             value += amt * rv["vp"]
 
-    # Resource adders to other cards (action-like, e.g. Nobel Labs parsed as adds_resources not actions)
-    # These give recurring value when target VP cards exist
+    # One-shot resource adders. Explicit blue actions are valued in the action
+    # loop, so do not also count their structured self-add entry as on-play.
     for add in eff.adds_resources:
-        if add["target"] in ("any", "another") and not eff.actions:
-            # Card has resource adder but no explicit actions — it's an action card
-            add_amount = add.get("amount", 1)
-            action_gens_add = max(0, gens_left - 1)
-            value += add_amount * 2.0 * action_gens_add  # ~2 MC per resource placed
+        if _resource_add_mentions_action(add, eff.actions):
+            continue
+        if add["target"] in ("this", "any", "another"):
+            value += _one_time_resource_add_value(add, rv)
 
     # Action value: recurring actions generate value every gen
     if eff.actions:

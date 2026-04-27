@@ -18,9 +18,14 @@ class CardEffectParser:
         "fighter": "Fighter", "fighters": "Fighter",
         "asteroid": "Asteroid", "asteroids": "Asteroid",
         "camp": "Camp", "camps": "Camp",
+        "ware": "Ware", "wares": "Ware",
+        "activist": "Activist", "activists": "Activist",
+        "cathedral": "Cathedral", "cathedrals": "Cathedral",
+        "standard resource": "Standard",
         "data": "Data", "DATA": "Data",
         "disease": "Disease",
         "tool": "Tool", "tools": "Tool",
+        "journalism": "Journalism", "journalism resource": "Journalism",
         "preservation": "Preservation",
         "seed": "Seed", "SEED": "Seed",
         "clone trooper": "Clone Trooper",
@@ -76,6 +81,126 @@ class CardEffectParser:
     _GENERATED_DRAW_EXCLUDES = {
         # Render icons near the action text leak as fake on-play card draw.
         "Floyd Continuum",
+        # CEO OPG/filtering effects are not immediate free card draw. Their
+        # strategic value is carried by CEO evaluations, not draws_cards.
+        "Ender",
+        "Tate",
+    }
+    _GENERATED_RESOURCE_HOLD_EXCLUDES = {
+        # Feeder-only cards place microbes on another card; they do not store
+        # resources or score VP from resources themselves.
+        "Symbiotic Fungus",
+        "Extreme-Cold Fungus",
+    }
+    _ACTION_RESOURCE_ADD_OVERRIDES = {
+        "Symbiotic Fungus": [
+            {"type": "Microbe", "amount": 1, "target": "another", "per_tag": None},
+        ],
+        "Extreme-Cold Fungus": [
+            {"type": "Microbe", "amount": 2, "target": "another", "per_tag": None},
+        ],
+    }
+    _DRAW_DISCARD_OVERRIDES = {
+        # The cleaned DB description is truncated at "draw 4 cards,". Canonical
+        # raw data and TS both say the initial action then discards 3 cards.
+        "Spire": {"draws": 4, "discards": 3, "after": True},
+    }
+    _MANUAL_EFFECT_OVERRIDES = {
+        # OR effect: choose either +2 plant production or +5 MC production.
+        # The generic parser sees both clauses and otherwise overcounts them.
+        "Lunar Exports": {
+            "production_change": {"mc": 5},
+        },
+        # Cathedrals are special city markers, not resources on this card.
+        # The generic "1 VP per ..." text parser must not treat them as a
+        # direct static VP or resource-VP accumulator.
+        "St. Joseph of Cupertino Mission": {
+            "resource_type": "",
+            "resource_holds": False,
+            "vp_per": {},
+        },
+        # Moon corp is absent from the compact Python card catalog. Canonical
+        # raw data and TS: 42 MC, first action draw 3 keep 2, science resources,
+        # 1 VP per 2 science resources, action adds science to an eligible card.
+        "Nanotech Industries": {
+            "resource_type": "Science",
+            "resource_holds": True,
+            "draws_cards": 3,
+            "discards_cards": 1,
+            "discard_after_draw": True,
+            "vp_per": {"amount": 1, "per": "2 resources"},
+            "actions": [
+                {"cost": "free", "effect": "add 1 science resource to any eligible card"},
+            ],
+            "adds_resources": [
+                {"type": "Science", "amount": 1, "target": "any", "per_tag": None},
+            ],
+        },
+        "Solarpedia": {
+            "resource_type": "Data",
+            "resource_holds": True,
+            "vp_per": {"amount": 1, "per": "6 resources"},
+            "actions": [
+                {"cost": "free", "effect": "add 2 data to any card"},
+            ],
+            "adds_resources": [
+                {"type": "Data", "amount": 2, "target": "any", "per_tag": None},
+            ],
+        },
+        "Stratopolis": {
+            "resource_type": "Floater",
+            "resource_holds": True,
+            "vp_per": {"amount": 1, "per": "3 resources"},
+            "actions": [
+                {"cost": "free", "effect": "add 2 floaters to any Venus card"},
+            ],
+            "adds_resources": [
+                {"type": "Floater", "amount": 2, "target": "any", "per_tag": None, "tag_constraint": "Venus"},
+            ],
+        },
+        "Floater-Urbanism": {
+            "resource_type": "Venusian Habitat",
+            "resource_holds": True,
+            "vp_per": {"amount": 1, "per": "resource"},
+            "actions": [
+                {
+                    "cost": "1 floater from any card",
+                    "effect": "add 1 Venusian Habitat to this card",
+                    "conditional": True,
+                },
+            ],
+            "adds_resources": [
+                {"type": "Venusian Habitat", "amount": 1, "target": "this", "per_tag": None},
+            ],
+        },
+        "FloaterUrbanism": {
+            "resource_type": "Venusian Habitat",
+            "resource_holds": True,
+            "vp_per": {"amount": 1, "per": "resource"},
+            "actions": [
+                {
+                    "cost": "1 floater from any card",
+                    "effect": "add 1 Venusian Habitat to this card",
+                    "conditional": True,
+                },
+            ],
+            "adds_resources": [
+                {"type": "Venusian Habitat", "amount": 1, "target": "this", "per_tag": None},
+            ],
+        },
+        # Cleaned DB description keeps only the city trigger; canonical raw text
+        # also has the on-play animal.
+        "Pets": {
+            "adds_resources": [
+                {"type": "Animal", "amount": 1, "target": "this", "per_tag": None},
+            ],
+        },
+        # Compact catalog drops the trailing raw "| Add 1 animal on this card".
+        "Pollinators": {
+            "adds_resources": [
+                {"type": "Animal", "amount": 1, "target": "this", "per_tag": None},
+            ],
+        },
     }
 
     def __init__(self, db):
@@ -110,12 +235,24 @@ class CardEffectParser:
             {"cost": "free", "effect": "add 2 microbes to another card", "choice_group": "or"},
         ],
         "Dirigibles": [{"cost": "free", "effect": "add 1 floater to any card"}],
+        "Venus Shuttles": [{"cost": "dynamic Venus tag discount", "effect": "raise venus 1 step", "conditional": True}],
+        "BreedingFarms": [{"cost": "1 plant", "effect": "add 1 animal to any card"}],
+        "MartianCulture": [{"cost": "free", "effect": "add 1 data to any card"}],
+        "NobelLabs": [{"cost": "free", "effect": "add 2 microbes or 2 data or 2 floaters to any card"}],
+        "VeneraBase": [{"cost": "free", "effect": "add 1 floater to any Venus card"}],
         "Atmo Collectors": [{"cost": "free", "effect": "add 1 floater to this card"},
                              {"cost": "1 floater", "effect": "gain 2 titanium / 3 energy / 4 heat"}],
         "Celestic": [{"cost": "free", "effect": "add 1 floater to this card (or draw card)"}],
         "United Nations Mars Initiative": [{"cost": "3 MC", "effect": "raise TR 1 step if TR was raised this generation", "conditional": True}],
         "Factorum": [{"cost": "no energy resources", "effect": "increase energy production 1 step", "conditional": True},
                       {"cost": "3 MC", "effect": "draw 1 building card"}],
+        "Viron": [
+            {
+                "cost": "used blue card action",
+                "effect": "use a blue card action that has already been used this generation",
+                "conditional": True,
+            },
+        ],
         "Tycho Magnetics": [{"cost": "any energy", "effect": "draw that many cards and keep 1"}],
         "Kuiper Cooperative": [{"cost": "free", "effect": "add 1 asteroid here per space tag", "conditional": True}],
         "Stormcraft Incorporated": [{"cost": "free", "effect": "add 1 floater to this card"}],
@@ -128,6 +265,19 @@ class CardEffectParser:
         "Self-replicating Robots": [{"cost": "free", "effect": "link a Space or Building card from hand with 2 resources", "conditional": True},
                                     {"cost": "free", "effect": "double resources on a hosted card", "conditional": True}],
         "Mohole Lake": [{"cost": "free", "effect": "add 1 microbe or animal to another card", "conditional": True}],
+        "Bioengineering Enclosure": [{"cost": "1 animal", "effect": "add 1 animal to another card", "conditional": True}],
+        "Cloud Vortex Outpost": [{"cost": "1 floater", "effect": "add 1 floater to another card", "conditional": True}],
+        "Applied Science": [
+            {"cost": "1 science", "effect": "gain 1 standard resource", "conditional": True},
+            {"cost": "1 science", "effect": "add 1 resource to any card with a resource", "conditional": True},
+        ],
+        "Board of Directors": [{"cost": "free", "effect": "draw 1 prelude; discard it or pay 12 MC and 1 director to play it", "conditional": True}],
+        "Aeron Genomics": [{"cost": "claimed underground token(s)", "effect": "add up to 2 animals to any card", "conditional": True}],
+        "Demetron Labs": [{"cost": "3 data", "effect": "identify 3 underground resources and claim 1", "conditional": True}],
+        "The Darkside of The Moon Syndicate": [
+            {"cost": "1 titanium", "effect": "add 1 syndicate fleet to this card"},
+            {"cost": "1 syndicate fleet", "effect": "steal 2 MC from each opponent", "conditional": True},
+        ],
         "Saturn Surfing": [{"cost": "1 floater", "effect": "gain 1 MC per floater here max 5", "conditional": True}],
         "Mars Nomads": [{"cost": "free", "effect": "move Nomads and collect placement bonus", "conditional": True}],
         "Teslaract": [{"cost": "1 energy production", "effect": "increase plant production 1 step", "conditional": True}],
@@ -169,11 +319,47 @@ class CardEffectParser:
         "World Government Advisor": [{"cost": "free", "effect": "raise 1 global parameter without TR or bonuses", "conditional": True}],
         "Electro Catapult": [{"cost": "1 plant/steel", "effect": "gain 7 MC"}],
         "AI Central": [{"cost": "free", "effect": "draw 2 cards"}],
+        "St. Joseph of Cupertino Mission": [
+            {
+                "cost": "5 MC (steel may be used)",
+                "effect": "build 1 Cathedral in a city; city owner may pay 2 MC to draw 1 card",
+                "conditional": True,
+            },
+        ],
         "Business Network": [{"cost": "free", "effect": "look at the top card and either buy it or discard it"}],
         "Inventors' Guild": [{"cost": "free", "effect": "look at the top card and either buy it or discard it"}],
         "Space Elevator": [{"cost": "1 steel", "effect": "gain 5 MC"}],
         "Sub-Crust Measurements": [{"cost": "free", "effect": "draw 1 card"}],
         "Red Ships": [{"cost": "free", "effect": "gain 1 MC per ocean-adjacent city or special tile"}],
+        "Martian Media Center": [{"cost": "3 MC", "effect": "add 1 delegate to any party", "conditional": True}],
+        "Grey Market Exploitation": [
+            {"cost": "1 MC", "effect": "gain 1 standard resource", "conditional": True},
+            {"cost": "1 corruption", "effect": "gain 3 of the same standard resource", "conditional": True},
+        ],
+        "Microgravimetry": [
+            {"cost": "2 energy", "effect": "identify 3 underground resources and claim 1", "conditional": True},
+        ],
+        "Personal Spacecruiser": [
+            {"cost": "1 energy", "effect": "gain 2 MC for each corruption resource you have", "conditional": True},
+        ],
+        "Earthquake Machine": [{"cost": "1 energy", "effect": "excavate 1 underground resource", "conditional": True}],
+        "Martian Express": [{"cost": "all ware resources", "effect": "gain 1 MC per ware removed", "conditional": True}],
+        "Exploitation Of Venus": [{"cost": "1 corruption", "effect": "raise venus 1 step", "conditional": True}],
+        "Standard Technology:u": [
+            {
+                "cost": "used standard project",
+                "effect": "repeat a standard project already used this generation with cost reduced by 8 MC",
+                "conditional": True,
+            },
+        ],
+        "Arborist Collective": [
+            {
+                "cost": "2 activists",
+                "effect": "increase plant production 1 step and gain 2 plants",
+                "conditional": True,
+            },
+        ],
+        "Voltagon": [{"cost": "8 energy", "effect": "raise oxygen or venus 1 step"}],
         "Industrial Center": [{"cost": "7 MC", "effect": "increase steel production 1 step"}],
         "Industrial Center:ares": [{"cost": "7 MC", "effect": "increase steel production 1 step"}],
         "Restricted Area:ares": [{"cost": "2 MC", "effect": "draw 1 card"}],
@@ -183,13 +369,22 @@ class CardEffectParser:
         "Caretaker Contract": [{"cost": "8 heat", "effect": "raise TR 1 step"}],
         "Equatorial Magnetizer": [{"cost": "1 energy production", "effect": "raise TR 1 step"}],
         "Physics Complex": [{"cost": "6 energy", "effect": "add 1 science to this card"}],
-        "Search For Life": [{"cost": "1 MC", "effect": "reveal top card, if microbe keep science"}],
+        "Search For Life": [{"cost": "1 MC", "effect": "reveal top card; if microbe add 1 science resource here", "conditional": True}],
         "Restricted Area": [{"cost": "2 MC", "effect": "draw 1 card"}],
         "Project Workshop": [{"cost": "3 MC", "effect": "draw 1 blue card", "choice_group": "or"},
                              {"cost": "played blue card",
                               "effect": "convert VP on discarded blue card to TR and draw 2 cards",
                               "choice_group": "or", "conditional": True}],
         "Security Fleet": [{"cost": "1 MC", "effect": "add 1 fighter to this card"}],
+        "Anthozoa": [{"cost": "1 plant", "effect": "add 1 animal to this card"}],
+        "Investigative Journalism": [
+            {
+                "cost": "5 MC and 1 corruption from another player",
+                "effect": "add 1 journalism resource to this card",
+                "conditional": True,
+            },
+        ],
+        "Refugee Camps": [{"cost": "1 MC production", "effect": "add 1 camp resource to this card"}],
         "Bio Printing Facility": [{"cost": "2 energy", "effect": "gain 2 plants", "choice_group": "or"},
                                   {"cost": "2 energy", "effect": "add 1 animal to another card",
                                    "choice_group": "or", "conditional": True}],
@@ -209,6 +404,55 @@ class CardEffectParser:
                 "self": True,
             },
         ],
+        "Ecological Zone": [
+            {
+                "on": "play an animal or plant tag",
+                "effect": "add an animal to this card",
+                "self": True,
+            },
+        ],
+        "Ecological Zone:ares": [
+            {
+                "on": "play an animal or plant tag",
+                "effect": "add an animal to this card",
+                "self": True,
+            },
+        ],
+        "Arklight": [
+            {
+                "on": "play an animal or plant tag",
+                "effect": "add 1 animal to this card",
+                "self": True,
+            },
+        ],
+        "Arborist Collective": [
+            {
+                "on": "play an event card with base cost 14 or less",
+                "effect": "add an activist resource to this card",
+                "self": True,
+            },
+        ],
+        "Pristar": [
+            {
+                "on": "production phase if you did not get TR this generation",
+                "effect": "add one preservation resource here and gain 6 M€",
+                "self": False,
+            },
+        ],
+        "Research & Development Hub": [
+            {
+                "on": "end of each production phase for each other player with 7 or more cards in hand",
+                "effect": "add 1 data here",
+                "self": False,
+            },
+        ],
+        "Neptunian Power Consultants": [
+            {
+                "on": "any ocean is placed",
+                "effect": "you may pay 5 M€ to raise energy production 1 step and add 1 hydroelectric resource to this card",
+                "self": False,
+            },
+        ],
         "Venusian Animals": [
             {
                 "on": "play a science tag",
@@ -221,6 +465,22 @@ class CardEffectParser:
     # Implicit "add resource to self" for hasAction + resourceType cards
     _SELF_ADD_RESOURCES = {"Animal", "Microbe", "Floater", "Science", "Fighter", "Asteroid",
                            "Data", "Orbital", "Robot", "Venusian Habitat", "Agenda", "Seed"}
+    _SELF_ADD_RESOURCE_EXCLUDES = {
+        # Resources are added only after a successful reveal/identify, not as a
+        # guaranteed self-feed action.
+        "Search For Life",
+        "Search for Life Underground",
+        # These actions add resources to any eligible card, not a guaranteed
+        # one-resource self-feed.
+        "Aeron Genomics",
+        "Applied Science",
+        "Bioengineering Enclosure",
+        "Board of Directors",
+        "Cloud Vortex Outpost",
+        "Demetron Labs",
+        "Solarpedia",
+        "Stratopolis",
+    }
 
     def _parse_all(self):
         """Парсит все карты из card_info."""
@@ -239,6 +499,14 @@ class CardEffectParser:
             if desc:
                 self._parse_description(eff, desc, info)
             self._apply_generated_effect_fallback(eff, self.db.get_generated_effect(name))
+            draw_override = self._DRAW_DISCARD_OVERRIDES.get(name)
+            if draw_override:
+                eff.draws_cards = draw_override["draws"]
+                eff.discards_cards = draw_override["discards"]
+                eff.discard_after_draw = bool(draw_override.get("after"))
+            manual_override = self._MANUAL_EFFECT_OVERRIDES.get(name)
+            if manual_override:
+                self._apply_manual_effect_override(eff, manual_override)
 
             # Apply action overrides for known cards
             if name in self._ACTION_OVERRIDES:
@@ -252,22 +520,31 @@ class CardEffectParser:
                             if not any(a["target"] == "this" and a["type"] == rt for a in eff.adds_resources):
                                 eff.adds_resources.append({"type": rt, "amount": int(m.group(1)),
                                                             "target": "this", "per_tag": None})
+                for add in self._ACTION_RESOURCE_ADD_OVERRIDES.get(name, []):
+                    if not any(
+                        a["target"] == add["target"]
+                        and a["type"] == add["type"]
+                        and a.get("amount", 1) == add["amount"]
+                        for a in eff.adds_resources
+                    ):
+                        eff.adds_resources.append(dict(add))
 
             # Auto-generate implicit action for hasAction + resourceType cards
             elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
                 if not eff.actions:  # don't override if already parsed
                     eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card", "implicit": True})
 
-            for trig in self._TRIGGER_OVERRIDES.get(name, []):
-                if not any(
-                    t.get("on") == trig.get("on") and t.get("effect") == trig.get("effect")
-                    for t in eff.triggers
-                ):
-                    eff.triggers.append(dict(trig))
+            trigger_override = self._TRIGGER_OVERRIDES.get(name)
+            if trigger_override:
+                eff.triggers = [dict(trig) for trig in trigger_override]
 
             # Ensure all resource-holding action cards have self-add in adds_resources
             # (even if actions were parsed from description, e.g. Ants)
-            if info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
+            if (
+                info.get("hasAction")
+                and res_type in self._SELF_ADD_RESOURCES
+                and name not in self._SELF_ADD_RESOURCE_EXCLUDES
+            ):
                 if not any(a["target"] == "this" and a["type"] == res_type for a in eff.adds_resources):
                     eff.adds_resources.append({"type": res_type, "amount": 1,
                                                 "target": "this", "per_tag": None})
@@ -288,18 +565,49 @@ class CardEffectParser:
             self.effects[name] = eff
             self.effects[norm] = eff
 
+        for name, override in self._MANUAL_EFFECT_OVERRIDES.items():
+            norm = self.db._normalize(name)
+            if name in self.effects or norm in self.effects:
+                continue
+            eff = CardEffect(name)
+            self._apply_manual_effect_override(eff, override)
+            self.effects[name] = eff
+            self.effects[norm] = eff
+
     def get(self, name: str) -> Optional[CardEffect]:
         if name in self.effects:
             return self.effects[name]
         norm = self.db._normalize(name)
         return self.effects.get(norm)
 
+    @staticmethod
+    def _apply_manual_effect_override(eff: CardEffect, override: dict):
+        for key in (
+            "resource_type", "resource_holds", "draws_cards",
+            "discards_cards", "discard_after_draw", "opponents_draw_cards",
+        ):
+            if key in override:
+                setattr(eff, key, override[key])
+        if "vp_per" in override:
+            eff.vp_per = dict(override["vp_per"])
+        if "production_change" in override:
+            eff.production_change = dict(override["production_change"])
+        if "actions" in override:
+            eff.actions = [dict(action) for action in override["actions"]]
+        if "adds_resources" in override:
+            eff.adds_resources = [dict(add) for add in override["adds_resources"]]
+
     def _apply_generated_effect_fallback(self, eff: CardEffect, generated: dict | None):
         if not generated or not isinstance(generated, dict):
             return
 
         res_type_raw = generated.get("res")
-        if not eff.resource_holds and isinstance(res_type_raw, str) and res_type_raw:
+        if (
+            eff.name not in self._GENERATED_RESOURCE_HOLD_EXCLUDES
+            and not eff.resource_holds
+            and isinstance(res_type_raw, str)
+            and res_type_raw
+        ):
             res_type = self._RES_ALIASES.get(res_type_raw.lower(), res_type_raw.title())
             eff.resource_type = res_type
             eff.resource_holds = True
@@ -633,8 +941,7 @@ class CardEffectParser:
                 try:
                     eff.vp_per = {"amount": int(vp_str), "per": "flat"}
                 except ValueError:
-                    if vp_str == "special":
-                        eff.vp_per = {"amount": 0, "per": "special"}
+                    pass
 
         # Check description for VP patterns too
         for m in re.finditer(r'(\d+)\s+vp\s+(?:per|for each|for every)\s+(.+?)(?:\.|$)', desc_immediate):
@@ -644,13 +951,25 @@ class CardEffectParser:
         # --- Discounts ---
         for m in re.finditer(r'(?:you\s+)?pay\s+(\d+)\s+m[€c]\s+less\s+(?:for\s+)?(?:it|them)?', desc_lower):
             amount = int(m.group(1))
-            # Find what tag discount applies to
-            tag_m = re.search(r'when\s+you\s+play\s+(?:an?\s+)?(\w+)\s+(?:tag|card)', desc_lower)
-            if tag_m:
-                tag = tag_m.group(1).title()
-                eff.discount[tag] = amount
+            context = desc_lower[max(0, m.start() - 180):m.start()]
+            # Find what tag discount applies to. Pathfinder-style trigger
+            # discounts often use "When playing a power card" or
+            # "When you play a Venus or Mars tag".
+            known_tags = (
+                "science", "earth", "building", "space", "jovian", "venus",
+                "plant", "animal", "microbe", "power", "city", "event",
+                "moon", "mars",
+            )
+            matched_tags = []
+            for tag in known_tags:
+                if re.search(rf'\b{re.escape(tag)}\b(?:\s+(?:tag|card)|\s*,|\s+or\b|\s+and\b)', context):
+                    matched_tags.append(tag.title())
+            if matched_tags:
+                for tag in matched_tags:
+                    eff.discount[tag] = amount
             else:
-                eff.discount["all"] = amount
+                if "when" not in context and "whenever" not in context:
+                    eff.discount["all"] = amount
 
         # --- Triggered effects ---
         # Multiple trigger prefixes: when, each time, after, whenever
@@ -720,10 +1039,10 @@ class CardEffectParser:
         # Standalone triggers without explicit "effect:" prefix
         if not eff.triggers and 'effect:' not in desc_lower:
             _standalone_trigger_prefixes = [
-                r'(?:^|[.!]\s*)when\s+(?:you\s+)?',
-                r'(?:^|[.!]\s*)after\s+(?:you\s+)?',
-                r'(?:^|[.!]\s*)each\s+time\s+(?:you\s+)?',
-                r'(?:^|[.!]\s*)whenever\s+',
+                r'(?:^|[.!|]\s*)when\s+(?:you\s+)?',
+                r'(?:^|[.!|]\s*)after\s+(?:you\s+)?',
+                r'(?:^|[.!|]\s*)each\s+time\s+(?:you\s+)?',
+                r'(?:^|[.!|]\s*)whenever\s+',
             ]
             for prefix in _standalone_trigger_prefixes:
                 for m in re.finditer(
@@ -785,8 +1104,23 @@ class CardEffectParser:
             eff.attacks.append(f"-{m.group(1)} {m.group(2)}")
 
         # --- Card draw ---
-        for m in re.finditer(r'draw\s+(\d+)\s+card', desc_immediate):
-            eff.draws_cards += int(m.group(1))
+        for sentence in re.split(r'[.!]\s*', desc_immediate):
+            opponent_draw = re.search(r'\bopponents?\s+draw\s+(\d+)\s+cards?\b', sentence)
+            if opponent_draw:
+                eff.opponents_draw_cards += int(opponent_draw.group(1))
+                continue
+            for m in re.finditer(r'draw\s+(\d+)\s+card', sentence):
+                draws = int(m.group(1))
+                discard_before = sentence[:m.start()]
+                discard_match = re.search(r'discard\s+(\d+)\s+cards?', discard_before)
+                if discard_match:
+                    eff.discards_cards += int(discard_match.group(1))
+                discard_after = sentence[m.end():]
+                discard_after_match = re.search(r'[,;\s]*(?:then|and)?\s*discard\s+(\d+)\s+cards?', discard_after)
+                if discard_after_match:
+                    eff.discards_cards += int(discard_after_match.group(1))
+                    eff.discard_after_draw = True
+                eff.draws_cards += draws
         if "look at the top card" in desc_immediate and "take" in desc_immediate:
             eff.draws_cards += 1
 

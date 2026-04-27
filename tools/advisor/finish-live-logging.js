@@ -6,8 +6,12 @@ const path = require('path');
 const {spawnSync} = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..', '..');
+const WORKSPACE_ROOT = path.resolve(ROOT, '..');
 const LIVE_LOG_DIR = path.join(ROOT, 'data', 'game_logs', 'live-logging');
 const DEFAULT_BASE_URL = process.env.TM_BASE_URL || 'https://tm.knightbyte.win';
+const DEFAULT_SERVER_INPUT_HOST = process.env.TM_SERVER_INPUT_HOST || 'vps';
+const DEFAULT_SERVER_INPUT_REMOTE_DIR = process.env.TM_SERVER_INPUT_REMOTE_DIR
+  || '/home/openclaw/repos/tm-tierlist/data/shadow/server-inputs';
 
 function usage() {
   return [
@@ -18,6 +22,12 @@ function usage() {
     '  --server-url URL  TM server URL for postgame summary (default: TM_BASE_URL or tm.knightbyte.win)',
     '  --manifest FILE   Use a specific start-live-logging manifest',
     '  --no-stop         Do not stop PIDs from the manifest',
+    '  --no-input-download',
+    '                   Do not try to download server-input log from VPS before merge',
+    '  --server-input-host HOST',
+    `                   SSH host alias for server-input download (default: ${DEFAULT_SERVER_INPUT_HOST})`,
+    '  --server-input-remote-dir DIR',
+    `                   Remote server-input directory (default: ${DEFAULT_SERVER_INPUT_REMOTE_DIR})`,
     '  --dry-run         Print actions without stopping processes or writing reports',
     '  --json            Also save postgame summary JSON',
     '  --help            Show this help',
@@ -31,6 +41,9 @@ function parseArgs(argv) {
     serverUrl: DEFAULT_BASE_URL.replace(/\/$/, ''),
     manifest: null,
     stop: true,
+    inputDownload: true,
+    serverInputHost: DEFAULT_SERVER_INPUT_HOST,
+    serverInputRemoteDir: DEFAULT_SERVER_INPUT_REMOTE_DIR,
     dryRun: false,
     json: false,
     help: false,
@@ -46,6 +59,12 @@ function parseArgs(argv) {
       out.manifest = path.resolve(args[++i]);
     } else if (arg === '--no-stop') {
       out.stop = false;
+    } else if (arg === '--no-input-download') {
+      out.inputDownload = false;
+    } else if (arg === '--server-input-host' && args[i + 1]) {
+      out.serverInputHost = args[++i];
+    } else if (arg === '--server-input-remote-dir' && args[i + 1]) {
+      out.serverInputRemoteDir = args[++i].replace(/\/$/, '');
     } else if (arg === '--dry-run') {
       out.dryRun = true;
     } else if (arg === '--json') {
@@ -131,6 +150,48 @@ function runCommand(label, command, args, options) {
   };
 }
 
+function runPwsh(label, script, options) {
+  return runCommand(label, process.env.PWSH || 'pwsh', ['-NoProfile', '-Command', script], options);
+}
+
+function maybeDownloadServerInput(gameId, paths, options) {
+  const remoteTools = path.join(WORKSPACE_ROOT, 'terraforming-mars', 'scripts', 'lib', 'TmRemoteTools.ps1');
+  if (!options.inputDownload) {
+    return {
+      label: 'server-input-download',
+      skipped: true,
+      reason: 'disabled',
+      localPath: paths.input,
+    };
+  }
+  if (!fs.existsSync(remoteTools)) {
+    return {
+      label: 'server-input-download',
+      skipped: true,
+      reason: `missing remote tools: ${remoteTools}`,
+      localPath: paths.input,
+    };
+  }
+
+  const remotePath = `${options.serverInputRemoteDir}/input-${gameId}.jsonl`;
+  const localPath = paths.input;
+  fs.mkdirSync(path.dirname(localPath), {recursive: true});
+
+  const quote = (value) => String(value).replace(/'/g, "''");
+  const script = [
+    `. '${quote(remoteTools)}'`,
+    `Invoke-TmScpDownload -HostAlias '${quote(options.serverInputHost)}' -RemotePath '${quote(remotePath)}' -LocalPath '${quote(localPath)}'`,
+  ].join('; ');
+
+  const result = runPwsh('server-input-download', script, options);
+  return {
+    ...result,
+    remotePath,
+    localPath,
+    downloadedEntries: options.dryRun ? null : countJsonlEntries(localPath),
+  };
+}
+
 function writeText(file, text) {
   fs.mkdirSync(path.dirname(file), {recursive: true});
   fs.writeFileSync(file, text || '', 'utf8');
@@ -147,6 +208,28 @@ function parseDecisionCount(shadowAnalyzeOutput) {
   return match ? Number(match[1]) : null;
 }
 
+function readMergeCounts(mergedFile) {
+  if (!fs.existsSync(mergedFile)) return null;
+  const firstLine = fs.readFileSync(mergedFile, 'utf8').split(/\r?\n/, 1)[0];
+  if (!firstLine) return null;
+  try {
+    const meta = JSON.parse(firstLine);
+    return meta?.type === 'merge_meta' && meta.counts ? meta.counts : null;
+  } catch (_err) {
+    return null;
+  }
+}
+
+function parseJsonOutput(text) {
+  const value = String(text || '').trim();
+  if (!value) return null;
+  try {
+    return JSON.parse(value);
+  } catch (_err) {
+    return null;
+  }
+}
+
 function buildWarnings(summary, startManifest) {
   const warnings = [];
   const decisionTraces = summary.outputs.decisionTraces;
@@ -160,12 +243,34 @@ function buildWarnings(summary, startManifest) {
       'No start manifest found: finish could still merge/analyze existing logs, but cannot verify or stop start-live-logging processes.'
     );
   }
+  const mergeCounts = summary.outputs.mergeCounts || {};
+  if ((summary.outputs.shadowEntries || 0) > 0 && (mergeCounts.inputEntries || 0) === 0) {
+    warnings.push(
+      'No server player-input log captured: exact bot-vs-player validation is disabled. Configure TM server with SHADOW_LOG=1, SHADOW_LOG_DIR=data/shadow/server-inputs, SHADOW_LOG_FILE_PREFIX=input.'
+    );
+  }
+  if ((mergeCounts.shadowTurns || 0) > 0 && (mergeCounts.matched || 0) === 0) {
+    warnings.push(
+      'Shadow merge has 0 exact input matches; bot-vs-observed mismatch rates are heuristic and should not be used for scoring calibration.'
+    );
+  }
+  const loggerQualityStatus = summary.outputs.loggerQualityStatus;
+  if (loggerQualityStatus === 'no_logs') {
+    warnings.push(
+      'No advisor watch log found for this game; postgame advisor quality metrics are unavailable.'
+    );
+  } else if (loggerQualityStatus === 'no_card_events') {
+    warnings.push(
+      'Advisor watch log has no card_played events; use it for instrumentation/debug only, not scoring calibration.'
+    );
+  }
   return warnings;
 }
 
 function buildPaths(gameId) {
   return {
     shadow: path.join(ROOT, 'data', 'shadow', `shadow-${gameId}.jsonl`),
+    input: path.join(ROOT, 'data', 'shadow', 'server-inputs', `input-${gameId}.jsonl`),
     merged: path.join(ROOT, 'data', 'shadow', 'merged', `merged-${gameId}.jsonl`),
     analyzeReport: path.join(LIVE_LOG_DIR, `${gameId}-shadow-analyze.txt`),
     postgameReport: path.join(LIVE_LOG_DIR, `${gameId}-postgame-summary.txt`),
@@ -203,6 +308,8 @@ async function main() {
   }
 
   const commands = [];
+  const inputDownload = maybeDownloadServerInput(gameId, paths, options);
+  commands.push(inputDownload);
   commands.push(runCommand('shadow-merge', process.execPath, ['bot/shadow-merge.js', gameId], options));
   const analyze = runCommand('shadow-analyze', process.execPath, ['bot/shadow-analyze.js', paths.merged], options);
   commands.push(analyze);
@@ -224,6 +331,7 @@ async function main() {
     '--json',
   ], options);
   commands.push(loggerQualityJson);
+  const loggerQualityData = options.dryRun ? null : parseJsonOutput(loggerQualityJson.stdout);
 
   let postgameJson = null;
   if (options.json) {
@@ -257,13 +365,17 @@ async function main() {
     outputs: {
       shadow: paths.shadow,
       shadowEntries: options.dryRun ? null : countJsonlEntries(paths.shadow),
+      input: paths.input,
+      inputEntries: options.dryRun ? null : countJsonlEntries(paths.input),
       merged: paths.merged,
       mergedEntries: options.dryRun ? null : countJsonlEntries(paths.merged),
+      mergeCounts: options.dryRun ? null : readMergeCounts(paths.merged),
       analyzeReport: paths.analyzeReport,
       postgameReport: paths.postgameReport,
       postgameJson: options.json ? paths.postgameJson : null,
       loggerQualityReport: paths.loggerQualityReport,
       loggerQualityJson: paths.loggerQualityJson,
+      loggerQualityStatus: loggerQualityData?.quality_status || null,
       decisionTraces: parseDecisionCount(analyze.stdout),
     },
   };
@@ -287,10 +399,14 @@ async function main() {
     console.log('- process stop: no PIDs found');
   }
   for (const cmd of commands) {
-    const status = cmd.skipped ? 'dry-run' : `exit ${cmd.status}`;
-    console.log(`- ${cmd.label}: ${status} | ${cmd.commandLine}`);
+    const status = cmd.skipped
+      ? (cmd.reason ? `skipped (${cmd.reason})` : 'dry-run')
+      : `exit ${cmd.status}`;
+    const rendered = cmd.commandLine || [cmd.remotePath, cmd.localPath].filter(Boolean).join(' -> ');
+    console.log(`- ${cmd.label}: ${status}${rendered ? ` | ${rendered}` : ''}`);
   }
   console.log(`Shadow log: ${paths.shadow}${options.dryRun ? '' : ` (${summary.outputs.shadowEntries} entries)`}`);
+  console.log(`Server input log: ${paths.input}${options.dryRun ? '' : ` (${summary.outputs.inputEntries} entries)`}`);
   console.log(`Merged log: ${paths.merged}${options.dryRun ? '' : ` (${summary.outputs.mergedEntries} entries)`}`);
   console.log(`Decision traces: ${summary.outputs.decisionTraces ?? '?'}`);
   for (const warning of summary.warnings) {

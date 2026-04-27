@@ -112,7 +112,21 @@ function toMs(value) {
   return Number.isFinite(ms) ? ms : null;
 }
 
-function summarizePlayerInputAction(action) {
+function getPromptOptionLabel(context, index) {
+  if (!context || index === undefined || index === null) return null;
+  const options = Array.isArray(context.promptOptions) ? context.promptOptions : [];
+  const option = options[Number(index)];
+  const title = normalizePromptTitle(option?.title || '');
+  return title || null;
+}
+
+function summarizeIndexedOption(action, context) {
+  const fallback = summarizeAction(action);
+  const label = getPromptOptionLabel(context, action?.index);
+  return label ? `${fallback}: ${label}` : fallback;
+}
+
+function summarizePlayerInputAction(action, context = null) {
   if (!action) return null;
   if (action.type === 'initialCards') {
     const responses = Array.isArray(action.responses) ? action.responses : [];
@@ -126,11 +140,14 @@ function summarizePlayerInputAction(action) {
     return parts.join(' | ');
   }
   if ((action.type === 'or' || action.type === 'option') && action.response) {
-    const nestedSummary = summarizePlayerInputAction(action.response);
+    const nestedSummary = summarizePlayerInputAction(action.response, context);
     if (nestedSummary && nestedSummary !== 'option') {
       return nestedSummary;
     }
-    return summarizeAction(action);
+    return summarizeIndexedOption(action, context);
+  }
+  if ((action.type === 'or' || action.type === 'option') && action.index !== undefined) {
+    return summarizeIndexedOption(action, context);
   }
   return summarizeAction(action);
 }
@@ -516,7 +533,7 @@ function matchInputsToShadow(shadowTurns, inputEntries) {
 
 function joinInputActions(inputs) {
   const actions = safeArray(inputs)
-    .map((input) => summarizePlayerInputAction(input.playerAction))
+    .map((input) => summarizePlayerInputAction(input.playerAction, input))
     .filter(Boolean);
   if (actions.length === 0) return null;
   if (actions.length === 1) return actions[0];
@@ -537,7 +554,7 @@ function toMergedInputRecord(input, role = 'matched') {
     playerAction: input.playerAction || null,
     rawBody: input.rawBody || null,
     promptButtonLabel: input.promptButtonLabel || null,
-    actionSummary: summarizePlayerInputAction(input.playerAction),
+    actionSummary: summarizePlayerInputAction(input.playerAction, input),
     raw: input,
   };
 }
@@ -595,7 +612,7 @@ function shouldClusterInputOnlyTurns(clusterTurns, nextTurn) {
   if (firstFamily.startsWith('draft:') && nextFamily === firstFamily) return true;
 
   const clusterHasNonAction = clusterInputs.some((input) => !isActionPromptTitle(input.promptTitle));
-  const nextSummary = summarizePlayerInputAction(nextInput.playerAction) || '';
+  const nextSummary = summarizePlayerInputAction(nextInput.playerAction, nextInput) || '';
 
   if (firstFamily === 'action') {
     if (!isActionPromptTitle(nextInput.promptTitle)) return true;
@@ -761,7 +778,7 @@ function buildMergedTurnFromInput(input) {
     resolvedAt: null,
     botAction: null,
     observedAction: null,
-    inputAction: normalizeActionSummaryText(summarizePlayerInputAction(input.playerAction)),
+    inputAction: normalizeActionSummaryText(summarizePlayerInputAction(input.playerAction, input)),
     shadow: null,
     input: {
       result: input.result || null,

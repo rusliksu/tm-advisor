@@ -1052,7 +1052,7 @@
     'Research Outpost':        { once: 3 },     // city + draw 1, parser misses city
     // 'Maxwell Base': removed — parser now handles city + energy cost correctly
     'Robotic Workforce':       { once: 5 },     // duplicate production box of 1 building card
-    'Sponsored Academies':     { once: 4 },     // draw 3 - discard 1 = +2 net(7 MC) - opponents draw 1 each(-3.5 in 3P) ≈ 4
+    'Sponsored Academies':     { once: 6 },     // discard 1 old-hand card(~1 MC), then draw 3(~10.5 MC) - opponents draw 1 each(~3.5 MC in 3P) ≈ 6
     'Psychrophiles':           { perGen: 1 },   // action: +1 microbe (usable as 2 MC on plant cards)
 
     // === Colony cards (parser writes production:0 for dynamic/colony effects) ===
@@ -1491,7 +1491,19 @@
 
     // ── DRAW CARDS ──
     var drawVal = Math.min(6, 2.5 + gensLeft * 0.35);
-    if (beh.drawCard) ev += beh.drawCard * drawVal;
+    if (beh.drawCard) {
+      if (beh.discardAfterDraw && typeof beh.netDrawCard === 'number') {
+        ev += beh.netDrawCard * drawVal;
+        var selectionBonus = typeof beh.discardCardSelectionBonusMC === 'number' ? beh.discardCardSelectionBonusMC : 0.75;
+        ev += Math.max(0, beh.drawCard - beh.netDrawCard) * selectionBonus;
+      } else {
+        ev += beh.drawCard * drawVal;
+      }
+      if (beh.discardCardsFromHand && !beh.discardAfterDraw) {
+        var discardCost = typeof beh.discardCardCostMC === 'number' ? beh.discardCardCostMC : 1;
+        ev -= beh.discardCardsFromHand * discardCost;
+      }
+    }
 
     // ── VP ──
     // v76: VP scored at game end — use endgame value for accumulators, not current vpMC
@@ -1515,7 +1527,9 @@
         // v76: Gen-scaled — early game discount (no engine yet, action may not fire)
         // Gen 1-3: 0.5 (optimistic, no support), Gen 4+: 0.7 (engine running)
         var accDiscount = gen <= 3 ? 0.5 : 0.7;
-        var expectedRes = Math.max(1, gensLeft - 1);
+        var resourcePerAction = Number(vpInfo.actionResourceAmount || vpInfo.resourcePerAction || 1);
+        if (!isFinite(resourcePerAction) || resourcePerAction <= 0) resourcePerAction = 1;
+        var expectedRes = Math.max(1, gensLeft - 1) * resourcePerAction;
         ev += (expectedRes / (vpInfo.per || 1)) * endgameVpMC * accDiscount;
       } else if (vpInfo.type === 'per_tag') {
         var tagCount = (myTags[vpInfo.tag] || 0) + 2; // current + ~2 future
@@ -1526,6 +1540,11 @@
       } else if (vpInfo.type === 'special') {
         ev += vpMC(gensLeft) * 2; // conservative estimate: ~2 VP
       }
+    }
+    if (vpInfo && vpInfo.type === 'per_resource' && beh.addResourcesToAnyCard) {
+      var immediateAnyCount = Number(beh.addResourcesToAnyCard.count || beh.addResourcesToAnyCard.amount || 1);
+      if (!isFinite(immediateAnyCount) || immediateAnyCount <= 0) immediateAnyCount = 1;
+      ev += (immediateAnyCount / (vpInfo.per || 1)) * endgameVpMC;
     }
 
     // ── BLUE CARD ACTIONS (recurring) ──
@@ -1546,7 +1565,7 @@
         if (act.addResources && vpInfo && vpInfo.type === 'per_resource') {
           // Already counted in VP accumulator above, don't double count
         } else if (act.addResources) {
-          ev += gensLeft * 1; // generic resource gain, small value
+          ev += gensLeft * (Number(act.addResources) || 1); // generic resource gain, small value
         }
         if (act.drawCard) ev += gensLeft * act.drawCard * 3; // card/gen
         if (act.stock) {

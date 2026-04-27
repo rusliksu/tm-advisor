@@ -450,6 +450,20 @@ function scoreBlueActionCard(card, state) {
   return ev;
 }
 
+function isSeptemTribusName(name) {
+  return name === 'Septem Tribus' || name === 'Septum Tribus';
+}
+
+function isSeptemTribusState(state) {
+  const tp = state?.thisPlayer || {};
+  if (isSeptemTribusName(tp.corporation || tp.corp || tp.corporationName)) return true;
+  return (tp.tableau || []).some((card) => isSeptemTribusName(card?.name || card));
+}
+
+function getSeptemActionCard(cards) {
+  return (cards || []).find((card) => isSeptemTribusName(card?.name || card) && !card?.isDisabled) || null;
+}
+
 function getBestBlueActionCard(cards, state) {
   const active = (cards || []).filter(c => !c.isDisabled);
   const pool = active.length > 0 ? active : (cards || []);
@@ -457,6 +471,51 @@ function getBestBlueActionCard(cards, state) {
   return [...pool]
     .map(c => ({ ...c, _actionEV: scoreBlueActionCard(c, state) }))
     .sort((a, b) => b._actionEV - a._actionEV)[0] || null;
+}
+
+function isResourceTargetPromptTitle(title) {
+  const text = String(title || '').toLowerCase();
+  if (text.includes('select card to add')) return true;
+  if (!text.includes('add')) return false;
+  return /floater|microbe|animal|science|data|asteroid|resource/.test(text);
+}
+
+function parseResourceAmountFromTitle(title) {
+  const match = String(title || '').match(/add\s+(\d+)/i);
+  return match ? Math.max(1, parseInt(match[1], 10) || 1) : 1;
+}
+
+function scoreResourceTargetCard(card, title) {
+  const name = card?.name || '';
+  const data = CARD_DATA[name] || {};
+  const vp = CARD_VP[name] || data.vp || null;
+  const amount = parseResourceAmountFromTitle(title);
+  const resources = Number(card?.resources || 0);
+  let score = 0;
+
+  if (vp?.type === 'per_resource') {
+    const per = Math.max(1, Number(vp.per || 1));
+    const completedVp = Math.floor((resources + amount) / per) - Math.floor(resources / per);
+    score += completedVp * 10;
+    score += (amount / per) * 6;
+  }
+
+  if (DYNAMIC_VP_CARDS.has(name)) score += 2;
+  if (name === 'Titan Shuttles') score += 2;
+  if (name === 'Jupiter Floating Station') score += 1.5;
+  if (name === 'Red Spot Observatory') score += 1.2;
+  if (data.resourceType) score += 0.5;
+  if (card?.isDisabled) score -= 100;
+  return score;
+}
+
+function getBestResourceTargetCard(cards, title) {
+  const active = (cards || []).filter(c => !c.isDisabled);
+  const pool = active.length > 0 ? active : (cards || []);
+  if (pool.length === 0) return null;
+  return [...pool]
+    .map(c => ({...c, _targetScore: scoreResourceTargetCard(c, title)}))
+    .sort((a, b) => b._targetScore - a._targetScore)[0] || null;
 }
 
 function getBestTradeInfo(tradeIdx, opts, state, resources) {
@@ -1017,7 +1076,19 @@ function scorePrelude(prelude, state, corpName) {
   if (beh.city && !isOffBoardCityCard(name)) ev += 12; // city ~2 VP + positional value
 
   // -- DRAW CARDS --
-  if (beh.drawCard) ev += beh.drawCard * 3.5;
+  if (beh.drawCard) {
+    if (beh.discardAfterDraw && typeof beh.netDrawCard === 'number') {
+      ev += beh.netDrawCard * 3.5;
+      const selectionBonus = typeof beh.discardCardSelectionBonusMC === 'number' ? beh.discardCardSelectionBonusMC : 0.75;
+      ev += Math.max(0, beh.drawCard - beh.netDrawCard) * selectionBonus;
+    } else {
+      ev += beh.drawCard * 3.5;
+    }
+    if (beh.discardCardsFromHand && !beh.discardAfterDraw) {
+      const discardCost = typeof beh.discardCardCostMC === 'number' ? beh.discardCardCostMC : 1;
+      ev -= beh.discardCardsFromHand * discardCost;
+    }
+  }
 
   // -- COLONY --
   if (beh.colony) ev += 10; // colony slot from prelude = very early trades
@@ -1541,6 +1612,9 @@ function handleInput(wf, state, depth = 0) {
     const hasFreeLobbyDelegate = delegateIdx >= 0 && delegateTitle.includes('from lobby');
     const hasPaidDelegate = delegateIdx >= 0 && !hasFreeLobbyDelegate;
     const actionCards = cardActionIdx >= 0 ? ((opts[cardActionIdx]?.cards || []).map(c => c?.name || c)) : [];
+    const septemActionCard = cardActionIdx >= 0 && isSeptemTribusState(state)
+      ? getSeptemActionCard(opts[cardActionIdx]?.cards || [])
+      : null;
     const onlyWeakLateActions = actionCards.length > 0 && actionCards.every(name => WEAK_LATE_ACTION_CARDS.has(name));
 
     // v74: Colony trade payment — ALWAYS prefer energy (2.4 MC effective) over MC (9 MC) or titanium (9 MC)
@@ -1554,6 +1628,18 @@ function handleInput(wf, state, depth = 0) {
     }
     if (nestedEnergyPayIdx >= 0 && (state?.thisPlayer?.energy ?? 0) >= 3) return pick(nestedEnergyPayIdx);
     if (nestedTitaniumPayIdx >= 0 && (state?.thisPlayer?.titanium ?? 0) >= 3) return pick(nestedTitaniumPayIdx);
+
+    const energyMarketSpendIdx = titles.findIndex(x => x.t.includes('spend 2x') && x.t.includes('energy') && isPickableIndex(x.i));
+    const energyMarketCashIdx = titles.findIndex(x => x.t.includes('decrease energy production') && x.t.includes('8') && isPickableIndex(x.i));
+    if (energyMarketSpendIdx >= 0 && energyMarketCashIdx >= 0) {
+      const genNow = state?.game?.generation ?? 5;
+      const ep = state?.thisPlayer?.energyProduction ?? 0;
+      const coloniesAvailable = Array.isArray(state?.game?.colonies) && state.game.colonies.length > 0;
+      const urgentlyNeedsCash = mc <= 10 || genNow >= 7;
+      if (ep >= 1 && urgentlyNeedsCash) return pick(energyMarketCashIdx);
+      if (coloniesAvailable && mc >= 8 && energy < 3) return pick(energyMarketSpendIdx);
+      return pick(ep >= 1 ? energyMarketCashIdx : energyMarketSpendIdx);
+    }
 
     // World Government: pick terraform option considering VP position + engine synergy
     if (worldGovIdx >= 0 || titles.some(x => x.t.includes('increase temperature') || x.t.includes('increase venus') || x.t.includes('place an ocean'))) {
@@ -1793,6 +1879,14 @@ function handleInput(wf, state, depth = 0) {
     const trMCNow = gensLeftNow + (gensLeftNow >= 6 ? 3 : gensLeftNow >= 3 ? 5 : 7) - redsTax;
     const coreGensLeftNow = Math.max(1, Math.ceil(Math.max(1, coreSteps) / ratePerGen));
     const coreTrMCNow = coreGensLeftNow + (coreGensLeftNow >= 6 ? 3 : coreGensLeftNow >= 3 ? 5 : 7) - redsTax;
+    if (septemActionCard && gen <= 2 && !endgameMode) {
+      dbg('septem opening action before project-card tempo');
+      return {
+        type: 'or',
+        index: cardActionIdx,
+        response: {type: 'card', cards: [septemActionCard.name || 'Septem Tribus']},
+      };
+    }
     const coreSpContext = {
       steps: coreSteps,
       ratePerGen,
@@ -2658,6 +2752,13 @@ function handleInput(wf, state, depth = 0) {
       const bestAction = getBestBlueActionCard(cards, state);
       if (!bestAction) return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
       return { type: 'card', cards: [bestAction.name] };
+    }
+
+    if (isResourceTargetPromptTitle(title)) {
+      const bestTarget = getBestResourceTargetCard(cards, title);
+      if (!bestTarget) return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
+      dbg(`resource target: ${bestTarget.name}=${bestTarget._targetScore.toFixed(1)}`);
+      return { type: 'card', cards: [bestTarget.name] };
     }
 
     // Draft/keep: pick highest-scored card(s)

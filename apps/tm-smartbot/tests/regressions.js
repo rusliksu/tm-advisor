@@ -38,6 +38,7 @@ const {
   testSkipsPaidDelegateInMidgame,
   testStarvedBuySkipsWeakFiller,
   testFreeDelegateDoesNotDelayProjectCardPass,
+  testSeptemOpeningUsesCorpActionBeforeProjectCard,
   testThinHandMidgamePrefersPlayableCardOverSmallSpEdge,
   testThinHandMidgameStillLetsSpBeatWeakCard,
   testVisibleThinPlayPackBeatsSmallSpEdgeDespiteCloggedHand,
@@ -108,6 +109,76 @@ function buildDraftProjectCard(name) {
   const cardData = SMARTBOT.TM_BRAIN.getCardDataByName(name) || {};
   const cost = typeof cardData.cost === 'number' ? cardData.cost : 0;
   return {name, cost, calculatedCost: cost};
+}
+
+function testJovianLanternsKeepsImmediateFloaters() {
+  const cardData = SMARTBOT.TM_BRAIN.getCardDataByName('Jovian Lanterns') || {};
+  assert.deepStrictEqual(cardData.behavior && cardData.behavior.addResourcesToAnyCard, {
+    count: 2,
+    type: 'Floater',
+  });
+}
+
+function testFloaterTargetPrefersVpAccumulator() {
+  const wf = {
+    type: 'card',
+    title: 'Add 1 floater to a Jovian card',
+    min: 1,
+    max: 1,
+    cards: [
+      {name: 'Titan Shuttles', resources: 0},
+      {name: 'Jovian Lanterns', resources: 0},
+      {name: 'Red Spot Observatory', resources: 0},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'pink',
+      megaCredits: 20,
+      megacredits: 20,
+      tableau: [
+        {name: 'Titan Shuttles', resources: 0},
+        {name: 'Jovian Lanterns', resources: 0},
+        {name: 'Red Spot Observatory', resources: 0},
+      ],
+      cardsInHand: [],
+    },
+    players: [{color: 'pink'}],
+    game: {generation: 8, phase: 'action'},
+  };
+
+  assert.deepStrictEqual(SMARTBOT.handleInput(wf, state), {
+    type: 'card',
+    cards: ['Jovian Lanterns'],
+  });
+}
+
+function testEnergyMarketLowMcTakesMegacredits() {
+  const wf = {
+    type: 'or',
+    title: 'Select one option',
+    options: [
+      {type: 'option', title: 'Spend 2X M€ to gain X energy'},
+      {type: 'option', title: 'Decrease energy production 1 step to gain 8 M€'},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'pink',
+      megaCredits: 6,
+      megacredits: 6,
+      energyProduction: 1,
+      tableau: [{name: 'Energy Market'}],
+    },
+    players: [{color: 'pink'}],
+    game: {generation: 7, phase: 'action'},
+  };
+
+  assert.deepStrictEqual(SMARTBOT.handleInput(wf, state), {
+    type: 'or',
+    index: 1,
+    response: {type: 'option'},
+  });
 }
 
 function testProductionToLoseUsesPayProductionCost() {
@@ -907,6 +978,9 @@ function testCardPlaySeesMegaCreditsFromState() {
 }
 
 function run() {
+  testJovianLanternsKeepsImmediateFloaters();
+  testFloaterTargetPrefersVpAccumulator();
+  testEnergyMarketLowMcTakesMegacredits();
   testProductionToLoseUsesPayProductionCost();
   testInitialCardsStillHonorRequiredMinimum();
   testEventCardsExposeSyntheticEventTag();
@@ -967,6 +1041,7 @@ function run() {
   testSkipsPaidDelegateInMidgame();
   testStarvedBuySkipsWeakFiller();
   testFreeDelegateDoesNotDelayProjectCardPass();
+  testSeptemOpeningUsesCorpActionBeforeProjectCard();
   testThinHandMidgamePrefersPlayableCardOverSmallSpEdge();
   testThinHandMidgameStillLetsSpBeatWeakCard();
   testVisibleThinPlayPackBeatsSmallSpEdgeDespiteCloggedHand();

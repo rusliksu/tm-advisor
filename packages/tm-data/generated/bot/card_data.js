@@ -1,5 +1,5 @@
 // Auto-generated card data — 973 cards from TM source
-// Generated: 2026-04-21T20:43:07.511Z
+// Generated: 2026-04-27T14:32:05.654Z
 const CARD_DATA = {
   "Bioengineering Enclosure": {
     "name": "Bioengineering Enclosure",
@@ -34,7 +34,11 @@ const CARD_DATA = {
       "production": {
         "plants": 1
       },
-      "city": true
+      "city": true,
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Microbe"
+      }
     },
     "cardNumber": "A02",
     "description": "Requires 1 science tag. Increase your plant production 1 step. ",
@@ -297,6 +301,10 @@ const CARD_DATA = {
       "production": {
         "heat": 3,
         "plants": 1
+      },
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Microbe"
       }
     },
     "cardNumber": "170",
@@ -820,6 +828,11 @@ const CARD_DATA = {
     "name": "CEO's Favorite Project",
     "type": "event",
     "cost": 1,
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 1
+      }
+    },
     "cardNumber": "149",
     "expansion": "base"
   },
@@ -1184,6 +1197,10 @@ const CARD_DATA = {
       },
       "stock": {
         "plants": 3
+      },
+      "addResourcesToAnyCard": {
+        "count": 1,
+        "type": "Animal"
       }
     },
     "cardNumber": "026",
@@ -4009,6 +4026,10 @@ const CARD_DATA = {
     "behavior": {
       "production": {
         "megacredits": 2
+      },
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
       }
     },
     "cardNumber": "C01",
@@ -4052,6 +4073,12 @@ const CARD_DATA = {
     "name": "Atmo Collectors",
     "type": "active",
     "cost": 15,
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
+    },
     "action": {
       "addResources": 1
     },
@@ -4191,6 +4218,12 @@ const CARD_DATA = {
     "tags": [
       "science"
     ],
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
+    },
     "cardNumber": "C11",
     "description": "Add two floaters to ANOTHER card.",
     "expansion": "colonies"
@@ -4313,7 +4346,11 @@ const CARD_DATA = {
       "per": 2
     },
     "behavior": {
-      "tr": 1
+      "tr": 1,
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
     },
     "resourceType": "Floater",
     "cardNumber": "C18",
@@ -4480,7 +4517,11 @@ const CARD_DATA = {
       "vp": 1
     },
     "behavior": {
-      "tr": 2
+      "tr": 2,
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
     },
     "cardNumber": "C28",
     "description": "Raise your TR 2 steps. Add 2 floaters to a JOVIAN CARD.",
@@ -4802,6 +4843,12 @@ const CARD_DATA = {
       "type": "static",
       "vp": 1
     },
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
+    },
     "resourceType": "Floater",
     "cardNumber": "C44",
     "description": "Add two floaters to ANY JOVIAN CARD.",
@@ -4858,6 +4905,10 @@ const CARD_DATA = {
     "behavior": {
       "production": {
         "plants": 1
+      },
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Microbe"
       }
     },
     "cardNumber": "C48",
@@ -7139,6 +7190,10 @@ const CARD_DATA = {
     "behavior": {
       "stock": {
         "plants": 3
+      },
+      "addResourcesToAnyCard": {
+        "count": 3,
+        "type": "Microbe"
       }
     },
     "cardNumber": "PFTmp",
@@ -7226,6 +7281,12 @@ const CARD_DATA = {
     "name": "Data Leak",
     "type": "event",
     "cost": 5,
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 5,
+        "type": "Data"
+      }
+    },
     "cardNumber": "Pf30",
     "description": "Add 5 data to ANY card.",
     "expansion": "pathfinders"
@@ -7371,7 +7432,11 @@ const CARD_DATA = {
         "energy": -1,
         "megacredits": 3
       },
-      "city": true
+      "city": true,
+      "addResourcesToAnyCard": {
+        "count": 1,
+        "type": "Data"
+      }
     },
     "cardNumber": "Pf18",
     "description": "Temperature must be -18 C or lower. Decrease your energy production 1 step and ",
@@ -7797,6 +7862,12 @@ const CARD_DATA = {
     "vp": {
       "type": "static",
       "vp": 2
+    },
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Data"
+      }
     },
     "cardNumber": "Pf10",
     "description": "Place a neutral player cube on a non-reserved space. No tile can be placed on that space this game. ",
@@ -8277,6 +8348,12 @@ const CARD_DATA = {
       "type": "per_resource",
       "per": 6
     },
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Data"
+      }
+    },
     "resourceType": "Data",
     "cardNumber": "Pf54",
     "description": "Requires 1 Venus, Earth, Mars, and Jovian Tag. Add 2 data to ANY card. 1 VP for every 6 data resources here.",
@@ -8338,7 +8415,11 @@ const CARD_DATA = {
       "stock": {
         "titanium": 3
       },
-      "drawCard": 1
+      "drawCard": 1,
+      "addResourcesToAnyCard": {
+        "count": 1,
+        "type": "Data"
+      }
     },
     "cardNumber": "Pf24",
     "description": "Requires any 4 space tags in play. Gain 3 titanium. ",
@@ -9828,6 +9909,12 @@ const CARD_DATA = {
       "type": "static",
       "vp": 1
     },
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
+    },
     "cardNumber": "P84",
     "description": "Add two floaters to ANY CARD. Draw 2 Venus cards.",
     "expansion": "prelude2"
@@ -9952,6 +10039,12 @@ const CARD_DATA = {
     "tags": [
       "venus"
     ],
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
+    },
     "cardNumber": "P89",
     "description": "Add 2 floaters to ANY VENUS CARD.",
     "expansion": "prelude2"
@@ -10603,6 +10696,10 @@ const CARD_DATA = {
     "behavior": {
       "stock": {
         "plants": 4
+      },
+      "addResourcesToAnyCard": {
+        "count": 4,
+        "type": "Microbe"
       }
     },
     "cardNumber": "X22",
@@ -11462,6 +11559,10 @@ const CARD_DATA = {
     "behavior": {
       "global": {
         "venus": 1
+      },
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
       }
     },
     "cardNumber": "SW05",
@@ -11487,6 +11588,10 @@ const CARD_DATA = {
       "decreaseAnyProduction": {
         "type": "energy",
         "count": 2
+      },
+      "addResourcesToAnyCard": {
+        "count": 1,
+        "type": "Animal"
       }
     },
     "cardNumber": "SW06",
@@ -13139,6 +13244,12 @@ const CARD_DATA = {
       "crime",
       "space"
     ],
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 1,
+        "type": "Fighter"
+      }
+    },
     "action": {
       "stock": {
         "each": 2
@@ -13419,6 +13530,12 @@ const CARD_DATA = {
       "type": "static",
       "vp": -1
     },
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 3,
+        "type": "Floater"
+      }
+    },
     "cardNumber": "U058",
     "expansion": "underworld"
   },
@@ -13682,6 +13799,10 @@ const CARD_DATA = {
     "behavior": {
       "production": {
         "plants": 1
+      },
+      "addResourcesToAnyCard": {
+        "count": 1,
+        "type": "Animal"
       }
     },
     "cardNumber": "U071",
@@ -13929,6 +14050,12 @@ const CARD_DATA = {
       "type": "static",
       "vp": 1
     },
+    "behavior": {
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Floater"
+      }
+    },
     "cardNumber": "217",
     "description": "Requires 3 science tags. Either raise the temperature 2 steps, or raise Venus 2 steps. Add 2 floaters to ANY card.",
     "expansion": "venus"
@@ -13974,6 +14101,9 @@ const CARD_DATA = {
     "behavior": {
       "production": {
         "megacredits": 2
+      },
+      "addResourcesToAnyCard": {
+        "count": 1
       }
     },
     "cardNumber": "219",
@@ -14758,6 +14888,10 @@ const CARD_DATA = {
       },
       "global": {
         "venus": 1
+      },
+      "addResourcesToAnyCard": {
+        "count": 2,
+        "type": "Microbe"
       }
     },
     "cardNumber": "257",

@@ -344,6 +344,39 @@ def build_closed_max_req_draft_raw_state() -> dict:
     return raw
 
 
+def build_initial_keep_pass_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 1
+    raw["game"]["phase"] = "initial_drafting"
+    raw["game"]["colonies"] = [
+        {"name": "Callisto", "isActive": True, "trackPosition": 3, "colonies": []},
+        {"name": "Luna", "isActive": True, "trackPosition": 3, "colonies": []},
+    ]
+    raw["thisPlayer"]["megaCredits"] = 0
+    raw["thisPlayer"]["energy"] = 0
+    raw["cardsInHand"] = []
+    raw["draftedCards"] = []
+    raw["waitingFor"] = {
+        "type": "card",
+        "buttonLabel": "Keep",
+        "title": "Select a card to keep and pass the rest to ${0}",
+        "cards": [
+            {"name": "Capital", "calculatedCost": 26, "tags": ["City", "Building"]},
+            {"name": "Big Asteroid", "calculatedCost": 27, "tags": ["Event", "Space"]},
+            {"name": "Plantation", "calculatedCost": 15, "tags": ["Plant"]},
+        ],
+    }
+    return raw
+
+
+def build_regular_keep_pass_raw_state() -> dict:
+    raw = build_initial_keep_pass_raw_state()
+    raw["game"]["generation"] = 5
+    raw["game"]["phase"] = "drafting"
+    raw["thisPlayer"]["megaCredits"] = 42
+    return raw
+
+
 def build_psychrophiles_payment_raw_state() -> dict:
     raw = copy.deepcopy(build_raw_state())
     raw["game"]["generation"] = 11
@@ -821,6 +854,23 @@ def main():
     closed_req_advice = {row["name"]: row for row in closed_req_snap["draft_advice"]["card_advice"]}
     assert closed_req_advice["Colonizer Training Camp"]["action"] == "SKIP", closed_req_advice
     assert "окно закрыто" in closed_req_advice["Colonizer Training Camp"]["reason"], closed_req_advice
+
+    initial_keep_snap = advisor_snapshot.snapshot_from_raw(build_initial_keep_pass_raw_state())
+    initial_keep_advice = initial_keep_snap["draft_advice"]["card_advice"]
+    assert initial_keep_snap["draft_advice"]["mode"] == "keep_pass", initial_keep_snap["draft_advice"]
+    assert initial_keep_advice[0]["action"] == "KEEP", initial_keep_advice
+    assert {row["action"] for row in initial_keep_advice[1:]} == {"PASS"}, initial_keep_advice
+    assert "нет MC" not in initial_keep_snap["summary"]["best_move"], initial_keep_snap["summary"]
+    assert "trade" not in initial_keep_snap, initial_keep_snap.get("trade")
+    assert not any("Trade:" in line for line in initial_keep_snap["summary"]["lines"]), initial_keep_snap["summary"]
+
+    regular_keep_snap = advisor_snapshot.snapshot_from_raw(build_regular_keep_pass_raw_state())
+    regular_keep_advice = regular_keep_snap["draft_advice"]["card_advice"]
+    assert regular_keep_snap["draft_advice"]["mode"] == "keep_pass", regular_keep_snap["draft_advice"]
+    assert regular_keep_advice[0]["action"] == "KEEP", regular_keep_advice
+    assert {row["action"] for row in regular_keep_advice[1:]} == {"PASS"}, regular_keep_advice
+    assert not regular_keep_snap["summary"]["best_move"].startswith("Draft: Купи"), regular_keep_snap["summary"]
+    assert "trade" not in regular_keep_snap, regular_keep_snap.get("trade")
 
     psychrophiles_snap = advisor_snapshot.snapshot_from_raw(build_psychrophiles_payment_raw_state())
     psychrophiles_advice = {row["name"]: row for row in psychrophiles_snap["hand_advice"]}

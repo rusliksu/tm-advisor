@@ -169,6 +169,18 @@ function parseBehavior(raw) {
   const addRes = raw.match(/addResources\s*:\s*(\d+)/);
   if (addRes) b.addResources = parseInt(addRes[1]);
 
+  const addAny = raw.match(/addResourcesToAnyCard\s*:\s*{([^}]*)}/s);
+  if (addAny) {
+    const body = addAny[1];
+    const count = body.match(/(?:count|amount)\s*:\s*(\d+)/);
+    const type = body.match(/type\s*:\s*CardResource\.(\w+)/);
+    if (count || type) {
+      b.addResourcesToAnyCard = {};
+      if (count) b.addResourcesToAnyCard.count = parseInt(count[1], 10);
+      if (type) b.addResourcesToAnyCard.type = resolveCardResource(type[1]);
+    }
+  }
+
   return Object.keys(b).length > 0 ? b : null;
 }
 

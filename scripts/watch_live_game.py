@@ -27,10 +27,13 @@ ENTRYPOINT_CANDIDATES = [
 ]
 DEFAULT_BASE_URL = "https://tm.knightbyte.win"
 LOG_DIR = os.path.join(REPO_ROOT, "data", "game_logs")
+DEFAULT_HAND_CHECK_INTERVAL = float(os.environ.get("TM_HAND_CHECK_INTERVAL", "300"))
+DEFAULT_ADVISOR_CHECK_INTERVAL = float(os.environ.get("TM_ADVISOR_CHECK_INTERVAL", "300"))
 ADVISOR_MISS_MIN_RANK = int(os.environ.get("TM_ADVISOR_MISS_MIN_RANK", "4"))
 ADVISOR_MISS_MIN_SCORE_GAP = int(os.environ.get("TM_ADVISOR_MISS_MIN_SCORE_GAP", "6"))
 ADVISOR_MISS_STRONG_SCORE_GAP = int(os.environ.get("TM_ADVISOR_MISS_STRONG_SCORE_GAP", "15"))
 ADVISOR_MISS_TOP_CHOICES = int(os.environ.get("TM_ADVISOR_MISS_TOP_CHOICES", "3"))
+ADVISOR_CHECK_VALUE_GAP = float(os.environ.get("TM_ADVISOR_CHECK_VALUE_GAP", "12"))
 
 
 def fetch_json(url: str, retries: int = 3, timeout: float = 20.0) -> dict:
@@ -115,6 +118,7 @@ def build_player_state(player_id: str, snapshot_fn, base_url: str) -> dict:
     snap["player_id"] = player_id
     snap["live"] = {
         "is_active": me.get("isActive"),
+        "color": me.get("color"),
         "last_card_played": me.get("lastCardPlayed"),
         "hand_count": me.get("cardsInHandNbr"),
         "cards_in_hand": [c.get("name") for c in view.get("cardsInHand", []) if isinstance(c, dict)],
@@ -597,9 +601,344 @@ def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_na
     )
 
 
+def is_draft_pack_snapshot(snap: dict) -> bool:
+    game = snap.get("game", {}) or {}
+    live = snap.get("live", {}) or {}
+    live_phase = str(game.get("live_phase") or "").lower()
+    if live_phase in {"drafting", "initial_drafting", "initialdrafting", "research"}:
+        return True
+    if snap.get("current_draft"):
+        return True
+    return False
+
+
 def append_jsonl(path: str, payload: dict) -> None:
     with open(path, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+
+def hand_check_card_entries(snap: dict) -> list[dict]:
+    live = snap.get("live", {}) or {}
+    cards = hand_cards_by_name(snap)
+    advice = hand_advice_by_name(snap)
+    names = [name for name in (live.get("cards_in_hand") or []) if name]
+    if not names and live.get("hand_count"):
+        names = [card.get("name") for card in (snap.get("hand") or []) if card.get("name")]
+
+    entries = []
+    for name in names:
+        card = cards.get(name, {})
+        row = advice.get(name, {})
+        entry = {"name": name}
+        score = card_score(card)
+        if score is not None:
+            entry["score"] = score
+        value = advice_value(row, card) if row or card else None
+        if value is not None:
+            entry["play_value_now"] = value
+        action = row.get("action") or card.get("play_action") or card.get("draft_action")
+        reason = row.get("reason") or card.get("play_reason") or card.get("draft_reason")
+        if action:
+            entry["action"] = action
+        if reason:
+            entry["reason"] = reason
+        entries.append(entry)
+    return entries
+
+
+def build_hand_check_event(
+    game_id: str,
+    game: dict,
+    player_ids: list[str],
+    player_states: dict[str, dict],
+    reason: str,
+    interval_sec: float,
+) -> dict:
+    players = []
+    for pid in player_ids:
+        state = player_states.get(pid) or {}
+        me = state.get("me", {}) or {}
+        live = state.get("live", {}) or {}
+        players.append({
+            "player_id": pid,
+            "player": me.get("name") or pid,
+            "color": live.get("color"),
+            "corp": me.get("corp"),
+            "is_active": live.get("is_active"),
+            "tr": live.get("tr"),
+            "mc": live.get("mc"),
+            "hand_count": live.get("hand_count"),
+            "cards_in_hand": hand_check_card_entries(state),
+            "current_pack": list(live.get("current_pack") or []),
+            "drafted_cards": list(live.get("drafted_cards") or []),
+            "dealt_corps": list(live.get("dealt_corps") or []),
+            "dealt_preludes": list(live.get("dealt_preludes") or []),
+            "dealt_ceos": list(live.get("dealt_ceos") or []),
+            "dealt_project_cards": list(live.get("dealt_project_cards") or []),
+            "waiting_type": live.get("waiting_type"),
+            "waiting_label": live.get("waiting_label"),
+            "snapshot_error": state.get("snapshot_error"),
+        })
+
+    return {
+        "type": "hand_check",
+        "ts": datetime.now().isoformat(timespec="seconds"),
+        "game_id": game_id,
+        "reason": reason,
+        "interval_sec": interval_sec,
+        "generation": game.get("generation"),
+        "phase": game.get("phase"),
+        "active_player": game.get("activePlayer"),
+        "player_count": len(players),
+        "players": players,
+    }
+
+
+def maybe_append_hand_check(session: dict, game: dict, player_states: dict[str, dict], reason: str) -> bool:
+    interval_sec = float(session.get("hand_check_interval", DEFAULT_HAND_CHECK_INTERVAL) or 0)
+    if interval_sec <= 0:
+        return False
+    append_jsonl(
+        session["log_path"],
+        build_hand_check_event(
+            session["game_id"],
+            game,
+            session["player_ids"],
+            player_states,
+            reason,
+            interval_sec,
+        ),
+    )
+    session["last_hand_check_at"] = time.monotonic()
+    session["hand_check_logged"] = True
+    return True
+
+
+def hand_check_due(session: dict, now: float) -> bool:
+    interval_sec = float(session.get("hand_check_interval", DEFAULT_HAND_CHECK_INTERVAL) or 0)
+    if interval_sec <= 0:
+        return False
+    if not session.get("hand_check_logged"):
+        return True
+    return now - float(session.get("last_hand_check_at", 0.0)) >= interval_sec
+
+
+def compact_option_entry(entry: dict) -> dict:
+    out = {
+        "name": entry.get("name"),
+    }
+    for key in (
+        "rank", "advice_rank", "score", "play_value_now", "effective_score",
+        "action", "reason", "priority",
+    ):
+        if entry.get(key) is not None:
+            out[key] = entry.get(key)
+    return out
+
+
+def advisor_check_play_entries(snap: dict, limit: int = 5) -> list[dict]:
+    return [compact_option_entry(entry) for entry in ranked_advisor_play_entries(snap, limit=limit)]
+
+
+def advisor_check_draft_entries(snap: dict, limit: int = 5) -> list[dict]:
+    return option_entries_from_cards(snap.get("current_draft", []) or [], draft_score, limit=limit)
+
+
+def build_advisor_diagnostics(snap: dict) -> list[dict]:
+    diagnostics: list[dict] = []
+
+    def add(severity: str, code: str, message: str, **extra) -> None:
+        item = {"severity": severity, "code": code, "message": message}
+        item.update({key: value for key, value in extra.items() if value is not None})
+        diagnostics.append(item)
+
+    live = snap.get("live", {}) or {}
+    game = snap.get("game", {}) or {}
+    live_phase = str(game.get("live_phase") or "").lower()
+    terminal = live_phase in {"end", "the_end"}
+    hand_count = live.get("hand_count")
+    live_hand_names = [name for name in (live.get("cards_in_hand") or []) if name]
+    hand_cards = snap.get("hand", []) or []
+    hand_advice = snap.get("hand_advice", []) or []
+    current_draft = snap.get("current_draft", []) or []
+    current_pack = [name for name in (live.get("current_pack") or []) if name]
+
+    if snap.get("snapshot_error"):
+        add("error", "snapshot_error", "Advisor snapshot raised an exception.", error=snap.get("snapshot_error"))
+
+    for alert in snap.get("alerts", []) or []:
+        if str(alert).startswith("Error:"):
+            add("error", "alert_error", "Advisor produced an error alert.", alert=alert)
+
+    if isinstance(hand_count, int) and live_hand_names and hand_count != len(live_hand_names):
+        add(
+            "warning",
+            "hand_count_mismatch",
+            "API hand_count differs from parsed cards_in_hand length.",
+            hand_count=hand_count,
+            parsed_count=len(live_hand_names),
+        )
+
+    if hand_count and not terminal and not hand_cards and not snap.get("snapshot_error"):
+        add("warning", "missing_hand_cards", "Player has cards in hand but advisor hand list is empty.", hand_count=hand_count)
+
+    if hand_count and live_phase == "action" and not hand_advice and not snap.get("snapshot_error"):
+        add("warning", "missing_hand_advice", "Action-phase hand is non-empty but advisor returned no hand_advice.", hand_count=hand_count)
+
+    missing_hand_scores = [card.get("name") for card in hand_cards if card.get("name") and card_score(card) is None]
+    if missing_hand_scores:
+        add("warning", "missing_hand_scores", "Some hand cards have no advisor score.", cards=missing_hand_scores[:8])
+
+    missing_draft_scores = [card.get("name") for card in current_draft if card.get("name") and draft_score(card) is None]
+    if missing_draft_scores:
+        add("warning", "missing_draft_scores", "Some draft/current-pack cards have no advisor score.", cards=missing_draft_scores[:8])
+
+    if current_pack and not current_draft and live_phase in {"drafting", "initial_drafting", "initialdrafting", "research"}:
+        add("warning", "missing_current_draft", "API exposes a current pack but advisor current_draft is empty.", pack_count=len(current_pack))
+
+    summary = snap.get("summary") or {}
+    best_move = str(summary.get("best_move") or "").strip()
+    play_entries = advisor_play_entries(snap)
+    ranked_play = ranked_advisor_play_entries(snap)
+    if not best_move and not terminal and (play_entries or hand_count):
+        add("warning", "missing_best_move", "Advisor returned no best_move for a non-empty decision context.")
+
+    if best_move.startswith("PLAY "):
+        best_card = recommended_play_card_name(snap)
+        known_cards = set(hand_cards_by_name(snap).keys()) | set(hand_advice_by_name(snap).keys())
+        play_cards = {entry.get("name") for entry in play_entries}
+        if best_card and known_cards and best_card not in known_cards:
+            add("error", "best_move_card_not_in_hand", "Summary recommends a card absent from hand/advice.", card=best_card)
+        if best_card and play_cards and best_card not in play_cards:
+            add("warning", "best_move_not_playable", "Summary PLAY card is not present in PLAY advice entries.", card=best_card)
+
+    if ranked_play:
+        recommended = ranked_play[0]
+        best_by_value = max(play_entries, key=lambda entry: entry.get("score", 0), default=None)
+        if best_by_value:
+            gap = float(best_by_value.get("score", 0) or 0) - float(recommended.get("score", 0) or 0)
+            if gap >= ADVISOR_CHECK_VALUE_GAP:
+                add(
+                    "warning",
+                    "best_move_value_gap",
+                    "Recommended play is far below the highest play_value_now option.",
+                    recommended=recommended.get("name"),
+                    recommended_value=recommended.get("score"),
+                    best=best_by_value.get("name"),
+                    best_value=best_by_value.get("score"),
+                    gap=round(gap, 1),
+                )
+            if numeric_score(recommended.get("score")) is not None and recommended.get("score") <= 0:
+                add(
+                    "warning",
+                    "nonpositive_recommended_play",
+                    "Advisor recommends PLAY with non-positive play value.",
+                    card=recommended.get("name"),
+                    value=recommended.get("score"),
+                )
+
+    for row in hand_advice:
+        play_value = numeric_score(row.get("play_value_now"))
+        if row.get("action") == "PLAY" and play_value is not None and play_value <= -5:
+            add(
+                "error",
+                "negative_value_play",
+                "Advisor marks a negative-value card as PLAY.",
+                card=row.get("name"),
+                value=play_value,
+            )
+
+    return diagnostics
+
+
+def build_advisor_check_event(
+    game_id: str,
+    game: dict,
+    player_ids: list[str],
+    player_states: dict[str, dict],
+    reason: str,
+    interval_sec: float,
+) -> dict:
+    players = []
+    for pid in player_ids:
+        state = player_states.get(pid) or {}
+        me = state.get("me", {}) or {}
+        live = state.get("live", {}) or {}
+        diagnostics = build_advisor_diagnostics(state)
+        summary = state.get("summary") or {}
+        players.append({
+            "player_id": pid,
+            "player": me.get("name") or pid,
+            "color": live.get("color"),
+            "corp": me.get("corp"),
+            "snapshot_ok": not state.get("snapshot_error"),
+            "snapshot_error": state.get("snapshot_error"),
+            "hand_count": live.get("hand_count"),
+            "hand_advice_count": len(state.get("hand_advice", []) or []),
+            "current_draft_count": len(state.get("current_draft", []) or []),
+            "waiting_type": live.get("waiting_type"),
+            "waiting_label": live.get("waiting_label"),
+            "best_move": summary.get("best_move"),
+            "summary_lines": list((summary.get("lines") or [])[:4]),
+            "top_play": advisor_check_play_entries(state),
+            "top_draft": advisor_check_draft_entries(state),
+            "alerts": pick_relevant_alerts(state.get("alerts", []) or [], limit=5),
+            "diagnostics": diagnostics,
+            "diagnostic_count": len(diagnostics),
+            "max_severity": (
+                "error" if any(item.get("severity") == "error" for item in diagnostics)
+                else "warning" if diagnostics
+                else "ok"
+            ),
+        })
+
+    return {
+        "type": "advisor_check",
+        "ts": datetime.now().isoformat(timespec="seconds"),
+        "game_id": game_id,
+        "reason": reason,
+        "interval_sec": interval_sec,
+        "generation": game.get("generation"),
+        "phase": game.get("phase"),
+        "active_player": game.get("activePlayer"),
+        "player_count": len(players),
+        "players": players,
+        "diagnostic_count": sum(player["diagnostic_count"] for player in players),
+        "max_severity": (
+            "error" if any(player["max_severity"] == "error" for player in players)
+            else "warning" if any(player["max_severity"] == "warning" for player in players)
+            else "ok"
+        ),
+    }
+
+
+def maybe_append_advisor_check(session: dict, game: dict, player_states: dict[str, dict], reason: str) -> bool:
+    interval_sec = float(session.get("advisor_check_interval", DEFAULT_ADVISOR_CHECK_INTERVAL) or 0)
+    if interval_sec <= 0:
+        return False
+    append_jsonl(
+        session["log_path"],
+        build_advisor_check_event(
+            session["game_id"],
+            game,
+            session["player_ids"],
+            player_states,
+            reason,
+            interval_sec,
+        ),
+    )
+    session["last_advisor_check_at"] = time.monotonic()
+    session["advisor_check_logged"] = True
+    return True
+
+
+def advisor_check_due(session: dict, now: float) -> bool:
+    interval_sec = float(session.get("advisor_check_interval", DEFAULT_ADVISOR_CHECK_INTERVAL) or 0)
+    if interval_sec <= 0:
+        return False
+    if not session.get("advisor_check_logged"):
+        return True
+    return now - float(session.get("last_advisor_check_at", 0.0)) >= interval_sec
 
 
 def append_pick_event(
@@ -742,7 +1081,7 @@ def start_game_session(game_id: str, base_url: str) -> dict:
             "snapshot_error": state.get("snapshot_error"),
         })
 
-    return {
+    session = {
         "game_id": game_id,
         "base_url": base_url,
         "log_path": log_path,
@@ -753,7 +1092,14 @@ def start_game_session(game_id: str, base_url: str) -> dict:
         "started_at": started_at,
         "advisor_miss_counts": {},
         "pending_research": {},
+        "hand_check_interval": DEFAULT_HAND_CHECK_INTERVAL,
+        "last_hand_check_at": 0.0,
+        "hand_check_logged": False,
+        "advisor_check_interval": DEFAULT_ADVISOR_CHECK_INTERVAL,
+        "last_advisor_check_at": 0.0,
+        "advisor_check_logged": False,
     }
+    return session
 
 
 def poll_game_session(session: dict) -> dict:
@@ -803,6 +1149,14 @@ def poll_game_session(session: dict) -> dict:
         })
 
     curr_players = {pid: build_player_state(pid, snapshot_fn, base_url) for pid in player_ids}
+    now_monotonic = time.monotonic()
+    if hand_check_due(session, now_monotonic):
+        reason = "periodic" if session.get("hand_check_logged") else "initial"
+        changed = maybe_append_hand_check(session, game, curr_players, reason) or changed
+    if advisor_check_due(session, now_monotonic):
+        reason = "periodic" if session.get("advisor_check_logged") else "initial"
+        changed = maybe_append_advisor_check(session, game, curr_players, reason) or changed
+
     for pid in player_ids:
         prev = prev_players[pid]
         curr = curr_players[pid]
@@ -920,7 +1274,11 @@ def poll_game_session(session: dict) -> dict:
                 prev_draft_ranks,
             )
 
-        if curr_live["current_pack"] != prev_live["current_pack"] and curr_live["current_pack"]:
+        if (
+            curr_live["current_pack"] != prev_live["current_pack"]
+            and curr_live["current_pack"]
+            and is_draft_pack_snapshot(curr)
+        ):
             changed = True
             draft_scores = {
                 card["name"]: draft_score(card)
@@ -971,8 +1329,16 @@ def poll_game_session(session: dict) -> dict:
     }
 
 
-def monitor_game(game_id: str, interval: float, base_url: str) -> str:
+def monitor_game(
+    game_id: str,
+    interval: float,
+    base_url: str,
+    hand_check_interval: float = DEFAULT_HAND_CHECK_INTERVAL,
+    advisor_check_interval: float = DEFAULT_ADVISOR_CHECK_INTERVAL,
+) -> str:
     session = start_game_session(game_id, base_url)
+    session["hand_check_interval"] = hand_check_interval
+    session["advisor_check_interval"] = advisor_check_interval
     while True:
         time.sleep(interval)
         try:
@@ -994,9 +1360,27 @@ def main() -> None:
     parser.add_argument("game_id")
     parser.add_argument("--interval", type=float, default=10.0)
     parser.add_argument("--server-url", default=os.environ.get("TM_BASE_URL", DEFAULT_BASE_URL))
+    parser.add_argument(
+        "--hand-check-interval",
+        type=float,
+        default=DEFAULT_HAND_CHECK_INTERVAL,
+        help="Seconds between full all-player hand_check events (default: 300; <=0 disables)",
+    )
+    parser.add_argument(
+        "--advisor-check-interval",
+        type=float,
+        default=DEFAULT_ADVISOR_CHECK_INTERVAL,
+        help="Seconds between full all-player advisor_check events (default: 300; <=0 disables)",
+    )
     args = parser.parse_args()
 
-    log_path = monitor_game(args.game_id, args.interval, args.server_url.rstrip("/"))
+    log_path = monitor_game(
+        args.game_id,
+        args.interval,
+        args.server_url.rstrip("/"),
+        args.hand_check_interval,
+        args.advisor_check_interval,
+    )
     print(log_path)
 
 

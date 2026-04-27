@@ -92,6 +92,96 @@ def _is_draft_like_card_prompt(state: GameState) -> bool:
     return "select a card to keep and pass" in prompt_text
 
 
+def _is_keep_pass_draft(state: GameState) -> bool:
+    if not _is_draft_like_card_prompt(state):
+        return False
+    live_phase = str(state.phase or "").lower()
+    if live_phase in {"initial_drafting", "initialdrafting", "drafting"}:
+        return True
+    waiting = state.waiting_for or {}
+    prompt_text = " ".join(
+        str(waiting.get(key, "") or "")
+        for key in ("title", "message", "label", "buttonLabel")
+    ).lower()
+    return "select a card to keep and pass" in prompt_text
+
+
+def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, player_tags) -> tuple[dict, list[dict]]:
+    scored = []
+    for card in cards:
+        name = card.get("name", "")
+        if not name:
+            continue
+        tags = card.get("tags", [])
+        score = synergy.adjusted_score(
+            name, tags, corp_name, state.generation, player_tags, state, context="draft"
+        )
+        req_ok, req_reason = True, ""
+        if req_checker:
+            req_ok, req_reason = req_checker.check(name, state)
+        scored.append({
+            "name": name,
+            "score": score,
+            "tier": _score_to_tier(score),
+            "cost_play": card.get("cost", card.get("calculatedCost", 0)),
+            "req_ok": req_ok,
+            "req_reason": req_reason,
+        })
+
+    scored.sort(key=lambda c: c["score"], reverse=True)
+    if not scored:
+        return {
+            "mode": "keep_pass",
+            "hint": "Нет карт в текущем паке",
+            "keep_count": 0,
+            "pass_count": 0,
+            "card_advice": [],
+        }, []
+
+    best = scored[0]
+    card_advice = []
+    for idx, card in enumerate(scored):
+        if idx == 0:
+            reason = "лучший keep в текущем паке"
+            action = "KEEP"
+        else:
+            gap = best["score"] - card["score"]
+            reason = f"хуже {best['name']} на {gap:.0f}"
+            action = "PASS"
+        card_advice.append({
+            "name": card["name"],
+            "action": action,
+            "reason": reason,
+            "score": card["score"],
+            "tier": card["tier"],
+            "cost_play": card["cost_play"],
+            "req_ok": card["req_ok"],
+            "req_reason": card["req_reason"],
+            "playability_gens": 0,
+        })
+
+    pass_count = max(0, len(scored) - 1)
+    if pass_count:
+        hint = f"Оставь {best['name']}, передай {pass_count}"
+    else:
+        hint = f"Оставь {best['name']}"
+    plan = {
+        "mode": "keep_pass",
+        "hint": hint,
+        "keep_count": 1,
+        "pass_count": pass_count,
+        "card_advice": card_advice,
+    }
+    return plan, card_advice
+
+
+def _should_show_trade_hint(state: GameState) -> bool:
+    if str(state.phase or "").lower() in {"initial_drafting", "initialdrafting", "drafting", "research"}:
+        return False
+    waiting = state.waiting_for or {}
+    return bool(waiting.get("type"))
+
+
 def _truncate_summary_text(text: str, max_len: int = 96) -> str:
     raw = " ".join(str(text or "").split()).strip()
     if not raw:
@@ -209,7 +299,16 @@ def _build_summary_block(
     draft_card_advice: list[dict] | None,
 ) -> dict:
     def _best_play_entry(entries: list[dict]) -> dict | None:
-        return next((entry for entry in entries if entry.get("action") == "PLAY"), None)
+        plays = [entry for entry in entries if entry.get("action") == "PLAY"]
+        if not plays:
+            return None
+        return max(
+            plays,
+            key=lambda entry: (
+                float(entry.get("play_value_now", 0) or 0),
+                -int(entry.get("priority", 99) or 99),
+            ),
+        )
 
     def _priority_alert_move(alerts: list[str], best_play: dict | None) -> str | None:
         best_play_value = float((best_play or {}).get("play_value_now", 0) or 0)
@@ -254,8 +353,10 @@ def _build_summary_block(
                 if (
                     best_play
                     and urgency == "MEDIUM"
-                    and best_play_priority <= 2
-                    and best_play_value >= 20
+                    and (
+                        (best_play_priority <= 2 and best_play_value >= 20)
+                        or best_play_value >= 35
+                    )
                 ):
                     continue
             if kind == "milestone":
@@ -335,7 +436,7 @@ def _build_summary_block(
                 summary["best_move"] = allocation_move
                 summary["lines"].append(allocation_move)
         if not summary["best_move"] and hand_advice:
-            best_play = next((entry for entry in hand_advice if entry.get("action") == "PLAY"), None)
+            best_play = _best_play_entry(hand_advice)
             fallback = hand_advice[0] if hand_advice else None
             chosen = best_play or fallback
             if chosen:
@@ -562,8 +663,13 @@ def snapshot_from_raw(raw: dict) -> dict:
             allocation_plan = None
 
     if current_draft and not is_game_over:
-        draft_plan = draft_buy_advice(current_draft, state, synergy, req_checker)
-        draft_card_advice = _flatten_draft_advice(draft_plan)
+        if _is_keep_pass_draft(state):
+            draft_plan, draft_card_advice = _keep_pass_draft_advice(
+                current_draft, state, synergy, req_checker, corp_name, player_tags
+            )
+        else:
+            draft_plan = draft_buy_advice(current_draft, state, synergy, req_checker)
+            draft_card_advice = _flatten_draft_advice(draft_plan)
         draft_advice_queues = _build_advice_queues(draft_card_advice)
         draft_cards = []
         for card in current_draft:
@@ -653,7 +759,7 @@ def snapshot_from_raw(raw: dict) -> dict:
             pass
     result["vp_estimates"] = vp_estimates
 
-    if state.colonies_data:
+    if state.colonies_data and _should_show_trade_hint(state):
         try:
             trade = analyze_trade_options(state)
             result["trade"] = {
