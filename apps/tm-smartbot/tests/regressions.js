@@ -111,6 +111,46 @@ function buildDraftProjectCard(name) {
   return {name, cost, calculatedCost: cost};
 }
 
+function testKeepPassDraftUsesDraftRatingNotPlayEv() {
+  const wf = {
+    type: 'card',
+    title: {message: 'Select a card to keep and pass the rest to ${0}', data: []},
+    buttonLabel: 'Keep',
+    min: 1,
+    max: 1,
+    cards: [
+      buildDraftProjectCard('Viral Enhancers'),
+      buildDraftProjectCard('Adapted Lichen'),
+      buildDraftProjectCard('Medical Lab'),
+      buildDraftProjectCard('Great Escarpment Consortium'),
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      name: 'Руслан',
+      color: 'red',
+      megaCredits: 0,
+      megacredits: 0,
+      terraformRating: 20,
+      tableau: [],
+      tags: {},
+    },
+    cardsInHand: [],
+    draftedCards: [{name: 'Colonial Representation'}],
+    game: {
+      generation: 1,
+      phase: 'initial_drafting',
+      oxygenLevel: 0,
+      temperature: -30,
+      oceans: 0,
+      venusScaleLevel: 0,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, {type: 'card', cards: ['Viral Enhancers']});
+}
+
 function testJovianLanternsKeepsImmediateFloaters() {
   const cardData = SMARTBOT.TM_BRAIN.getCardDataByName('Jovian Lanterns') || {};
   assert.deepStrictEqual(cardData.behavior && cardData.behavior.addResourcesToAnyCard, {
@@ -978,6 +1018,7 @@ function testCardPlaySeesMegaCreditsFromState() {
 }
 
 function run() {
+  testKeepPassDraftUsesDraftRatingNotPlayEv();
   testJovianLanternsKeepsImmediateFloaters();
   testFloaterTargetPrefersVpAccumulator();
   testEnergyMarketLowMcTakesMegacredits();

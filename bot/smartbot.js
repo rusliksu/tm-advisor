@@ -288,6 +288,22 @@ function getWeakPseudoVpBuyPenalty(cardName, state) {
   return gen >= 5 ? -4 : -2;
 }
 
+function scoreKeepPassDraftCard(card, state, corp) {
+  const name = card?.name || '';
+  let score = scoreCard(card, state) + corpCardBoost(name, corp) + getWeakPseudoVpBuyPenalty(name, state);
+  if (TM_BRAIN && typeof TM_BRAIN.getOverlayRatingScore === 'function') {
+    const overlayScore = TM_BRAIN.getOverlayRatingScore(name, state, null);
+    if (typeof overlayScore === 'number') {
+      score = overlayScore + corpCardBoost(name, corp);
+    }
+  }
+  if (TM_BRAIN && typeof TM_BRAIN.getOpeningHandBias === 'function') {
+    const openingBias = TM_BRAIN.getOpeningHandBias(name, state);
+    if (typeof openingBias === 'number') score += openingBias * 6;
+  }
+  return score;
+}
+
 function isSellProtectedCard(card, state, corp, isEndgame) {
   const name = card?.name || '';
   const data = CARD_DATA[name] || {};
@@ -2765,8 +2781,7 @@ function handleInput(wf, state, depth = 0) {
     if (title.includes('select a card') || title.includes('keep')) {
       const count = Math.max(1, min);
       const scored = [...cards].sort((a, b) =>
-        (scoreCard(b, state) + corpCardBoost(b.name, corp) + getWeakPseudoVpBuyPenalty(b.name, state)) -
-        (scoreCard(a, state) + corpCardBoost(a.name, corp) + getWeakPseudoVpBuyPenalty(a.name, state)));
+        scoreKeepPassDraftCard(b, state, corp) - scoreKeepPassDraftCard(a, state, corp));
       return { type: 'card', cards: scored.slice(0, count).map(c => c.name) };
     }
 

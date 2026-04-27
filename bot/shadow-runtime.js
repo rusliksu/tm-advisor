@@ -590,7 +590,7 @@ async function pollShadowSession(session) {
       gameId: session.gameId,
       error: err.message,
     });
-    return {active: false, changed: false, status: 'unavailable'};
+    return {active: true, changed: false, status: 'unavailable'};
   }
 
   session.currentGame = game;

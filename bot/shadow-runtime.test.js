@@ -2,12 +2,17 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
+const http = require('http');
+const os = require('os');
+const path = require('path');
 
 const {
   buildStateSummary,
   deriveObservedChanges,
   getPlayersToPoll,
   multisetAdded,
+  pollShadowSession,
   resolvePendingEntry,
   summarizeAction,
   summarizeObservedAction,
@@ -217,7 +222,42 @@ function testResolvePendingEntryUsesInputSeqForPlayerActed() {
   assert.strictEqual(resolved.inputSeq, 5);
 }
 
-function main() {
+async function testPollContinuesOnTransientGameFetchFailure() {
+  const server = http.createServer((req, res) => {
+    if (req.url.startsWith('/api/game')) {
+      res.writeHead(502, {'content-type': 'text/plain'});
+      res.end('bad gateway');
+      return;
+    }
+    res.writeHead(404);
+    res.end('not found');
+  });
+
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address();
+  const logFile = path.join(
+    fs.mkdtempSync(path.join(os.tmpdir(), 'shadow-runtime-test-')),
+    'shadow-g-test.jsonl',
+  );
+  try {
+    const result = await pollShadowSession({
+      gameId: 'g-test',
+      serverUrl: `http://127.0.0.1:${address.port}`,
+      logFile,
+      players: [],
+      playerState: new Map(),
+      colorToPlayerId: new Map(),
+      inputBurstPollsRemaining: 0,
+    });
+    assert.strictEqual(result.active, true, result);
+    assert.strictEqual(result.status, 'unavailable', result);
+    assert.match(fs.readFileSync(logFile, 'utf8'), /shadow_game_unavailable/);
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+}
+
+async function main() {
   testMultisetAdded();
   testObservedCardPlay();
   testObservedDraftPick();
@@ -226,7 +266,11 @@ function main() {
   testSummarizeActionOptionWithoutIndex();
   testGetPlayersToPollUsesAllPlayersDuringInputBurst();
   testResolvePendingEntryUsesInputSeqForPlayerActed();
+  await testPollContinuesOnTransientGameFetchFailure();
   console.log('shadow-runtime tests passed');
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
