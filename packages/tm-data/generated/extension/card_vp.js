@@ -24,10 +24,6 @@ var TM_CARD_VP = {
   "type": "per_resource",
   "per": 1
  },
- "Search For Life": {
-  "type": "static",
-  "vp": 3
- },
  "Satellites": {
   "type": "per_tag",
   "tag": "space",
@@ -55,7 +51,8 @@ var TM_CARD_VP = {
  },
  "Jovian Lanterns": {
   "type": "per_resource",
-  "per": 2
+  "per": 2,
+  "actionResourceAmount": 2
  },
  "Immigration Shuttles": {
   "type": "per_tag",
@@ -228,7 +225,8 @@ var TM_CARD_VP = {
  },
  "Stratopolis": {
   "type": "per_resource",
-  "per": 3
+  "per": 3,
+  "actionResourceAmount": 2
  },
  "Dawn City": {
   "type": "static",
@@ -427,10 +425,6 @@ var TM_CARD_VP = {
   "type": "per_resource",
   "per": 2
  },
- "St. Joseph of Cupertino Mission": {
-  "type": "per_resource",
-  "per": 1
- },
  "Parliament Hall": {
   "type": "static",
   "vp": 1
@@ -533,11 +527,11 @@ var TM_CARD_VP = {
  },
  "Martian Repository": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Pollinators": {
-  "type": "static",
-  "vp": 1
+  "type": "per_resource",
+  "per": 1
  },
  "Huygens Observatory": {
   "type": "static",
@@ -734,7 +728,7 @@ var TM_CARD_VP = {
  },
  "Economic Espionage": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Interplanetary Transport": {
   "type": "static",
@@ -782,7 +776,8 @@ var TM_CARD_VP = {
  },
  "Solarpedia": {
   "type": "per_resource",
-  "per": 1
+  "per": 6,
+  "actionResourceAmount": 2
  },
  "Asimov": {
   "type": "static",
@@ -790,7 +785,7 @@ var TM_CARD_VP = {
  },
  "Bio-Sol": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Duncan": {
   "type": "static",
@@ -822,7 +817,7 @@ var TM_CARD_VP = {
  },
  "Nanotech Industries": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Ocean Sanctuary": {
   "type": "per_resource",
@@ -844,11 +839,11 @@ var TM_CARD_VP = {
  },
  "Darkside Incubation Plant": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Intragen Sanctuary Headquarters": {
   "type": "per_resource",
-  "per": 1
+  "per": 2
  },
  "Luna Senate": {
   "type": "per_tag",
@@ -857,7 +852,7 @@ var TM_CARD_VP = {
  },
  "Lunar Observation Post": {
   "type": "per_resource",
-  "per": 1
+  "per": 3
  },
  "Moon Tether": {
   "type": "static",
@@ -873,11 +868,13 @@ var TM_CARD_VP = {
  },
  "Processor Factory": {
   "type": "per_resource",
-  "per": 1
+  "per": 3,
+  "actionResourceAmount": 2
  },
  "Rust Eating Bacteria": {
   "type": "per_resource",
-  "per": 1
+  "per": 3,
+  "actionResourceAmount": 2
  },
  "Clone Troopers (II)": {
   "type": "per_resource",

@@ -348,11 +348,12 @@ const TM_CARD_EFFECTS = {
  },
  "Water Import From Europa": {
   "c": 25,
-  "actOc": 0.7,
+  "actOc": 1,
   "vpTag": {
    "tag": "jovian",
    "per": 1
-  }
+  },
+  "actMC": -12
  },
  "Nitrogen-Rich Asteroid": {
   "c": 31,
@@ -528,9 +529,10 @@ const TM_CARD_EFFECTS = {
  },
  "Ecological Zone": {
   "c": 12,
-  "vpAcc": 0.5,
+  "vpAcc": 1,
   "vpPer": 2,
-  "res": "animal"
+  "res": "animal",
+  "triggerOnlyVpAcc": true
  },
  "Birds": {
   "c": 10,
@@ -573,7 +575,8 @@ const TM_CARD_EFFECTS = {
   "c": 5,
   "vpAcc": 1,
   "vpPer": 3,
-  "res": "microbe"
+  "res": "microbe",
+  "triggerOnlyVpAcc": true
  },
  "Ants": {
   "c": 9,
@@ -588,12 +591,15 @@ const TM_CARD_EFFECTS = {
   "vpAcc": 1,
   "vpPer": 2,
   "minG": 5,
-  "res": "animal"
+  "res": "animal",
+  "triggerOnlyVpAcc": true
  },
  "Pets": {
   "c": 10,
   "vpAcc": 1,
-  "res": "animal"
+  "res": "animal",
+  "vpPer": 2,
+  "triggerOnlyVpAcc": true
  },
  "Security Fleet": {
   "c": 12,
@@ -661,7 +667,6 @@ const TM_CARD_EFFECTS = {
  },
  "Search For Life": {
   "c": 3,
-  "vp": 3,
   "res": "science"
  },
  "Viral Enhancers": {
@@ -727,7 +732,8 @@ const TM_CARD_EFFECTS = {
   "placesTag": "venus",
   "tg": "venus",
   "mp": 2,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "vpPer": 3
  },
  "Dawn City": {
   "c": 15,
@@ -963,9 +969,9 @@ const TM_CARD_EFFECTS = {
  "Venusian Animals": {
   "c": 15,
   "vpAcc": 1,
-  "vpPer": 2,
   "minG": 4,
-  "res": "animal"
+  "res": "animal",
+  "triggerOnlyVpAcc": true
  },
  "Corroder Suits": {
   "c": 8,
@@ -1047,7 +1053,6 @@ const TM_CARD_EFFECTS = {
  },
  "Space Relay": {
   "c": 13,
-  "actCD": 1,
   "mp": 1
  },
  "Specialized Settlement": {
@@ -1203,12 +1208,17 @@ const TM_CARD_EFFECTS = {
  "Arklight": {
   "c": 0,
   "mp": 2,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "animal",
+  "vpPer": 2,
+  "triggerOnlyVpAcc": true
  },
  "Pristar": {
   "c": 0,
   "tr": -2,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "preservation",
+  "triggerOnlyVpAcc": true
  },
  "Factorum": {
   "c": 0,
@@ -1319,7 +1329,10 @@ const TM_CARD_EFFECTS = {
   "c": 0,
   "cd": 2,
   "places": "floater",
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "floater",
+  "vpPer": 3,
+  "tg": "venus"
  },
  "Aridor": {
   "c": 0,
@@ -1778,7 +1791,9 @@ const TM_CARD_EFFECTS = {
  },
  "Neptunian Power Consultants": {
   "c": 10,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "hydroelectric_resource",
+  "triggerOnlyVpAcc": true
  },
  "Protected Growth": {
   "c": 2,
@@ -1911,7 +1926,8 @@ const TM_CARD_EFFECTS = {
  "Jet Stream Microscrappers": {
   "c": 12,
   "res": "floater",
-  "tg": "venus"
+  "tg": "venus",
+  "actTI": -1
  },
  "Orbital Reflectors": {
   "c": 26,
@@ -1979,9 +1995,7 @@ const TM_CARD_EFFECTS = {
   "actTI": -1
  },
  "St. Joseph of Cupertino Mission": {
-  "c": 7,
-  "vpAcc": 1,
-  "res": "fighter"
+  "c": 7
  },
  "Parliament Hall": {
   "c": 8,
@@ -2033,13 +2047,14 @@ const TM_CARD_EFFECTS = {
   "c": 7,
   "vpAcc": 1,
   "minG": 4,
-  "res": "floater",
-  "tg": "venus"
+  "res": "venusian_habitat"
  },
  "Terraforming Robots": {
   "c": 10,
   "vpAcc": 1,
-  "minG": 4
+  "minG": 4,
+  "res": "specialized_robot",
+  "triggerOnlyVpAcc": true
  },
  "Sky Docks": {
   "c": 18,
@@ -2118,6 +2133,8 @@ const TM_CARD_EFFECTS = {
   "c": 17,
   "cd": 2,
   "vp": 2,
+  "res": "floater",
+  "tg": "jovian",
   "actCD": 0.5
  },
  "Sub-Crust Measurements": {
@@ -2192,7 +2209,6 @@ const TM_CARD_EFFECTS = {
  },
  "Asteroid Rights": {
   "c": 10,
-  "ti": 2,
   "res": "asteroid"
  },
  "Ecology Research": {
@@ -2318,12 +2334,14 @@ const TM_CARD_EFFECTS = {
  "Martian Repository": {
   "c": 12,
   "ep": -1,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "data",
+  "vpPer": 3,
+  "triggerOnlyVpAcc": true
  },
  "Pollinators": {
   "c": 19,
   "pp": 1,
-  "vp": 1,
   "mp": 2,
   "res": "animal",
   "vpAcc": 1
@@ -2762,8 +2780,10 @@ const TM_CARD_EFFECTS = {
  "Nitrogen from Titan": {
   "c": 25,
   "tr": 2,
-  "pl": 4,
-  "vp": 1
+  "vp": 1,
+  "places": "floater",
+  "placesTag": "jovian",
+  "placesN": 2
  },
  "PR Office": {
   "c": 7,
@@ -2918,7 +2938,9 @@ const TM_CARD_EFFECTS = {
  },
  "Economic Espionage": {
   "c": 8,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "data",
+  "vpPer": 3
  },
  "Economic Help": {
   "c": 9,
@@ -2970,7 +2992,8 @@ const TM_CARD_EFFECTS = {
  "Martian Culture": {
   "c": 11,
   "vpAcc": 1,
-  "vpPer": 2
+  "vpPer": 2,
+  "res": "data"
  },
  "Martian Monuments": {
   "c": 10,
@@ -3032,7 +3055,9 @@ const TM_CARD_EFFECTS = {
  "Solarpedia": {
   "c": 12,
   "cd": 0,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "data",
+  "vpPer": 6
  },
  "Van Allen": {
   "c": 0,
@@ -3143,7 +3168,9 @@ const TM_CARD_EFFECTS = {
  },
  "Bio-Sol": {
   "c": 0,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "microbe",
+  "vpPer": 3
  },
  "Nobel Labs": {
   "c": 8,
@@ -3290,7 +3317,6 @@ const TM_CARD_EFFECTS = {
  },
  "Ceres Tech Market": {
   "c": 12,
-  "actCD": 0.5,
   "vp": 1
  },
  "Microbiology Patents": {
@@ -3386,7 +3412,10 @@ const TM_CARD_EFFECTS = {
  },
  "Nanotech Industries": {
   "c": 14,
-  "vpAcc": 1
+  "vpAcc": 1,
+  "cd": 2,
+  "res": "science",
+  "vpPer": 2
  },
  "Project Workshop": {
   "c": 15,
@@ -3491,7 +3520,9 @@ const TM_CARD_EFFECTS = {
  },
  "Darkside Incubation Plant": {
   "vpAcc": 1,
-  "c": 11
+  "c": 11,
+  "res": "microbe",
+  "vpPer": 2
  },
  "Darkside Meteor Bombardment": {
   "st": 2,
@@ -3530,7 +3561,10 @@ const TM_CARD_EFFECTS = {
   "c": 11
  },
  "Intragen Sanctuary Headquarters": {
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "animal",
+  "vpPer": 2,
+  "triggerOnlyVpAcc": true
  },
  "Luna First Incorporated": {
   "st": 2,
@@ -3573,7 +3607,9 @@ const TM_CARD_EFFECTS = {
  },
  "Lunar Observation Post": {
   "vpAcc": 1,
-  "c": 7
+  "c": 7,
+  "res": "data",
+  "vpPer": 3
  },
  "Lunar Planning Office": {
   "c": 0,
@@ -3622,17 +3658,21 @@ const TM_CARD_EFFECTS = {
  },
  "Pride of the Earth Arkship": {
   "vpAcc": 1,
-  "c": 22
+  "c": 22,
+  "res": "science"
  },
  "Processor Factory": {
   "vpAcc": 1,
   "c": 8,
+  "res": "data",
+  "vpPer": 3,
   "actST": -1
  },
  "Rust Eating Bacteria": {
   "res": "microbe",
   "vpAcc": 1,
   "c": 7,
+  "vpPer": 3,
   "actST": -1
  },
  "Sinus Irdium Road Network": {
@@ -3649,7 +3689,8 @@ const TM_CARD_EFFECTS = {
   "tradeFleet": 2
  },
  "The Darkside of The Moon Syndicate": {
-  "res": "syndicate_fleet"
+  "res": "syndicate_fleet",
+  "actTI": -1
  },
  "The Grand Luna Capital Group": {
   "ti": 1
@@ -3680,7 +3721,8 @@ const TM_CARD_EFFECTS = {
  },
  "Clone Troopers (II)": {
   "vpAcc": 1,
-  "c": 12
+  "c": 12,
+  "res": "clone_trooper"
  },
  "Cloud City (V)": {
   "vn": 1,
@@ -3740,7 +3782,8 @@ const TM_CARD_EFFECTS = {
  },
  "Cloud Vortex Outpost": {
   "vn": 2,
-  "res": "floater"
+  "res": "floater",
+  "tg": "venus"
  },
  "Cut-throat Budgeting": {
   "c": 2,
@@ -3792,7 +3835,9 @@ const TM_CARD_EFFECTS = {
   "tradeFleet": 1
  },
  "Henkei Genetics": {
-  "vpAcc": 1
+  "vpAcc": 1,
+  "res": "microbe",
+  "vpPer": 3
  },
  "Infrastructure Overload": {
   "c": 7,
@@ -3888,7 +3933,10 @@ const TM_CARD_EFFECTS = {
  },
  "Research & Development Hub": {
   "vpAcc": 1,
-  "c": 14
+  "c": 14,
+  "res": "data",
+  "vpPer": 3,
+  "triggerOnlyVpAcc": true
  },
  "Robot Moles": {
   "c": 8,
@@ -3917,7 +3965,9 @@ const TM_CARD_EFFECTS = {
   "hp": 2,
   "res": "microbe",
   "vpAcc": 1,
-  "c": 13
+  "c": 13,
+  "vpPer": 3,
+  "triggerOnlyVpAcc": true
  },
  "Tunneling Operation": {
   "c": 0,
@@ -3944,7 +3994,9 @@ const TM_CARD_EFFECTS = {
  },
  "Whales": {
   "vpAcc": 1,
-  "c": 10
+  "c": 10,
+  "res": "animal",
+  "triggerOnlyVpAcc": true
  },
  "Beginner Corporation": {
   "c": 0,
@@ -4080,8 +4132,7 @@ const TM_CARD_EFFECTS = {
   "c": 6
  },
  "Darkside Observatory": {
-  "c": 12,
-  "actCD": 0.3
+  "c": 12
  },
  "L.T.F. Privileges": {
   "c": 21
@@ -4344,7 +4395,6 @@ const TM_CARD_EFFECTS = {
  },
  "Export Convoy": {
   "c": 6,
-  "mc": 20,
   "vp": -1
  },
  "Family Connections": {
@@ -4418,7 +4468,9 @@ const TM_CARD_EFFECTS = {
  "Ecological Zone:ares": {
   "c": 11,
   "vpAcc": 1,
-  "vpPer": 2
+  "vpPer": 2,
+  "res": "animal",
+  "triggerOnlyVpAcc": true
  },
  "Geological Survey": {
   "c": 8

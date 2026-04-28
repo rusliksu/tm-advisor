@@ -161,6 +161,8 @@ const annotationChecks = [
   ['Ants', 'eats', 'microbe'],
   ['Dirigibles', 'res', 'floater'],
   ['Floating Habs', 'res', 'floater'],
+  ['Celestic', 'tg', 'venus'],
+  ['Cloud Vortex Outpost', 'tg', 'venus'],
   ['Physics Complex', 'res', 'science'],
   ['Search For Life', 'res', 'science'],
   ['Large Convoy', 'places', 'animal'],
@@ -210,12 +212,11 @@ if (predFx && predFx.res === 'animal' && !predFx.places && predFx.eats === 'anim
 const newAnnotations = [
   ['Security Fleet', 'res', 'fighter'],
   ['Asteroid Hollowing', 'res', 'asteroid'],
-  ['St. Joseph of Cupertino Mission', 'res', 'fighter'],
   ['Herbivores', 'res', 'animal'],
   ['Vermin', 'res', 'animal'],
   ['Anthozoa', 'res', 'animal'],
   ['Sub-zero Salt Fish', 'res', 'animal'],
-  ['Floater-Urbanism', 'res', 'floater'],
+  ['Floater-Urbanism', 'res', 'venusian_habitat'],
 ];
 for (const [card, field, expected] of newAnnotations) {
   const fx = FX[card];
@@ -225,6 +226,13 @@ for (const [card, field, expected] of newAnnotations) {
   } else {
     failed++; console.log(`  ✗ ${card}.${field}: expected '${expected}', got '${fx[field]}'`);
   }
+}
+
+const stJosephFx = FX['St. Joseph of Cupertino Mission'];
+if (stJosephFx && !stJosephFx.res && !stJosephFx.vpAcc) {
+  passed++; console.log('  ✓ St. Joseph has no false fighter resource accumulator');
+} else {
+  failed++; console.log(`  ✗ St. Joseph: expected no res/vpAcc, got ${JSON.stringify(stJosephFx)}`);
 }
 
 // v2 annotations
@@ -423,8 +431,8 @@ console.log('\n── v3: Floater placer scoring ──');
 // Celestic (placer) + Dirigibles (accum) → +3 (1 floater цель)
 test('Celestic + Dirigibles', 'Celestic', ['Dirigibles'], 3);
 
-// Celestic + Dirigibles + Floating Habs → +6 (2 floater цели)
-test('Celestic + 2 floater accums', 'Celestic', ['Dirigibles', 'Floating Habs'], 6);
+// Celestic + Dirigibles + Floating Habs → +4 (2 floater цели, но 2 конкурента)
+test('Celestic + 2 floater accums', 'Celestic', ['Dirigibles', 'Floating Habs'], 4);
 
 // Celestic без floater целей → -4 (noTargetPenalty)
 test('Celestic без floater целей', 'Celestic', [], -4);
@@ -436,10 +444,11 @@ test('Dirigibles + Celestic (1 placer)', 'Dirigibles', ['Celestic'], 3);
 test('Dirigibles + 2 floater placers', 'Dirigibles', ['Celestic', 'Stormcraft Incorporated'], 6);
 
 // Stratopolis (dual: res+places) + Floating Habs + Celestic
-// 48a: places:'floater' → Floating Habs.res='floater' → 1×3 = 3
-// 48b: res:'floater' → Celestic.places='floater' → 1×3 = 3
-// Total = +6
-test('Stratopolis dual + Floating Habs + Celestic', 'Stratopolis', ['Floating Habs', 'Celestic'], 6);
+// 48a: places:'floater', placesTag:'venus' → Floating Habs + Celestic = 2 цели = +6
+// 48b: res:'floater' → Celestic.places='floater' → 1×3 = +3
+// 48c: FH + Celestic = 2 конкурента → -2
+// Total = +7
+test('Stratopolis dual + Floating Habs + Celestic', 'Stratopolis', ['Floating Habs', 'Celestic'], 7);
 
 // Dirigibles + 2 other floater accums (competition: 3 total)
 // 48b: 0 placers → 0; 48c: competitorCount=2 → -2
@@ -539,7 +548,7 @@ for (const card of ['Celestic', 'Stormcraft Incorporated', 'Floater Technology',
 
 // Venus floater accumulators
 const venusTg = ['Dirigibles', 'Aerial Mappers', 'Stratopolis',
-  'Atmo Collectors', 'Floater-Urbanism', 'Floating Habs', 'Local Shading'];
+  'Atmo Collectors', 'Floating Habs', 'Local Shading'];
 for (const card of venusTg) {
   const fx = FX[card];
   if (fx && fx.tg === 'venus') {
@@ -547,6 +556,12 @@ for (const card of venusTg) {
   } else {
     failed++; console.log(`  ✗ ${card}.tg: expected 'venus', got '${fx && fx.tg}'`);
   }
+}
+
+if (!FX['Floater-Urbanism'] || FX['Floater-Urbanism'].tg === undefined) {
+  passed++; console.log('  ✓ Floater-Urbanism.tg = undefined (not a floater target)');
+} else {
+  failed++; console.log(`  ✗ Floater-Urbanism.tg: expected undefined, got '${FX['Floater-Urbanism'].tg}'`);
 }
 
 // Jovian floater accumulators
@@ -604,16 +619,17 @@ test('JFS + Stratopolis (venus placer cant reach jovian)', 'Jupiter Floating Sta
 
 // Mixed: Dirigibles (venus) + Celestic (unrestricted) + Titan FLP (jovian, can't reach)
 // 48b: only Celestic counts → 1 placer × 3 = +3
-test('Dirigibles + Celestic + Titan FLP (1 valid, 1 cant reach)', 'Dirigibles', ['Celestic', 'Titan Floating Launch-pad'], 3);
+// 48c: Celestic + Titan FLP are still floater competitors → -2
+test('Dirigibles + Celestic + Titan FLP (1 valid, 1 cant reach)', 'Dirigibles', ['Celestic', 'Titan Floating Launch-pad'], 1);
 
 // Stratopolis dual + Venus targets + Jovian targets
 // 48a: places:'floater', placesTag:'venus' → only venus targets count
-//   Floating Habs (venus) ✓, JFS (jovian) ✗ → 1 target = +3
+//   Floating Habs (venus) ✓, Celestic (venus) ✓, JFS (jovian) ✗ → 2 targets = +6
 // 48b: res:'floater' → Celestic (unrestricted) can reach ✓ → 1 placer = +3
-// 48c: FH + JFS = 2 competitors → -2
-// Total = +4
+// 48c: FH + JFS + Celestic = 3 competitors → -2
+// Total = +7
 test('Stratopolis + FH + JFS + Celestic (mixed tags)', 'Stratopolis',
-  ['Floating Habs', 'Jupiter Floating Station', 'Celestic'], 4);
+  ['Floating Habs', 'Jupiter Floating Station', 'Celestic'], 7);
 
 // ── SC constants check ──
 console.log('\n── SC константы ──');

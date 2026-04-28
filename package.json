@@ -101,6 +101,8 @@
     "extension:syntax": "node apps/tm-extension/tests/syntax_check.js",
     "extension:test-advisor-panel": "node apps/tm-extension/tests/advisor_panel_bot_hint_check.js",
     "extension:test-colony-trade": "node apps/tm-extension/tests/colony_trade_pipeline_check.js",
+    "extension:test-content-play-priority": "node apps/tm-extension/tests/content_play_priority_reasons_check.js",
+    "extension:test-content-synergy": "node apps/tm-extension/tests/content_synergy_regressions_check.js",
     "test": "node tools/data/test-synergy-rules.js",
     "test:bot": "node apps/tm-smartbot/tests/regressions.js",
     "test:brain-core": "node tools/brain/test-core.js",

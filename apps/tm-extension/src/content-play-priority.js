@@ -39,10 +39,10 @@
     var mod10 = absCount % 10;
     var mod100 = absCount % 100;
     var noun = (mod10 === 1 && mod100 !== 11)
-      ? 'проект под корпу'
+      ? 'карта под корпу'
       : (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
-        ? 'проекта под корпу'
-        : 'проектов под корпу';
+        ? 'карты под корпу'
+        : 'карт под корпу';
     return count + ' ' + noun + ' ' + (value >= 0 ? '+' : '') + value;
   }
 
@@ -400,7 +400,11 @@
       if (vnM2 && gVenus != null) { var need4 = parseInt(vnM2[1]) - venusReqBonus * 2; var gap4 = (need4 - gVenus) / 2; if (gap4 > maxGap) maxGap = gap4; }
 
       if (maxGap > 0) {
-        result.penalty += Math.min(sc.ppReqGapCap, Math.round(maxGap * sc.ppReqGapMul));
+        var reqGapPenalty = Math.min(sc.ppReqGapCap, Math.round(maxGap * sc.ppReqGapMul));
+        if (ctx && ctx.gen <= 2 && ctx.gensLeft >= 8 && maxGap >= 5) {
+          reqGapPenalty = Math.max(reqGapPenalty, Math.min(18, Math.round((maxGap - 4) * 1.2)));
+        }
+        result.penalty += reqGapPenalty;
         if (maxGap <= 1) result.reasons.push('Req почти (' + Math.ceil(maxGap) + ' подн.)');
         else result.reasons.push('Req далеко (' + Math.ceil(maxGap) + ' подн.)');
       }

@@ -365,7 +365,7 @@ function testAridorInitialDraftReasonLabelsAreActionable() {
     },
   });
 
-  assert(result.reasons.includes('5 проектов под корпу +7'), 'project-card context should not be labelled as draft cards');
+  assert(result.reasons.includes('5 карт под корпу +7'), 'project-card context should not be labelled as draft cards');
   assert(result.reasons.includes('лучшая прел. Научный подход +2'), 'prelude reason should keep the full short card label');
   assert(!result.reasons.some((reason) => reason.includes('к драфту')), 'corp context reasons should not use the old draft-card label');
   assert(!result.reasons.some((reason) => reason.includes('прел.') && reason.endsWith('+0')), 'rounded zero prelude context should be hidden');

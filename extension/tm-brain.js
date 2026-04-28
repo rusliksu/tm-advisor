@@ -1187,7 +1187,7 @@
     'Research Outpost':        { once: 3 },     // city + draw 1, parser misses city
     // 'Maxwell Base': removed — parser now handles city + energy cost correctly
     'Robotic Workforce':       { once: 5 },     // duplicate production box of 1 building card
-    'Sponsored Academies':     { once: 4 },     // draw 3 - discard 1 = +2 net(7 MC) - opponents draw 1 each(-3.5 in 3P) ≈ 4
+    'Sponsored Academies':     { once: 6 },     // discard 1 old-hand card(~1 MC), then draw 3(~10.5 MC) - opponents draw 1 each(~3.5 MC in 3P) ≈ 6
     'Psychrophiles':           { perGen: 1 },   // action: +1 microbe (usable as 2 MC on plant cards)
 
     // === Colony cards (parser writes production:0 for dynamic/colony effects) ===
@@ -1733,7 +1733,19 @@
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
     // ── DRAW CARDS ──
     var drawVal = Math.min(6, 2.5 + gensLeft * 0.35);
-    if (beh.drawCard) ev += beh.drawCard * drawVal;
+    if (beh.drawCard) {
+      if (beh.discardAfterDraw && typeof beh.netDrawCard === 'number') {
+        ev += beh.netDrawCard * drawVal;
+        var selectionBonus = typeof beh.discardCardSelectionBonusMC === 'number' ? beh.discardCardSelectionBonusMC : 0.75;
+        ev += Math.max(0, beh.drawCard - beh.netDrawCard) * selectionBonus;
+      } else {
+        ev += beh.drawCard * drawVal;
+      }
+      if (beh.discardCardsFromHand && !beh.discardAfterDraw) {
+        var discardCost = typeof beh.discardCardCostMC === 'number' ? beh.discardCardCostMC : 1;
+        ev -= beh.discardCardsFromHand * discardCost;
+      }
+    }
 
     // ── VP ──
     if (sharedScoreCardVPInfo) {
@@ -1955,6 +1967,19 @@
       }
       return total;
     };
+
+    if (name === 'Acquired Company') {
+      var acquiredCompanyPenalty = 0;
+      if (gen >= 6 || gensLeft <= 4) acquiredCompanyPenalty = 14;
+      else if (gen >= 5 || gensLeft <= 5) acquiredCompanyPenalty = 10;
+      else if (gen >= 4) acquiredCompanyPenalty = 6;
+      else if (gen >= 3) acquiredCompanyPenalty = 3;
+
+      var hasLiveEarthPayoff = corp === 'Point Luna' || corp === 'Teractor' ||
+        tableauNames.has('Earth Office') || tableauNames.has('Cartel') || tableauNames.has('Luna Governor');
+      if (hasLiveEarthPayoff) acquiredCompanyPenalty = Math.max(0, acquiredCompanyPenalty - 6);
+      ev -= acquiredCompanyPenalty;
+    }
 
     if (name === 'Space Station') {
       var handSpace = futureTagSupport('space');

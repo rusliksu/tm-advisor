@@ -216,9 +216,34 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
     return label + ' ' + sign + corpBoost;
   }
+
+  function isPureProductionFx(fx) {
+    if (!fx) return false;
+    var hasProd = !!(fx.mp > 0 || fx.sp > 0 || fx.tp > 0 || fx.pp > 0 || fx.ep > 0 || fx.hp > 0);
+    if (!hasProd) return false;
+    return !(fx.vp > 0 || fx.vpAcc || fx.tr > 0 || fx.tmp > 0 || fx.o2 > 0 || fx.oc > 0 || fx.vn > 0 ||
+      fx.city > 0 || fx.grn > 0 || fx.places || fx.pl > 0 || fx.cd > 0 || fx.st > 0 || fx.ti > 0 ||
+      fx.heat > 0 || fx.actMC > 0 || fx.actTR > 0 || fx.actOc > 0 || fx.actCD > 0);
+  }
+
+  function isLatePureProductionFx(cardName, ctx) {
+    if (!ctx || ctx.gensLeft == null || ctx.gensLeft > 1 || typeof TM_CARD_EFFECTS === 'undefined') return false;
+    return isPureProductionFx(TM_CARD_EFFECTS[cardName]);
+  }
   function cardN(c) { return c.name || c; } // Vue tableau entries: object {name} or string
   function corpName(p) { var raw = typeof p.corporationCard === 'string' ? p.corporationCard : (p.corporationCard.name || ''); return resolveCorpName(raw); }
   function getFx(name) { return typeof TM_CARD_EFFECTS !== 'undefined' && TM_CARD_EFFECTS[name] ? TM_CARD_EFFECTS[name] : null; }
+  function isVpAccumulatorActionFx(fx) {
+    return !!(fx && fx.vpAcc && !fx.triggerOnlyVpAcc);
+  }
+  function isBlueActionFx(fx) {
+    return !!(fx && (fx.actTR || fx.actMC || fx.actCD || fx.actOc || isVpAccumulatorActionFx(fx)));
+  }
+  function getVpAccumulatorProjectedResources(fx, gensLeft) {
+    if (!fx || !fx.vpAcc) return 0;
+    if (fx.triggerOnlyVpAcc) return 0;
+    return gensLeft;
+  }
   function cardPlacesCityTileByName(name) {
     var fx = getFx(name);
     return !!(fx && fx.city > 0);
@@ -230,6 +255,18 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function getCardTagsForName(name) {
     if (typeof TM_CARD_TAGS === 'undefined') return [];
     return _lookupCardData(TM_CARD_TAGS, name) || [];
+  }
+  function resourcePlacementCanReachTarget(placerFx, targetFx, targetName) {
+    if (!placerFx || !placerFx.placesTag) return true;
+    var tg = targetFx && targetFx.tg;
+    var tags = Array.isArray(tg) ? tg.slice() : (tg ? [tg] : []);
+    if (targetName) {
+      var targetCardTags = getCardTagsForName(targetName);
+      for (var tgi = 0; tgi < targetCardTags.length; tgi++) {
+        if (tags.indexOf(targetCardTags[tgi]) === -1) tags.push(targetCardTags[tgi]);
+      }
+    }
+    return tags.indexOf(placerFx.placesTag) !== -1;
   }
   function getCardTextForSynergy(name) {
     var parts = [];
@@ -1065,6 +1102,43 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     ));
   }
 
+  function hasCardTagForScoring(cardTags, tag) {
+    if (!cardTags) return false;
+    if (typeof cardTags.has === 'function') return cardTags.has(tag);
+    if (Array.isArray(cardTags)) return cardTags.indexOf(tag) !== -1;
+    return false;
+  }
+
+  function estimateImmediatePlantGainForFinal(cardName, cardTags, ctx) {
+    var fx = getFx(cardName);
+    var gain = fx && typeof fx.pl === 'number' && fx.pl > 0 ? fx.pl : 0;
+    if (cardName === 'Soil Studies' && ctx) {
+      var tags = ctx.tags || {};
+      var colonies = ctx.coloniesOwned != null ? ctx.coloniesOwned : (ctx.colonies || 0);
+      var ownPlantTag = 0;
+      if (hasCardTagForScoring(cardTags, 'plant')) {
+        ownPlantTag = (ctx.tableauNames && ctx.tableauNames.has && ctx.tableauNames.has(cardName)) ? 0 : 1;
+      }
+      var soilPlants = (tags.venus || 0) + (tags.plant || 0) + (colonies || 0) + ownPlantTag;
+      gain = Math.max(gain, soilPlants);
+    }
+    return gain;
+  }
+
+  function isFinalGreenerySource(cardName, eLower, cardTags, ctx) {
+    var fx = getFx(cardName);
+    if (fx && fx.grn > 0) return true;
+    if (eLower && (eLower.includes('place a greenery') || eLower.includes('озелен'))) return true;
+
+    var plantGain = estimateImmediatePlantGainForFinal(cardName, cardTags, ctx);
+    if (plantGain <= 0) return false;
+    var currentPlants = ctx && typeof ctx.plants === 'number' ? ctx.plants : 0;
+    var plantCost = SC.plantsPerGreenery || 8;
+    var corps = typeof detectMyCorps === 'function' ? detectMyCorps() : [];
+    if (Array.isArray(corps) && corps.indexOf('EcoLine') !== -1) plantCost = Math.max(1, plantCost - 1);
+    return currentPlants + plantGain >= plantCost;
+  }
+
   function isMeltworksLastGenCashout(cardName, myHand, ctx) {
     if (cardName !== 'Meltworks' || !ctx || ctx.gensLeft > 1 || !ctx.globalParams || ctx.globalParams.temp < SC.tempMax) return false;
     if (ctx.tableauNames && (ctx.tableauNames.has('Electro Catapult') || ctx.tableauNames.has('Space Elevator'))) return true;
@@ -1169,6 +1243,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       titanium: oppPlayer.titanium || 0,
       tiVal: oppPlayer.titaniumValue || SC.defaultTiVal,
       heat: oppPlayer.heat || 0,
+      plants: oppPlayer.plants || 0,
       colonies: oppPlayer.coloniesCount || 0,
       fleetSize: oppPlayer.fleetSize || 1,
       tradesUsed: oppPlayer.tradesThisGeneration || 0,
@@ -1876,8 +1951,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (fx.rmPl) v += fx.rmPl * 1.6 * 0.5;
     if (fx.pOpp) v += Math.abs(fx.pOpp) * prod * 0.5;
 
-    // VP accumulator (action: add resource, 1VP per N — VP value depends on game timing)
-    if (fx.vpAcc) v += fx.vpAcc * gl * vpVal / Math.max(1, fx.vpPer || 1);
+    // VP accumulator actions add resources by generation. Trigger-only
+    // accumulators are valued through explicit tag/placement/resource synergies.
+    var vpAccResources = getVpAccumulatorProjectedResources(fx, gl);
+    if (vpAccResources) v += fx.vpAcc * vpAccResources * vpVal / Math.max(1, fx.vpPer || 1);
 
     // Blue action cards
     if (fx.actMC) v += fx.actMC * gl;
@@ -2039,6 +2116,19 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return null;
   }
 
+  function isLateEcoZoneBioTriggerCard(cardName, ctx, fx, cardTags) {
+    if (!ctx || ctx.gensLeft == null || ctx.gensLeft > 1) return false;
+    if (!ctx.tableauNames || !ctx.tableauNames.has || !ctx.tableauNames.has('Ecological Zone')) return false;
+    fx = fx || (typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[cardName] : null);
+    if (!fx || (fx.c || 0) > 6) return false;
+    if (!(fx.pp > 0 || fx.pl > 0)) return false;
+    var tags = cardTags && cardTags.size != null ? Array.from(cardTags) : getCardTagsForName(cardName);
+    for (var ebi = 0; ebi < tags.length; ebi++) {
+      if (tags[ebi] === 'plant' || tags[ebi] === 'animal' || tags[ebi] === 'microbe') return true;
+    }
+    return false;
+  }
+
   // Production break-even timer — penalty when production card won't pay off in remaining gens
   // Returns { penalty: number, reason: string|null }
   function scoreBreakEvenTiming(cardName, ctx, cardTags) {
@@ -2070,6 +2160,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
     // Subtract TR value
     if (fx.tr) effectiveCost = Math.max(0, effectiveCost - fx.tr * 7);
+    if (isLateEcoZoneBioTriggerCard(cardName, ctx, fx, cardTags)) {
+      // Ecological Zone turns a cheap bio tag into immediate animal/VP progress,
+      // so it should not be judged as pure delayed production in the final gen.
+      effectiveCost = Math.max(0, effectiveCost - 6);
+    }
     // Cards that immediately place resources on existing targets are not
     // "pure payback" production. Reduce effective cost by the best live target.
     if (fx.places) {
@@ -2177,6 +2272,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var reasons = [];
     var reasonRows = [];
     var suppressHarvestPlantDensity = cardName === 'Harvest' && ctx && ctx.gen <= 2 && (ctx.greeneries || 0) === 0;
+    var suppressLatePureProdTagDensity = isLatePureProductionFx(cardName, ctx);
 
     // 5. Tag density bonus — rare tags get bonus at lower counts
     // Event cards: tags go face-down, so no persistent tag density value
@@ -2202,6 +2298,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!hasOngoing) bestBonus = SC.tagDensityCheapCap;
       }
       if (suppressHarvestPlantDensity && bestTag === 'plant') bestBonus = 0;
+      if (suppressLatePureProdTagDensity) bestBonus = 0;
       if (bestBonus > 0) {
         var decayedDensity = Math.round(bestBonus * tagDecay);
         if (decayedDensity > 0) {
@@ -2212,7 +2309,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // 5a2. Hand tag affinity — rare tags matching concentrated tags in hand
-    if (cardTags.size > 0 && ctx && ctx._handTagCounts) {
+    if (!suppressLatePureProdTagDensity && cardTags.size > 0 && ctx && ctx._handTagCounts) {
       var htRarity = SC.tagRarity || {};
       var bestHtBonus = 0;
       var bestHtTag = '';
@@ -2490,7 +2587,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // 42. Endgame conversion chain — greenery cards before heat in final gen
     if (ctx && ctx.gensLeft <= 1 && data.e) {
-      var isGreenerySource = eLower.includes('green') || eLower.includes('озелен') || eLower.includes('plant') || eLower.includes('раст');
+      var isGreenerySource = isFinalGreenerySource(cardName, eLower, cardTags, ctx);
       var isHeatSource = eLower.includes('heat') || eLower.includes('тепл');
       if (isGreenerySource && ctx.globalParams && ctx.globalParams.oxy < SC.oxyMax) {
         bonus += SC.endgameGreeneryBonus;
@@ -2599,6 +2696,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function scorePositionalFactors(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, baseScore, reqMet, reqPenaltyPresent, isPreludeOrCorpLike) {
     var bonus = 0;
     var reasons = [];
+    var reasonRows = [];
 
     // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
     if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax) {
@@ -2608,7 +2706,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       } else if (ctx.gensLeft <= 2) {
         // Late game stall: extra action delays opponents from converting plants/greeneries first
         var fx23 = getFx(cardName);
-        var hasUsefulAction23 = fx23 && (fx23.actTR || fx23.actMC || fx23.vpAcc || fx23.actCD || fx23.actOc);
+        var hasUsefulAction23 = isBlueActionFx(fx23);
         if (hasUsefulAction23) {
           bonus += 2;
           reasons.push('Столл late +2');
@@ -2756,10 +2854,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var tiCap32 = cardCost >= SC.tiPenaltyCostHigh ? SC.tiPenaltyCapHigh : SC.tiPenaltyCapLow;
       var tiPenalty32 = Math.min(tiCap32, Math.ceil(cardCost / SC.tiPenaltyDivisor));
       bonus -= tiPenalty32;
-      reasons.push('0 Ti −' + tiPenalty32);
+      pushStructuredReason(reasons, reasonRows, '0 Ti −' + tiPenalty32, -tiPenalty32);
     }
 
-    return { bonus: bonus, reasons: reasons };
+    return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
   }
 
   // Card economy in context — multi-tag, production timing, action ROI, event tags,
@@ -2945,11 +3043,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // 20. Steel/Titanium PRODUCTION synergy — scales with gensLeft
     var gl20 = ctx.gensLeft || 4;
     var prodTimeMul = Math.min(1.0, gl20 / 4); // full value at 4+ gens, scales down
-    if (cardTags.has('building') && ctx.prod.steel >= 2) {
+    if (gl20 > 1 && cardTags.has('building') && ctx.prod.steel >= 2) {
       var stProdBonus = Math.round(Math.min(SC.steelProdSynCap, Math.floor(ctx.prod.steel / 2)) * prodTimeMul);
       if (stProdBonus > 0) { bonus += stProdBonus; pushStructuredReason(reasons, reasonRows, 'Стл.прод ' + ctx.prod.steel + '/пок', stProdBonus); }
     }
-    if (cardTags.has('space') && ctx.prod.ti >= 1) {
+    if (gl20 > 1 && cardTags.has('space') && ctx.prod.ti >= 1) {
       var tiProdBonus = Math.round(Math.min(SC.tiProdSynCap, ctx.prod.ti * 2) * prodTimeMul);
       if (tiProdBonus > 0) { bonus += tiProdBonus; pushStructuredReason(reasons, reasonRows, 'Ti.прод ' + ctx.prod.ti + '/пок', tiProdBonus); }
     }
@@ -3106,6 +3204,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var lostValue = Math.round(oceansPlaced * 2 * 0.75);
         bonus -= lostValue;
         pushStructuredReason(reasons, reasonRows, '−' + oceansPlaced + ' океанов уже (−' + lostValue + ')', -lostValue);
+      }
+    }
+
+    if (cardName === 'Dirigibles' && ctx && ctx.gensLeft <= 2) {
+      var dirigiblesLatePenalty = ctx.gensLeft <= 1 ? -20 : -12;
+      bonus += dirigiblesLatePenalty;
+      pushStructuredReason(reasons, reasonRows, 'Поздн. floater engine ' + dirigiblesLatePenalty, dirigiblesLatePenalty);
+    }
+
+    if (cardName === "Inventors' Guild" && ctx && (ctx.gen != null || ctx.gensLeft != null)) {
+      var igGen = ctx.gen || 1;
+      var igGensLeft = ctx.gensLeft != null ? ctx.gensLeft : 99;
+      var igLatePenalty = 0;
+      if (igGensLeft <= 2 || igGen >= 8) igLatePenalty = -14;
+      else if (igGensLeft <= 4 || igGen >= 6) igLatePenalty = -8;
+      else if (igGensLeft <= 6 || igGen >= 4) igLatePenalty = -5;
+      if (igLatePenalty !== 0) {
+        bonus += igLatePenalty;
+        pushStructuredReason(reasons, reasonRows, 'Поздн. фильтр ' + igLatePenalty, igLatePenalty);
       }
     }
 
@@ -3351,11 +3468,20 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var ACTION_ENERGY_HOGS = { 'Ironworks': 4, 'Steelworks': 4, 'Water Splitting Plant': 3,
       'Ore Processor': 4, 'Physics Complex': 6, 'Venus Magnetizer': 4, 'Electro Catapult': 1 };
     var isActionEnergyConsumer = !!ACTION_ENERGY_HOGS[cardName || ''];
+    var fx13 = getFx(cardName);
+    var hasEnergyCostFx13 = !!(fx13 && (((fx13.ep || 0) < 0) || ((fx13.actEN || 0) < 0) || ((fx13.act_ep || 0) < 0)));
+    var hasEnergySpendText13 = !!(data.e && (
+      ((eLower.includes('decrease') || eLower.includes('spend')) && eLower.includes('energy')) ||
+      ((eLower.includes('сниз') || eLower.includes('трат')) && eLower.includes('энерг')) ||
+      eLower.includes('−energy') || eLower.includes('-energy') ||
+      eLower.includes('energy −') || eLower.includes('energy -') ||
+      eLower.includes('энерг −') || eLower.includes('энерг -')
+    ));
     if (ctx.prod.energy >= 2) {
       var isEnergyConsumer = isActionEnergyConsumer;
       if (!isEnergyConsumer && data.e) {
         if ((eLower.includes('energy') || eLower.includes('энерг') || cardTags.has('power')) &&
-            (eLower.includes('decrease') || eLower.includes('spend') || eLower.includes('снизь') || eLower.includes('-'))) {
+            (hasEnergyCostFx13 || hasEnergySpendText13)) {
           isEnergyConsumer = true;
         }
       }
@@ -3372,7 +3498,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (ctx.prod.energy >= 3 && !ctx.hasEnergyConsumers) {
       var consumesEnergy = isActionEnergyConsumer;
       if (!consumesEnergy && data.e) {
-        consumesEnergy = eLower.includes('spend') || eLower.includes('decrease energy') || eLower.includes('−energy') || eLower.includes('energy-prod');
+        consumesEnergy = hasEnergyCostFx13 || hasEnergySpendText13;
       }
       if (consumesEnergy) {
         bonus += SC.energySinkBonus;
@@ -3483,6 +3609,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var delta = computeCardValue(fx, effectiveGL, cvOpts) - computeCardValue(fx, refGL);
           var adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
           if (meltworksCashout && adj < -4) adj = -4;
+          if (isLateEcoZoneBioTriggerCard(cardName, ctx, fx, null) && adj < -4) adj = -4;
+          var actEpCost = Math.abs(Math.min(0, fx.act_ep || 0));
+          var currentEnergyProd = ctx && ctx.prod ? (ctx.prod.energy || 0) : 0;
+          if (adj < 0 && ctx.gensLeft <= 1 && fx.actTR > 0 && actEpCost > 0 && currentEnergyProd >= actEpCost) {
+            // Final-gen cashout: disposable energy production buys immediate TR, not a delayed engine.
+            adj = 0;
+          }
           if (Math.abs(adj) >= 1) {
             bonus += adj;
             pushStructuredReason(reasons, reasonRows, (isPureProduction ? 'Прод. тайминг ' : 'Тайминг ') + (adj > 0 ? '+' : '') + adj, adj);
@@ -5252,6 +5385,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
     _contextScoreRetryTimer = setTimeout(runContextScoreRefresh, delayMs);
   }
+
   // ── Standard Project Rating ──
 
   var _spLastUpdate = 0;
@@ -6858,6 +6992,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       titanium: 0,
       tiVal: 3,
       heat: 0,
+      plants: 0,
       colonies: 0,
       prod: { mc: 0, steel: 0, ti: 0, plants: 0, energy: 0, heat: 0 },
       tr: 0,
@@ -6887,6 +7022,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       ctx.titanium = p.titanium || 0;
       ctx.tiVal = p.titaniumValue || SC.defaultTiVal;
       ctx.heat = p.heat || 0;
+      ctx.plants = p.plants || 0;
       ctx.tr = p.terraformRating || 0;
 
       // Production
@@ -7150,8 +7286,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         return cardTags.has('building') ? 2 : 0;
       case 'EcoTec':
         return (cardTags.has('microbe') || cardTags.has('plant') || cardTags.has('animal')) ? 2 : 0;
-      case 'Factorum':
+      case 'Factorum': {
+        var fFx = getFx(opts.cardName);
+        if (opts.ctx && opts.ctx.gensLeft <= 1 && isPureProductionFx(fFx)) return 0;
         return cardTags.has('building') ? 1 : (eLower.includes('energy') || eLower.includes('энерг')) ? 1 : 0;
+      }
       case 'Inventrix': {
         var iFx = getFx(opts.cardName);
         return (iFx && (iFx.minG != null || iFx.maxG != null)) ? 2 : cardTags.has('science') ? 1 : 0;
@@ -7359,18 +7498,6 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var fx48 = TM_CARD_EFFECTS[cardName];
     if (!fx48) return { bonus: bonus, reasons: reasons };
 
-    function canReach(placerFx, targetFx, targetName) {
-      if (!placerFx.placesTag) return true;
-      var tg = targetFx.tg;
-      var tags = Array.isArray(tg) ? tg.slice() : (tg ? [tg] : []);
-      if (targetName) {
-        var targetCardTags = getCardTagsForName(targetName);
-        for (var tgi48 = 0; tgi48 < targetCardTags.length; tgi48++) {
-          if (tags.indexOf(targetCardTags[tgi48]) === -1) tags.push(targetCardTags[tgi48]);
-        }
-      }
-      return tags.indexOf(placerFx.placesTag) !== -1;
-    }
     function getPlaceCount(fx) {
       return Math.max(1, fx && fx.placesN ? fx.placesN : 1);
     }
@@ -7385,7 +7512,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var targetCount = 0;
         for (var m = 0; m < allMyCards.length; m++) {
           var mfx = TM_CARD_EFFECTS[allMyCards[m]];
-          if (mfx && mfx.res === placeTypes[pt] && canReach(fx48, mfx, allMyCards[m])) targetCount++;
+          if (mfx && mfx.res === placeTypes[pt] && resourcePlacementCanReachTarget(fx48, mfx, allMyCards[m])) targetCount++;
         }
         if (targetCount > 0) {
           var placeCountMul48 = Math.min(1.8, 1 + (placeCount48 - 1) * 0.25);
@@ -7399,7 +7526,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var hasTarget = false;
         for (var m48e = 0; m48e < allMyCards.length; m48e++) {
           var mfx48e = TM_CARD_EFFECTS[allMyCards[m48e]];
-          if (mfx48e && mfx48e.res === placeTypes[pt48e] && canReach(fx48, mfx48e, allMyCards[m48e])) { hasTarget = true; break; }
+          if (mfx48e && mfx48e.res === placeTypes[pt48e] && resourcePlacementCanReachTarget(fx48, mfx48e, allMyCards[m48e])) { hasTarget = true; break; }
         }
         if (!hasTarget) {
           synRulesBonus -= SC.noTargetPenalty;
@@ -7415,7 +7542,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var mfx = TM_CARD_EFFECTS[allMyCards[m]];
         if (mfx && mfx.places) {
           var mpt = Array.isArray(mfx.places) ? mfx.places : [mfx.places];
-          if (mpt.indexOf(fx48.res) !== -1 && canReach(mfx, fx48, cardName)) placerCount++;
+          if (mpt.indexOf(fx48.res) !== -1 && resourcePlacementCanReachTarget(mfx, fx48, cardName)) placerCount++;
         }
       }
       if (placerCount > 0) {
@@ -8360,12 +8487,18 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var energyProducers = TM_ENERGY_PRODUCERS;
     var energyConsumers = TM_ENERGY_CONSUMERS;
     if (energyProducers.indexOf(cardName) >= 0) {
-      var consumers = myHand.filter(function(n) { return energyConsumers.indexOf(n) >= 0; }).length;
-      if (consumers > 0) { bonus += Math.min(consumers * 2, 6); descs.push(consumers + ' energy consumer' + (consumers > 1 ? 's' : '')); }
+      var consumerWeight = 0;
+      for (var eci = 0; eci < myHand.length; eci++) {
+        if (energyConsumers.indexOf(myHand[eci]) >= 0) consumerWeight += myHand[eci] === 'Power Infrastructure' ? 0.25 : 1;
+      }
+      if (consumerWeight > 0) { bonus += Math.min(consumerWeight * 2, 6); descs.push(Math.round(consumerWeight * 10) / 10 + ' energy consumer' + (consumerWeight > 1 ? 's' : '')); }
     }
     if (energyConsumers.indexOf(cardName) >= 0) {
       var producers = myHand.filter(function(n) { return energyProducers.indexOf(n) >= 0; }).length;
-      if (producers > 0) { bonus += Math.min(producers * 2, 6); descs.push(producers + ' energy prod'); }
+      if (producers > 0) {
+        var piPairWeight = cardName === 'Power Infrastructure' ? Math.min(producers * 0.5, 1) : Math.min(producers * 2, 6);
+        if (piPairWeight > 0) { bonus += piPairWeight; descs.push(producers + (cardName === 'Power Infrastructure' ? ' spare energy prod' : ' energy prod')); }
+      }
     }
 
     // ── 8. JOVIAN VP CHAIN: jovian VP multipliers + jovian tags in hand ──
@@ -8523,7 +8656,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         }
         if (!hasEnceladus && openerMicrobePlacers === 0 && bioTagCount <= 1) {
           bonus -= 2.5;
-          descs.push('slow opener');
+          descs.push('slow opener −2.5');
         }
       }
     }
@@ -8547,10 +8680,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       topsoilShell += Math.min(2, topsoilHandSupport);
       if (topsoilShell <= 0) {
         bonus -= 6;
-        descs.push('3 plants only');
+        descs.push('3 plants only −6');
       } else if (topsoilShell === 1) {
         bonus -= 3;
-        descs.push('thin microbe shell');
+        descs.push('thin microbe shell −3');
       }
     }
     // Reverse: bio-tagged card + Decomposers in hand = extra microbe
@@ -8733,19 +8866,20 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // ── 32. ACTION CARD DIMINISHING RETURNS: 4+ action cards → not enough actions/gen ──
-    var isAction = !!(cardEff.actTR || cardEff.actMC || cardEff.vpAcc);
+    var isAction = isBlueActionFx(cardEff);
     if (isAction) {
       var actionsInHand = 0;
       for (var aci = 0; aci < myHand.length; aci++) {
         if (myHand[aci] === cardName) continue;
         var acEff = _effData[myHand[aci]];
-        if (acEff && (acEff.actTR || acEff.actMC || acEff.vpAcc)) actionsInHand++;
+        if (isBlueActionFx(acEff)) actionsInHand++;
       }
       // 4+ action cards = too many for limited actions per gen
       if (actionsInHand >= 3) {
         var actPenalty = (actionsInHand - 2) * -0.8;
-        bonus += Math.max(actPenalty, -3);
-        descs.push(actionsInHand + ' actions compete');
+        var actionCompetePenalty = Math.max(actPenalty, -3);
+        bonus += actionCompetePenalty;
+        descs.push(actionsInHand + ' actions compete −' + Math.abs(actionCompetePenalty));
       }
     }
 
@@ -8786,8 +8920,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (TM_ENERGY_PRODUCERS.indexOf(myHand[epi]) >= 0) { hasEProdInHand = true; break; }
       }
       if (!hasEProdInHand) {
-        bonus += Math.min((_existProd.energy || 0) * 1, 3);
-        descs.push('existing ep ' + _existProd.energy);
+        var existingEpBonus = cardName === 'Power Infrastructure'
+          ? Math.min((_existProd.energy || 0) * 0.3, 1)
+          : Math.min((_existProd.energy || 0) * 1, 3);
+        bonus += existingEpBonus;
+        descs.push((cardName === 'Power Infrastructure' ? 'spare ep ' : 'existing ep ') + _existProd.energy);
       }
     }
 
@@ -9207,7 +9344,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       for (var _pai = 0; _pai < selfPlantEaters.length; _pai++) {
         if (handSet.has(selfPlantEaters[_pai]) && cardName !== selfPlantEaters[_pai]) {
           bonus -= 1;
-          descs.push(reasonCardLabel(selfPlantEaters[_pai]) + ' eats own pp');
+          descs.push(reasonCardLabel(selfPlantEaters[_pai]) + ' eats own pp −1');
           break;
         }
       }
@@ -9221,8 +9358,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
       // 2+ energy consumers competing for same energy = diminishing returns (section 7 handles pairing, this handles excess)
       if (hogsInHand >= 2) {
-        bonus -= Math.min((hogsInHand - 1) * 0.5, 1.5);
-        descs.push(hogsInHand + ' ep consumers fight');
+        var hogFightPenalty = Math.min((hogsInHand - 1) * 0.5, 1.5);
+        bonus -= hogFightPenalty;
+        descs.push(hogsInHand + ' ep consumers fight −' + hogFightPenalty);
       }
     }
 
@@ -9247,8 +9385,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var animalBuddies = (handTagMap['animal'] || []).filter(function(n) { return n !== cardName; }).length;
       if (animalBuddies >= 1) {
         // Multiple animal targets = opponent can only hit one per turn, but still devalues all
-        bonus -= Math.min(animalBuddies * 0.4, 1.5);
-        descs.push('opp Pred/Ants ×' + (animalBuddies + 1) + ' animals');
+        var oppAnimalPenalty = Math.min(animalBuddies * 0.4, 1.5);
+        bonus -= oppAnimalPenalty;
+        descs.push('opp Pred/Ants ×' + (animalBuddies + 1) + ' animals −' + oppAnimalPenalty);
       }
     }
     // If opponent has plant attacks and I'm investing in plant prod, discount stacking
@@ -9260,8 +9399,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (_oppEff && _oppEff.pp > 0) ppBuddies++;
       }
       if (ppBuddies >= 2) {
-        bonus -= Math.min(ppBuddies * 0.3, 1);
-        descs.push('opp plant atk risky');
+        var oppPlantPenalty = Math.min(ppBuddies * 0.3, 1);
+        bonus -= oppPlantPenalty;
+        descs.push('opp plant atk risky −' + oppPlantPenalty);
       }
     }
 
@@ -9318,8 +9458,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
             if (_ocEff && _ocEff.oc > 0) otherOc++;
           }
           if (otherOc >= 1) {
-            raisesPenalty += Math.min(otherOc * 0.4, 1.5);
-            descs.push('opp Polaris oc×' + (otherOc + 1));
+            var polarisRaisePenalty = Math.min(otherOc * 0.4, 1.5);
+            raisesPenalty += polarisRaisePenalty;
+            descs.push('opp Polaris oc×' + (otherOc + 1) + ' −' + polarisRaisePenalty);
           }
         }
         // Aphrodite: venus raises help them
@@ -9331,8 +9472,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
             if (_vnEff && _vnEff.vn > 0) otherVn++;
           }
           if (otherVn >= 1) {
-            raisesPenalty += Math.min(otherVn * 0.3, 1);
-            descs.push('opp Aphrodite vn×' + (otherVn + 1));
+            var aphroditeRaisePenalty = Math.min(otherVn * 0.3, 1);
+            raisesPenalty += aphroditeRaisePenalty;
+            descs.push('opp Aphrodite vn×' + (otherVn + 1) + ' −' + aphroditeRaisePenalty);
           }
         }
       }
@@ -9598,8 +9740,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (TM_TAG_TRIGGERS[myHand[_nti]] || TM_CARD_DISCOUNTS[myHand[_nti]]) missedSources++;
       }
       if (missedSources >= 1) {
-        bonus -= Math.min(missedSources * 0.6, 2);
-        descs.push('no tag: miss ' + missedSources + ' trigger/disc');
+        var noTagPenalty = Math.min(missedSources * 0.6, 2);
+        bonus -= noTagPenalty;
+        descs.push('no tag: miss ' + missedSources + ' trigger/disc −' + noTagPenalty);
       }
     }
 
@@ -9660,7 +9803,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var myTag = cardTagsArr[_tdk];
       if (myTag === 'event') continue;
       var tdCount = tagDensity[myTag] || 0;
-      if (tdCount >= 4) {
+      if (tdCount >= 4 && !(isTimingPureProdCard && gensLeft <= 2)) {
         // 4+ same tag = Builder (building 8), Scientist (science 3), etc.
         bonus += Math.min((tdCount - 3) * 0.4, 1.5);
         descs.push(tdCount + ' ' + getRequirementTagReasonLabel(myTag) + ' тегов в руке');
@@ -9684,7 +9827,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (expensiveCount >= 3 && avgHandCost > 22) {
         var overloadPen = -Math.min((avgHandCost - 22) * 0.15, 2.5);
         bonus += overloadPen;
-        descs.push('costly hand avg' + Math.round(avgHandCost));
+        descs.push('costly hand avg' + Math.round(avgHandCost) + ' −' + Math.abs(Math.round(overloadPen * 10) / 10));
       }
     }
 
@@ -9703,7 +9846,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       // Also check if there's NO energy consumer in hand (section 7 handles that)
       var hasConsumer = false;
       for (var _ehj = 0; _ehj < myHand.length; _ehj++) {
-        if (TM_ENERGY_CONSUMERS.indexOf(myHand[_ehj]) >= 0 && myHand[_ehj] !== cardName) { hasConsumer = true; break; }
+        if (TM_ENERGY_CONSUMERS.indexOf(myHand[_ehj]) >= 0 && myHand[_ehj] !== cardName && myHand[_ehj] !== 'Power Infrastructure') { hasConsumer = true; break; }
       }
       // If no consumer, energy → heat. With heat strategy, that's a bonus.
       if (!hasConsumer && heatBenefitCards >= 2) {
@@ -9721,7 +9864,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // These cards convert resources to MC or TR; value scales with matching production in hand
     var MC_CONVERTERS = {
       'Insulation': { src: 'hp', label: 'heat→MC', perProd: 0.6, cap: 5 },
-      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.8, cap: 5 },
+      'Power Infrastructure': { src: 'ep', label: 'energy→MC', perProd: 0.25, cap: 1.5, minProd: 4 },
       'Caretaker Contract': { src: 'hp', label: 'heat→TR', perProd: 0.6, cap: 5 },
     };
     var mcConv = MC_CONVERTERS[cardName];
@@ -9733,23 +9876,23 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (mcEff && mcEff[mcConv.src] > 0) convProdTotal += mcEff[mcConv.src];
       }
       // Section 24 (NAMED_EFF_COMBOS) already covers Insulation→hp, but this adds the converter's own perspective
-      if (convProdTotal >= 3) {
+      if (convProdTotal >= (mcConv.minProd || 3)) {
         var convVal = Math.min(convProdTotal * mcConv.perProd, mcConv.cap);
         bonus += convVal;
         descs.push(mcConv.label + ' ×' + convProdTotal + ' prod');
       }
     }
     // Reverse: production card + converter in hand
-    if (cardEff.hp && cardEff.hp > 0 && (handSet.has('Caretaker Contract') || handSet.has('Power Infrastructure'))) {
+    if (cardEff.hp && cardEff.hp > 0 && handSet.has('Caretaker Contract')) {
       // Only add if NOT already covered by Insulation in NAMED_EFF_COMBOS
       if (!handSet.has('Insulation')) {
-        var convName = handSet.has('Caretaker Contract') ? 'Caretaker' : 'PwrInfra';
+        var convName = 'Caretaker';
         bonus += Math.min(cardEff.hp * 0.4, 2);
         descs.push(convName + ' convert');
       }
     }
     if (cardEff.ep && cardEff.ep > 0 && handSet.has('Power Infrastructure')) {
-      bonus += Math.min(cardEff.ep * 0.5, 2.5);
+      bonus += Math.min(cardEff.ep * 0.15, 1);
       descs.push('PwrInfra ×' + cardEff.ep + 'ep');
     }
 
@@ -10148,8 +10291,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         }
       }
       if (antiEnablers >= 1) {
-        bonus -= Math.min(antiEnablers * 0.4, 1);
-        descs.push(antiEnablers + ' raise vs max-req');
+        var maxReqAntiPenalty = Math.min(antiEnablers * 0.4, 1);
+        bonus -= maxReqAntiPenalty;
+        descs.push(antiEnablers + ' raise vs max-req −' + maxReqAntiPenalty);
       }
     }
 
@@ -10273,9 +10417,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // ── 71. TRIPLE RESOURCE CHAIN: energy→heat→MC/TR pipeline compound ──
-    // If hand has energy prod + heat prod/converter + MC converter (Insulation/Power Infra/Caretaker),
-    // energy cards get extra bonus: energy→heat(residual)→MC is a triple chain.
-    var _mcConverters = ['Insulation', 'Power Infrastructure', 'Caretaker Contract'];
+    // If hand has energy prod + heat prod/converter + heat converter, energy residual can join a triple chain.
+    var _mcConverters = ['Insulation', 'Caretaker Contract'];
     var hasMCConverter = false;
     var hasHeatProd = false;
     var hasEnergyProd = false;
@@ -10310,7 +10453,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (lateOtherProd >= 2) {
         var lateProdPen = -Math.min((lateOtherProd - 1) * 0.5, 1.5);
         bonus += lateProdPen;
-        descs.push('late prod ×' + (lateOtherProd + 1));
+        descs.push('late prod ×' + (lateOtherProd + 1) + ' −' + Math.abs(lateProdPen));
       }
     }
 
@@ -10326,8 +10469,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
       // 3+ competing accumulators = diminishing returns on placement
       if (animalAccCount >= 2) {
-        bonus -= Math.min((animalAccCount - 1) * 0.4, 1);
-        descs.push((animalAccCount + 1) + ' animal VP compete');
+        var animalCompetePenalty = Math.min((animalAccCount - 1) * 0.4, 1);
+        bonus -= animalCompetePenalty;
+        descs.push((animalAccCount + 1) + ' animal VP compete −' + animalCompetePenalty);
       }
     }
 
@@ -10384,7 +10528,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // Having multiple energy sinks means you choose the best one each turn
     var _energyConverterMap = {
       'Steelworks': 'steel', 'Ironworks': 'steel', 'Water Splitting Plant': 'ocean',
-      'Electro Catapult': 'MC', 'Power Infrastructure': 'MC',
+      'Electro Catapult': 'MC',
       'Caretaker Contract': 'TR', 'Insulation': 'heat→MC'
     };
     if (cardEff.ep && cardEff.ep > 0) {
@@ -10426,8 +10570,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (atEff && atEff.c >= 20) expensiveOthers++;
       }
       if (expensiveOthers >= 3) {
-        bonus -= Math.min((expensiveOthers - 2) * 0.4, 1.2);
-        descs.push('MC crunch ×' + (expensiveOthers + 1));
+        var mcCrunchPenalty = Math.min((expensiveOthers - 2) * 0.4, 1.2);
+        bonus -= mcCrunchPenalty;
+        descs.push('MC crunch ×' + (expensiveOthers + 1) + ' −' + mcCrunchPenalty);
       }
     }
 
@@ -10442,7 +10587,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var hoEff80 = _effData[myHand[_hoi]];
         if (hoEff80 && hoEff80.hp > 0) totalHp80 += hoEff80.hp;
         if (hoEff80 && hoEff80.tmp > 0) hasTmpCards80 = true;
-        if (myHand[_hoi] === 'Insulation' || myHand[_hoi] === 'Power Infrastructure') hasMCSink80 = true;
+        if (myHand[_hoi] === 'Insulation') hasMCSink80 = true;
       }
       // Section 78 handles heat+tmp; section 58 handles heat+converters. This handles heat-only.
       if (!hasTmpCards80 && !hasMCSink80 && totalHp80 >= 8) {
@@ -10541,13 +10686,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // ── 81. ACTION STALL COMPOUND: 2-3 action cards = stall value (delay round end) ──
     // Section 32 penalizes 4+ actions. But 2-3 is the sweet spot: each extra action = ~1 MC stall value.
     // Only fires at gensLeft >= 3 (stall matters when game is contested, not in final push).
-    var isAction81 = !!(cardEff.actTR || cardEff.actMC || cardEff.vpAcc || cardEff.actCD || cardEff.actOc);
+    var isAction81 = isBlueActionFx(cardEff);
     if (isAction81 && gensLeft >= 3) {
       var actionsOther81 = 0;
       for (var _as81 = 0; _as81 < myHand.length; _as81++) {
         if (myHand[_as81] === cardName) continue;
         var asEff81 = _effData[myHand[_as81]];
-        if (asEff81 && (asEff81.actTR || asEff81.actMC || asEff81.vpAcc || asEff81.actCD || asEff81.actOc)) actionsOther81++;
+        if (isBlueActionFx(asEff81)) actionsOther81++;
       }
       // 2-3 action cards = stall bonus; 4+ already penalized by section 32
       if (actionsOther81 >= 1 && actionsOther81 <= 2) {
@@ -10733,7 +10878,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var dampFactor87 = 0.7; // reduce 30% of non-VP prod synergy excess
       var excessBonus87 = bonus - 2;
       bonus = 2 + excessBonus87 * dampFactor87;
-      descs.push('late damp');
+      var dampLoss87 = Math.round(excessBonus87 * (1 - dampFactor87) * 10) / 10;
+      descs.push('late damp −' + dampLoss87);
     }
 
     // ── 88. CITY ADJACENCY COMPOUND: 3+ city cards = adjacency VP compound ──
@@ -10907,12 +11053,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // ── 95. ACTION + VP ACCUMULATOR WINDOW: action VP cards need gens to accumulate ──
     // When hand has multiple action cards that accumulate VP (vpAcc), enough gensLeft amplifies their value.
-    if (cardEff.vpAcc && !(cardEff.actMC > 0) && gensLeft >= 4) {
+    if (isVpAccumulatorActionFx(cardEff) && !(cardEff.actMC > 0) && gensLeft >= 4) {
       var otherVpAcc95 = 0;
       for (var _v95 = 0; _v95 < myHand.length; _v95++) {
         if (myHand[_v95] === cardName) continue;
         var v95Eff = _effData[myHand[_v95]];
-        if (v95Eff && v95Eff.vpAcc) otherVpAcc95++;
+        if (isVpAccumulatorActionFx(v95Eff)) otherVpAcc95++;
       }
       // 2+ vpAcc cards = VP accumulation engine; more gens = more VP
       if (otherVpAcc95 >= 1) {
@@ -10931,7 +11077,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var heatUse96 = 0; // heat converters or temp raisers
       for (var _ec96 = 0; _ec96 < myHand.length; _ec96++) {
         if (myHand[_ec96] === cardName) continue;
-        if (TM_ENERGY_CONSUMERS.indexOf(myHand[_ec96]) >= 0) hasConsumer96 = true;
+        if (TM_ENERGY_CONSUMERS.indexOf(myHand[_ec96]) >= 0 && myHand[_ec96] !== 'Power Infrastructure') hasConsumer96 = true;
         var ec96Eff = _effData[myHand[_ec96]];
         if (ec96Eff) {
           if (ec96Eff.hp > 0) heatTotal96 += ec96Eff.hp;
@@ -10992,15 +11138,15 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // ── 100. STALL + VP ACCUMULATOR COMPOUND: action VP + stall = VP/gen while delaying ──
     // When action vpAcc cards also have stall value (2-3 actions), each stall action generates VP.
-    if (cardEff.vpAcc && isAction81 && gensLeft >= 4) {
+    if (isVpAccumulatorActionFx(cardEff) && isAction81 && gensLeft >= 4) {
       var otherActions100 = 0;
       var otherVpAcc100 = 0;
       for (var _sv100 = 0; _sv100 < myHand.length; _sv100++) {
         if (myHand[_sv100] === cardName) continue;
         var sv100Eff = _effData[myHand[_sv100]];
         if (!sv100Eff) continue;
-        if (sv100Eff.actTR || sv100Eff.actMC || sv100Eff.vpAcc || sv100Eff.actCD || sv100Eff.actOc) otherActions100++;
-        if (sv100Eff.vpAcc) otherVpAcc100++;
+        if (isBlueActionFx(sv100Eff)) otherActions100++;
+        if (isVpAccumulatorActionFx(sv100Eff)) otherVpAcc100++;
       }
       // 2+ total actions AND 1+ other vpAcc = stalling while accumulating VP
       if (otherActions100 >= 1 && otherVpAcc100 >= 1) {
@@ -11046,7 +11192,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         for (var _rp102 = 0; _rp102 < myHand.length; _rp102++) {
           if (myHand[_rp102] === cardName) continue;
           var rp102Eff = _effData[myHand[_rp102]];
-          if (rp102Eff && rp102Eff.res === _placeType102) matchingRes102++;
+          if (rp102Eff && rp102Eff.res === _placeType102 && resourcePlacementCanReachTarget(cardEff, rp102Eff, myHand[_rp102])) matchingRes102++;
         }
         // Multi-placement cards become keystones with slightly fewer matching targets.
         if (matchingRes102 >= 3 || (_placeCount102 >= 2 && matchingRes102 >= 2)) {
@@ -11064,7 +11210,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var rp102rEff = _effData[myHand[_rp102r]];
         if (rp102rEff && rp102rEff.places) {
           var rp102rTypes = Array.isArray(rp102rEff.places) ? rp102rEff.places : [rp102rEff.places];
-          if (rp102rTypes.indexOf(cardEff.res) !== -1) {
+          if (rp102rTypes.indexOf(cardEff.res) !== -1 && resourcePlacementCanReachTarget(rp102rEff, cardEff, cardName)) {
             placers102 += Math.max(1, (rp102rEff.placesN || 1) >= 3 ? 2 : 1);
           }
         }
@@ -11080,7 +11226,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // ── 103. ACTION REVENUE DIVERSITY: 3+ action cards with different revenue types ──
     // When action cards produce MC, TR, cards, and oceans from different sources,
     // the hand has diversified income = lower variance, more flexible per-gen decisions.
-    var isAction103 = cardEff.actTR > 0 || cardEff.actMC > 0 || cardEff.actCD > 0 || cardEff.actOc > 0 || cardEff.vpAcc;
+    var isAction103 = isBlueActionFx(cardEff);
     if (isAction103) {
       var revenueTypes103 = {};
       var actionCount103 = 0;
@@ -11092,7 +11238,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (ar103Eff.actMC > 0) { revenueTypes103['MC'] = true; hasAct103 = true; }
         if (ar103Eff.actCD > 0) { revenueTypes103['CD'] = true; hasAct103 = true; }
         if (ar103Eff.actOc > 0) { revenueTypes103['OC'] = true; hasAct103 = true; }
-        if (ar103Eff.vpAcc) { revenueTypes103['VP'] = true; hasAct103 = true; }
+        if (isVpAccumulatorActionFx(ar103Eff)) { revenueTypes103['VP'] = true; hasAct103 = true; }
         if (hasAct103) actionCount103++;
       }
       var revTypes103 = Object.keys(revenueTypes103).length;
@@ -11140,6 +11286,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       return 'Повтор ' + label + ' +' + weight;
     }
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
+  }
+
+  function dampTableauSynergyWeight(cardName, targetName, weight, reverse) {
+    if (cardName === 'Power Infrastructure' || targetName === 'Power Infrastructure') {
+      return Math.min(weight, reverse ? 0.5 : 1);
+    }
+    return weight;
   }
 
   function isSpentTableauSynergy(cardName, targetName) {
@@ -11202,6 +11355,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (isSpentTableauSynergy(cardName, sn)) continue;
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
+          sw = dampTableauSynergyWeight(cardName, sn, sw, false);
           synTotal += sw;
           directPartners.add(sn);
           var directReason = formatTableauSynergyReason(cardName, sn, sw, false);
@@ -11222,6 +11376,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
           if (isSpentTableauSynergy(cardName, myCard)) break;
           var rw = Math.round(((yWeight(re) || SC.tableauSynergyPer) * reverseScale) * 10) / 10;
+          rw = dampTableauSynergyWeight(cardName, myCard, rw, true);
           synCount++;
           synTotal += rw;
           var reverseReason = formatTableauSynergyReason(cardName, myCard, rw, true);
@@ -13069,7 +13224,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (fx.actTR) { var trVal = fx.actTR * 7.2; aMCValue += trVal; aReasons.push('+' + fx.actTR + ' TR (~' + Math.round(trVal) + ' MC)'); }
         if (fx.actCD) { aMCValue += fx.actCD * 3.5; aReasons.push('+' + fx.actCD + ' карт'); }
         if (fx.actOc && !paramMaxed.oceans) { aMCValue += 18; aReasons.push('Океан!'); }
-        if (fx.vpAcc) { aMCValue += fx.vpAcc * 5; aReasons.push('+' + fx.vpAcc + ' VP'); }
+        if (isVpAccumulatorActionFx(fx)) { aMCValue += fx.vpAcc * 5; aReasons.push('+' + fx.vpAcc + ' VP'); }
       }
 
       if (!fx) {
@@ -13731,10 +13886,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var mod10 = absCount % 10;
       var mod100 = absCount % 100;
       var noun = (mod10 === 1 && mod100 !== 11)
-        ? 'проект под корпу'
+        ? 'карта под корпу'
         : (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14))
-          ? 'проекта под корпу'
-          : 'проектов под корпу';
+          ? 'карты под корпу'
+          : 'карт под корпу';
       return count + ' ' + noun + ' ' + (value >= 0 ? '+' : '') + value;
     }
 
@@ -14867,6 +15022,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     attributes: true,
     attributeFilter: ['data-tm-vue-bridge']
   });
+
   // Extension no longer renders Elo badges in-game. Only clean up old injected nodes.
   removeEloBadges();
 

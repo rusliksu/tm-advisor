@@ -1094,7 +1094,9 @@
       return (vpInfo.vp || 0) * vpMCFn(gensLeft);
     }
     if (vpInfo.type === 'per_resource') {
-      var expectedRes = Math.max(1, gensLeft - 2);
+      var resourcePerAction = Number(vpInfo.actionResourceAmount || vpInfo.resourcePerAction || 1);
+      if (!isFinite(resourcePerAction) || resourcePerAction <= 0) resourcePerAction = 1;
+      var expectedRes = Math.max(1, gensLeft - 2) * resourcePerAction;
       return (expectedRes / (vpInfo.per || 1)) * vpMCFn(gensLeft) * 0.8;
     }
     if (vpInfo.type === 'per_tag') {
@@ -1124,7 +1126,7 @@
     if (act.addResources && vpInfo && vpInfo.type === 'per_resource') {
       // already counted in VP projection
     } else if (act.addResources) {
-      delta += gensLeft * 1;
+      delta += gensLeft * (Number(act.addResources) || 1);
     }
     if (act.drawCard) delta += gensLeft * act.drawCard * 3;
     if (act.stock) {

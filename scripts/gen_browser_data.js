@@ -18,12 +18,39 @@ const EXT_DATA = path.join(ROOT, 'extension', 'data');
 
 const allCards = JSON.parse(fs.readFileSync(path.join(DATA, 'all_cards.json'), 'utf8'));
 const allCardsByName = Object.fromEntries(allCards.map((card) => [card.name, card]));
+let rawCards = [];
+try {
+  rawCards = JSON.parse(fs.readFileSync(path.join(DATA, 'tm-all-cards-raw.json'), 'utf8'));
+} catch(e) {
+  rawCards = [];
+}
+const rawCardsByName = Object.fromEntries(rawCards.map((card) => [card.name, card]));
+let extractedBehaviors = {};
+try {
+  extractedBehaviors = require(path.join(DATA, 'all-card-behaviors.json'));
+} catch(e) {
+  extractedBehaviors = {};
+}
+
+function readGeneratedObject(filename, varName) {
+  try {
+    const loaded = require(resolveGeneratedExtensionPath(filename));
+    if (loaded && typeof loaded === 'object' && Object.keys(loaded).length > 0) {
+      return loaded;
+    }
+  } catch(e) {}
+  try {
+    const src = readGeneratedExtensionFile(filename, 'utf8');
+    const re = new RegExp(`(?:const|var)\\s+${varName}\\s*=\\s*(\\{[\\s\\S]*\\})\\s*;`);
+    const match = src.match(re);
+    return match ? eval('(' + match[1] + ')') : {};
+  } catch(e) {
+    return {};
+  }
+}
 
 // Load existing card_tags.js for tag fallback (has more cards than all_cards.json)
-let existingCardTags = {};
-try {
-  existingCardTags = require(resolveGeneratedExtensionPath('card_tags.js'));
-} catch(e) {}
+const existingCardTags = readGeneratedObject('card_tags.js', 'TM_CARD_TAGS');
 
 // Parse TM_CARD_EFFECTS from .js file (strip const declaration, eval as expression)
 const effectsSrc = readGeneratedExtensionFile('card_effects.json.js', 'utf8');
@@ -41,7 +68,7 @@ const vpMult = eval('(' + vpMatch[1] + ')');
 // 1. CARD TAGS — { "Birds": ["animal"], ... }
 // ══════════════════════════════════════════════════════════════
 
-const cardTags = {};
+const cardTags = Object.assign({}, existingCardTags);
 for (const card of allCards) {
   if (card.tags && card.tags.length > 0) {
     cardTags[card.name] = card.tags.map(t => t.toLowerCase());
@@ -73,6 +100,100 @@ function normalizeResourceType(resourceType) {
   return text.replace(/[\s-]+/g, '_');
 }
 
+function resourceVPFromRaw(card) {
+  if (!card || !card.victoryPoints || typeof card.victoryPoints !== 'object') return null;
+  if (!Object.prototype.hasOwnProperty.call(card.victoryPoints, 'resourcesHere')) return null;
+  const metaVP = card.metadata && card.metadata.victoryPoints;
+  if (metaVP && metaVP.targetOneOrMore) return null;
+
+  let divisor = null;
+  if (typeof card.victoryPoints.per === 'number') {
+    divisor = card.victoryPoints.per;
+  } else if (typeof card.victoryPoints.each === 'number') {
+    if (card.victoryPoints.each <= 0) return null;
+    divisor = 1 / card.victoryPoints.each;
+  } else if (metaVP && typeof metaVP.points === 'number' && typeof metaVP.target === 'number') {
+    if (metaVP.points <= 0 || metaVP.target <= 0) return null;
+    divisor = metaVP.target / metaVP.points;
+  } else {
+    divisor = 1;
+  }
+  if (!Number.isFinite(divisor) || divisor <= 0) return null;
+  return {type: 'per_resource', per: divisor};
+}
+
+function textFromRenderNode(node) {
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) return node.map(textFromRenderNode).join(' ');
+  if (!node || typeof node !== 'object') return '';
+  return Object.values(node).map(textFromRenderNode).join(' ');
+}
+
+function collectRenderResources(node, out) {
+  if (Array.isArray(node)) {
+    for (const item of node) collectRenderResources(item, out);
+    return;
+  }
+  if (!node || typeof node !== 'object') return;
+  if (node.type === 'resource' && typeof node.amount === 'number' && node.amount > 0) {
+    out.push({
+      amount: node.amount,
+      resourceType: normalizeResourceType(node.resource),
+      tagConstraint: node.secondaryTag ? String(node.secondaryTag).toLowerCase() : null,
+    });
+  }
+  for (const value of Object.values(node)) collectRenderResources(value, out);
+}
+
+function actionResourceAddFromRaw(card) {
+  if (!card || !card.metadata || !card.metadata.renderData) return null;
+  const resourceType = normalizeResourceType(card.resourceType);
+  if (!resourceType) return null;
+  const rows = card.metadata.renderData.rows || [];
+  let best = null;
+  for (const row of rows) {
+    const text = textFromRenderNode(row);
+    if (!/\bAction:/i.test(text) || !/\b(add|put)\b/i.test(text)) continue;
+    const resources = [];
+    collectRenderResources(row, resources);
+    for (const resource of resources) {
+      if (resource.resourceType !== resourceType) continue;
+      if (!best || resource.amount > best.amount) {
+        best = {
+          amount: resource.amount,
+          resourceType: resource.resourceType,
+          target: /\bany\b/i.test(text) ? 'any' : 'this',
+          tagConstraint: resource.tagConstraint,
+        };
+      }
+    }
+  }
+  return best;
+}
+
+function actionResourceAddFromExtracted(name, e) {
+  const extracted = extractedBehaviors[name];
+  const actionAdd = extracted && extracted.action && extracted.action.addResources;
+  if (typeof actionAdd !== 'number' || actionAdd <= 0) return null;
+  return {
+    amount: actionAdd,
+    resourceType: normalizeResourceType((extracted && extracted.resourceType) || (e && e.res)),
+    target: 'this',
+  };
+}
+
+function staticActionResourceAdd(name, e) {
+  const rawAdd = actionResourceAddFromRaw(rawCardsByName[name]);
+  if (rawAdd) return rawAdd;
+  const extractedAdd = actionResourceAddFromExtracted(name, e);
+  if (extractedAdd) return extractedAdd;
+  return {
+    amount: 1,
+    resourceType: normalizeResourceType((rawCardsByName[name] && rawCardsByName[name].resourceType) || (e && e.res)),
+    target: 'this',
+  };
+}
+
 // From vp_multipliers
 for (const [name, info] of Object.entries(vpMult)) {
   if (info.vpPer === 'self_resource') {
@@ -97,6 +218,14 @@ for (const [name, e] of Object.entries(effects)) {
     // VP per tag (e.g. 1 VP per Jovian tag)
     cardVP[name] = { type: 'per_tag', tag: e.vpTag.tag, per: e.vpTag.per || 1 };
   }
+}
+
+// From raw canonical TM source extraction. This covers Moon/Pathfinders/etc.
+// cards not present in compact all_cards.json and corrects stale generated
+// divisors such as Solarpedia's 1 VP / 6 data.
+for (const card of rawCards) {
+  const rawResourceVP = resourceVPFromRaw(card);
+  if (rawResourceVP) cardVP[card.name] = rawResourceVP;
 }
 
 // From all_cards.json (static VP not in effects)
@@ -125,6 +254,57 @@ const PROD_MAP = { mp: 'megacredits', sp: 'steel', tp: 'titanium', pp: 'plants',
 const STOCK_MAP = { mc: 'megacredits', st: 'steel', ti: 'titanium', pl: 'plants', en: 'energy', he: 'heat' };
 const ACTION_STOCK_MAP = { actMC: 'megacredits', actST: 'steel', actTI: 'titanium', actPL: 'plants', actEN: 'energy', actHE: 'heat' };
 const GLOBAL_MAP = { tmp: 'temperature', o2: 'oxygen', vn: 'venus' };
+const SCORE_ONLY_BEHAVIOR_DRAW = new Set([
+  // OPG/filtering effects that use cd as a valuation proxy in effects, but
+  // are not immediate free card draw in factual browser card_data.
+  'Ender',
+  'Tate',
+]);
+const BEHAVIOR_DRAW_OVERRIDES = {
+  'Sponsored Academies': {
+    // The printed effect is discard 1, then draw 3; opponents draw 1.
+    // netDrawCard is only the resulting hand-size delta, not the scoring input:
+    // the discarded card comes from the old hand before the 3-card draw.
+    drawCard: 3,
+    netDrawCard: 2,
+    discardCardsFromHand: 1,
+    discardBeforeDraw: true,
+    discardCardCostMC: 1,
+    opponentsDrawCard: 1,
+  },
+  'Spire': {
+    // Initial action: draw 4, then discard 3 from the enlarged hand.
+    // Net hand-size is +1, with selection/filtering value from seeing 4.
+    drawCard: 4,
+    netDrawCard: 1,
+    discardCardsFromHand: 3,
+    discardAfterDraw: true,
+    discardCardSelectionBonusMC: 0.75,
+  },
+  'Nanotech Industries': {
+    // Initial action: draw 3 and keep 2. Net hand-size is +2, with a small
+    // filtering bonus from seeing one extra card.
+    drawCard: 3,
+    netDrawCard: 2,
+    discardCardsFromHand: 1,
+    discardAfterDraw: true,
+    discardCardSelectionBonusMC: 0.75,
+  },
+};
+const SCORE_ONLY_ACTION_DRAW = new Set([
+  // These actions look/reveal cards and optionally buy/keep them; actCD is an
+  // EV approximation for scoring, not a literal fractional card draw action.
+  "Inventors' Guild",
+  'Business Network',
+  'Venus Orbital Survey',
+  // The effect score uses a fractional card EV for the two-turn
+  // floater->card cycle. Browser card_data should show the factual branches.
+  'Red Spot Observatory',
+]);
+const SCORE_ONLY_ACTION_TR = new Set([
+  // Dynamic-cost Venus raise. actTR is an EV approximation for scoreCard.
+  'Venus Shuttles',
+]);
 const ACTION_CHOICES = {
   'United Nations Mars Initiative': [
     {
@@ -155,12 +335,100 @@ const ACTION_CHOICES = {
       cardType: 'active',
     },
   ],
+  'St. Joseph of Cupertino Mission': [
+    {
+      label: 'Pay 5 MC (steel may be used) to build 1 Cathedral in a city; city owner may pay 2 MC to draw 1 card',
+      conditional: true,
+      stock: { megacredits: -5 },
+      placeCathedral: true,
+      cityOwnerMayPayToDraw: { megacredits: 2, drawCard: 1 },
+    },
+  ],
   'Stefan': [
     {
       label: 'Once per game, sell any number of cards from hand for 3 MC each',
       conditional: true,
       oncePerGame: true,
       sellCardsFromHand: { megacredits: 3 },
+    },
+  ],
+  'Ender': [
+    {
+      label: 'Once per game, discard up to twice the generation number, then draw the same number of cards',
+      conditional: true,
+      oncePerGame: true,
+      variable: true,
+      discardCardsFromHand: { maxPerGenerationMultiplier: 2 },
+      drawCardsEqualToDiscarded: true,
+      netHandSizeChange: 0,
+    },
+  ],
+  'Tate': [
+    {
+      label: 'Once per game, name a tag; reveal until 5 cards with that tag, buy up to 2 and discard the rest',
+      conditional: true,
+      oncePerGame: true,
+      chooseTag: true,
+      excludeTags: ['wild', 'event', 'clone'],
+      revealUntilTaggedCards: 5,
+      acquireRevealedCards: {
+        optional: true,
+        keepMax: 2,
+        cost: { megacredits: 3 },
+        discardUnbought: true,
+      },
+    },
+  ],
+  "Inventors' Guild": [
+    {
+      label: 'Look at the top card and either buy it for 3 MC or discard it',
+      conditional: true,
+      revealTopCards: 1,
+      buyOrDiscardRevealedCards: true,
+      buyCost: { megacredits: 3 },
+      acquireRevealedCards: {
+        optional: true,
+        cost: { megacredits: 3 },
+        discardUnbought: true,
+      },
+    },
+  ],
+  'Business Network': [
+    {
+      label: 'Look at the top card and either buy it for 3 MC or discard it',
+      conditional: true,
+      revealTopCards: 1,
+      buyOrDiscardRevealedCards: true,
+      buyCost: { megacredits: 3 },
+      acquireRevealedCards: {
+        optional: true,
+        cost: { megacredits: 3 },
+        discardUnbought: true,
+      },
+    },
+  ],
+  'Ceres Tech Market': [
+    {
+      label: 'Discard any number of cards from hand to gain 2 MC each',
+      conditional: true,
+      variable: true,
+      sellCardsFromHand: { megacredits: 2 },
+    },
+  ],
+  'Venus Orbital Survey': [
+    {
+      label: 'Reveal the top 2 cards; keep Venus cards for free, buy or discard the rest',
+      conditional: true,
+      revealTopCards: 2,
+      keepTagsFree: ['venus'],
+      buyOrDiscardRest: true,
+      buyCost: { megacredits: 3 },
+      acquireRevealedCards: {
+        freeTags: ['venus'],
+        optionalPaidRest: true,
+        cost: { megacredits: 3 },
+        discardUnbought: true,
+      },
     },
   ],
   'Tycho Magnetics': [
@@ -245,6 +513,14 @@ const ACTION_CHOICES = {
       noBonuses: true,
     },
   ],
+  'Water Import From Europa': [
+    {
+      label: 'Pay 12 MC to place an ocean tile; titanium may be used',
+      stock: { megacredits: -12 },
+      global: { ocean: 1 },
+      canUseTitanium: true,
+    },
+  ],
   'Septem Tribus': [
     {
       label: 'When you perform an action, the wild tag counts as any tag of your choice',
@@ -281,6 +557,42 @@ const ACTION_CHOICES = {
       addResources: 1,
       resourceType: 'data',
       target: 'any',
+    },
+  ],
+  'Darkside Observatory': [
+    {
+      label: 'Add 1 science resource to an eligible science-resource card',
+      conditional: true,
+      addResources: 1,
+      resourceType: 'science',
+      target: 'any',
+      excludesHighVpScienceResources: true,
+    },
+    {
+      label: 'Add 2 data resources to any data card',
+      conditional: true,
+      addResources: 2,
+      resourceType: 'data',
+      target: 'any',
+    },
+  ],
+  'Floater-Urbanism': [
+    {
+      label: 'Spend 1 floater from any card to add 1 Venusian habitat here',
+      conditional: true,
+      spendResourcesAny: { type: 'floater', amount: 1 },
+      addResources: 1,
+      resourceType: 'venusian_habitat',
+      target: 'this',
+    },
+  ],
+  'Nanotech Industries': [
+    {
+      label: 'Add 1 science resource to any eligible science-resource card',
+      addResources: 1,
+      resourceType: 'science',
+      target: 'any',
+      excludesHighVpScienceResources: true,
     },
   ],
   'Electro Catapult': [
@@ -468,6 +780,15 @@ const ACTION_CHOICES = {
       underworld: { identify: 1 },
     },
   ],
+  'Search For Life': [
+    {
+      label: 'Spend 1 MC to reveal the top deck card; if it has a microbe tag, add 1 science resource here',
+      conditional: true,
+      stock: { megacredits: -1 },
+      revealTopCard: 1,
+      addResourcesIfTag: { tag: 'microbe', resourceType: 'science', amount: 1, target: 'this' },
+    },
+  ],
   'Search for Life Underground': [
     {
       label: 'Spend 1 MC to identify an underground resource; if it depicts a microbe, add 1 science resource here',
@@ -587,6 +908,27 @@ const ACTION_CHOICES = {
       completedParameterMc: 3,
     },
   ],
+  'Asteroid Rights': [
+    {
+      label: 'Spend 1 MC to add 1 asteroid to any card',
+      stock: { megacredits: -1 },
+      addResources: 1,
+      resourceType: 'asteroid',
+      target: 'any',
+    },
+    {
+      label: 'Remove 1 asteroid here to increase MC production 1 step',
+      conditional: true,
+      spendResourcesHere: 1,
+      production: { megacredits: 1 },
+    },
+    {
+      label: 'Remove 1 asteroid here to gain 2 titanium',
+      conditional: true,
+      spendResourcesHere: 1,
+      stock: { titanium: 2 },
+    },
+  ],
   'Comet Aiming': [
     {
       label: 'Spend 1 titanium to add 1 asteroid to any card',
@@ -661,6 +1003,28 @@ const ACTION_CHOICES = {
       stock: { heat: 4 },
     },
   ],
+  'Red Spot Observatory': [
+    {
+      label: 'Add 1 floater to this card',
+      addResources: 1,
+      resourceType: 'floater',
+      target: 'this',
+    },
+    {
+      label: 'Remove 1 floater here to draw a card',
+      conditional: true,
+      spendResourcesHere: 1,
+      drawCard: 1,
+    },
+  ],
+  'Venus Shuttles': [
+    {
+      label: 'Spend 12 MC minus 1 MC per Venus tag to raise Venus 1 step',
+      conditional: true,
+      dynamicCost: { baseMegacredits: 12, discountPerTag: 'venus', minimumMegacredits: 0 },
+      global: { venus: 1 },
+    },
+  ],
   'Project Workshop': [
     {
       label: 'Spend 3 MC to draw a blue card',
@@ -710,6 +1074,21 @@ const ACTION_CHOICES = {
       conditional: true,
       spendResourcesHere: 1,
       production: { megacredits: 1 },
+    },
+  ],
+  'Jet Stream Microscrappers': [
+    {
+      label: 'Spend 1 titanium to add 2 floaters to this card',
+      stock: { titanium: -1 },
+      addResources: 2,
+      resourceType: 'floater',
+      target: 'this',
+    },
+    {
+      label: 'Remove 2 floaters here to raise Venus 1 step',
+      conditional: true,
+      spendResourcesHere: 2,
+      global: { venus: 1 },
     },
   ],
   'Sulphur-Eating Bacteria': [
@@ -773,6 +1152,84 @@ const ACTION_CHOICES = {
       standardResourceChoice: true,
     },
   ],
+  'Bioengineering Enclosure': [
+    {
+      label: 'Remove 1 animal from here to add 1 animal to another card',
+      conditional: true,
+      spendResourcesHere: 1,
+      addResources: 1,
+      resourceType: 'animal',
+      target: 'another',
+    },
+  ],
+  'Cloud Vortex Outpost': [
+    {
+      label: 'Remove 1 floater from here to add 1 floater to another card',
+      conditional: true,
+      spendResourcesHere: 1,
+      addResources: 1,
+      resourceType: 'floater',
+      target: 'another',
+    },
+  ],
+  'Applied Science': [
+    {
+      label: 'Remove 1 science resource here to gain 1 standard resource',
+      conditional: true,
+      spendResourcesHere: 1,
+      gainStandardResource: 1,
+    },
+    {
+      label: 'Remove 1 science resource here to add 1 resource to any card with a resource',
+      conditional: true,
+      spendResourcesHere: 1,
+      addResources: 1,
+      target: 'any',
+      anyResourceCard: true,
+    },
+  ],
+  'Board of Directors': [
+    {
+      label: 'Draw 1 prelude; discard it or pay 12 MC and remove 1 director to play it',
+      conditional: true,
+      drawPreludeCard: 1,
+      optionalPlayDrawnPrelude: { megacredits: 12, spendResourcesHere: 1 },
+    },
+  ],
+  'Aeron Genomics': [
+    {
+      label: 'Discard up to 2 claimed underground resource tokens to add that many animals to any card',
+      conditional: true,
+      spendClaimedUndergroundTokens: { min: 1, max: 2 },
+      addResources: 2,
+      resourceType: 'animal',
+      target: 'any',
+      variable: true,
+    },
+  ],
+  'Demetron Labs': [
+    {
+      label: 'Spend 3 data here to identify 3 underground resources and claim 1',
+      conditional: true,
+      spendResourcesHere: 3,
+      underworld: { identify: 3, claim: 1 },
+    },
+  ],
+  'The Darkside of The Moon Syndicate': [
+    {
+      label: 'Spend 1 titanium to add 1 syndicate fleet here',
+      stock: { titanium: -1 },
+      addResources: 1,
+      resourceType: 'syndicate_fleet',
+      target: 'this',
+    },
+    {
+      label: 'Remove 1 syndicate fleet here to steal 2 MC from each opponent',
+      conditional: true,
+      spendResourcesHere: 1,
+      stealFromEachOpponent: { megacredits: 2 },
+    },
+  ],
   'Rotator Impacts': [
     {
       label: 'Spend 6 MC to add 1 asteroid to this card',
@@ -810,28 +1267,46 @@ const STALE_CARD_VP = new Set([
   'GHG Producing Bacteria',
   'Nitrite Reducing Bacteria',
   'Regolith Eaters',
+  'Search For Life',
+  'St. Joseph of Cupertino Mission',
 ]);
+for (const staleName of STALE_CARD_VP) {
+  delete cardVP[staleName];
+}
 const NO_STATIC_RESOURCE_ACTION = new Set([
   // Trigger-only or paid resource effects. Keep VP/resource metadata, but do
   // not expose them as free recurring resource actions in static card data.
   'Communication Center',
   'Comet Aiming',
   'Directed Impactors',
+  'Aeron Genomics',
+  'Applied Science',
+  'Bioengineering Enclosure',
+  'Board of Directors',
+  'Cloud Vortex Outpost',
+  'Demetron Labs',
   'Economic Espionage',
+  'Floater-Urbanism',
   'Floating Refinery',
   'Icy Impactors',
   'Martian Repository',
   'Neptunian Power Consultants',
   'Rotator Impacts',
+  'Search For Life',
+  'Asteroid Rights',
+  'St. Joseph of Cupertino Mission',
+  'Terraforming Robots',
 ]);
 const RESOURCE_TYPE_OVERRIDES = {
   'Saturn Surfing': 'floater',
   'Hospitals': 'disease',
+  'Nanotech Industries': 'science',
   'Search for Life Underground': 'science',
   'Space Privateers': 'fighter',
   'Stem Field Subsidies': 'data',
   'Think Tank': 'data',
   'Titan Manufacturing Colony': 'tool',
+  'Floater-Urbanism': 'venusian_habitat',
 };
 
 const cardData = {};
@@ -854,7 +1329,10 @@ for (const [name, e] of Object.entries(effects)) {
   for (const [k, longKey] of Object.entries(STOCK_MAP)) {
     if (typeof e[k] === 'number') stock[longKey] = e[k];
   }
-  if (e.cd) stock.cards = e.cd; // draw cards as stock
+  const behaviorDrawOverride = BEHAVIOR_DRAW_OVERRIDES[name] || null;
+  const behaviorDrawCards = behaviorDrawOverride ? behaviorDrawOverride.drawCard : e.cd;
+  if (behaviorDrawCards && !SCORE_ONLY_BEHAVIOR_DRAW.has(name)) stock.cards = behaviorDrawCards; // draw cards as stock
+  if (behaviorDrawOverride && typeof behaviorDrawOverride.netDrawCard === 'number') stock.cards = behaviorDrawOverride.netDrawCard;
   if (Object.keys(stock).length > 0) beh.stock = stock;
 
   // Global parameter raises
@@ -894,7 +1372,16 @@ for (const [name, e] of Object.entries(effects)) {
   if (Object.keys(colonies).length > 0) beh.colonies = colonies;
 
   // Draw cards
-  if (e.cd) beh.drawCard = e.cd;
+  if (behaviorDrawCards && !SCORE_ONLY_BEHAVIOR_DRAW.has(name)) beh.drawCard = behaviorDrawCards;
+  if (behaviorDrawOverride) {
+    if (typeof behaviorDrawOverride.netDrawCard === 'number') beh.netDrawCard = behaviorDrawOverride.netDrawCard;
+    if (behaviorDrawOverride.discardCardsFromHand) beh.discardCardsFromHand = behaviorDrawOverride.discardCardsFromHand;
+    if (behaviorDrawOverride.discardBeforeDraw) beh.discardBeforeDraw = true;
+    if (behaviorDrawOverride.discardAfterDraw) beh.discardAfterDraw = true;
+    if (typeof behaviorDrawOverride.discardCardCostMC === 'number') beh.discardCardCostMC = behaviorDrawOverride.discardCardCostMC;
+    if (typeof behaviorDrawOverride.discardCardSelectionBonusMC === 'number') beh.discardCardSelectionBonusMC = behaviorDrawOverride.discardCardSelectionBonusMC;
+    if (behaviorDrawOverride.opponentsDrawCard) beh.opponentsDrawCard = behaviorDrawOverride.opponentsDrawCard;
+  }
 
   // Attack
   if (e.pOpp) beh.decreaseAnyProduction = { count: e.pOpp };
@@ -904,11 +1391,12 @@ for (const [name, e] of Object.entries(effects)) {
 
   // ── action (blue card recurring) ──
   const act = {};
+  let resourceActionAdd = null;
   const catalogCard = allCardsByName[name];
   const canExposeStaticAction = !catalogCard || catalogCard.hasAction === true;
   if (canExposeStaticAction) {
-    if (e.actCD) act.drawCard = e.actCD;
-    if (e.actTR) act.tr = e.actTR;
+    if (e.actCD && !SCORE_ONLY_ACTION_DRAW.has(name)) act.drawCard = e.actCD;
+    if (e.actTR && !SCORE_ONLY_ACTION_TR.has(name)) act.tr = e.actTR;
     const actStock = {};
     for (const [k, longKey] of Object.entries(ACTION_STOCK_MAP)) {
       if (typeof e[k] === 'number') actStock[longKey] = e[k];
@@ -926,16 +1414,33 @@ for (const [name, e] of Object.entries(effects)) {
       if (typeof actionProd === 'number') actProduction[longKey] = actionProd;
     }
     if (Object.keys(actProduction).length > 0) act.production = actProduction;
-    if ((e.vpAcc || e.res) && !NO_STATIC_RESOURCE_ACTION.has(name)) act.addResources = 1;
+    if ((e.vpAcc || e.res) && !NO_STATIC_RESOURCE_ACTION.has(name)) {
+      resourceActionAdd = staticActionResourceAdd(name, e);
+      act.addResources = resourceActionAdd.amount || 1;
+      if (resourceActionAdd.resourceType) act.resourceType = resourceActionAdd.resourceType;
+      if (resourceActionAdd.target && resourceActionAdd.target !== 'this') act.target = resourceActionAdd.target;
+      if (resourceActionAdd.tagConstraint) act.tagConstraint = resourceActionAdd.tagConstraint;
+    }
   }
   if (Object.keys(act).length > 0) entry.action = act;
   if (ACTION_CHOICES[name]) entry.actionChoices = ACTION_CHOICES[name];
 
   // ── VP ──
-  if (cardVP[name]) entry.vp = cardVP[name];
+  if (cardVP[name]) {
+    if (
+      resourceActionAdd
+      && resourceActionAdd.amount > 1
+      && cardVP[name].type === 'per_resource'
+    ) {
+      cardVP[name] = Object.assign({}, cardVP[name], { actionResourceAmount: resourceActionAdd.amount });
+    }
+    entry.vp = cardVP[name];
+  }
 
   // ── Resource type ──
-  if (e.res) entry.resourceType = e.res;
+  const rawCard = rawCardsByName[name];
+  if (rawCard && rawCard.resourceType) entry.resourceType = normalizeResourceType(rawCard.resourceType);
+  else if (e.res) entry.resourceType = e.res;
   else if (RESOURCE_TYPE_OVERRIDES[name]) entry.resourceType = RESOURCE_TYPE_OVERRIDES[name];
   else if (allCardsByName[name] && allCardsByName[name].resourceType) {
     entry.resourceType = normalizeResourceType(allCardsByName[name].resourceType);

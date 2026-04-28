@@ -15,6 +15,12 @@ const {
 const ROOT = path.resolve(__dirname, '..');
 const extracted = require(path.join(ROOT, 'data', 'all-card-behaviors.json'));
 const allCards = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'all_cards.json'), 'utf8'));
+let rawCards = [];
+try {
+  rawCards = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'tm-all-cards-raw.json'), 'utf8'));
+} catch (e) {
+  rawCards = [];
+}
 // Load existing card_effects
 const effectsPath = resolveGeneratedExtensionPath('card_effects.json.js');
 const effectsSrc = fs.readFileSync(effectsPath, 'utf8');
@@ -28,9 +34,55 @@ console.log('Existing effects:', Object.keys(effects).length);
 const PROD_MAP = { megacredits: 'mp', steel: 'sp', titanium: 'tp', plants: 'pp', energy: 'ep', heat: 'hp' };
 const STOCK_MAP = { megacredits: 'mc', steel: 'st', titanium: 'ti', plants: 'pl', energy: 'en', heat: 'he' };
 const GLOBAL_MAP = { temperature: 'tmp', oxygen: 'o2', venus: 'vn' };
+function normalizeResourceType(resourceType) {
+  const text = String(resourceType || '').trim().toLowerCase();
+  if (!text) return '';
+  return text.replace(/[\s-]+/g, '_');
+}
+function floaterTargetTagFromRaw(card) {
+  const tags = (card && card.tags || [])
+    .map((tag) => String(tag || '').trim().toLowerCase())
+    .filter((tag) => tag === 'venus' || tag === 'jovian');
+  if (tags.length === 0) return null;
+  return tags.length === 1 ? tags[0] : tags;
+}
+function resourceVPFromRaw(card) {
+  if (!card || !card.victoryPoints || typeof card.victoryPoints !== 'object') return null;
+  if (!Object.prototype.hasOwnProperty.call(card.victoryPoints, 'resourcesHere')) return null;
+  const metaVP = card.metadata && card.metadata.victoryPoints;
+  if (metaVP && metaVP.targetOneOrMore) return null;
+
+  let divisor = null;
+  if (typeof card.victoryPoints.per === 'number') {
+    divisor = card.victoryPoints.per;
+  } else if (typeof card.victoryPoints.each === 'number') {
+    if (card.victoryPoints.each <= 0) return null;
+    divisor = 1 / card.victoryPoints.each;
+  } else if (metaVP && typeof metaVP.points === 'number' && typeof metaVP.target === 'number') {
+    if (metaVP.points <= 0 || metaVP.target <= 0) return null;
+    divisor = metaVP.target / metaVP.points;
+  } else {
+    divisor = 1;
+  }
+  const res = normalizeResourceType(card.resourceType || (metaVP && metaVP.item && metaVP.item.resource));
+  if (!res || !Number.isFinite(divisor) || divisor <= 0) return null;
+  return {res, divisor};
+}
+function rawRenderText(card) {
+  if (!card) return '';
+  const chunks = [];
+  if (card.description) chunks.push(String(card.description));
+  if (card.metadata && card.metadata.renderData) chunks.push(JSON.stringify(card.metadata.renderData));
+  return chunks.join(' ').toLowerCase();
+}
+function isTriggerOnlyResourceVP(card) {
+  if (!card || card.hasAction) return false;
+  const text = rawRenderText(card);
+  return text.includes('effect:') && !text.includes('action:');
+}
 const STALE_EFFECT_KEYS = {
   // These cards use delayed/action resource conversion, not immediate global/TR effects.
-  'Darkside Observatory': ['tr'],
+  'Darkside Observatory': ['tr', 'actCD'],
   // Stateful OR-actions: add a resource now, or spend stored resources for a
   // payoff. Do not expose both branches as one recurring static action.
   'Aerial Mappers': ['actCD'],
@@ -66,6 +118,7 @@ const STALE_EFFECT_KEYS = {
   'Regolith Eaters': ['actTR', 'actO2'],
   'Refugee Camps': ['actMC'],
   'Rotator Impacts': ['actTR', 'res', 'tg'],
+  'Space Relay': ['actCD'],
   'Steelworks': ['actMC'],
   'Stratopolis': ['actCD'],
   'Sulphur-Eating Bacteria': ['actMC'],
@@ -76,6 +129,9 @@ const STALE_EFFECT_KEYS = {
   'Asteroid Resources': ['st', 'ti', 'oc'],
   // Discount/enabler only: parser used render symbols as real MC production + city placement.
   'Prefabrication of Human Habitats': ['mp', 'city'],
+  // Dynamic VP: 3 VP only if a science resource was actually found. Do not
+  // expose this as printed/static VP in scoring data.
+  'Search For Life': ['vp'],
 };
 const MANUAL_EFFECT_PATCHES = {
   // Paid draw actions should stay explicit. A net actMC shortcut makes these
@@ -109,9 +165,20 @@ const MANUAL_EFFECT_PATCHES = {
   // Corporation action reuses another already-used blue-card action; it is not
   // a fixed MC payout.
   'Viron': {remove: ['actMC']},
+  // Cathedrals are special city markers, not fighter resources on this card.
+  // Do not expose this as a generic VP/resource accumulator.
+  'St. Joseph of Cupertino Mission': {remove: ['res', 'vpAcc', 'vpPer']},
   // Variable/conditional actions. Keep their factual actionChoices in
   // generated card_data, but do not expose a single recurring MC number.
   'Stefan': {remove: ['actMC']},
+  // Discard cards from hand for MC. The action does not draw cards, and a
+  // fractional actCD created fake recurring card-flow value.
+  'Ceres Tech Market': {remove: ['actCD']},
+  // Stateful floater action: standalone it averages about 0.5 card/action via
+  // add-floater -> spend-floater, while external floater support can raise the
+  // ceiling. Keep actCD as score-only EV, and let generated actionChoices hold
+  // the factual branches.
+  'Red Spot Observatory': {set: {actCD: 0.5, res: 'floater', tg: 'jovian'}},
   'Luna Trade Station': {remove: ['actMC']},
   'HE3 Refinery': {remove: ['actMC']},
   'Steel Market Monopolists': {remove: ['actMC']},
@@ -128,6 +195,32 @@ const MANUAL_EFFECT_PATCHES = {
   // Dynamic plant payout per Venus tag, plant tag, and owned colony. This does
   // not place a greenery, and stale grn/cost data inflated advisor value.
   'Soil Studies': {remove: ['grn'], set: {c: 13}},
+  // Paid ocean action. The stale actOc=0.7 shortcut made the action look like
+  // a free recurring ocean in generated card_data and blue-action advice.
+  'Water Import From Europa': {set: {actMC: -12, actOc: 1}},
+  // Adds 2 floaters to a Jovian card. It was previously parsed as 4 plants,
+  // which inflated raw value and plant-engine hooks while hiding the target check.
+  'Nitrogen from Titan': {remove: ['pl'], set: {places: 'floater', placesTag: 'jovian', placesN: 2}},
+  // Conditional event: pay 4 plants, 3 microbes, or 2 animals to gain 20 MC
+  // and corruption. Do not expose the 20 MC as unconditional stock.
+  'Export Convoy': {remove: ['mc']},
+  // OR action: spend 1 titanium to add 2 floaters here, or spend 2 floaters
+  // here to raise Venus. The static branch should preserve the titanium cost.
+  'Jet Stream Microscrappers': {remove: ['actTR'], set: {actTI: -1}},
+  // OR action: spend 1 titanium to add 1 syndicate fleet here, or spend a
+  // fleet here to steal MC. Static branch keeps the resource-add cost.
+  'The Darkside of The Moon Syndicate': {set: {actTI: -1}},
+  // Starts with asteroid resources, not titanium stock. Titanium is one paid
+  // action branch after removing an asteroid here.
+  'Asteroid Rights': {remove: ['ti']},
+  // Not a floater accumulator. The action spends a floater from any card to
+  // add a Venusian habitat here; generated floater res/tg caused false
+  // floater-target synergies.
+  'Floater-Urbanism': {remove: ['tg'], set: {res: 'venusian_habitat', vpAcc: 1}},
+  // Corporation first action is draw 3 keep 2, and it stores science resources
+  // worth 1 VP per 2 resources. Extracted render data missed both facts and
+  // exposed the VP divisor as 1/resource.
+  'Nanotech Industries': {set: {cd: 2, res: 'science', vpAcc: 1, vpPer: 2}},
   // Corporation action text leaked into fake starting production.
   'Robinson Industries': {remove: ['mp']},
   'Stormcraft Incorporated': {remove: ['hp']},
@@ -296,6 +389,58 @@ for (const name of Object.keys(extracted)) {
       updated++;
       console.log('  ~ ' + name + ': ' + after);
     }
+  }
+}
+
+for (const card of rawCards) {
+  const rawVP = resourceVPFromRaw(card);
+  if (!rawVP) continue;
+  if (!inCatalog.has(card.name) && !effects[card.name]) continue;
+
+  const entry = Object.assign({}, effects[card.name] || {});
+  const before = JSON.stringify(entry);
+  delete entry.vp;
+  entry.res = rawVP.res;
+  if (rawVP.divisor < 1) {
+    entry.vpAcc = rawVP.divisor;
+    delete entry.vpPer;
+  } else {
+    entry.vpAcc = 1;
+    if (rawVP.divisor !== 1) entry.vpPer = rawVP.divisor;
+    else delete entry.vpPer;
+  }
+  if (isTriggerOnlyResourceVP(card)) entry.triggerOnlyVpAcc = true;
+  else delete entry.triggerOnlyVpAcc;
+
+  const after = JSON.stringify(entry);
+  if (after === before) continue;
+  effects[card.name] = entry;
+  if (!inEffects.has(card.name)) {
+    added++;
+    console.log('  + ' + card.name + ': ' + after);
+  } else {
+    updated++;
+    console.log('  ~ ' + card.name + ': ' + after);
+  }
+}
+
+for (const card of rawCards) {
+  const entry = effects[card.name];
+  if (!entry || entry.res !== 'floater') continue;
+  const targetTag = floaterTargetTagFromRaw(card);
+  if (!targetTag || entry.tg) continue;
+
+  const before = JSON.stringify(entry);
+  entry.tg = targetTag;
+  const after = JSON.stringify(entry);
+  if (after === before) continue;
+  effects[card.name] = entry;
+  if (!inEffects.has(card.name)) {
+    added++;
+    console.log('  + ' + card.name + ': ' + after);
+  } else {
+    updated++;
+    console.log('  ~ ' + card.name + ': ' + after);
   }
 }
 

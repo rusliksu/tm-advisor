@@ -2324,8 +2324,8 @@
   },
   "Viral Enhancers": {
     "name": "Viral Enhancers",
-    "score": 70,
-    "tier": "B",
+    "score": 82,
+    "tier": "A",
     "type": "project",
     "economy": "9+3=12 MC for effect: +1 plant or +1 resource per bio tag played. Science+Microbe tags (~5-7 MC). With 5 bio tags after: ~5 plants (10 MC) + 2-3 animal VP (10-15 MC). Science tag bonus.",
     "reasoning": "icehawk84 says 'S tier card.' shai_aus says 'one of the best combo cards.' benbever details how just 3 bio tags + 1 animal card already pays it back. The Science+Microbe dual tag is excellent. Every plant/animal/microbe tag gives value. Even moderate bio play yields great returns. Only skip if completely non-bio strategy.",
@@ -4504,7 +4504,7 @@
       "Floating Habs",
       "Titan colony"
     ],
-    "when_to_pick": "When committing to Venus strategy with other floater/Venus cards. Good for Hoverlord milestone.",
+    "when_to_pick": "Gen 1-3 when committing to Venus strategy with other floater/Venus cards. Late only for an immediate floater payoff or a live Hoverlord/Venuphile race.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1led8wj/cotd_dirigibles_18_jun_2025/"
   },
   "Giant Solar Shade": {
@@ -5893,7 +5893,7 @@
       "Viral Enhancers",
       "Ecological Zone"
     ],
-    "when_to_pick": "Gen 2-4 when 3 oceans are out and you want plant production or a cheap plant tag.",
+    "when_to_pick": "Gen 2-4 when 3 oceans are out and you want plant production or a cheap plant tag. Late only when discounted or when a bio-tag trigger such as Ecological Zone is already live.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1fmpvi1/cotd_moss_22_sept_2024/"
   },
   "Nuclear Power": {
@@ -8554,15 +8554,11 @@
     "type": "project",
     "economy": "Cost 4+3=7 MC (steel payable). Action: energy -> MC at 1:1 rate. Energy worth ~1.4 MC used, so losing ~0.4/energy. Power+Building tags (2-3).",
     "reasoning": "The action is almost always a bad trade since energy is worth more than MC when used properly (for trading, bumping, heat). The Power+Building tags for 7 MC steel-payable are the real value -- useful for Builder/Diversifier milestones. icehawk84 says he almost exclusively plays it for milestones. One of the weaker cards.",
-    "synergies": [
-      "Strip Mine",
-      "Nuclear Power",
-      "AI Central"
-    ],
+    "synergies": [],
     "when_to_pick": "Only for Builder/Diversifier milestone tags. The action is almost never worth using. Cheap steel dump.",
     "opening_hand_bias": -4,
     "opening_hand_note": "Do not keep as a generic opener; it needs immediate tag/milestone value or spare energy to justify the slot.",
-    "game_data_note": "Fix: D-40 undervalued. Energy→MC at 1:1, with energy prod 3+ = 15+ MC over 5 gens for 7 MC cost. Power+Building tags. Energy-heavy engine card.",
+    "game_data_note": "Fix: contextual uplift should stay narrow. Energy→MC at 1:1 is a fallback cashout, not a real energy payoff; value is mostly cheap Power+Building tags and milestone pressure.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1htbc8n/cotd_power_infrastructure_4_jan_2025/"
   },
   "Soil Factory": {
@@ -10795,14 +10791,14 @@
     "score": 70,
     "tier": "B",
     "type": "corporation",
-    "economy": "About 19 MC of base value. Science tag. Draw 1 card per Science tag played, often worth about 3-4 MC each.",
-    "reasoning": "Real science-engine corp. Drawing a card on each science tag plus scaling VP from stored science resources creates both card flow and scoring in the same shell. With AI Central, Olympus Conference, Research, and similar cards, the corp can snowball hard. The 40 MC start is not rich, but the card advantage is strong enough to compensate in the right science opener.",
+    "economy": "42 MC start, Science/Moon tags, first action draw 3 keep 2, and a recurring action that adds 1 science resource to an eligible card. Science resources here score 1 VP per 2 resources.",
+    "reasoning": "Solid but not explosive science-resource corp. The opener is mostly cash plus two kept cards with filtering, then the blue action converts future actions or external science-resource placement into slow VP. It should not be treated as a card-per-science-tag engine; its real payoff is resource VP and science/moon tag positioning.",
     "synergies": [
-      "Research",
-      "AI Central",
-      "Physics Complex"
+      "Science resource placers",
+      "Science tag payoffs",
+      "Moon tag support"
     ],
-    "when_to_pick": "Pick with a science-heavy hand, especially 3+ science tags in the opener. AI Central and Mars University style shells raise the ceiling sharply. Without science support, it will not pay off."
+    "when_to_pick": "Pick when the opening hand can use the extra card selection and has a plan for science resources or science/moon tag payoffs. Without those hooks it is closer to a cash-and-filtering corp than a true engine."
   },
   "Aerospace Mission": {
     "name": "Aerospace Mission",
@@ -12455,8 +12451,8 @@
     "name": "Export Convoy",
     "score": 61,
     "tier": "C",
-    "economy": "6+3=9 MC. Underworld value идёт через коррупцию/теги, а не только через голый темп.",
-    "reasoning": "Коррупция и crime-пакет в 3P/WGT дают value, но требуют контроля и потому не тянут карту слишком высоко сами по себе.",
+    "economy": "6+3=9 MC и обязательная оплата 4 растений / 3 микробов / 2 животных; +20 MC не является бесплатным stock.",
+    "reasoning": "Cash burst реален только при готовом биоресурсном платеже. Без него карта не должна получать static +20 MC value или невозможный play advice.",
     "synergies": [
       "PhoboLog",
       "Space Station",

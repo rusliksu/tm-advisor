@@ -30,6 +30,7 @@ function extractFunctionSource(fileSource, functionName) {
 }
 
 const getFxSource = extractFunctionSource(source, 'getFx');
+const isPureProductionFxSource = extractFunctionSource(source, 'isPureProductionFx');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
 
 const sandbox = {
@@ -40,7 +41,7 @@ const sandbox = {
 sandbox.globalThis = sandbox;
 
 vm.runInNewContext(
-  `${getFxSource}\n${getCorpBoostSource}\nglobalThis.__tm_test_getCorpBoost = getCorpBoost;`,
+  `${getFxSource}\n${isPureProductionFxSource}\n${getCorpBoostSource}\nglobalThis.__tm_test_getCorpBoost = getCorpBoost;`,
   sandbox,
   {filename: sourcePath}
 );
