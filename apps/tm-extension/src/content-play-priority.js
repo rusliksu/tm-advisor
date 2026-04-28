@@ -965,6 +965,7 @@
     var ctx = input && input.ctx;
     var ratings = input && input.ratings;
     var getPlayerVueData = input && input.getPlayerVueData;
+    var getVisibleCeoNames = input && input.getVisibleCeoNames;
     var detectMyCorps = input && input.detectMyCorps;
     var getOpeningHandBias = input && input.getOpeningHandBias;
     var sc = input && input.sc;
@@ -1030,8 +1031,17 @@
       ? 1.0
       : Math.max(sc.tagDecayMin, ctx.gensLeft / sc.tagDecayFullAt);
 
-    var allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : (myTableau || []).concat(myHand || []);
-    var allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
+    var allMyCardsBase = ctx && ctx._allMyCards ? ctx._allMyCards : (myTableau || []).concat(myHand || []);
+    var allMyCards = Array.isArray(allMyCardsBase) ? allMyCardsBase.slice() : Array.from(allMyCardsBase || []);
+    var allMyCardsSet = ctx && ctx._allMyCardsSet ? new Set(ctx._allMyCardsSet) : new Set(allMyCards);
+    if (typeof getVisibleCeoNames === 'function') {
+      var visibleCeos = getVisibleCeoNames() || [];
+      for (var vci = 0; vci < visibleCeos.length; vci++) {
+        if (!visibleCeos[vci] || allMyCardsSet.has(visibleCeos[vci])) continue;
+        allMyCards.push(visibleCeos[vci]);
+        allMyCardsSet.add(visibleCeos[vci]);
+      }
+    }
     var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
     var isPreludeOrCorpEarly = typeof isPreludeOrCorpCard === 'function' ? isPreludeOrCorpCard(cardEl) : false;
     bonus = typeof applyResult === 'function' ? applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents), bonus, reasons) : bonus;

@@ -1335,7 +1335,7 @@
     'Space Mirrors':           { once: -12 },   // action: 7 MC → +1 energy-prod. Glorified SP. D42
     'Micro-Mills':             { once: -10 },   // cost 3, +1 heat-prod, no tags. F30
     'Sulphur Exports':         { once: -10 },   // heat-prod overvalued. D45
-    'Solar Storm':             { once: -10 },   // take-that penalty 3P. D38
+    'Solar Storm':             { once: -4 },    // no temp/heat; all-player plant loss + data snipe is weak but not a -10 extra penalty. D38
     'Biomass Combustors':      { once: -10 },   // take-that in 3P + plant-prod loss. D48
     'Callisto Penal Mines':    { once: -8 },    // overcosted for +3 MC-prod. D46
     'Icy Impactors':           { once: -8 },    // slow ti→VP accumulator. D42

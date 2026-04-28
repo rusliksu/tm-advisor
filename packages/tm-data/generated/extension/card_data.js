@@ -5095,12 +5095,6 @@ var TM_CARD_DATA = {
  },
  "Solar Storm": {
   "behavior": {
-   "production": {
-    "heat": 1
-   },
-   "global": {
-    "temperature": 1
-   },
    "removeAnyPlants": 2
   },
   "tags": [

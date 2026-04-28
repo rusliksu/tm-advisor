@@ -199,6 +199,25 @@ function testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists() {
   assert(!result.reasons.includes('Корп: Credicor'), 'bare corp reason should be removed once a specific corp reason exists');
 }
 
+function testScoreDraftCardIncludesVisibleCeoInSynergyContext() {
+  let sawGordon = false;
+  const input = baseDraftInput();
+  input.cardName = 'Early Expedition';
+  input.ratings = {
+    'Early Expedition': {s: 69, e: '18 MC total (15+3), ti payable', t: 'C', y: ['Gordon', 'Immigrant City']},
+  };
+  input.getVisibleCeoNames = function getVisibleCeoNames() {
+    return ['Gordon'];
+  };
+  input.scoreTableauSynergy = function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet) {
+    sawGordon = allMyCards.indexOf('Gordon') !== -1 && allMyCardsSet.has('Gordon');
+    return neutralResult();
+  };
+
+  playPriority.scoreDraftCard(input);
+  assert(sawGordon, 'visible CEO cards should be available to project-card synergy scoring');
+}
+
 function testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement() {
   const result = {
     total: 67,
@@ -404,6 +423,7 @@ testAdjustForResearchTreatsStepRequirementAsHardBlock();
 testScoreDraftCardMarksSpecificReqAsPenaltyForPositionalFactors();
 testScoreDraftCardDropsGenericFarFallbackWhenSpecificReasonExists();
 testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists();
+testScoreDraftCardIncludesVisibleCeoInSynergyContext();
 testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement();
 testSeptemPoliticalShellDoesNotJumpTo75();
 testAridorInitialDraftReasonLabelsAreActionable();

@@ -2160,6 +2160,19 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
     // Subtract TR value
     if (fx.tr) effectiveCost = Math.max(0, effectiveCost - fx.tr * 7);
+    // Subtract immediate board/terraforming value. Break-even is only a
+    // delayed-production timing check; city/global value is paid immediately.
+    var immediateBoardValue = 0;
+    var vpValBE = ctx.gensLeft <= 2 ? 7 : (ctx.gensLeft <= 4 ? 5 : 3);
+    if (fx.tmp) immediateBoardValue += fx.tmp * 7;
+    if (fx.o2) immediateBoardValue += fx.o2 * 7;
+    if (fx.vn) immediateBoardValue += fx.vn * 7;
+    if (fx.oc) immediateBoardValue += fx.oc * (7 + 3);
+    if (fx.grn) immediateBoardValue += fx.grn * (7 + vpValBE + 3);
+    if (fx.city) immediateBoardValue += fx.city * (3 + vpValBE * 2);
+    if (immediateBoardValue > 0) {
+      effectiveCost = Math.max(0, effectiveCost - immediateBoardValue);
+    }
     if (isLateEcoZoneBioTriggerCard(cardName, ctx, fx, cardTags)) {
       // Ecological Zone turns a cheap bio tag into immediate animal/VP progress,
       // so it should not be judged as pure delayed production in the final gen.
@@ -3989,6 +4002,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var fx = TM_CARD_EFFECTS[cardName];
 
     var prodFloor = getProductionFloorStatus(cardName, ctx);
+    var prodFloorBlocksPayment = !!prodFloor.unplayable;
     if (prodFloor.unplayable) {
       var openingLike = !!(ctx && (ctx._openingHand || (ctx.gensLeft != null && ctx.gensLeft >= 6)));
       if (openingLike) {
@@ -4007,7 +4021,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // 47a. Energy deficit
-    if (fx && fx.ep && fx.ep < 0) {
+    if (fx && fx.ep && fx.ep < 0 && !prodFloorBlocksPayment) {
       var energyAfter = ctx.prod.energy + fx.ep;
       if (energyAfter < -2) {
         bonus -= SC.energyDeepDeficit;
@@ -11599,6 +11613,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         ctx: ctx,
         ratings: typeof TM_RATINGS !== 'undefined' ? TM_RATINGS : null,
         getPlayerVueData: getPlayerVueData,
+        getVisibleCeoNames: getVisibleCeoNames,
         detectMyCorps: detectMyCorps,
         getOpeningHandBias: getOpeningHandBias,
         sc: SC,

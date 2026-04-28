@@ -2024,8 +2024,6 @@ const TM_CARD_EFFECTS = {
  },
  "Solar Storm": {
   "c": 12,
-  "hp": 1,
-  "tmp": 1,
   "rmPl": 2
  },
  "Designed Organisms": {

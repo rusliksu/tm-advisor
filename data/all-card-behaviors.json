@@ -6007,12 +6007,7 @@
     ],
     "type": "EVENT",
     "behavior": {
-      "production": {
-        "heat": 1
-      },
-      "global": {
-        "temperature": 1
-      }
+      "removeAnyPlants": 2
     }
   },
   "SolBank": {

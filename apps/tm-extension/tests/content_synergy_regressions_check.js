@@ -764,6 +764,37 @@ assert.strictEqual(
   'Moss with Ecological Zone should not be treated as pure delayed payback in the final generation'
 );
 
+sandbox.TM_CARD_EFFECTS['Early Expedition'] = {c: 15, ep: -1, mp: 3, city: 1};
+const earlyExpeditionBreakEven = scoreBreakEvenTiming(
+  'Early Expedition',
+  {gensLeft: 14, tableauNames: new Set(['Manutech']), steel: 0, titanium: 0},
+  new Set(['city', 'science', 'space'])
+);
+assert.strictEqual(
+  earlyExpeditionBreakEven.penalty,
+  0,
+  'Early Expedition city tile value should prevent a pure production payback penalty'
+);
+const earlyExpeditionBoard = scoreBoardStateModifiers(
+  'Early Expedition',
+  {e: 'Decrease your energy production 1 step and increase your M€ production 3 steps. Place a city tile.'},
+  'decrease your energy production 1 step and increase your m€ production 3 steps. place a city tile.',
+  {
+    gensLeft: 14,
+    prod: {energy: 0, steel: 0, ti: 0, plants: 0, heat: 0},
+    tableauNames: new Set(['Manutech']),
+    coloniesOwned: 0,
+  },
+);
+assert(
+  earlyExpeditionBoard.reasons.some((reason) => reason.includes('Не сейчас: energy prod 0→-1')),
+  'Early Expedition should still show the delayed energy-production payment blocker'
+);
+assert(
+  !earlyExpeditionBoard.reasons.some((reason) => reason.includes('Нет энергии')),
+  'Early Expedition should not add a second generic energy deficit penalty on top of the payment blocker'
+);
+
 sandbox.TM_CARD_TAGS['Luna Governor'] = ['earth', 'earth'];
 sandbox.TM_CARD_TAGS['Earth Office'] = ['earth'];
 sandbox.TM_RATINGS['Luna Governor'] = { y: ['Earth Office', 'Luna Metropolis'] };

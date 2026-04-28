@@ -8367,12 +8367,7 @@ const CARD_DATA = {
       "space"
     ],
     "behavior": {
-      "production": {
-        "heat": 1
-      },
-      "global": {
-        "temperature": 1
-      }
+      "removeAnyPlants": 2
     },
     "cardNumber": "Pf32",
     "description": "Every player loses 2 plants. Remove up to 3 data from any player. ",
