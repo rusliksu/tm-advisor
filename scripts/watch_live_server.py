@@ -16,6 +16,7 @@ import os
 import time
 import urllib.parse
 import urllib.request
+import urllib.error
 from datetime import datetime
 from pathlib import Path
 
@@ -137,6 +138,26 @@ def main() -> None:
                 params = urllib.parse.urlencode({"serverId": args.server_id})
                 games = fetch_json(f"{server_url}/api/games?{params}")
                 current_ids = {entry["gameId"] for entry in games}
+            except urllib.error.HTTPError as exc:
+                if exc.code == 403:
+                    append_log(manager_log, {
+                        "type": "discovery_unauthorized",
+                        "ts": datetime.now().isoformat(timespec="seconds"),
+                        "error": str(exc),
+                        "hint": "SERVER_ID is missing/stale or belongs to a different TM server.",
+                    })
+                    raise SystemExit(
+                        "Configured SERVER_ID is not authorized for /api/games; "
+                        "sync/restart watch_live_server with the active tm-server SERVER_ID"
+                    ) from exc
+                append_log(manager_log, {
+                    "type": "discovery_error",
+                    "ts": datetime.now().isoformat(timespec="seconds"),
+                    "error": str(exc),
+                })
+                next_discovery_at = now + args.discover_interval
+                time.sleep(1.0)
+                continue
             except Exception as exc:
                 append_log(manager_log, {
                     "type": "discovery_error",

@@ -170,10 +170,12 @@ class AutoWatcher:
             url = f"{self.client._base_url}/api/games"
             resp = self.client.session.get(url, params={"serverId": self.server_id}, timeout=10)
             if resp.status_code == 403:
-                if not self._unauthorized_server_id_logged:
-                    log.error("Configured SERVER_ID is not authorized for /api/games; skipping discovery until restart")
-                    self._unauthorized_server_id_logged = True
-                return []
+                message = (
+                    "Configured SERVER_ID is not authorized for /api/games; "
+                    "sync/restart tm-auto-watcher with the active tm-server SERVER_ID"
+                )
+                log.critical(message)
+                raise SystemExit(message)
             if resp.status_code != 200:
                 return []
             data = resp.json()

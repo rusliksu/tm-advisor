@@ -37,3 +37,5 @@ What it does:
 - removes the old `tm-auto-watcher.service.d/server-id.conf` drop-in
 - reloads systemd
 - by default restarts both watcher services; `-NoRestart` skips that
+- after restart, probes `/api/games?serverId=...`; HTTP 403 means the watcher
+  cannot discover games and must not be treated as healthy.

@@ -54,6 +54,7 @@ def build_quality_report(game_id: str, log_paths: list[Path] | None = None) -> d
                 except json.JSONDecodeError:
                     event_counts["invalid_json"] += 1
                     continue
+                event = POSTGAME._normalize_log_event(event, path)
                 event_counts[event.get("type", "unknown")] += 1
 
     player_ids = set(log_data.get("initial_snapshots", {}).keys())
@@ -105,7 +106,7 @@ def build_quality_report(game_id: str, log_paths: list[Path] | None = None) -> d
         ):
             totals[key] += row[key]
 
-    return {
+    report = {
         "game_id": game_id,
         "log_paths": [str(path) for path in paths],
         "total_entries": total_entries,
@@ -113,6 +114,43 @@ def build_quality_report(game_id: str, log_paths: list[Path] | None = None) -> d
         "players": players,
         "totals": dict(totals),
     }
+    status, conclusion = quality_status_and_conclusion(report)
+    report["quality_status"] = status
+    report["conclusion"] = conclusion
+    return report
+
+
+def quality_status_and_conclusion(report: dict) -> tuple[str, str]:
+    totals = report.get("totals", {})
+    logs_count = len(report.get("log_paths") or [])
+    total_entries = int(report.get("total_entries") or 0)
+    card_played = int(totals.get("card_played", 0) or 0)
+    trusted_ranked = int(totals.get("trusted_play_ranked", 0) or 0)
+
+    if logs_count == 0 or total_entries == 0:
+        return (
+            "no_logs",
+            "Conclusion: no watch logs found; this game is not usable for advisor/shadow calibration.",
+        )
+    if card_played == 0:
+        return (
+            "no_card_events",
+            "Conclusion: logs contain no card_played events; use them for instrumentation/debug only, not scoring calibration.",
+        )
+    if trusted_ranked == 0:
+        return (
+            "legacy_only",
+            "Conclusion: old logs do not contain trusted prev_play_rank; use them for coverage/debug only, not scoring calibration.",
+        )
+    if trusted_ranked < card_played:
+        return (
+            "mixed",
+            "Conclusion: mixed log quality; calibrate only rows with trusted play-rank.",
+        )
+    return (
+        "trusted",
+        "Conclusion: play-rank coverage is trusted for scoring calibration.",
+    )
 
 
 def print_text(report: dict) -> None:
@@ -148,12 +186,7 @@ def print_text(report: dict) -> None:
             f"stale {row['advisor_miss_stale_filtered']}"
         )
     print()
-    if totals.get("trusted_play_ranked", 0) == 0 and totals.get("card_played", 0) > 0:
-        print("Conclusion: old logs do not contain trusted prev_play_rank; use them for coverage/debug only, not scoring calibration.")
-    elif totals.get("trusted_play_ranked", 0) < totals.get("card_played", 0):
-        print("Conclusion: mixed log quality; calibrate only rows with trusted play-rank.")
-    else:
-        print("Conclusion: play-rank coverage is trusted for scoring calibration.")
+    print(report.get("conclusion") or quality_status_and_conclusion(report)[1])
 
 
 def main() -> None:

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import statistics
 import urllib.request
 from collections import Counter, defaultdict
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LOG_DIR = ROOT / "data" / "game_logs"
 DEFAULT_BASE_URL = "https://tm.knightbyte.win"
 OFFTOP_RANK = 8
+AUTO_WATCH_LOG_RE = re.compile(r"^watch_(?P<game>g[^_]+)_(?P<player>.+)_\d{8}_\d{6}\.jsonl$")
 
 
 def fetch_json(url: str):
@@ -34,7 +36,9 @@ def find_game_logs(game_id: str) -> list[Path]:
     Postgame summaries should aggregate the whole run instead of picking that
     last file and losing all card/advisor events.
     """
-    return sorted(LOG_DIR.glob(f"watch_live_{game_id}_*.jsonl"))
+    matches = list(LOG_DIR.glob(f"watch_live_{game_id}_*.jsonl"))
+    matches.extend((LOG_DIR / "auto_watch").glob(f"watch_{game_id}_*.jsonl"))
+    return sorted(matches)
 
 
 def find_latest_log(game_id: str) -> Path | None:
@@ -72,7 +76,40 @@ def _event_key(event: dict) -> tuple | None:
             event.get("score_gap"),
             event.get("score_kind"),
         )
+    if etype == "advisor_check":
+        return (
+            etype,
+            event.get("game_id"),
+            event.get("ts"),
+            event.get("reason"),
+        )
     return None
+
+
+def _auto_watch_player(log_path: Path | None) -> str | None:
+    if not log_path:
+        return None
+    match = AUTO_WATCH_LOG_RE.match(log_path.name)
+    return match.group("player") if match else None
+
+
+def _normalize_log_event(event: dict, log_path: Path | None) -> dict:
+    if event.get("type") or not event.get("ev"):
+        return event
+    normalized = dict(event)
+    normalized["type"] = normalized.get("ev")
+    player = _auto_watch_player(log_path)
+    if player:
+        normalized.setdefault("player", player)
+        normalized.setdefault("player_id", f"auto_watch:{player}")
+    return normalized
+
+
+def _events_for_player(log_data: dict, bucket: str, player_id: str, player_name: str) -> list[dict]:
+    direct = log_data[bucket].get(player_id, [])
+    if direct:
+        return direct
+    return log_data[bucket].get(f"auto_watch:{player_name}", [])
 
 
 def parse_log(log_paths: Path | list[Path] | None) -> dict:
@@ -81,6 +118,7 @@ def parse_log(log_paths: Path | list[Path] | None) -> dict:
         "initial_snapshots": {},
         "card_played": defaultdict(list),
         "advisor_miss": defaultdict(list),
+        "advisor_check": defaultdict(list),
         "game_states": [],
         "log_paths": [],
     }
@@ -103,6 +141,7 @@ def parse_log(log_paths: Path | list[Path] | None) -> dict:
                     event = json.loads(line)
                 except json.JSONDecodeError:
                     continue
+                event = _normalize_log_event(event, log_path)
                 key = _event_key(event)
                 if key is not None:
                     if key in seen_events:
@@ -117,6 +156,18 @@ def parse_log(log_paths: Path | list[Path] | None) -> dict:
                     result["card_played"][event["player_id"]].append(event)
                 elif etype == "advisor_miss":
                     result["advisor_miss"][event["player_id"]].append(event)
+                elif etype == "advisor_check":
+                    for player_row in event.get("players", []) or []:
+                        player_id = player_row.get("player_id")
+                        if not player_id:
+                            continue
+                        result["advisor_check"][player_id].append({
+                            "ts": event.get("ts"),
+                            "reason": event.get("reason"),
+                            "phase": event.get("phase"),
+                            "active_player": event.get("active_player"),
+                            **player_row,
+                        })
                 elif etype == "game_state":
                     result["game_states"].append(event)
     return result
@@ -278,6 +329,48 @@ def summarize_misses(events: list[dict], played_events: list[dict] | None = None
     }
 
 
+def summarize_unconverted_play_recommendations(
+    checks: list[dict],
+    played_events: list[dict],
+    min_count: int = 2,
+    min_score: float = 12.0,
+) -> list[dict]:
+    played_names = {
+        event.get("card") or event.get("last_card_played")
+        for event in played_events
+    }
+    played_names.discard(None)
+
+    by_card: dict[str, dict] = {}
+    for check in checks:
+        for row in check.get("top_play") or []:
+            if row.get("action") and row.get("action") != "PLAY":
+                continue
+            name = row.get("name")
+            if not name or name in played_names:
+                continue
+            score = row.get("play_value_now", row.get("score"))
+            if not isinstance(score, (int, float)) or score < min_score:
+                continue
+            bucket = by_card.setdefault(name, {
+                "card": name,
+                "count": 0,
+                "first_ts": check.get("ts"),
+                "last_ts": check.get("ts"),
+                "max_score": score,
+                "last_reason": row.get("reason"),
+            })
+            bucket["count"] += 1
+            bucket["last_ts"] = check.get("ts")
+            bucket["max_score"] = max(bucket["max_score"], score)
+            bucket["last_reason"] = row.get("reason") or bucket.get("last_reason")
+
+    return sorted(
+        (row for row in by_card.values() if row["count"] >= min_count),
+        key=lambda row: (-row["count"], -row["max_score"], row["card"]),
+    )[:5]
+
+
 def summarize_player(player_view: dict, log_data: dict) -> dict:
     me = player_view["thisPlayer"]
     vp = me.get("victoryPointsBreakdown", {})
@@ -293,14 +386,19 @@ def summarize_player(player_view: dict, log_data: dict) -> dict:
     )
     gp_steps = me.get("globalParameterSteps", {}) or {}
     player_id = me["id"]
+    player_name = me.get("name") or player_id
     initial = log_data["initial_snapshots"].get(player_id, {})
-    played_events = log_data["card_played"].get(player_id, [])
+    played_events = _events_for_player(log_data, "card_played", player_id, player_name)
     off_top = summarize_offtop(played_events)
-    misses = summarize_misses(log_data["advisor_miss"].get(player_id, []), played_events)
+    misses = summarize_misses(_events_for_player(log_data, "advisor_miss", player_id, player_name), played_events)
+    unconverted = summarize_unconverted_play_recommendations(
+        log_data["advisor_check"].get(player_id, []),
+        played_events,
+    )
 
     return {
         "id": player_id,
-        "name": me.get("name") or player_id,
+        "name": player_name,
         "corp": corp_name_from_tableau(me.get("tableau") or []),
         "tr": me.get("terraformRating", 0),
         "mc_prod": me.get("megacreditProduction", 0),
@@ -324,6 +422,7 @@ def summarize_player(player_view: dict, log_data: dict) -> dict:
         "initial_top_hand": initial.get("top_hand", []),
         "off_top": off_top,
         "advisor_miss": misses,
+        "unconverted_play_recommendations": unconverted,
     }
 
 
@@ -407,6 +506,7 @@ def build_summary(game_id: str, base_url: str, log_paths: Path | list[Path] | No
             "spectator_id": game_meta.get("spectatorId"),
             "log_path": parsed_log_paths[-1] if parsed_log_paths else None,
             "log_paths": parsed_log_paths,
+            "advisor_log_available": bool(parsed_log_paths),
             "players_count": len(players),
             "options": game_meta.get("gameOptions", {}),
         },
@@ -429,6 +529,17 @@ def format_offtop(rows: list[dict], limit: int = 3) -> str:
         source = row.get("source")
         source_part = f" {source}" if source and source != "play" else ""
         parts.append(f"{row['card']} r{row['rank']} s{row['score']}{source_part}")
+    return ", ".join(parts)
+
+
+def format_unconverted(rows: list[dict], limit: int = 3) -> str:
+    if not rows:
+        return "-"
+    parts = []
+    for row in rows[:limit]:
+        parts.append(
+            f"{row['card']} x{row['count']} max {round(row['max_score'], 1)}"
+        )
     return ", ".join(parts)
 
 
@@ -473,21 +584,29 @@ def print_text(summary: dict) -> None:
         stale_offtop_text = f" ({'; '.join(detail_parts)})" if detail_parts else ""
         avg_rank = player["off_top"]["avg_rank"]
         avg_rank_text = avg_rank if avg_rank is not None else "-"
-        print(
-            f"  Advisor log: plays {player['off_top']['plays_logged']}, "
-            f"avg prior rank {avg_rank_text}, "
-            f"off-top {player['off_top']['off_top_count']}{stale_offtop_text}, "
-            f"advisor_miss {player['advisor_miss']['count']}{stale_text}"
-        )
-        if player["off_top"]["top_off_top"]:
-            print(f"  Biggest off-top: {format_offtop(player['off_top']['top_off_top'])}")
-        if player["advisor_miss"]["top"]:
-            top = player["advisor_miss"]["top"][0]
+        if not game.get("advisor_log_available"):
+            print("  Advisor log: unavailable (no watch log found)")
+        else:
             print(
-                "  Biggest advisor miss: "
-                f"{top['card']} vs {top['best_card']} "
-                f"(rank {top['chosen_rank']}, gap {top['score_gap']}, {top['severity']})"
+                f"  Advisor log: plays {player['off_top']['plays_logged']}, "
+                f"avg prior rank {avg_rank_text}, "
+                f"off-top {player['off_top']['off_top_count']}{stale_offtop_text}, "
+                f"advisor_miss {player['advisor_miss']['count']}{stale_text}"
             )
+            if player["off_top"]["top_off_top"]:
+                print(f"  Biggest off-top: {format_offtop(player['off_top']['top_off_top'])}")
+            if player["advisor_miss"]["top"]:
+                top = player["advisor_miss"]["top"][0]
+                print(
+                    "  Biggest advisor miss: "
+                    f"{top['card']} vs {top['best_card']} "
+                    f"(rank {top['chosen_rank']}, gap {top['score_gap']}, {top['severity']})"
+                )
+            if player.get("unconverted_play_recommendations"):
+                print(
+                    "  Unconverted advisor plays: "
+                    f"{format_unconverted(player['unconverted_play_recommendations'])}"
+                )
         alert = pick_relevant_alert(player["initial_alerts"])
         if alert:
             print(f"  Initial alerts sample: {alert}")

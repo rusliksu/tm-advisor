@@ -50,13 +50,12 @@ class AutoWatcherTests(unittest.TestCase):
             timeout=10,
         )
 
-    def test_discovery_suppresses_unauthorized_loop(self):
+    def test_discovery_fails_fast_when_server_id_is_unauthorized(self):
         watcher = AutoWatcher(server_id="wrong-id")
         watcher.client.session.get = Mock(return_value=FakeResponse(403, []))
 
-        games = watcher._discover_active_games()
-
-        self.assertEqual(games, [])
+        with self.assertRaises(SystemExit):
+            watcher._discover_active_games()
         watcher.client.session.get.assert_called_once()
 
     def test_game_watcher_uses_canonical_entrypoint(self):

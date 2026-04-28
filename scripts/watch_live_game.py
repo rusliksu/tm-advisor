@@ -736,12 +736,50 @@ def compact_option_entry(entry: dict) -> dict:
     return out
 
 
+def ui_playable_project_names(snap: dict) -> set[str]:
+    validation = snap.get("action_validation") or {}
+    if validation.get("saw_project_selector"):
+        return {
+            str(name)
+            for name in (validation.get("playable_project_cards") or [])
+            if name
+        }
+    live = snap.get("live", {}) or {}
+    return {
+        str(name)
+        for name in (live.get("playable_project_cards") or [])
+        if name
+    }
+
+
 def advisor_check_play_entries(snap: dict, limit: int = 5) -> list[dict]:
-    return [compact_option_entry(entry) for entry in ranked_advisor_play_entries(snap, limit=limit)]
+    entries = ranked_advisor_play_entries(snap)
+    ui_names = ui_playable_project_names(snap)
+    if ui_names:
+        entries = [entry for entry in entries if entry.get("name") in ui_names]
+    return [compact_option_entry(entry) for entry in entries[:limit]]
 
 
 def advisor_check_draft_entries(snap: dict, limit: int = 5) -> list[dict]:
     return option_entries_from_cards(snap.get("current_draft", []) or [], draft_score, limit=limit)
+
+
+def is_actionable_state(snap: dict) -> bool:
+    live = snap.get("live", {}) or {}
+    if not live.get("waiting_type"):
+        return False
+    game = snap.get("game", {}) or {}
+    live_phase = str(game.get("live_phase") or game.get("phase") or "").lower()
+    if not live_phase:
+        return True
+    return live_phase in {
+        "action",
+        "drafting",
+        "initial_drafting",
+        "initialdrafting",
+        "corporationsdrafting",
+        "research",
+    }
 
 
 def build_advisor_diagnostics(snap: dict) -> list[dict]:
@@ -762,6 +800,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
     hand_advice = snap.get("hand_advice", []) or []
     current_draft = snap.get("current_draft", []) or []
     current_pack = [name for name in (live.get("current_pack") or []) if name]
+    actionable = is_actionable_state(snap)
 
     if snap.get("snapshot_error"):
         add("error", "snapshot_error", "Advisor snapshot raised an exception.", error=snap.get("snapshot_error"))
@@ -782,7 +821,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
     if hand_count and not terminal and not hand_cards and not snap.get("snapshot_error"):
         add("warning", "missing_hand_cards", "Player has cards in hand but advisor hand list is empty.", hand_count=hand_count)
 
-    if hand_count and live_phase == "action" and not hand_advice and not snap.get("snapshot_error"):
+    if hand_count and actionable and live_phase == "action" and not hand_advice and not snap.get("snapshot_error"):
         add("warning", "missing_hand_advice", "Action-phase hand is non-empty but advisor returned no hand_advice.", hand_count=hand_count)
 
     missing_hand_scores = [card.get("name") for card in hand_cards if card.get("name") and card_score(card) is None]
@@ -800,8 +839,52 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
     best_move = str(summary.get("best_move") or "").strip()
     play_entries = advisor_play_entries(snap)
     ranked_play = ranked_advisor_play_entries(snap)
-    if not best_move and not terminal and (play_entries or hand_count):
+    ui_playable_names = ui_playable_project_names(snap)
+    waiting_type = live.get("waiting_type")
+    has_decision_context = bool(
+        (actionable and waiting_type)
+        or (actionable and current_draft)
+        or (actionable and live_phase == "action" and (play_entries or hand_advice))
+    )
+    if not best_move and not terminal and has_decision_context:
         add("warning", "missing_best_move", "Advisor returned no best_move for a non-empty decision context.")
+
+    if not actionable:
+        return diagnostics
+
+    play_entries_for_value = play_entries
+    ranked_play_for_value = ranked_play
+    if live_phase == "action" and ui_playable_names:
+        unavailable_play_cards = [
+            row.get("name")
+            for row in hand_advice
+            if row.get("action") == "PLAY"
+            and row.get("name")
+            and row.get("name") not in ui_playable_names
+        ]
+        if unavailable_play_cards:
+            add(
+                "warning",
+                "play_not_available_in_ui",
+                "Advisor marks PLAY for cards absent from the current UI Play project card list.",
+                cards=unavailable_play_cards[:8],
+            )
+        best_card = recommended_play_card_name(snap)
+        if best_move.lower().startswith("play ") and best_card and best_card not in ui_playable_names:
+            add(
+                "warning",
+                "best_move_not_available_in_ui",
+                "Summary recommends PLAY for a card absent from the current UI Play project card list.",
+                card=best_card,
+            )
+        play_entries_for_value = [
+            entry for entry in play_entries
+            if entry.get("name") in ui_playable_names
+        ]
+        ranked_play_for_value = [
+            entry for entry in ranked_play
+            if entry.get("name") in ui_playable_names
+        ]
 
     if best_move.startswith("PLAY "):
         best_card = recommended_play_card_name(snap)
@@ -812,9 +895,9 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
         if best_card and play_cards and best_card not in play_cards:
             add("warning", "best_move_not_playable", "Summary PLAY card is not present in PLAY advice entries.", card=best_card)
 
-    if ranked_play:
-        recommended = ranked_play[0]
-        best_by_value = max(play_entries, key=lambda entry: entry.get("score", 0), default=None)
+    if ranked_play_for_value:
+        recommended = ranked_play_for_value[0]
+        best_by_value = max(play_entries_for_value, key=lambda entry: entry.get("score", 0), default=None)
         if best_by_value:
             gap = float(best_by_value.get("score", 0) or 0) - float(recommended.get("score", 0) or 0)
             if gap >= ADVISOR_CHECK_VALUE_GAP:
@@ -866,6 +949,7 @@ def build_advisor_check_event(
         live = state.get("live", {}) or {}
         diagnostics = build_advisor_diagnostics(state)
         summary = state.get("summary") or {}
+        actionable = is_actionable_state(state)
         players.append({
             "player_id": pid,
             "player": me.get("name") or pid,
@@ -878,10 +962,11 @@ def build_advisor_check_event(
             "current_draft_count": len(state.get("current_draft", []) or []),
             "waiting_type": live.get("waiting_type"),
             "waiting_label": live.get("waiting_label"),
-            "best_move": summary.get("best_move"),
-            "summary_lines": list((summary.get("lines") or [])[:4]),
-            "top_play": advisor_check_play_entries(state),
-            "top_draft": advisor_check_draft_entries(state),
+            "actionable": actionable,
+            "best_move": summary.get("best_move") if actionable else None,
+            "summary_lines": list((summary.get("lines") or [])[:4]) if actionable else [],
+            "top_play": advisor_check_play_entries(state) if actionable else [],
+            "top_draft": advisor_check_draft_entries(state) if actionable else [],
             "alerts": pick_relevant_alerts(state.get("alerts", []) or [], limit=5),
             "diagnostics": diagnostics,
             "diagnostic_count": len(diagnostics),

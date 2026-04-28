@@ -113,6 +113,29 @@ echo '--- auto-watcher status'
 systemctl --user status $AutoWatcherService --no-pager | sed -n '1,20p'
 echo '--- shadow-watch status'
 systemctl --user status $ShadowWatcherService --no-pager | sed -n '1,20p'
+echo '--- watcher discovery smoke'
+python3 - <<'PY'
+import json
+import sys
+import urllib.error
+import urllib.parse
+import urllib.request
+
+base_url = "$BaseUrl".rstrip("/")
+server_id = "$serverId"
+url = f"{base_url}/api/games?{urllib.parse.urlencode({'serverId': server_id})}"
+try:
+    with urllib.request.urlopen(url, timeout=10) as response:
+        payload = json.load(response)
+except urllib.error.HTTPError as exc:
+    print(f"ERROR: /api/games rejected SERVER_ID with HTTP {exc.code}", file=sys.stderr)
+    sys.exit(1)
+except Exception as exc:
+    print(f"ERROR: /api/games discovery smoke failed: {exc}", file=sys.stderr)
+    sys.exit(1)
+
+print(f"/api/games OK: {len(payload) if isinstance(payload, list) else '?'} games visible")
+PY
 "@
 }
 

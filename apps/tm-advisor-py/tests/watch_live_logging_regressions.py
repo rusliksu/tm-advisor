@@ -235,6 +235,75 @@ def assert_draft_pack_detection_ignores_action_card_prompts() -> None:
     })
 
 
+def assert_production_ok_prompt_is_not_actionable() -> None:
+    watch = load_watch_live_game()
+    snap = {
+        "game": {"generation": 7, "phase": "production", "live_phase": "production"},
+        "me": {"name": "tester"},
+        "live": {
+            "color": "red",
+            "hand_count": 2,
+            "cards_in_hand": ["A", "B"],
+            "waiting_type": "amount",
+            "waiting_label": "OK",
+        },
+        "hand": [{"name": "A", "effective_score": 60}, {"name": "B", "effective_score": 55}],
+        "hand_advice": [],
+        "current_draft": [],
+        "summary": {"best_move": None, "lines": []},
+        "alerts": [],
+    }
+
+    diagnostics = watch.build_advisor_diagnostics(snap)
+    assert watch.is_actionable_state(snap) is False, snap
+    assert not any(item["code"] == "missing_best_move" for item in diagnostics), diagnostics
+
+    event = watch.build_advisor_check_event(
+        "g-test",
+        {"generation": 7, "phase": "production", "activePlayer": "red"},
+        ["p-red"],
+        {"p-red": snap},
+        "periodic",
+        300.0,
+    )
+    player = event["players"][0]
+    assert player["actionable"] is False, player
+    assert player["best_move"] is None, player
+    assert player["summary_lines"] == [], player
+    assert player["top_play"] == [], player
+
+
+def assert_advisor_check_filters_unavailable_project_plays() -> None:
+    watch = load_watch_live_game()
+    snap = build_snap()
+    snap["game"] = {"live_phase": "action"}
+    snap["live"] = {
+        "color": "red",
+        "hand_count": 2,
+        "cards_in_hand": ["Playable A", "Playable B"],
+        "waiting_type": "or",
+        "waiting_label": "Take action",
+    }
+    snap["summary"] = {"best_move": "PLAY Playable B - UI-valid play", "lines": []}
+    snap["action_validation"] = {
+        "saw_project_selector": True,
+        "playable_project_cards": ["Playable B"],
+    }
+
+    event = watch.build_advisor_check_event(
+        "g-test",
+        {"generation": 7, "phase": "action", "activePlayer": "red"},
+        ["p-red"],
+        {"p-red": snap},
+        "periodic",
+        300.0,
+    )
+    player = event["players"][0]
+    assert [entry["name"] for entry in player["top_play"]] == ["Playable B"], player
+    assert any(item["code"] == "play_not_available_in_ui" for item in player["diagnostics"]), player
+    assert not any(item["code"] == "best_move_value_gap" for item in player["diagnostics"]), player
+
+
 def main() -> int:
     watch = load_watch_live_game()
     prev_snap = build_snap()
@@ -243,6 +312,8 @@ def main() -> int:
     assert_hand_check_event_contains_all_players()
     assert_advisor_check_event_contains_diagnostics()
     assert_draft_pack_detection_ignores_action_card_prompts()
+    assert_production_ok_prompt_is_not_actionable()
+    assert_advisor_check_filters_unavailable_project_plays()
 
     play_entries = watch.ranked_advisor_play_entries(prev_snap)
     assert [entry["name"] for entry in play_entries] == ["Playable A", "Playable B"], play_entries
