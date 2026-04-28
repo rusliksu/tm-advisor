@@ -64,6 +64,11 @@ class ClaudeOutput:
     def format(self, state) -> str:
         lines = []
         a = lines.append
+        live_phase = str(state.phase or "").lower()
+        wf = state.waiting_for
+        is_action_phase = live_phase in ("action", "")
+        is_research_phase = live_phase == "research"
+        is_initial_cards_prompt = self._is_initial_cards_prompt(wf)
 
         # Header
         a(f"# TM Game Snapshot — Gen {state.generation}, Phase: {state.phase}")
@@ -238,7 +243,10 @@ class ClaudeOutput:
             a(f"**Policy:** {policy.get('policy', '?')}")
             a(f"**Мой influence:** {state.me.influence}")
             if "Reds" in str(ruling):
-                a("**⚠️ REDS RULING — каждый подъём параметра = -1 TR!**")
+                if policy.get("policy_id") == "rp01":
+                    a("**⚠️ REDS RULING — каждый шаг TR требует +3 MC!**")
+                else:
+                    a("**⚠️ REDS RULING — проверь текущую policy перед terraforming!**")
             a("")
             for label, ev_name in [("Текущий", t.get("current")), ("Следующий", t.get("coming")), ("Далёкий", t.get("distant"))]:
                 if ev_name:
@@ -282,12 +290,12 @@ class ClaudeOutput:
             a("")
 
             # Trade methods
-            if trade_result["methods"]:
+            if is_action_phase and trade_result["methods"]:
                 method_strs = [f"{m['cost_desc']} ({m['cost_mc']} MC)" for m in trade_result["methods"]]
                 a(f"**Способы торговли:** {' │ '.join(method_strs)}")
                 a("")
 
-            if trade_result["best_hint"]:
+            if is_action_phase and trade_result["best_hint"]:
                 a(f"**Рекомендация:** {trade_result['best_hint']}")
 
                 # Compare best trade vs best playable card
@@ -325,7 +333,7 @@ class ClaudeOutput:
                 a("")
 
             # Settlement analysis
-            settlements = analyze_settlement(state)
+            settlements = analyze_settlement(state) if is_action_phase else []
             if settlements:
                 a("### Поселение (17 MC SP)")
                 a("")
@@ -345,7 +353,6 @@ class ClaudeOutput:
         a("")
 
         # WaitingFor
-        wf = state.waiting_for
         if wf:
             a("## Текущее решение")
             a("")
@@ -387,10 +394,9 @@ class ClaudeOutput:
             a("")
 
         # ── Draft Buy / Play-Hold Advice ──
-        is_buy_phase = state.phase == "research"
-        is_action_phase = state.phase in ("action", "")
+        is_buy_phase = is_research_phase
 
-        if is_buy_phase and wf:
+        if is_buy_phase and wf and not is_initial_cards_prompt:
             wf_cards = self._extract_all_wf_cards(wf)
             if wf_cards:
                 advice = draft_buy_advice(wf_cards, state, self.synergy, self.req_checker)
@@ -513,6 +519,11 @@ class ClaudeOutput:
 
         effect_parser = getattr(getattr(self.synergy, "combo", None), "parser", None)
         alerts = _generate_alerts(state, effect_parser)
+        if not is_action_phase:
+            alerts = [
+                alert for alert in alerts
+                if not self._is_action_only_alert(alert)
+            ]
         if alerts:
             a("## Рекомендации")
             a("")
@@ -526,7 +537,7 @@ class ClaudeOutput:
                                 has_energy_sinks=_energy_sinks)
         affordable_sps = [(n, r, g) for n, r, g in sp_list
                           if STANDARD_PROJECTS[n]["cost"] <= state.mc and r >= 0.45]
-        if affordable_sps:
+        if is_action_phase and affordable_sps:
             a("## Стандартные проекты")
             a("")
             for name, ratio, gives in affordable_sps[:4]:
@@ -544,7 +555,7 @@ class ClaudeOutput:
                     a(f"- {h}")
                 a("")
 
-        if state.has_colonies:
+        if is_action_phase and state.has_colonies:
             trade_result = analyze_trade_options(state)
             profitable = [t for t in trade_result["trades"] if t["net_profit"] > 0]
             if profitable:
@@ -642,12 +653,16 @@ class ClaudeOutput:
                             best["total_mc"]
                         ))
 
-        # Heat → temp (free TR, but not under Reds)
+        # Heat → temp (free TR, but Reds rp01 makes it paid)
         reds = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+        reds_policy_id = ""
+        if state.turmoil:
+            reds_policy_id = (state.turmoil.get("policy_ids") or {}).get("Reds", "")
         if me.heat >= 8 and state.temperature < 8:
             if not reds:
                 steps.append(("Heat → temperature (+1 TR)", 0, 7))
-            # Under Reds: don't suggest, net TR = 0
+            elif reds_policy_id == "rp01" and me.mc >= 3:
+                steps.append(("Heat → temperature (+1 TR, Reds tax +3 MC)", 3, 7))
 
         # Policy action
         if state.turmoil:
@@ -844,6 +859,18 @@ class ClaudeOutput:
             for c in opt.get("cards", []):
                 cards.append(_parse_wf_card(c))
         return cards
+
+    @staticmethod
+    def _is_initial_cards_prompt(wf: dict | None) -> bool:
+        if not wf:
+            return False
+        if wf.get("type") == "initialCards":
+            return True
+        return any(opt.get("type") == "initialCards" for opt in wf.get("options", []))
+
+    @staticmethod
+    def _is_action_only_alert(alert: str) -> bool:
+        return str(alert or "").startswith("🚀 ")
 
     def format_postgame(self, state) -> str:
         """Markdown post-game report для --claude mode."""

@@ -428,6 +428,55 @@ PRELUDE_TIPS = {
 }
 
 
+_MILESTONE_THRESHOLD_HINTS = {
+    "Builder": 8,
+    "Scientist": 3,
+    "Rim Settler": 3,
+    "Diversifier": 8,
+    "Tactician": 5,
+    "Ecologist": 4,
+    "Legend": 5,
+    "Mayor": 3,
+    "Gardener": 3,
+    "Planner": 16,
+    "Terraformer": 35,
+    "Generalist": 6,
+    "Specialist": 10,
+    "Benefactor": 35,
+    "Hoverlord": 7,
+    "Energizer": 6,
+    "Celebrity": 4,
+    "Pioneer": 3,
+}
+
+
+def _milestone_threshold_hint(m: dict) -> int:
+    for score_info in (m.get("scores", {}) or {}).values():
+        if isinstance(score_info, dict) and score_info.get("threshold"):
+            return int(score_info.get("threshold") or 0)
+    return _MILESTONE_THRESHOLD_HINTS.get(m.get("name", ""), 0)
+
+
+def _milestone_opponent_pressure(m: dict, me_color: str) -> tuple[bool, bool]:
+    threshold = _milestone_threshold_hint(m)
+    opp_can = False
+    opp_close = False
+    for color, score_info in (m.get("scores", {}) or {}).items():
+        if color == me_color or not isinstance(score_info, dict):
+            continue
+        opp_val = int(score_info.get("score", 0) or 0)
+        if score_info.get("claimable"):
+            opp_can = True
+            opp_close = True
+            break
+        if threshold > 0:
+            gap = threshold - opp_val
+            close_gap = 2 if threshold >= 6 else 1
+            if 0 < gap <= close_gap:
+                opp_close = True
+    return opp_can, opp_close
+
+
 def _detect_strategy(player) -> str:
     """Определить стратегию игрока по тегам, корпорации и production."""
     tags = player.tags
@@ -512,7 +561,13 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
                 if gen <= 2:
                     alerts.append(f"🏆 {m['name']} доступен! (8 MC = 5 VP, но gen {gen} — можно подождать если MC нужны на engine)")
                 else:
-                    alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP)")
+                    opp_can, opp_close = _milestone_opponent_pressure(m, me.color)
+                    if opp_can:
+                        alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP, оппонент тоже может)")
+                    elif opp_close:
+                        alerts.append(f"🏆 ЗАЯВИ {m['name']}! (8 MC = 5 VP, оппонент близко)")
+                    else:
+                        alerts.append(f"🏆 {m['name']} доступен (8 MC = 5 VP, можно подождать если есть сильный engine ход)")
 
     # === Milestone race countdown ===
     cn = state.color_names
@@ -618,10 +673,15 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
 
     # === Turmoil look-ahead ===
     reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+    reds_policy_id = ""
+    reds_tax_per_tr = 0
     reds_coming = False
     if state.turmoil:
         dominant = str(state.turmoil.get("dominant", ""))
         reds_coming = "Reds" in dominant and not reds_now and not end_triggered
+        reds_policy_id = str((state.turmoil.get("policy_ids") or {}).get("Reds", "") or "")
+        if reds_now and reds_policy_id == "rp01":
+            reds_tax_per_tr = 3
 
     gens_left_conv = _estimate_remaining_gens(state)
 
@@ -659,14 +719,21 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
     # === Plants → Greenery ===
     if me.plants >= 8:
         if reds_now:
-            if gens_left_conv <= 1:
-                alerts.append(f"🌿 Plants {me.plants} — КОНВЕРТИРУЙ! Последний gen, VP > TR penalty")
+            if reds_tax_per_tr and state.oxygen < 14:
+                if gens_left_conv <= 1:
+                    alerts.append(f"🌿 Plants {me.plants} — КОНВЕРТИРУЙ, но держи {reds_tax_per_tr} MC на Reds tax")
+                else:
+                    alerts.append(f"🌿 Plants {me.plants} — greenery = +1 VP/+1 TR, но Reds tax +{reds_tax_per_tr} MC")
             else:
-                alerts.append(f"🌿 Plants {me.plants} — greenery = +1 VP но 0 net TR (Reds). Ок если VP нужнее")
+                alerts.append(f"🌿 Plants {me.plants} — greenery под Reds, проверь текущую policy")
         else:
             extra = ""
             if reds_coming:
-                extra = " ⚡ СЕЙЧАС! Reds доминируют — след. gen будет -1 TR!"
+                extra = (
+                    " ⚡ СЕЙЧАС! Reds доминируют — след. gen будет +3 MC tax/шаг!"
+                    if reds_policy_id == "rp01"
+                    else " ⚡ СЕЙЧАС! Reds доминируют — проверь policy след. gen!"
+                )
             elif me.plant_prod >= 5 and me.plants < 16 and gens_left_conv >= 3:
                 extra = f" (plant-prod {me.plant_prod} — можно копить на 2 greenery)"
             alerts.append(f"🌿 Greenery из {me.plants} plants (+1 O₂, +1 TR, +1 VP){extra}")
@@ -680,15 +747,22 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
                 if card_name in tableau_names:
                     heat_rebate += card_rebates.get("any_temp", 0)
         if reds_now:
-            if gens_left_conv <= 1:
-                alerts.append(f"🔥 Heat {me.heat} — КОНВЕРТИРУЙ! Последний gen, TR не важнее")
+            if reds_tax_per_tr:
+                if gens_left_conv <= 1:
+                    alerts.append(f"🔥 Heat {me.heat} — КОНВЕРТИРУЙ, но держи {reds_tax_per_tr} MC на Reds tax")
+                else:
+                    alerts.append(f"🔥 Heat {me.heat} — temp raise стоит +{reds_tax_per_tr} MC Reds tax. Трать только если темп/VP важнее")
             else:
-                alerts.append(f"🔥 Heat {me.heat} — НЕ трать, Reds = 0 net TR. Копи на след. gen")
+                alerts.append(f"🔥 Heat {me.heat} — Reds ruling, проверь policy перед temp raise")
         else:
             rebate_str = f" +{heat_rebate} MC rebate" if heat_rebate else ""
             extra = ""
             if reds_coming:
-                extra = " ⚡ СЕЙЧАС! Reds доминируют — след. gen -1 TR!"
+                extra = (
+                    " ⚡ СЕЙЧАС! Reds доминируют — след. gen +3 MC tax/шаг!"
+                    if reds_policy_id == "rp01"
+                    else " ⚡ СЕЙЧАС! Reds доминируют — проверь policy след. gen!"
+                )
             alerts.append(f"🔥 TR из {me.heat} heat (+1 temp, +1 TR{rebate_str}){extra}")
     elif me.heat >= 6 and me.heat < 8 and state.temperature < 8 and me.heat_prod >= 2:
         gens_to_8 = max(1, (8 - me.heat + me.heat_prod - 1) // me.heat_prod)
@@ -722,9 +796,12 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
         ruling = t.get("ruling", "")
         dominant = t.get("dominant", "")
 
-        # Reds ruling penalty
+        # Reds ruling policy
         if ruling and "Reds" in str(ruling):
-            alerts.append("⛔ REDS RULING: -1 TR/шаг при подъёме параметров!")
+            if reds_tax_per_tr:
+                alerts.append(f"⛔ REDS RULING: +{reds_tax_per_tr} MC/шаг TR при подъёме параметров!")
+            else:
+                alerts.append("⛔ REDS RULING: проверь текущую policy перед подъёмом параметров!")
 
         # Reds incoming warning
         if dominant and "Reds" in str(dominant) and not end_triggered:
@@ -1469,7 +1546,7 @@ def _generate_alerts(state, effect_parser=None) -> list[str]:
         # 1 VP per 4 microbes
         "Tardigrades": (1, 4),
         # 1 VP per 3 microbes
-        "Decomposers": (1, 3), "Symbiotic Fungus": (1, 3), "Extremophiles": (1, 3),
+        "Decomposers": (1, 3), "Extremophiles": (1, 3),
         # 1 VP per 2 microbes
         "Ants": (1, 2),
         # 1 VP per 2 animals
@@ -2266,7 +2343,7 @@ def _vp_projection(state) -> list[str]:
         }
         # Cards that add extra resources of a type each gen
         RESOURCE_ADDERS = {
-            "animal": {"Symbiotic Fungus", "Ecological Zone"},
+            "animal": {"Ecological Zone"},
             "microbe": {"Symbiotic Fungus", "Decomposers", "Ants"},
         }
         tableau_names_set = {c.get("name", "") for c in p.tableau}
@@ -2565,8 +2642,6 @@ def _build_action_chains(db, req_checker, hand: list[dict], state) -> list[str]:
                 triggers.append("Decomposers +microbe")
             elif tname == "Viral Enhancers" and ("plant" in card_tags or "microbe" in card_tags or "animal" in card_tags):
                 triggers.append("Viral Enhancers trigger")
-            elif tname == "Symbiotic Fungus" and "microbe" in card_tags:
-                triggers.append("Symbiotic Fungus +microbe")
             elif tname == "Media Group" and info.get("type") == "event":
                 triggers.append("Media Group +3 MC")
             elif tname == "Mars University" and "science" in card_tags:

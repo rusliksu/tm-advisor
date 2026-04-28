@@ -146,6 +146,45 @@ def _visible_opening_card_names(state, attrs: tuple[str, ...]) -> list[str]:
     return names
 
 
+def _tableau_names(state) -> set[str]:
+    if not state or not getattr(state, "me", None) or not getattr(state.me, "tableau", None):
+        return set()
+    return {
+        card.get("name", "") if isinstance(card, dict) else str(card)
+        for card in state.me.tableau
+    }
+
+
+def _has_live_earth_economy_payoff(state, corp_name: str) -> bool:
+    if corp_name in ("Point Luna", "Teractor"):
+        return True
+    return bool(_tableau_names(state) & {"Earth Office", "Cartel", "Luna Governor"})
+
+
+def _acquired_company_late_penalty(state, corp_name: str, generation: int, gens_left: int) -> int:
+    """Acquired Company is benchmark economy early, but a trap as a naked gen 5+ pick."""
+    if is_opening_hand_context(state):
+        return 0
+
+    current_gen = generation
+    if state:
+        current_gen = getattr(state, "generation", generation) or generation
+
+    penalty = 0
+    if current_gen >= 6 or gens_left <= 4:
+        penalty = 14
+    elif current_gen >= 5 or gens_left <= 5:
+        penalty = 10
+    elif current_gen >= 4:
+        penalty = 6
+    elif current_gen >= 3:
+        penalty = 3
+
+    if penalty and _has_live_earth_economy_payoff(state, corp_name):
+        penalty = max(0, penalty - 6)
+    return penalty
+
+
 def _visible_colony_names(state, active_only: bool = False) -> list[str]:
     names: list[str] = []
     seen: set[str] = set()
@@ -1148,6 +1187,9 @@ class SynergyEngine:
                         elif card_info and card_info.get("cost", 0) <= 6:
                             prod_adj = min(prod_adj, 7)
                     bonus += prod_adj
+
+            if card_name == "Acquired Company":
+                bonus -= _acquired_company_late_penalty(state, corp_name, generation, gens_left)
 
             # Energy cost discount in late game:
             # Cards that sacrifice energy prod (Capital -2, Underground City -2, etc.)

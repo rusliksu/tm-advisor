@@ -16,14 +16,21 @@ from tm_advisor.action_ordering import get_action_advice  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
-def build_state(hand_names: list[str]) -> GameState:
+def build_state(
+    hand_names: list[str],
+    *,
+    heat: int = 0,
+    temperature: int = -10,
+    turmoil: dict | None = None,
+) -> GameState:
     cards = [{"name": name, "calculatedCost": 0, "tags": []} for name in hand_names]
-    return GameState({
+    state = GameState({
         "thisPlayer": {
             "color": "red",
             "name": "me",
             "megaCredits": 40,
             "megaCreditProduction": 10,
+            "heat": heat,
             "heatProduction": 3,
             "cardsInHandNbr": len(cards),
             "tableau": [{"name": "Helion", "resources": 0, "isDisabled": False}],
@@ -38,7 +45,7 @@ def build_state(hand_names: list[str]) -> GameState:
             "generation": 8,
             "phase": "action",
             "oxygenLevel": 6,
-            "temperature": -10,
+            "temperature": temperature,
             "oceans": 4,
             "venusScaleLevel": 18,
             "milestones": [],
@@ -48,6 +55,9 @@ def build_state(hand_names: list[str]) -> GameState:
             "gameOptions": {"expansions": {}},
         },
     })
+    if turmoil is not None:
+        state.turmoil = turmoil
+    return state
 
 
 def assert_no_wrong_cross_card_leaks() -> None:
@@ -70,8 +80,22 @@ def assert_no_wrong_cross_card_leaks() -> None:
     assert any("plant" in line.lower() for line in greenhouses_lines), greenhouses_lines
 
 
+def assert_reds_heat_timing_does_not_conflict() -> None:
+    state = build_state(
+        [],
+        heat=9,
+        temperature=-10,
+        turmoil={"ruling": "Scientists", "dominant": "Reds", "policy_ids": {"Reds": "rp01"}},
+    )
+    advice = get_action_advice(state)
+
+    assert any("Reds" in line and ("налог" in line or "tax" in line) for line in advice), advice
+    assert not any("Heat→temp" in line and "затягивай" in line for line in advice), advice
+
+
 def main() -> None:
     assert_no_wrong_cross_card_leaks()
+    assert_reds_heat_timing_does_not_conflict()
     print("advisor action-ordering regression checks: OK")
 
 

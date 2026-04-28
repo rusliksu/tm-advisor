@@ -309,6 +309,70 @@ def build_budget_sequence_state(*, generation=7, hand=None) -> GameState:
     })
 
 
+def build_reds_tax_space_event_state() -> GameState:
+    hand = [
+        {"name": "Giant Ice Asteroid", "calculatedCost": 36, "tags": ["Space", "Event"]},
+        {"name": "Comet", "calculatedCost": 21, "tags": ["Space", "Event"]},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 9,
+        "steel": 0,
+        "titanium": 9,
+        "plants": 0,
+        "energy": 0,
+        "heat": 8,
+        "megaCreditProduction": 12,
+        "steelProduction": 0,
+        "titaniumProduction": 2,
+        "plantProduction": 0,
+        "energyProduction": 0,
+        "heatProduction": 0,
+        "terraformRating": 22,
+        "cardsInHandNbr": len(hand),
+        "tableau": [
+            {"name": "Celestic"},
+        ],
+        "tags": {
+            "space": 4,
+            "event": 1,
+        },
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Celestic"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 7,
+            "phase": "action",
+            "oxygenLevel": 5,
+            "temperature": -14,
+            "oceans": 5,
+            "venusScaleLevel": 0,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "turmoil": {
+                "ruling": "Reds",
+                "dominant": "Mars First",
+                "politicalAgendas": {
+                    "reds": {
+                        "policyId": "rp01",
+                    },
+                },
+                "parties": [],
+                "lobby": [],
+                "policyActionUsers": [],
+            },
+            "gameOptions": {
+                "expansions": {"prelude": True, "turmoil": True},
+            },
+        },
+    })
+
+
 def build_floater_gate_state(*, floater_cards=None) -> GameState:
     floater_cards = floater_cards or []
     tableau = [{"name": name, "resources": resources} for name, resources in floater_cards]
@@ -719,6 +783,184 @@ def build_non_vp_resource_currency_state() -> GameState:
             "awards": [],
             "colonies": [],
             "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
+def build_colony_card_value_state() -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 60,
+        "steel": 0,
+        "titanium": 8,
+        "titaniumValue": 4,
+        "plants": 1,
+        "energy": 3,
+        "heat": 0,
+        "megaCreditProduction": 9,
+        "steelProduction": 0,
+        "titaniumProduction": 2,
+        "plantProduction": 0,
+        "energyProduction": 3,
+        "heatProduction": 0,
+        "terraformRating": 24,
+        "cardsInHandNbr": 2,
+        "coloniesCount": 1,
+        "fleetSize": 1,
+        "tradesThisGeneration": 0,
+        "tableau": [{"name": "PhoboLog"}],
+        "tags": {"space": 2, "science": 1},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "PhoboLog"}],
+        "cardsInHand": [
+            {"name": "Research Colony", "calculatedCost": 20, "tags": ["Space", "Science"]},
+            {"name": "Space Port Colony", "calculatedCost": 27, "tags": ["Space"]},
+        ],
+        "game": {
+            "generation": 4,
+            "phase": "action",
+            "oxygenLevel": 3,
+            "temperature": -20,
+            "oceans": 2,
+            "venusScaleLevel": 0,
+            "milestones": [],
+            "awards": [],
+            "colonies": [
+                {"name": "Luna", "isActive": True, "trackPosition": 4, "colonies": []},
+                {"name": "Europa", "isActive": True, "trackPosition": 3, "colonies": []},
+                {"name": "Triton", "isActive": True, "trackPosition": 2, "colonies": []},
+            ],
+            "gameOptions": {
+                "expansions": {"prelude": True, "colonies": True},
+            },
+        },
+    })
+
+
+def build_crash_site_requirement_state(*, actions_by_color=None) -> GameState:
+    actions_by_color = actions_by_color or {}
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 20,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 5,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 0,
+        "heatProduction": 0,
+        "terraformRating": 20,
+        "cardsInHandNbr": 1,
+        "tableau": [{"name": "Teractor"}],
+        "tags": {},
+        "actionsThisGeneration": actions_by_color.get("red", []),
+    }
+    opp = {
+        "color": "blue",
+        "name": "opp",
+        "megaCredits": 20,
+        "terraformRating": 20,
+        "cardsInHandNbr": 0,
+        "tableau": [],
+        "tags": {},
+        "actionsThisGeneration": actions_by_color.get("blue", []),
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me, opp],
+        "pickedCorporationCard": [{"name": "Teractor"}],
+        "cardsInHand": [
+            {"name": "Crash Site Cleanup", "calculatedCost": 4, "tags": []},
+        ],
+        "game": {
+            "generation": 4,
+            "phase": "action",
+            "oxygenLevel": 4,
+            "temperature": -18,
+            "oceans": 3,
+            "venusScaleLevel": 0,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True}},
+        },
+    })
+
+
+def build_safe_milestone_spend_state() -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 25,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 3,
+        "heat": 0,
+        "megaCreditProduction": 9,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 3,
+        "heatProduction": 0,
+        "terraformRating": 24,
+        "cardsInHandNbr": 1,
+        "coloniesCount": 1,
+        "fleetSize": 1,
+        "tradesThisGeneration": 0,
+        "tableau": [{"name": "Teractor"}],
+        "tags": {"space": 1, "science": 1},
+    }
+    opp = {
+        "color": "blue",
+        "name": "opp",
+        "megaCredits": 20,
+        "terraformRating": 20,
+        "cardsInHandNbr": 0,
+        "coloniesCount": 1,
+        "tableau": [],
+        "tags": {},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me, opp],
+        "pickedCorporationCard": [{"name": "Teractor"}],
+        "cardsInHand": [
+            {"name": "Research Colony", "calculatedCost": 20, "tags": ["Space", "Science"]},
+        ],
+        "game": {
+            "generation": 4,
+            "phase": "action",
+            "oxygenLevel": 3,
+            "temperature": -20,
+            "oceans": 2,
+            "venusScaleLevel": 0,
+            "milestones": [
+                {
+                    "name": "Pioneer",
+                    "scores": [
+                        {"color": "red", "score": 3, "claimable": True},
+                        {"color": "blue", "score": 1, "claimable": False},
+                    ],
+                }
+            ],
+            "awards": [],
+            "colonies": [
+                {"name": "Luna", "isActive": True, "trackPosition": 4, "colonies": []},
+                {"name": "Triton", "isActive": True, "trackPosition": 3, "colonies": []},
+            ],
+            "gameOptions": {
+                "expansions": {"prelude": True, "colonies": True},
+            },
         },
     })
 
@@ -1495,6 +1737,86 @@ def main() -> int:
     assert research_hub_value == 0, research_hub_value
     assert ants_value < birds_value, (ants_value, birds_value)
 
+    colony_state = build_colony_card_value_state()
+    colony_rv = resource_values(8)
+    research_colony_value = _estimate_card_value_rich(
+        "Research Colony",
+        90,
+        20,
+        ["Space", "Science"],
+        "mid",
+        8,
+        colony_rv,
+        bot.effect_parser,
+        bot.db,
+        corp_name=colony_state.me.corp,
+        me=colony_state.me,
+        hand_cards=colony_state.cards_in_hand,
+    )
+    space_port_colony_value = _estimate_card_value_rich(
+        "Space Port Colony",
+        88,
+        27,
+        ["Space"],
+        "mid",
+        8,
+        colony_rv,
+        bot.effect_parser,
+        bot.db,
+        corp_name=colony_state.me.corp,
+        me=colony_state.me,
+        hand_cards=colony_state.cards_in_hand,
+    )
+    assert research_colony_value >= 20, research_colony_value
+    assert space_port_colony_value >= 24, space_port_colony_value
+    colony_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            colony_state.cards_in_hand, colony_state, bot.synergy, bot.req_checker
+        )
+    }
+    assert colony_advice["Research Colony"]["play_value_now"] >= 20, colony_advice["Research Colony"]
+    assert colony_advice["Space Port Colony"]["play_value_now"] >= 24, colony_advice["Space Port Colony"]
+
+    crash_site_without_attack = build_crash_site_requirement_state()
+    req_ok, req_reason = bot.req_checker.check("Crash Site Cleanup", crash_site_without_attack)
+    assert req_ok is False, req_reason
+    adjusted, adjusted_ok, adjusted_reason = bot.req_checker.adjust_score(
+        63,
+        "Crash Site Cleanup",
+        crash_site_without_attack,
+    )
+    assert adjusted_ok is False, adjusted_reason
+    assert adjusted < 55, (adjusted, adjusted_reason)
+    crash_site_after_attack = build_crash_site_requirement_state(
+        actions_by_color={"blue": ["Comet"]}
+    )
+    req_ok, req_reason = bot.req_checker.check("Crash Site Cleanup", crash_site_after_attack)
+    assert req_ok is True, req_reason
+
+    safe_milestone_state = build_safe_milestone_spend_state()
+    safe_milestone_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            safe_milestone_state.cards_in_hand,
+            safe_milestone_state,
+            bot.synergy,
+            bot.req_checker,
+        )
+    }
+    research_with_safe_milestone = safe_milestone_advice["Research Colony"]
+    assert research_with_safe_milestone["action"] == "PLAY", research_with_safe_milestone
+    assert "milestone" not in research_with_safe_milestone["reason"], research_with_safe_milestone
+    safe_milestone_alloc = mc_allocation_advice(
+        safe_milestone_state, bot.synergy, bot.req_checker
+    )
+    pioneer_alloc = next(
+        a for a in safe_milestone_alloc["allocations"]
+        if a["action"].startswith("Claim Pioneer")
+    )
+    assert pioneer_alloc["priority"] == 3, pioneer_alloc
+    assert "⚠" not in pioneer_alloc["action"], pioneer_alloc
+
     state = build_state()
     advice = {
         row["name"]: row
@@ -1571,6 +1893,31 @@ def main() -> int:
     assert budget_advice["Io Sulphur Research"]["action"] == "PLAY", budget_advice
     assert budget_advice["Nuclear Zone"]["action"] == "HOLD", budget_advice
     assert budget_rows[0]["name"] == "Mohole Area", budget_rows
+
+    reds_tax_state = build_reds_tax_space_event_state()
+    reds_tax_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            reds_tax_state.cards_in_hand, reds_tax_state, bot.synergy, bot.req_checker
+        )
+    }
+    assert reds_tax_advice["Giant Ice Asteroid"]["action"] == "HOLD", reds_tax_advice["Giant Ice Asteroid"]
+    assert "Reds tax" in reds_tax_advice["Giant Ice Asteroid"]["reason"], reds_tax_advice["Giant Ice Asteroid"]
+    reds_tax_allocations = mc_allocation_advice(
+        reds_tax_state, bot.synergy, bot.req_checker
+    )["allocations"]
+    gia_alloc = next(
+        (a for a in reds_tax_allocations if a["action"].startswith("Play Giant Ice Asteroid")),
+        None,
+    )
+    assert gia_alloc is None or "❌нет MC" in gia_alloc["action"], reds_tax_allocations
+    heat_alloc = next(
+        (a for a in reds_tax_allocations if a["action"].startswith("Temperature (heat)")),
+        None,
+    )
+    assert heat_alloc is not None, reds_tax_allocations
+    assert heat_alloc["cost"] == 3, heat_alloc
+    assert "Reds" in heat_alloc["action"], heat_alloc
 
     no_floater_state = build_floater_gate_state(floater_cards=[])
     no_floater_advice = {

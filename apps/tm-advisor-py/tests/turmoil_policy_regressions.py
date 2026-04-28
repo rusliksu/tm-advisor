@@ -118,7 +118,7 @@ def assert_live_passive_policy_fixture_prefers_real_card() -> None:
     ), allocations
 
     best_move = snapshot.get("summary", {}).get("best_move", "")
-    assert best_move.startswith("PLAY Ceres Spaceport"), snapshot.get("summary")
+    assert best_move.startswith(("PLAY Ceres Spaceport", "Play Ceres Spaceport")), snapshot.get("summary")
 
 
 def main() -> None:

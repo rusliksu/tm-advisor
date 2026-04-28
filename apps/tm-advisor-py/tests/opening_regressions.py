@@ -877,6 +877,33 @@ def main():
     assert _estimate_req_gap("Нужно 2 venus tag (есть 0)", req_gap_state, 9) == 2
     assert _estimate_req_gap("Нужно 5 ocean (сейчас 0)", req_gap_state, 9) == 3
 
+    late_acquired_state = build_state(
+        corps=["Celestic", "Teractor"],
+        preludes=["Donation"],
+        projects=["Acquired Company"],
+        colonies=[("Luna", True), ("Ceres", True)],
+        generation=6,
+    )
+    late_acquired_state.game["phase"] = "drafting"
+    late_acquired_state.phase = "drafting"
+    late_acquired_state.me.tableau = [{"name": "Celestic"}, {"name": "Suitable Infrastructure"}]
+    late_acquired_state.me.mc_prod = 7
+    naked_acquired_score = project_score(bot, late_acquired_state, "Celestic", "Acquired Company")
+    assert naked_acquired_score < 70, naked_acquired_score
+
+    earth_payoff_state = build_state(
+        corps=["Teractor", "Celestic"],
+        preludes=["Donation"],
+        projects=["Acquired Company"],
+        colonies=[("Luna", True), ("Ceres", True)],
+        generation=6,
+    )
+    earth_payoff_state.game["phase"] = "drafting"
+    earth_payoff_state.phase = "drafting"
+    earth_payoff_state.me.tableau = [{"name": "Teractor"}, {"name": "Cartel"}]
+    earth_payoff_score = project_score(bot, earth_payoff_state, "Teractor", "Acquired Company")
+    assert earth_payoff_score >= naked_acquired_score + 4, (naked_acquired_score, earth_payoff_score)
+
     print("advisor opening regression checks: OK")
 
 

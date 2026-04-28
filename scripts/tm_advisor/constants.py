@@ -509,12 +509,12 @@ PARTY_STRATEGY: dict[str, dict] = {
         "ruling_tip": "Хороша для bio engine. Теги кормят ruling-бонус, а точная policy зависит от policyId.",
     },
     "Reds": {
-        "ruling_bonus": "-1 TR per parameter raise (PENALTY!)",
-        "policy": "No beneficial policy for active players",
+        "ruling_bonus": "Policy varies by policyId; rp01 = pay 3 MC per TR raise",
+        "policy": "Policy varies by policyId: TR tax, tile tax, parameter decrease action, or MC-prod penalty",
         "good_for": ["НИКОГО — Reds вредят всем"],
         "bad_for": ["terraforming strategy", "TR-focused", "all players"],
         "delegate_value": "negative",
-        "ruling_tip": "⛔ БЛОКИРУЙ Reds любой ценой! -1 TR/шаг = катастрофа. Ставь делегатов в другую партию",
+        "ruling_tip": "⛔ Reds обычно наказывает terraforming. Смотри текущий policyId и держи MC/темп под налог.",
     },
     "Kelvinists": {
         "ruling_bonus": "+1 MC per heat production (max 5, +influence)",

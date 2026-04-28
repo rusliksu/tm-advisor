@@ -17,7 +17,8 @@ class CardEffect:
         "production_change", "tr_gain", "vp_per",
         "discount", "triggers", "actions",
         "tag_scaling", "placement", "attacks",
-        "draws_cards", "gains_resources",
+        "draws_cards", "discards_cards", "discard_after_draw", "opponents_draw_cards",
+        "gains_resources",
     )
 
     def __init__(self, name: str):
@@ -35,7 +36,10 @@ class CardEffect:
         self.tag_scaling: list[dict] = []      # [{tag: "Earth", per: 1, gives: "1 MC-prod"}]
         self.placement: list[str] = []         # ["ocean", "city", "greenery"]
         self.attacks: list[str] = []           # ["-2 plant-prod", "-3 MC-prod"]
-        self.draws_cards: int = 0              # сколько карт draw
+        self.draws_cards: int = 0              # сколько карт физически draw
+        self.discards_cards: int = 0           # сколько карт нужно сбросить как часть эффекта
+        self.discard_after_draw: bool = False  # сброс идет после добора, из расширенной руки
+        self.opponents_draw_cards: int = 0     # сколько карт каждый оппонент draw
         self.gains_resources: dict = {}        # {mc: 5, plant: 3, ...} immediate
 
 

@@ -564,6 +564,44 @@ def _opponent_threats(state) -> list[str]:
 # Play/Hold Advice
 # ═══════════════════════════════════════════════════════════════
 
+def _has_reds_immunity(me) -> bool:
+    for card in getattr(me, "tableau", []) or []:
+        if not isinstance(card, dict):
+            continue
+        if card.get("isDisabled"):
+            continue
+        if str(card.get("name", "")) == "Zan":
+            return True
+    return False
+
+
+def _reds_ruling_policy_id(state) -> str:
+    turmoil = getattr(state, "turmoil", None) or {}
+    ruling = str(turmoil.get("ruling", "") or "")
+    if "Reds" not in ruling:
+        return ""
+    return str((turmoil.get("policy_ids") or {}).get("Reds", "") or "")
+
+
+def _reds_rp01_tax_per_tr(state) -> int:
+    if _reds_ruling_policy_id(state) != "rp01":
+        return 0
+    if _has_reds_immunity(getattr(state, "me", None)):
+        return 0
+    return 3
+
+
+def _reds_card_tax(card_name: str, effect_parser, state) -> tuple[int, int]:
+    tax_per_tr = _reds_rp01_tax_per_tr(state)
+    if tax_per_tr <= 0 or not effect_parser:
+        return 0, 0
+    eff_data = effect_parser.get(card_name)
+    if not eff_data:
+        return 0, 0
+    tr_steps = max(0, int(round(float(getattr(eff_data, "tr_gain", 0) or 0))))
+    return tr_steps * tax_per_tr, tr_steps
+
+
 def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
     """Для каждой карты в руке: PLAY / HOLD / SELL с приоритетом.
 
@@ -587,10 +625,6 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
 
     # Collect tableau discount cards for effective cost calculation
     tableau_discounts = _collect_tableau_discounts(me.tableau)
-
-    # Reds ruling check
-    reds_ruling = (state.turmoil and
-                   "Reds" in str(state.turmoil.get("ruling", "")))
 
     results = []
     for card in hand:
@@ -629,9 +663,16 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                                       0, hold_score / 15, 0, 7))
             continue
 
-        # Can't afford (using effective cost with steel/ti)
-        if eff_cost > me.mc:
-            results.append(_entry(name, "HOLD", f"нет MC ({eff_cost} MC eff > {me.mc})",
+        reds_tax, reds_tr_steps = _reds_card_tax(name, effect_parser, state)
+        total_eff_cost = eff_cost + reds_tax
+
+        # Can't afford (using effective cost with steel/ti plus payable Reds tax)
+        if total_eff_cost > me.mc:
+            if reds_tax:
+                cost_reason = f"{eff_cost} MC eff + {reds_tax} Reds tax > {me.mc}"
+            else:
+                cost_reason = f"{eff_cost} MC eff > {me.mc}"
+            results.append(_entry(name, "HOLD", f"нет MC ({cost_reason})",
                                   0, score / 10, 0, 7))
             continue
 
@@ -642,17 +683,17 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             tableau_tags=dict(me.tags) if me.tags else None,
             me=me,
             hand_cards=state.cards_in_hand)
-        mc_after = me.mc - eff_cost  # effective cost with steel/ti
+        mc_after = me.mc - total_eff_cost  # effective cost with steel/ti + Reds tax
 
         # SELL: low score card (but allow early game speculation and immediate payoff)
         if score < 40 and phase != "early":
-            net_play_value = play_value - eff_cost
+            net_play_value = play_value - total_eff_cost
             has_immediate_value = _has_endgame_immediate_value(
                 name, effect_parser, allow_placement=True
             )
             if net_play_value <= 0 and not has_immediate_value:
                 results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
-                                      play_value, 0, eff_cost, 9))
+                                      play_value, 0, total_eff_cost, 9))
                 continue
 
         # Production in endgame = bad
@@ -665,9 +706,9 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         )
         if (is_production and gens_left <= 2 and
                 not has_endgame_nonplacement_value and
-                (not has_endgame_immediate_value or play_value <= eff_cost)):
+                (not has_endgame_immediate_value or play_value <= total_eff_cost)):
             results.append(_entry(name, "SELL", "production в endgame бесполезна",
-                                  play_value * 0.2, 0, eff_cost, 9))
+                                  play_value * 0.2, 0, total_eff_cost, 9))
             continue
 
         # Last gen: only play if immediate VP/TR or conversion fuel
@@ -677,14 +718,14 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             if not has_immediate_value:
                 sell_reason = f"last gen: no immediate VP (sell +1 MC)"
                 results.append(_entry(name, "SELL", sell_reason,
-                                      play_value * 0.1, 0, eff_cost, 9))
+                                      play_value * 0.1, 0, total_eff_cost, 9))
                 continue
 
-        # Check opportunity costs (using effective MC cost)
-        opportunity_cost = _calc_opportunity_cost(state, eff_cost)
+        # Check opportunity costs (using effective MC cost plus payable Reds tax)
+        opportunity_cost = _calc_opportunity_cost(state, total_eff_cost)
 
         # Milestone danger: don't drop below 8 MC
-        has_claimable = _has_claimable_milestone(state)
+        has_claimable = _has_urgent_claimable_milestone(state)
         if has_claimable and mc_after < 8:
             results.append(_entry(name, "HOLD",
                                   "сначала milestone (8 MC = 5 VP)!",
@@ -707,26 +748,19 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                 continue
 
         # Good card — PLAY (VP race adjustments)
-        priority = _play_priority(score, eff_cost, is_production, phase, gens_left)
+        priority = _play_priority(score, total_eff_cost, is_production, phase, gens_left)
         play_reason = _play_reason(score, phase, gens_left)
         if pay_hint:
             play_reason += f" ({pay_hint})"
+        if reds_tax:
+            play_reason += f" ⛔Reds: +{reds_tax} MC tax ({reds_tr_steps} TR)"
+            priority = min(9, priority + 1)
 
         # Income delta for production cards
         if is_production and effect_parser and gens_left > 1:
             income_delta = _calc_income_delta(name, effect_parser, me)
             if income_delta:
                 play_reason += f" [income {income_delta}]"
-
-        # Reds penalty: TR-raising cards are worse under Reds
-        if reds_ruling and effect_parser:
-            eff_data = effect_parser.get(name)
-            if eff_data and (eff_data.tr_gain > 0 or eff_data.placement):
-                tr_raises = eff_data.tr_gain + len(eff_data.placement)
-                penalty_mc = tr_raises * 7  # each TR raise loses 1 TR = ~7 MC
-                play_reason += f" ⛔Reds: -{tr_raises} TR penalty!"
-                play_value -= penalty_mc * 0.5  # reduce value
-                priority = min(9, priority + 1)  # lower priority
 
         # Milestone tag boost: if card contributes to a near milestone
         ms_boost = _check_milestone_contribution(name, tags, state, me)
@@ -767,7 +801,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                 target_name, target_card.get("tags", []), db)
             target_eff_cost, _ = _effective_card_cost(
                 target_card, target_tags, me, tableau_discounts=tableau_discounts)
-            discounted_cost = max(0, target_eff_cost - max(0, discount_mc))
+            target_reds_tax, _ = _reds_card_tax(target_name, effect_parser, state)
+            discounted_cost = max(0, target_eff_cost - max(0, discount_mc)) + target_reds_tax
             return _play_sequence_net_value(target_row) - discounted_cost > 0
 
         for hint in order_hints:
@@ -795,7 +830,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
     # First choose the highest-value PLAY subset that fits current MC budget,
     # then simulate the chosen sequence with steel/ti consumption.
     play_sequence = _select_play_sequence(
-        results, hand, me, tableau_discounts, gens_left=gens_left, db=db)
+        results, hand, me, tableau_discounts, gens_left=gens_left,
+        db=db, state=state, effect_parser=effect_parser)
     if len(play_sequence) >= 2:
         mc_sim = me.mc
         steel_sim, ti_sim = me.steel, me.titanium
@@ -808,8 +844,10 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             eff, _ = _effective_card_cost(card_data, card_tags, me,
                                           steel_sim, ti_sim,
                                           tableau_discounts=tableau_discounts)
-            if eff > mc_sim:
-                r["reason"] += f" ⚠️ sequence: {eff} MC eff > {mc_sim} осталось"
+            reds_tax, _ = _reds_card_tax(r.get("name"), effect_parser, state)
+            total_eff = eff + reds_tax
+            if total_eff > mc_sim:
+                r["reason"] += f" ⚠️ sequence: {total_eff} MC eff > {mc_sim} осталось"
                 r["action"] = "HOLD"
                 r["priority"] = 7
             else:
@@ -821,7 +859,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                 if "space" in tag_set and ti_sim > 0:
                     ti_used = min(ti_sim, card_cost // me.ti_value)
                     ti_sim -= ti_used
-                mc_sim -= eff
+                mc_sim -= total_eff
 
     # ── Event tag-loss warning ──
     # Event (red) cards lose tags after play. Check if this affects milestones/awards.
@@ -863,8 +901,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     budget = me.mc + (me.heat if me.corp == "Helion" else 0)
     allocations = []
     warnings = []
-    reds_ruling = (state.turmoil and
-                   "Reds" in str(state.turmoil.get("ruling", "")))
+    reds_tax_per_tr = _reds_rp01_tax_per_tr(state)
     tableau_discounts = _collect_tableau_discounts(me.tableau)
 
     # VP race context
@@ -903,23 +940,20 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             my_sc = m.get("scores", {}).get(me.color, {})
             if isinstance(my_sc, dict) and my_sc.get("claimable", False):
                 value_mc = 5 * rv["vp"]
-                # Check opponent race
-                opp_can = False
-                for color, info in m.get("scores", {}).items():
-                    if color == me.color:
-                        continue
-                    if isinstance(info, dict) and info.get("claimable"):
-                        opp_can = True
-                        break
-                urgency = " ⚠️ГОНКА!" if opp_can else ""
+                opp_can, opp_close, _opp_color = _milestone_opponent_pressure(m, me.color)
+                urgency = " ⚠️ГОНКА!" if opp_can else " ⚠️close" if opp_close else ""
                 allocations.append({
                     "action": f"Claim {m['name']}{urgency}",
                     "cost": 8, "value_mc": round(value_mc),
-                    "priority": 1, "type": "milestone",
+                    "priority": 1 if (opp_can or opp_close) else 3,
+                    "type": "milestone",
                 })
                 if opp_can:
                     warnings.append(
                         f"Milestone {m['name']}: оппонент тоже может заявить!")
+                elif opp_close:
+                    warnings.append(
+                        f"Milestone {m['name']}: оппонент близко, лучше не затягивать.")
                 break
 
     # 2. Awards — delegated to award_capture (urgency-based slot capture)
@@ -996,11 +1030,13 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             tags = _merged_card_tags(name, card.get("tags", []), db)
             eff_cost, _ = _effective_card_cost(
                 card, tags, me, tableau_discounts=tableau_discounts)
+            reds_tax, _reds_tr_steps = _reds_card_tax(name, effect_parser, state)
+            total_eff_cost = eff_cost + reds_tax
             score = synergy.adjusted_score(
                 name, tags, me.corp, state.generation, me.tags, state)
             req_ok, _ = req_checker.check(name, state)
 
-            if not req_ok or eff_cost > budget:
+            if not req_ok or total_eff_cost > budget:
                 continue
 
             if gens_left <= 1 and not _is_vp_card(name, tags, effect_parser):
@@ -1016,20 +1052,25 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 tableau_tags=dict(me.tags) if me.tags else None,
                 me=me,
                 hand_cards=state.cards_in_hand)
-            if phase in ("late", "endgame") and value_mc <= eff_cost:
+            if phase in ("late", "endgame") and value_mc <= total_eff_cost:
                 continue
-            priority = _play_priority(score, eff_cost,
+            priority = _play_priority(score, total_eff_cost,
                                       _is_production_card(tags, name, effect_parser=effect_parser, db=db),
                                       phase, gens_left)
+            action = f"Play {name}"
+            if reds_tax:
+                action += f" ⛔Reds: +{reds_tax} MC tax"
+                priority = min(9, priority + 1)
             allocations.append({
-                "action": f"Play {name}",
-                "cost": int(eff_cost), "value_mc": round(value_mc),
+                "action": action,
+                "cost": int(total_eff_cost), "value_mc": round(value_mc),
                 "priority": priority, "type": "card",
             })
 
     # 5. Resource conversions (with timing advice)
     if me.plants >= 8:
         value = round(rv["greenery"])
+        plant_cost = 0
         # Check: will plant production give another greenery next gen?
         plant_hint = ""
         if me.plants >= 8 and me.plants < 16 and me.plant_prod >= 4 and gens_left >= 2:
@@ -1038,10 +1079,10 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 plant_hint = " → convert now, 2nd greenery next gen"
         # Endgame: always convert
         priority_conv = 2 if phase == "endgame" else 3
-        # Reds penalty: greenery raises O2 (or gives VP if maxed)
-        if reds_ruling and state.oxygen < 14:
-            value -= 7  # lose 1 TR
-            plant_hint += " ⛔Reds: -1 TR!"
+        # Reds rp01: greenery raises O2/TR and requires payable MC tax.
+        if reds_tax_per_tr and state.oxygen < 14:
+            plant_cost = reds_tax_per_tr
+            plant_hint += f" ⛔Reds: +{plant_cost} MC tax!"
             priority_conv = min(priority_conv + 1, 6)
         # Behind in VP: greenery = TR + VP, high priority
         if vp_ctx["behind"]:
@@ -1049,7 +1090,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
             plant_hint += " 🏃VP push"
         allocations.append({
             "action": f"Greenery (plants){plant_hint}",
-            "cost": 0, "value_mc": max(0, value),
+            "cost": plant_cost, "value_mc": max(0, value),
             "priority": priority_conv, "type": "conversion",
         })
     elif me.plants >= 5 and me.plant_prod >= 3 and gens_left >= 1 and not end_triggered:
@@ -1061,23 +1102,24 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
     if me.heat >= 8 and state.temperature < 8:
         value = round(rv["tr"])
+        heat_cost = 0
         heat_hint = ""
         # If we have heat production and gens left, consider holding
         if me.heat >= 8 and me.heat < 16 and me.heat_prod >= 4 and gens_left >= 2:
             if me.heat_prod + me.heat - 8 >= 8:
                 heat_hint = " → convert now, 2nd raise next gen"
         priority_heat = 3
-        # Reds penalty for temperature raise
-        if reds_ruling:
-            value -= 7
-            heat_hint += " ⛔Reds: -1 TR!"
+        # Reds rp01: temperature raises TR and requires payable MC tax.
+        if reds_tax_per_tr:
+            heat_cost = reds_tax_per_tr
+            heat_hint += f" ⛔Reds: +{heat_cost} MC tax!"
             priority_heat = min(priority_heat + 2, 7)
         # Temp close to max: less valuable
         if state.temperature >= 6:
             heat_hint += " (temp almost capped)"
         allocations.append({
             "action": f"Temperature (heat){heat_hint}",
-            "cost": 0, "value_mc": max(0, value),
+            "cost": heat_cost, "value_mc": max(0, value),
             "priority": priority_heat, "type": "conversion",
         })
     elif (me.heat >= 5 and me.heat_prod >= 3 and state.temperature < 8
@@ -1160,8 +1202,12 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
         # Reds ruling warning for TR-raising actions
         if ruling and "Reds" in str(ruling):
-            warnings.append(
-                "⛔ Reds ruling: -1 TR per parameter raise! Avoid unless critical.")
+            if reds_tax_per_tr:
+                warnings.append(
+                    f"⛔ Reds ruling: +{reds_tax_per_tr} MC per TR raise! Keep MC for terraform.")
+            else:
+                warnings.append(
+                    "⛔ Reds ruling: check policy before parameter raises.")
 
     # 8. Endgame sell-all optimization
     if phase == "endgame" and gens_left <= 1 and state.cards_in_hand and synergy:
@@ -1480,6 +1526,41 @@ _MILESTONE_THRESHOLDS = {
     "Energizer": ("energy_prod", 6),
     "Celebrity": ("expensive_cards", 4),  # cards cost 20+
 }
+
+
+def _milestone_threshold(m: dict) -> int:
+    raw_scores = m.get("scores", {}) or {}
+    for score_info in raw_scores.values():
+        if isinstance(score_info, dict) and score_info.get("threshold"):
+            return int(score_info.get("threshold") or 0)
+    threshold_info = _MILESTONE_THRESHOLDS.get(m.get("name", ""))
+    return int(threshold_info[1]) if threshold_info else 0
+
+
+def _milestone_opponent_pressure(m: dict, me_color: str) -> tuple[bool, bool, str]:
+    threshold = _milestone_threshold(m)
+    opp_can = False
+    opp_close = False
+    closest_name = ""
+    closest_val = -1
+    for color, info in (m.get("scores", {}) or {}).items():
+        if color == me_color or not isinstance(info, dict):
+            continue
+        opp_val = int(info.get("score", 0) or 0)
+        if opp_val > closest_val:
+            closest_val = opp_val
+            closest_name = color
+        if info.get("claimable"):
+            opp_can = True
+            opp_close = True
+            closest_name = color
+            break
+        if threshold > 0:
+            gap = threshold - opp_val
+            close_gap = 2 if threshold >= 6 else 1
+            if 0 < gap <= close_gap:
+                opp_close = True
+    return opp_can, opp_close, closest_name
 
 
 def _add_milestone_progress(warnings, ms_name, current_score, state, me,
@@ -2225,7 +2306,16 @@ def _play_sequence_sort_key(candidate):
     )
 
 
-def _select_play_sequence(results, hand, me, tableau_discounts, gens_left=None, db=None):
+def _select_play_sequence(
+    results,
+    hand,
+    me,
+    tableau_discounts,
+    gens_left=None,
+    db=None,
+    state=None,
+    effect_parser=None,
+):
     """Choose the best affordable PLAY subset before detailed simulation."""
     hand_by_name = {}
     for card in hand:
@@ -2241,10 +2331,12 @@ def _select_play_sequence(results, hand, me, tableau_discounts, gens_left=None, 
         tags = _merged_card_tags(row.get("name"), card.get("tags", []), db)
         eff_cost, _ = _effective_card_cost(
             card, tags, me, tableau_discounts=tableau_discounts)
+        reds_tax, _ = _reds_card_tax(row.get("name"), effect_parser, state)
+        sequence_cost = eff_cost + reds_tax
         net_value = _play_sequence_net_value(row)
-        if gens_left is not None and gens_left <= 3 and net_value - eff_cost <= 0:
+        if gens_left is not None and gens_left <= 3 and net_value - sequence_cost <= 0:
             row["reason"] = (
-                f"net value below cost ({net_value:.1f} value vs {eff_cost:g} MC eff)"
+                f"net value below cost ({net_value:.1f} value vs {sequence_cost:g} MC eff)"
             )
             row.pop("play_before", None)
             row.pop("sequence_bonus", None)
@@ -2255,7 +2347,7 @@ def _select_play_sequence(results, hand, me, tableau_discounts, gens_left=None, 
             "index": idx,
             "row": row,
             "card": card,
-            "sequence_cost": int(eff_cost),
+            "sequence_cost": int(sequence_cost),
             "utility": _play_sequence_utility(row),
         })
 
@@ -2650,6 +2742,79 @@ def _late_game_engine_multiplier(eff, gens_left: int) -> float:
     return penalties.get(gens_left, 1.0)
 
 
+def _generated_effect(db, card_name: str) -> dict:
+    if not db or not card_name:
+        return {}
+    data = db.get_generated_effect(card_name)
+    return data if isinstance(data, dict) else {}
+
+
+def _card_description_l(db, card_name: str) -> str:
+    if not db or not card_name:
+        return ""
+    return str(db.get_desc(card_name) or "").lower()
+
+
+def _card_places_colony(card_name: str, db) -> bool:
+    gen = _generated_effect(db, card_name)
+    desc_l = _card_description_l(db, card_name)
+    return (
+        isinstance(gen.get("colony"), dict)
+        or "place a colony" in desc_l
+        or "place 1 colony" in desc_l
+    )
+
+
+def _colony_card_value(card_name: str, db, me, gens_left: int) -> float:
+    if not _card_places_colony(card_name, db):
+        return 0.0
+    if me is not None and getattr(me, "colonies", 0) >= 3:
+        return 0.0
+
+    gen = _generated_effect(db, card_name)
+    colony = gen.get("colony") if isinstance(gen.get("colony"), dict) else {}
+    allow_duplicates = bool(colony.get("allowDuplicates"))
+
+    if gens_left <= 1:
+        value = 8.0
+    elif gens_left <= 3:
+        value = 12.0
+    elif gens_left <= 6:
+        value = 15.0
+    else:
+        value = 17.0
+
+    if allow_duplicates:
+        value += 2.0
+    if me is not None and getattr(me, "fleet_size", 1) >= 2:
+        value += 1.0
+    return value
+
+
+def _trade_fleet_card_value(card_name: str, db, me, gens_left: int) -> float:
+    gen = _generated_effect(db, card_name)
+    desc_l = _card_description_l(db, card_name)
+    fleet_gain = int(gen.get("tradeFleet", 0) or 0)
+    if fleet_gain <= 0 and "trade fleet" not in desc_l:
+        return 0.0
+    if fleet_gain <= 0:
+        fleet_gain = 1
+
+    future_uses = max(0, gens_left - 1)
+    if future_uses <= 0:
+        return 4.0 * fleet_gain
+
+    value = 6.0 + min(12.0, future_uses * 1.6)
+    if me is not None:
+        if getattr(me, "energy_prod", 0) >= 3:
+            value += 2.0
+        if getattr(me, "trades_this_gen", 0) >= getattr(me, "fleet_size", 1):
+            value += 2.0
+        if getattr(me, "mc_prod", 0) + getattr(me, "tr", 0) < 15:
+            value *= 0.85
+    return value * fleet_gain
+
+
 def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0,
                         tableau_tags=None, me=None, card_name="", card_tags=None,
                         hand_cards=None, db=None):
@@ -2687,6 +2852,9 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
             value += 3  # average placement bonus (steel, plants, cards on good spots)
         elif p == "special":
             value += 3  # special tiles (Nuclear Zone, etc.) — placement bonus only
+
+    value += _colony_card_value(card_name, db, me, gens_left)
+    value += _trade_fleet_card_value(card_name, db, me, gens_left)
 
     # Card draw
     if eff.draws_cards:
@@ -3073,7 +3241,7 @@ def _calc_opportunity_cost(state, card_cost):
     cost = 0
 
     if mc_after < 8 and me.mc >= 8:
-        has_ms = _has_claimable_milestone(state)
+        has_ms = _has_urgent_claimable_milestone(state)
         if has_ms:
             cost += 15
 
@@ -3100,6 +3268,23 @@ def _has_claimable_milestone(state):
             continue
         my_sc = m.get("scores", {}).get(me.color, {})
         if isinstance(my_sc, dict) and my_sc.get("claimable", False):
+            return True
+    return False
+
+
+def _has_urgent_claimable_milestone(state):
+    me = state.me
+    claimed_count = sum(1 for m in state.milestones if m.get("claimed_by"))
+    if claimed_count >= 3:
+        return False
+    for m in state.milestones:
+        if m.get("claimed_by"):
+            continue
+        my_sc = m.get("scores", {}).get(me.color, {})
+        if not (isinstance(my_sc, dict) and my_sc.get("claimable", False)):
+            continue
+        opp_can, opp_close, _opp_color = _milestone_opponent_pressure(m, me.color)
+        if opp_can or opp_close:
             return True
     return False
 

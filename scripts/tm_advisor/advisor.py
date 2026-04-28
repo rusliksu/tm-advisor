@@ -836,6 +836,9 @@ class AdvisorBot:
         # === Action Priority ===
         priority = []
         reds_now = (state.turmoil and "Reds" in str(state.turmoil.get("ruling", "")))
+        reds_policy_id = ""
+        if state.turmoil:
+            reds_policy_id = (state.turmoil.get("policy_ids") or {}).get("Reds", "")
         # 1. Milestones (highest priority — 5 VP for 8 MC)
         claimed_n = sum(1 for m in state.milestones if m.get("claimed_by"))
         if claimed_n < 3 and me.mc >= 8:
@@ -853,8 +856,10 @@ class AdvisorBot:
         if me.plants >= 8:
             if not reds_now:
                 priority.append(f"🌿 Plants→Greenery ({me.plants} plants, +1 TR +1 VP)")
+            elif reds_policy_id == "rp01":
+                priority.append(f"🌿 Plants→Greenery ({me.plants} plants, +1 TR +1 VP, Reds tax +3 MC)")
             else:
-                priority.append(f"🌿 Plants→Greenery ({me.plants} plants, +1 VP, но Reds = -1 TR)")
+                priority.append(f"🌿 Plants→Greenery ({me.plants} plants, Reds ruling: проверь policy)")
         # 4. Colony trade (if profitable)
         if state.colonies_data and (me.energy >= 3 or me.mc >= 9):
             from .colony_advisor import analyze_trade_options

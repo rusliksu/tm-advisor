@@ -222,7 +222,9 @@ class RequirementsChecker:
                     return False, f"Нужно {need} floaters (сейчас {have})"
                 return True, ""
         if "plantsRemoved" in req:
-            return True, "Req: растения удалены в этом gen"
+            if self._plants_removed_this_generation(state):
+                return True, "Req: растения удалены в этом gen"
+            return False, "Нужно, чтобы в этом поколении удалили растения другого игрока"
         if "resourceTypes" in req:
             m = re.search(r"'resourceTypes':\s*(\d+)", req)
             if m:
@@ -242,6 +244,76 @@ class RequirementsChecker:
                 continue
             total += int(card.get("resources", 0) or 0)
         return total
+
+    def _plants_removed_this_generation(self, state) -> bool:
+        for action_name in self._iter_actions_this_generation(state):
+            action_l = action_name.lower()
+            if self._text_removes_opponent_plants(action_l):
+                return True
+            desc_l = self.get_description(action_name).lower()
+            if desc_l and self._text_removes_opponent_plants(desc_l):
+                return True
+        return False
+
+    @staticmethod
+    def _iter_actions_this_generation(state):
+        raw = getattr(state, "raw", {}) or {}
+        players = []
+        seen_colors = set()
+
+        if isinstance(raw, dict):
+            this_player = raw.get("thisPlayer")
+            if isinstance(this_player, dict):
+                players.append(this_player)
+                color = this_player.get("color")
+                if color:
+                    seen_colors.add(color)
+            for player in raw.get("players", []) or []:
+                if not isinstance(player, dict):
+                    continue
+                color = player.get("color")
+                if color and color in seen_colors:
+                    continue
+                if color:
+                    seen_colors.add(color)
+                players.append(player)
+
+        for player in players:
+            actions = (
+                player.get("actionsThisGeneration")
+                or player.get("actionsTakenThisGeneration")
+                or []
+            )
+            if not isinstance(actions, list):
+                continue
+            for action in actions:
+                if isinstance(action, str):
+                    name = action.strip()
+                elif isinstance(action, dict):
+                    name = str(
+                        action.get("name")
+                        or action.get("cardName")
+                        or action.get("card")
+                        or action.get("action")
+                        or ""
+                    ).strip()
+                else:
+                    name = str(action or "").strip()
+                if name:
+                    yield name
+
+    @staticmethod
+    def _text_removes_opponent_plants(text_l: str) -> bool:
+        if "plant" not in text_l or "remove" not in text_l:
+            return False
+        opponent_markers = (
+            "another player",
+            "any player",
+            "opponent",
+            "from a player",
+            "from any",
+        )
+        return any(marker in text_l for marker in opponent_markers)
 
     @staticmethod
     def _parse_count_token(token: str) -> int:
@@ -391,6 +463,8 @@ class RequirementsChecker:
             delta -= 14
         if "isolated" in req_reason.lower():
             delta -= 10
+        if "plantsremoved" in (req or "").lower() and not req_ok:
+            delta -= 12
         if unmet_parts >= 2:
             delta -= unmet_parts * 2
 

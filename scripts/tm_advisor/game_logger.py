@@ -200,6 +200,10 @@ class GameLogger:
                     effects["placement"] = eff.placement
                 if eff.draws_cards:
                     effects["cards_drawn"] = eff.draws_cards
+                if getattr(eff, "discards_cards", 0):
+                    effects["cards_discarded"] = eff.discards_cards
+                if getattr(eff, "opponents_draw_cards", 0):
+                    effects["opponents_cards_drawn"] = eff.opponents_draw_cards
                 if eff.attacks:
                     effects["attacks"] = eff.attacks
                 if eff.vp_per:

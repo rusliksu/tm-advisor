@@ -299,7 +299,10 @@ class AdvisorDisplay:
             print(f"    Policy: {policy_text}")
 
         if ruling_is_reds:
-            print(f"  {Fore.RED}{Style.BRIGHT}  ⚠️ REDS RULING: -1 TR за каждый подъём параметра!{Style.RESET_ALL}")
+            if policy.get("policy_id") == "rp01":
+                print(f"  {Fore.RED}{Style.BRIGHT}  ⚠️ REDS RULING: +3 MC за каждый шаг TR!{Style.RESET_ALL}")
+            else:
+                print(f"  {Fore.RED}{Style.BRIGHT}  ⚠️ REDS RULING: проверь текущую policy перед terraforming.{Style.RESET_ALL}")
 
         my_influence = state.me.influence
         is_chairman = chairman_color == state.me.color

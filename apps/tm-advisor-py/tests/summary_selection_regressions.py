@@ -152,6 +152,98 @@ def main():
     )
     assert low_value_stall_summary["best_move"].startswith("PLAY Jovian Embassy"), low_value_stall_summary
 
+    reds_card_allocation_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "late", "generation": 7},
+            "trade": {},
+            "alerts": ["🔥 Heat 9 — НЕ трать без плана, Reds tax +3 MC"],
+        },
+        [
+            {
+                "name": "Imported Hydrogen",
+                "action": "PLAY",
+                "reason": "strong terraforming card",
+                "play_value_now": 22.6,
+                "priority": 3,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Play Imported Hydrogen",
+                    "cost": 4,
+                    "value_mc": 30,
+                    "priority": 2,
+                    "type": "card",
+                },
+                {
+                    "action": "Play Project Inspection",
+                    "cost": 0,
+                    "value_mc": 10,
+                    "priority": 3,
+                    "type": "card",
+                },
+                {
+                    "action": "Temperature (heat) ⛔Reds: +3 MC tax",
+                    "cost": 3,
+                    "value_mc": 8,
+                    "priority": 7,
+                    "type": "conversion",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert reds_card_allocation_summary["best_move"].startswith("Play Imported Hydrogen"), reds_card_allocation_summary
+    assert "Temperature" not in reds_card_allocation_summary["best_move"], reds_card_allocation_summary
+
+    budget_card_allocation_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "late", "generation": 7},
+            "trade": {},
+            "alerts": [],
+        },
+        [
+            {
+                "name": "Giant Ice Asteroid",
+                "action": "PLAY",
+                "reason": "strong terraforming card",
+                "play_value_now": 25.9,
+                "priority": 3,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Play Virus",
+                    "cost": 1,
+                    "value_mc": 12,
+                    "priority": 2,
+                    "type": "card",
+                },
+                {
+                    "action": "Play Comet",
+                    "cost": 0,
+                    "value_mc": 28,
+                    "priority": 4,
+                    "type": "card",
+                },
+                {
+                    "action": "Play Giant Ice Asteroid ❌нет MC",
+                    "cost": 21,
+                    "value_mc": 43,
+                    "priority": 2,
+                    "type": "card",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert budget_card_allocation_summary["best_move"].startswith("Play Virus"), budget_card_allocation_summary
+    assert "Giant Ice Asteroid" not in budget_card_allocation_summary["best_move"], budget_card_allocation_summary
+
     early_award_summary = advisor_snapshot._build_summary_block(
         result,
         [
@@ -374,6 +466,58 @@ def main():
         draft_card_advice=None,
     )
     assert award_summary["best_move"].startswith("💰 ФОНДИРУЙ Banker!"), award_summary
+
+    ui_limited_play_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "late", "live_phase": "action", "generation": 9},
+            "trade": {},
+            "alerts": [],
+            "action_validation": {
+                "saw_project_selector": True,
+                "playable_project_cards": ["Sister Planet Support"],
+            },
+        },
+        [
+            {
+                "name": "Venusian Animals",
+                "action": "PLAY",
+                "reason": "strong but not in current UI project-card selector",
+                "play_value_now": 30.0,
+                "priority": 1,
+            },
+            {
+                "name": "Sister Planet Support",
+                "action": "PLAY",
+                "reason": "currently playable in UI",
+                "play_value_now": 12.0,
+                "priority": 2,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Play Venusian Animals",
+                    "cost": 14,
+                    "value_mc": 30,
+                    "priority": 1,
+                    "type": "card",
+                },
+                {
+                    "action": "Play Sister Planet Support",
+                    "cost": 3,
+                    "value_mc": 12,
+                    "priority": 2,
+                    "type": "card",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert "Sister Planet Support" in ui_limited_play_summary["best_move"], ui_limited_play_summary
+    assert not any("Venusian Animals" in line for line in ui_limited_play_summary["lines"]), ui_limited_play_summary
+    assert ui_limited_play_summary["validation"]["rejected_summary_play_cards"] == ["Venusian Animals"], ui_limited_play_summary
+
     print("advisor summary selection regressions: OK")
 
 

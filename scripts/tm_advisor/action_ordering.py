@@ -85,6 +85,23 @@ ATTACK_CARDS = {
 }
 
 
+def _reds_heat_context(state) -> tuple[bool, bool, bool]:
+    turmoil = getattr(state, "turmoil", None) or {}
+    if not isinstance(turmoil, dict):
+        return False, False, False
+
+    ruling = str(turmoil.get("ruling", "") or "")
+    dominant = str(turmoil.get("dominant", "") or "")
+    policy_ids = turmoil.get("policy_ids") or {}
+    if not isinstance(policy_ids, dict):
+        policy_ids = {}
+
+    reds_now = "Reds" in ruling
+    reds_coming = "Reds" in dominant and not reds_now
+    reds_tax_policy = str(policy_ids.get("Reds", "") or "") == "rp01"
+    return reds_now, reds_coming, reds_tax_policy
+
+
 def prioritize_actions(state, available_actions: list[dict]) -> list[dict]:
     """Sort available actions by priority (lower = do first).
 
@@ -170,12 +187,30 @@ def get_action_advice(state) -> list[str]:
         temp = state.temperature
         next_temp = temp + 2
         bonus_at_next = next_temp in (-24, -20, 0)
+        reds_now, reds_coming, reds_tax_policy = _reds_heat_context(state)
 
-        if bonus_at_next:
+        if reds_now:
+            if reds_tax_policy:
+                advice.append(
+                    "🌡️ Heat→temp: Reds tax active (+3 MC/TR). "
+                    "Не автоконверти; делай только если VP/темп/threshold окупают налог")
+            else:
+                advice.append(
+                    "🌡️ Heat→temp: Reds ruling — проверь policy перед temp raise")
+        elif bonus_at_next:
             bonus_type = 'ocean' if next_temp in (-24, 0) else 'heat-prod'
             advice.append(
                 f"🌡️ Heat→temp FIRST! Бонус на {next_temp}°C ({bonus_type}). "
                 f"Забери до оппонента!")
+        elif reds_coming:
+            if reds_tax_policy:
+                advice.append(
+                    "🌡️ Heat→temp BEFORE Reds tax: Reds будут ruling, "
+                    "лучше конвертировать до +3 MC/TR налога")
+            else:
+                advice.append(
+                    "🌡️ Heat→temp: Reds будут ruling — не затягивай без причины; "
+                    "проверь следующую policy")
         elif opponents_passed == 0:
             advice.append(
                 "🌡️ Heat→temp: затягивай (может помочь оппонентам с requirements). "

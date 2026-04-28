@@ -19,10 +19,17 @@ if str(SCRIPTS_DIR) not in sys.path:
 
 import advisor_snapshot  # noqa: E402
 import watch_live_game  # noqa: E402
+from tm_advisor.claude_output import ClaudeOutput  # noqa: E402
+from tm_advisor.models import GameState  # noqa: E402
 
 
 def advisor_db():
     return advisor_snapshot._get_runtime_bundle()[0]
+
+
+def render_claude_output(raw: dict) -> str:
+    db, _parser, _combo, synergy, req_checker = advisor_snapshot._get_runtime_bundle()
+    return ClaudeOutput(db, synergy, req_checker).format(GameState(raw))
 
 
 def load_postgame_summary_module():
@@ -379,11 +386,111 @@ def build_initial_keep_pass_raw_state() -> dict:
     return raw
 
 
+def build_initial_cards_research_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 1
+    raw["game"]["phase"] = "research"
+    raw["game"]["colonies"] = [
+        {"name": "Callisto", "isActive": True, "trackPosition": 1, "colonies": []},
+        {"name": "Triton", "isActive": True, "trackPosition": 1, "colonies": []},
+        {"name": "Europa", "isActive": True, "trackPosition": 1, "colonies": []},
+    ]
+    raw["game"]["gameOptions"]["expansions"]["colonies"] = True
+    raw["thisPlayer"]["megaCredits"] = 0
+    raw["thisPlayer"]["cardsInHandNbr"] = 0
+    raw["thisPlayer"]["tableau"] = []
+    raw["thisPlayer"]["tags"] = {}
+    raw["cardsInHand"] = []
+    raw["dealtCorporationCards"] = [
+        {"name": "Mons Insurance", "calculatedCost": 0, "tags": []},
+        {"name": "Mining Guild", "calculatedCost": 0, "tags": []},
+    ]
+    raw["dealtPreludeCards"] = [
+        {"name": "Suitable Infrastructure", "calculatedCost": 0, "tags": []},
+        {"name": "Orbital Construction Yard", "calculatedCost": 0, "tags": ["Space"]},
+    ]
+    raw["dealtProjectCards"] = [
+        {"name": "Viral Enhancers", "calculatedCost": 9, "tags": ["Science", "Microbe"]},
+        {"name": "Mine", "calculatedCost": 4, "tags": ["Building"]},
+    ]
+    raw["waitingFor"] = {
+        "type": "initialCards",
+        "options": [
+            {"type": "corporationCard", "cards": raw["dealtCorporationCards"]},
+            {"type": "preludeCard", "cards": raw["dealtPreludeCards"]},
+            {"type": "projectCard", "cards": raw["dealtProjectCards"]},
+        ],
+    }
+    return raw
+
+
 def build_regular_keep_pass_raw_state() -> dict:
     raw = build_initial_keep_pass_raw_state()
     raw["game"]["generation"] = 5
     raw["game"]["phase"] = "drafting"
     raw["thisPlayer"]["megaCredits"] = 42
+    return raw
+
+
+def build_keep_pass_asteroid_tiebreak_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 6
+    raw["game"]["phase"] = "drafting"
+    raw["game"]["oxygenLevel"] = 4
+    raw["game"]["temperature"] = -24
+    raw["game"]["oceans"] = 4
+    raw["game"]["venusScaleLevel"] = 4
+    raw["game"]["gameOptions"]["expansions"]["venusNext"] = True
+    raw["game"]["gameOptions"]["expansions"]["colonies"] = True
+    raw["pickedCorporationCard"] = [{"name": "Celestic"}]
+    raw["thisPlayer"].update({
+        "megaCredits": 42,
+        "steel": 5,
+        "titanium": 3,
+        "plants": 2,
+        "energy": 0,
+        "heat": 11,
+        "megaCreditProduction": 12,
+        "steelProduction": 1,
+        "titaniumProduction": 1,
+        "plantProduction": 0,
+        "energyProduction": 0,
+        "heatProduction": 0,
+        "terraformRating": 17,
+        "cardsInHandNbr": 10,
+        "tableau": [{"name": "Celestic"}],
+        "tags": {
+            "building": 3,
+            "space": 4,
+            "science": 2,
+            "earth": 1,
+            "jovian": 1,
+            "venus": 4,
+            "plant": 1,
+            "microbe": 1,
+            "event": 1,
+        },
+    })
+    raw["players"][0] = raw["thisPlayer"]
+    raw["players"][1].update({
+        "plants": 6,
+        "megaCredits": 34,
+        "terraformRating": 19,
+        "cardsInHandNbr": 6,
+        "tableau": [{"name": "Robinson Industries"}],
+        "tags": {},
+    })
+    raw["cardsInHand"] = []
+    raw["waitingFor"] = {
+        "type": "card",
+        "buttonLabel": "Keep",
+        "title": "Select a card to keep and pass the rest to ${0}",
+        "cards": [
+            {"name": "Meat Industry", "calculatedCost": 5, "tags": ["Building"]},
+            {"name": "Asteroid", "calculatedCost": 14, "tags": ["Event", "Space"]},
+            {"name": "Martian Survey", "calculatedCost": 9, "tags": ["Science"]},
+        ],
+    }
     return raw
 
 
@@ -805,7 +912,10 @@ def main():
     bundle_b = advisor_snapshot._get_runtime_bundle()
     assert bundle_a is bundle_b
 
-    snap = advisor_snapshot.snapshot_from_raw(build_raw_state())
+    action_raw = build_raw_state()
+    action_raw["game"]["phase"] = "action"
+    action_raw["waitingFor"] = None
+    snap = advisor_snapshot.snapshot_from_raw(action_raw)
 
     hand_rows = {card["name"]: card for card in snap["hand"]}
     sponsors_desc = db.get_advisor_description("Sponsors", max_len=180, locale="ru")
@@ -825,18 +935,7 @@ def main():
     assert hand_advice["Birds"]["reason"] == hand_rows["Birds"]["play_reason"], hand_advice
     assert hand_advice["Birds"]["description_first"] is True, hand_advice["Birds"]
 
-    draft_rows = {card["name"]: card for card in snap["current_draft"]}
     media_group_desc = db.get_advisor_description("Media Group", max_len=180, locale="ru")
-    assert draft_rows["Media Group"]["draft_action"] in {"BUY", "SKIP"}, draft_rows["Media Group"]
-    assert draft_rows["Media Group"]["draft_reason"], draft_rows["Media Group"]
-    assert draft_rows["Media Group"]["description"] == media_group_desc, draft_rows["Media Group"]
-    assert draft_rows["Comet"]["draft_action"] in {"BUY", "SKIP"}, draft_rows["Comet"]
-
-    draft_advice = snap["draft_advice"]
-    assert isinstance(draft_advice.get("buy_count"), int), draft_advice
-    card_advice = {row["name"]: row for row in draft_advice["card_advice"]}
-    assert card_advice["Media Group"]["action"] == draft_rows["Media Group"]["draft_action"], card_advice
-    assert card_advice["Comet"]["reason"] == draft_rows["Comet"]["draft_reason"], card_advice
 
     assert any(
         "Development Center: 1 energy → draw 1 card" in alert
@@ -852,17 +951,12 @@ def main():
     assert "Описание:" in birds_line, birds_line
     assert "13%" in birds_line, birds_line
     assert birds_line.index("Описание:") < birds_line.index("req"), birds_line
-    assert any("Media Group" in line for line in summary["draft"]), summary
-    assert any("Описание:" in line for line in summary["draft"]), summary
-    assert any(media_group_desc in line for line in summary["draft"]), summary
     assert summary["lines"], summary
 
     rendered = advisor_snapshot.format_snapshot_summary(snap)
     assert "# Snapshot — me / Gen 2 / early" in rendered, rendered
     assert "Best move:" in rendered, rendered
-    assert "Draft:" in rendered and "Media Group" in rendered, rendered
     assert "Описание:" in rendered, rendered
-    assert media_group_desc in rendered, rendered
     assert "Hand:" in rendered and "Sponsors" in rendered, rendered
     assert sponsors_desc in rendered, rendered
     assert "Alerts:" in rendered and "Development Center: 1 energy → draw 1 card" in rendered, rendered
@@ -870,6 +964,34 @@ def main():
     decision_context = watch_live_game.build_decision_context(snap)
     assert decision_context["best_move"] == summary["best_move"], decision_context
     assert decision_context["summary_lines"], decision_context
+
+    research_snap = advisor_snapshot.snapshot_from_raw(build_raw_state())
+    assert research_snap["game"]["live_phase"] == "research", research_snap["game"]
+    assert research_snap["hand_advice"] == [], research_snap["hand_advice"]
+    assert "allocation" not in research_snap, research_snap.get("allocation")
+    assert research_snap["alerts"] == [], research_snap["alerts"]
+    assert not any("play_action" in row for row in research_snap["hand"]), research_snap["hand"]
+    assert research_snap["summary"]["best_move"].startswith("Draft:"), research_snap["summary"]
+    assert research_snap["summary"]["hand"] == [], research_snap["summary"]
+    assert any("Media Group" in line for line in research_snap["summary"]["draft"]), research_snap["summary"]
+    assert any("Описание:" in line for line in research_snap["summary"]["draft"]), research_snap["summary"]
+    assert any(media_group_desc in line for line in research_snap["summary"]["draft"]), research_snap["summary"]
+    draft_rows = {card["name"]: card for card in research_snap["current_draft"]}
+    assert draft_rows["Media Group"]["draft_action"] in {"BUY", "SKIP"}, draft_rows["Media Group"]
+    assert draft_rows["Media Group"]["draft_reason"], draft_rows["Media Group"]
+    assert draft_rows["Media Group"]["description"] == media_group_desc, draft_rows["Media Group"]
+    assert draft_rows["Comet"]["draft_action"] in {"BUY", "SKIP"}, draft_rows["Comet"]
+
+    draft_advice = research_snap["draft_advice"]
+    assert isinstance(draft_advice.get("buy_count"), int), draft_advice
+    card_advice = {row["name"]: row for row in draft_advice["card_advice"]}
+    assert card_advice["Media Group"]["action"] == draft_rows["Media Group"]["draft_action"], card_advice
+    assert card_advice["Comet"]["reason"] == draft_rows["Comet"]["draft_reason"], card_advice
+    rendered_research = advisor_snapshot.format_snapshot_summary(research_snap)
+    assert "Draft:" in rendered_research and "Media Group" in rendered_research, rendered_research
+    assert media_group_desc in rendered_research, rendered_research
+    assert "Hand:" not in rendered_research, rendered_research
+    assert "Alerts:" not in rendered_research, rendered_research
     assert_watch_fetch_json_retries_transient_errors()
     assert_watch_monitor_survives_poll_errors()
     assert_watch_advisor_miss_uses_play_advice()
@@ -898,6 +1020,13 @@ def main():
     assert "trade" not in initial_keep_snap, initial_keep_snap.get("trade")
     assert not any("Trade:" in line for line in initial_keep_snap["summary"]["lines"]), initial_keep_snap["summary"]
 
+    initial_cards_rendered = render_claude_output(build_initial_cards_research_raw_state())
+    assert "## Колонии" in initial_cards_rendered, initial_cards_rendered
+    assert "## Рекомендация по покупке" not in initial_cards_rendered, initial_cards_rendered
+    assert "после покупки" not in initial_cards_rendered, initial_cards_rendered
+    assert "trade сейчас" not in initial_cards_rendered, initial_cards_rendered
+    assert "### Поселение" not in initial_cards_rendered, initial_cards_rendered
+
     regular_keep_snap = advisor_snapshot.snapshot_from_raw(build_regular_keep_pass_raw_state())
     regular_keep_advice = regular_keep_snap["draft_advice"]["card_advice"]
     assert regular_keep_snap["draft_advice"]["mode"] == "keep_pass", regular_keep_snap["draft_advice"]
@@ -906,6 +1035,15 @@ def main():
     assert not regular_keep_snap["summary"]["best_move"].startswith("Draft: Купи"), regular_keep_snap["summary"]
     assert "trade" not in regular_keep_snap, regular_keep_snap.get("trade")
     test_keep_pass_tie_reason_is_not_misleading()
+
+    asteroid_tiebreak_snap = advisor_snapshot.snapshot_from_raw(build_keep_pass_asteroid_tiebreak_raw_state())
+    asteroid_tiebreak_rows = {
+        row["name"]: row
+        for row in asteroid_tiebreak_snap["draft_advice"]["card_advice"]
+    }
+    assert asteroid_tiebreak_rows["Asteroid"]["action"] == "KEEP", asteroid_tiebreak_rows
+    assert asteroid_tiebreak_rows["Meat Industry"]["action"] == "PASS", asteroid_tiebreak_rows
+    assert asteroid_tiebreak_snap["summary"]["best_move"].startswith("Draft: Оставь Asteroid"), asteroid_tiebreak_snap["summary"]
 
     psychrophiles_snap = advisor_snapshot.snapshot_from_raw(build_psychrophiles_payment_raw_state())
     psychrophiles_advice = {row["name"]: row for row in psychrophiles_snap["hand_advice"]}
@@ -934,6 +1072,20 @@ def main():
     assert "Local Shading: add 1 floater to this card" in action_alert, action_alert
     assert not any("🏛️ Dominant: Scientists" in alert for alert in endgame_alert_snap["alerts"]), endgame_alert_snap["alerts"]
     assert not any("станут ruling" in alert for alert in endgame_alert_snap["alerts"]), endgame_alert_snap["alerts"]
+
+    solar_raw = copy.deepcopy(build_raw_state_with_endgame_action_alerts())
+    solar_raw["game"]["phase"] = "solar"
+    solar_snap = advisor_snapshot.snapshot_from_raw(solar_raw)
+    assert solar_snap["game"]["live_phase"] == "solar", solar_snap["game"]
+    assert solar_snap["hand_advice"] == [], solar_snap["hand_advice"]
+    assert "allocation" not in solar_snap, solar_snap.get("allocation")
+    assert solar_snap["alerts"] == [], solar_snap["alerts"]
+    assert not any("play_action" in row for row in solar_snap["hand"]), solar_snap["hand"]
+    assert not solar_snap["summary"].get("best_move"), solar_snap["summary"]
+    rendered_solar = advisor_snapshot.format_snapshot_summary(solar_snap)
+    assert "Best move:" not in rendered_solar, rendered_solar
+    assert "Hand:" not in rendered_solar, rendered_solar
+    assert "Alerts:" not in rendered_solar, rendered_solar
 
     completed_raw = copy.deepcopy(build_raw_state_with_endgame_action_alerts())
     completed_raw["game"]["phase"] = "end"

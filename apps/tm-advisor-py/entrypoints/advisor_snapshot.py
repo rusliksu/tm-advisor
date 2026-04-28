@@ -7,6 +7,7 @@ import argparse
 from collections import defaultdict
 from functools import lru_cache
 import json
+import re
 import sys
 
 from _bootstrap import add_repo_root
@@ -107,6 +108,12 @@ def _is_keep_pass_draft(state: GameState) -> bool:
 
 
 def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, player_tags) -> tuple[dict, list[dict]]:
+    combo = getattr(synergy, "combo", None)
+    effect_parser = combo.parser if combo else None
+    db = getattr(synergy, "db", None)
+    gens_left = _safe_estimate_remaining_gens(state)
+    rv = resource_values(gens_left)
+
     scored = []
     for card in cards:
         name = card.get("name", "")
@@ -119,16 +126,19 @@ def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, playe
         req_ok, req_reason = True, ""
         if req_checker:
             req_ok, req_reason = req_checker.check(name, state)
+        draft_value = _keep_pass_tiebreak_value(
+            name, state, effect_parser, db, rv,
+        )
         scored.append({
             "name": name,
             "score": score,
+            "draft_value": draft_value,
             "tier": _score_to_tier(score),
             "cost_play": card.get("cost", card.get("calculatedCost", 0)),
             "req_ok": req_ok,
             "req_reason": req_reason,
         })
 
-    scored.sort(key=lambda c: c["score"], reverse=True)
     if not scored:
         return {
             "mode": "keep_pass",
@@ -138,6 +148,16 @@ def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, playe
             "card_advice": [],
         }, []
 
+    max_score = max(card["score"] for card in scored)
+    scored.sort(
+        key=lambda c: (
+            max_score if max_score - c["score"] <= 3 else c["score"],
+            c["draft_value"],
+            c["score"],
+        ),
+        reverse=True,
+    )
+
     best = scored[0]
     card_advice = []
     for idx, card in enumerate(scored):
@@ -146,7 +166,12 @@ def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, playe
             action = "KEEP"
         else:
             gap = best["score"] - card["score"]
-            if abs(gap) < 0.5:
+            if card["score"] > best["score"]:
+                reason = (
+                    f"score выше на {card['score'] - best['score']:.0f}, "
+                    f"но {best['name']} лучше по immediate/deny value"
+                )
+            elif abs(gap) < 0.5:
                 reason = f"примерно равно {best['name']}, но слот keep уже занят"
             else:
                 reason = f"хуже {best['name']} на {gap:.0f}"
@@ -156,6 +181,7 @@ def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, playe
             "action": action,
             "reason": reason,
             "score": card["score"],
+            "draft_value": round(card["draft_value"], 1),
             "tier": card["tier"],
             "cost_play": card["cost_play"],
             "req_ok": card["req_ok"],
@@ -176,6 +202,98 @@ def _keep_pass_draft_advice(cards, state, synergy, req_checker, corp_name, playe
         "card_advice": card_advice,
     }
     return plan, card_advice
+
+
+def _safe_estimate_remaining_gens(state: GameState) -> int:
+    try:
+        return _estimate_remaining_gens(state)
+    except (AttributeError, TypeError, ValueError):
+        generation = int(getattr(state, "generation", 1) or 1)
+        return max(1, min(8, 12 - generation))
+
+
+def _keep_pass_tiebreak_value(
+    name: str,
+    state: GameState,
+    effect_parser,
+    db,
+    rv: dict,
+) -> float:
+    value = _keep_pass_immediate_effect_value(name, effect_parser, rv)
+    return value + _keep_pass_plant_denial_value(name, db, state)
+
+
+def _keep_pass_immediate_effect_value(name: str, effect_parser, rv: dict) -> float:
+    if not effect_parser:
+        return 0.0
+    try:
+        eff = effect_parser.get(name)
+    except Exception:
+        return 0.0
+    if not eff:
+        return 0.0
+
+    value = 0.0
+    value += float(getattr(eff, "tr_gain", 0) or 0) * rv["tr"]
+
+    for placement in getattr(eff, "placement", []) or []:
+        if placement == "ocean":
+            value += rv["ocean"] + 4
+        elif placement == "greenery":
+            value += rv["greenery"] + 2
+        elif placement == "city":
+            value += rv["tr"] + 8
+        elif placement == "special":
+            value += 3
+
+    draws = int(getattr(eff, "draws_cards", 0) or 0)
+    discards = int(getattr(eff, "discards_cards", 0) or 0)
+    if draws:
+        kept = draws
+        if discards and getattr(eff, "discard_after_draw", False):
+            kept = max(0, draws - discards)
+            value += min(discards, draws) * 0.75
+        value += kept * rv["card"]
+
+    resource_values_map = {
+        "mc": 1.0,
+        "steel": rv["steel"],
+        "titanium": rv["titanium"],
+        "plant": rv["plant"],
+        "heat": rv["heat"],
+        "energy": 1.0,
+    }
+    for resource, amount in (getattr(eff, "gains_resources", {}) or {}).items():
+        value += float(amount or 0) * resource_values_map.get(resource, 1.0)
+
+    vp_per = getattr(eff, "vp_per", {}) or {}
+    if str(vp_per.get("per", "")).lower() == "flat":
+        value += float(vp_per.get("amount", 0) or 0) * rv["vp"]
+
+    return value
+
+
+def _keep_pass_plant_denial_value(name: str, db, state: GameState) -> float:
+    removal = 0
+    generated = db.get_generated_effect(name) if db else None
+    if isinstance(generated, dict) and isinstance(generated.get("rmPl"), (int, float)):
+        removal = int(generated.get("rmPl") or 0)
+
+    desc_l = str((db.get_desc(name) if db else "") or "").lower()
+    if removal <= 0 and "remove" in desc_l and "plant" in desc_l:
+        match = re.search(r"remove\s+up\s+to\s+(\d+)\s+plants?", desc_l)
+        if match:
+            removal = int(match.group(1))
+
+    if removal <= 0:
+        return 0.0
+
+    opponents = getattr(state, "opponents", []) or []
+    max_opp_plants = max((int(getattr(opp, "plants", 0) or 0) for opp in opponents), default=0)
+    actual = min(removal, max_opp_plants)
+    if actual <= 0:
+        return 0.0
+    return actual * 1.5
 
 
 def _should_show_trade_hint(state: GameState) -> bool:
@@ -222,6 +340,36 @@ def _is_main_action_prompt(state: GameState) -> bool:
 def _should_build_action_plan(state: GameState) -> bool:
     live_phase = str(state.phase or "").lower()
     return live_phase == "action" and _is_main_action_prompt(state)
+
+
+def _collect_playable_project_names_from_waiting(node) -> tuple[set[str], bool]:
+    names: set[str] = set()
+    saw_project_selector = False
+
+    if isinstance(node, list):
+        for item in node:
+            child_names, child_seen = _collect_playable_project_names_from_waiting(item)
+            names.update(child_names)
+            saw_project_selector = saw_project_selector or child_seen
+        return names, saw_project_selector
+    if not isinstance(node, dict):
+        return names, saw_project_selector
+
+    title = _workflow_title_text(node.get("title"))
+    if node.get("type") == "projectCard" or title == "Play project card":
+        saw_project_selector = True
+        for card in node.get("cards", []) or []:
+            if not isinstance(card, dict) or card.get("isDisabled"):
+                continue
+            name = card.get("name")
+            if name:
+                names.add(str(name))
+
+    for key in ("options", "andOptions", "orOptions"):
+        child_names, child_seen = _collect_playable_project_names_from_waiting(node.get(key))
+        names.update(child_names)
+        saw_project_selector = saw_project_selector or child_seen
+    return names, saw_project_selector
 
 
 def _current_prompt_hint(state: GameState) -> str | None:
@@ -343,6 +491,49 @@ def _format_allocation_summary_line(entry: dict) -> str:
     return action
 
 
+def _validated_project_card_names(result: dict | None) -> set[str] | None:
+    validation = (result or {}).get("action_validation") or {}
+    if not validation.get("saw_project_selector"):
+        return None
+    return {
+        str(name)
+        for name in (validation.get("playable_project_cards") or [])
+        if name
+    }
+
+
+def _summary_project_play_allowed(result: dict | None, card_name: str | None) -> bool:
+    if not card_name:
+        return True
+    playable = _validated_project_card_names(result)
+    if playable is None:
+        return True
+    return str(card_name) in playable
+
+
+def _allocation_play_card_name(action: str) -> str | None:
+    if not action.lower().startswith("play "):
+        return None
+    name = action[5:].strip()
+    for separator in (" ⛔", " [", " | ", " — ", " - "):
+        if separator in name:
+            name = name.split(separator, 1)[0].strip()
+    return name or None
+
+
+def _summary_hand_advice_allowed(result: dict | None, entry: dict) -> bool:
+    if entry.get("action") != "PLAY":
+        return True
+    return _summary_project_play_allowed(result, entry.get("name"))
+
+
+def _summary_allocation_allowed(result: dict | None, entry: dict) -> bool:
+    if entry.get("type") != "card":
+        return True
+    card_name = _allocation_play_card_name(str(entry.get("action", "") or ""))
+    return _summary_project_play_allowed(result, card_name)
+
+
 def _build_summary_block(
     result: dict,
     hand_advice: list[dict],
@@ -391,12 +582,14 @@ def _build_summary_block(
         best_play_priority = int((best_play or {}).get("priority", 99) or 99)
         phase_name = str((result.get("game") or {}).get("phase", "") or "")
         preferred_types = (
-            "milestone", "award", "trade", "conversion",
+            "card", "milestone", "award", "trade", "conversion",
             "colony_build", "action", "turmoil", "sell",
         )
         for entry in allocations:
             kind = entry.get("type")
             if kind not in preferred_types:
+                continue
+            if not _summary_allocation_allowed(result, entry):
                 continue
             if "❌нет MC" in str(entry.get("action", "")):
                 continue
@@ -463,6 +656,23 @@ def _build_summary_block(
     }
     if summary["best_move"]:
         summary["lines"].append(summary["best_move"])
+
+    original_hand_advice = list(hand_advice or [])
+    hand_advice = [
+        entry for entry in original_hand_advice
+        if _summary_hand_advice_allowed(result, entry)
+    ]
+    rejected_summary_play_cards = [
+        entry.get("name")
+        for entry in original_hand_advice
+        if entry.get("action") == "PLAY" and not _summary_hand_advice_allowed(result, entry)
+    ]
+    if rejected_summary_play_cards:
+        summary["validation"] = {
+            "rejected_summary_play_cards": rejected_summary_play_cards,
+            "rejected_project_plays": rejected_summary_play_cards,
+            "reason": "not present in current waitingFor Play project card selector",
+        }
 
     if hand_advice:
         summary["hand"] = [_format_play_summary_line(entry) for entry in hand_advice[:5]]
@@ -598,6 +808,8 @@ def snapshot_from_raw(raw: dict) -> dict:
     current_draft = []
     if _is_draft_like_card_prompt(state):
         current_draft = GameState._parse_cards(state.waiting_for.get("cards", []))
+    playable_project_names, saw_project_selector = _collect_playable_project_names_from_waiting(
+        state.waiting_for)
 
     result = {
         "game": {
@@ -631,6 +843,10 @@ def snapshot_from_raw(raw: dict) -> dict:
             "tags": player_tags,
             "tableau_count": len(me.tableau or []),
             "hand_count": len(state.cards_in_hand or []),
+        },
+        "action_validation": {
+            "saw_project_selector": saw_project_selector,
+            "playable_project_cards": sorted(playable_project_names),
         },
     }
     current_prompt = _current_prompt_hint(state)
