@@ -297,10 +297,6 @@ function scoreKeepPassDraftCard(card, state, corp) {
       score = overlayScore + corpCardBoost(name, corp);
     }
   }
-  if (TM_BRAIN && typeof TM_BRAIN.getOpeningHandBias === 'function') {
-    const openingBias = TM_BRAIN.getOpeningHandBias(name, state);
-    if (typeof openingBias === 'number') score += openingBias * 6;
-  }
   return score;
 }
 
@@ -489,6 +485,20 @@ function getBestBlueActionCard(cards, state) {
     .sort((a, b) => b._actionEV - a._actionEV)[0] || null;
 }
 
+function shouldUseOpeningBlueActionBeforeProject(actionCard, projectCard, state) {
+  const gen = state?.game?.generation || 1;
+  if (gen > 2 || !actionCard || !projectCard) return false;
+  const actionName = actionCard.name || actionCard;
+  const setupActions = new Set(['Robinson Industries', 'Celestic', 'Atmo Collectors']);
+  if (!setupActions.has(actionName)) return false;
+
+  const projectCost = projectCard.calculatedCost ?? projectCard.cost ?? CARD_DATA[projectCard.name]?.cost ?? 0;
+  if (projectCost < 10) return false;
+  const mc = state?.thisPlayer?.megacredits ?? state?.thisPlayer?.megaCredits ?? 0;
+  const cashAfter = mc - estimateCardCashCost(projectCard, state);
+  return cashAfter < 8;
+}
+
 function isResourceTargetPromptTitle(title) {
   const text = String(title || '').toLowerCase();
   if (text.includes('select card to add')) return true;
@@ -553,6 +563,51 @@ function getBestTradeInfo(tradeIdx, opts, state, resources) {
     threshold,
     worthwhile: (ranked[0]?.value ?? -999) >= threshold,
   };
+}
+
+function estimateSpaceHandTitaniumDemand(state) {
+  const tp = state?.thisPlayer || {};
+  const hand = state?.cardsInHand || tp.cardsInHand || [];
+  const titanium = tp.titanium || 0;
+  const titaniumValue = tp.titaniumValue || 3;
+  let demand = 0;
+  for (const card of hand) {
+    const name = card?.name || card || '';
+    if (!name || !(CARD_TAGS[name] || []).includes('space')) continue;
+    const cost = card?.calculatedCost ?? card?.cost ?? CARD_DATA[name]?.cost ?? 0;
+    if (cost >= 10) demand += Math.max(0, Math.min(4, Math.ceil((cost - titanium * titaniumValue) / titaniumValue)));
+  }
+  return demand;
+}
+
+function scoreBuildColonyChoice(colony, state) {
+  const name = colony?.name || colony || '';
+  const rank = COLONY_BUILD_PRIORITY.indexOf(name);
+  let score = rank >= 0 ? Math.max(2, 8 - rank) : 2;
+  const gen = state?.game?.generation || 1;
+  const tp = state?.thisPlayer || {};
+  const myColonies = tp.coloniesCount || 0;
+  const occupants = colony?.colonies?.length ?? 0;
+  if (occupants >= 2) score += 1;
+
+  if (name === 'Triton') {
+    const spaceDemand = estimateSpaceHandTitaniumDemand(state);
+    if (gen <= 3 && spaceDemand > 0) score += Math.min(10, 4 + spaceDemand * 2);
+    if ((tp.titanium || 0) <= 1) score += 1;
+  } else if (name === 'Ceres' && gen <= 3 && (tp.steel || 0) <= 1) {
+    score += 3;
+  } else if (name === 'Pluto' || name === 'Leavitt') {
+    score += gen <= 4 ? 3 : 1;
+  } else if (name === 'Titan') {
+    const hasFloaterTarget = (tp.tableau || []).some((card) => {
+      const cn = card?.name || card || '';
+      return cn === 'Celestic' || cn === 'Atmo Collectors' || cn === 'Aerial Mappers' || cn === 'Jovian Lanterns';
+    });
+    score += hasFloaterTarget ? 4 : -2;
+  } else if (name === 'Europa') {
+    score += myColonies === 0 ? 2 : 0;
+  }
+  return score;
 }
 
 function shouldPreferTradeOverCardAction(tradeInfo, bestBlueActionEV) {
@@ -858,12 +913,7 @@ function scoreVisibleStandardProject(spCard, state, context) {
     const currentEnergy = tp.energy || 0;
     let best = -999;
     for (const colony of playableColonies) {
-      const colonyName = colony?.name || colony;
-      const rank = COLONY_BUILD_PRIORITY.indexOf(colonyName);
-      const occupants = colony?.colonies?.length ?? 0;
-      let score = rank >= 0 ? Math.max(2, 8 - rank) : 2;
-      if (myColonies === 0 && (colonyName === 'Luna' || colonyName === 'Triton')) score += 2;
-      else if (occupants >= 2) score += 1;
+      let score = scoreBuildColonyChoice(colony, state);
       if (gen <= 2) score += 2;
       else if (gen <= 6) score += 1;
       else if (gen >= 13 || steps <= 4) score -= 7;
@@ -2372,6 +2422,14 @@ function handleInput(wf, state, depth = 0) {
     const standaloneCardFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
     const requiredCardEV = Math.max(adjustedSpEV, standaloneCardFloor > -900 ? standaloneCardFloor + 1 : -999);
     dbg(`DECISION: card=${bestCard?.name||'none'}(${bestCardEV.toFixed(0)}) vs SP(${bestSpCard?.name||'none'}=${adjustedSpEV.toFixed(0)}) spAdj=${spAdjustment}`);
+    if (
+      cardActionIdx >= 0 &&
+      bestBlueAction &&
+      shouldUseOpeningBlueActionBeforeProject(bestBlueAction, bestCard, state)
+    ) {
+      dbg(`opening action setup: ${bestBlueAction.name} before ${bestCard.name}`);
+      return pick(cardActionIdx);
+    }
     const lateCoreNonProgressCardFloor = coreSteps <= 5 ? 50 : (gen11OceanLagCompletion ? 24 : 36);
     if (
       lateCoreCompletionSp &&
@@ -2997,10 +3055,14 @@ function handleInput(wf, state, depth = 0) {
         // Score by actual trade value at current track position
         sorted = [...colonies].sort((a, b) => scoreColonyTrade(b, state) - scoreColonyTrade(a, state));
       } else {
-        // Build colony: priority by what the build gives
+        // Build colony: account for both long-term tile quality and immediate placement bonus.
         sorted = [...colonies].sort((a, b) => {
-          const an = a.name || a, bn = b.name || b;
-          const ai = COLONY_BUILD_PRIORITY.indexOf(an), bi = COLONY_BUILD_PRIORITY.indexOf(bn);
+          const scoreDiff = scoreBuildColonyChoice(b, state) - scoreBuildColonyChoice(a, state);
+          if (scoreDiff !== 0) return scoreDiff;
+          const an = a.name || a;
+          const bn = b.name || b;
+          const ai = COLONY_BUILD_PRIORITY.indexOf(an);
+          const bi = COLONY_BUILD_PRIORITY.indexOf(bn);
           return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
         });
       }

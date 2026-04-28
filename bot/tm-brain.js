@@ -812,6 +812,25 @@
     return count;
   }
 
+  function countCitiesAndColoniesInPlay(state) {
+    var cities = 0;
+    var players = state && state.players;
+    if (Array.isArray(players)) {
+      for (var pi = 0; pi < players.length; pi++) {
+        cities += (players[pi] && players[pi].citiesCount) || 0;
+      }
+    }
+    var coloniesInPlay = 0;
+    var colonies = state && state.game && state.game.colonies;
+    if (Array.isArray(colonies)) {
+      for (var ci = 0; ci < colonies.length; ci++) {
+        var slots = colonies[ci] && colonies[ci].colonies;
+        if (Array.isArray(slots)) coloniesInPlay += slots.length;
+      }
+    }
+    return cities + coloniesInPlay;
+  }
+
   var hasVPCard = (TM_BRAIN_CORE && TM_BRAIN_CORE.hasVPCard) || function(tableauNames, vpSet) {
     var arr = [];
     vpSet.forEach(function(c) { arr.push(c); });
@@ -2278,7 +2297,10 @@
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
-    var manual = MANUAL_EV[name];
+    if (name === 'Molecular Printing') {
+      ev += countCitiesAndColoniesInPlay(state);
+    }
+    var manual = name === 'Molecular Printing' ? null : MANUAL_EV[name];
     if (sharedApplyManualEVAdjustments) {
       ev += sharedApplyManualEVAdjustments({
         name: name,

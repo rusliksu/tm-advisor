@@ -143,6 +143,14 @@ function makeTradeVsActionWorkflow(actionCards, colonies) {
   };
 }
 
+function makeBuildColonyWorkflow(colonies) {
+  return {
+    type: 'colony',
+    title: 'Select where to build a colony',
+    coloniesModel: colonies,
+  };
+}
+
 function makeCustomActionVsStandardProjectWorkflow(actionCards, standardCards) {
   return {
     type: 'or',
@@ -234,6 +242,17 @@ function testStillPlaysStrongCardWhenLowOnCash() {
   assert.strictEqual(input.type, 'or');
   assert.strictEqual(input.index, 0);
   assert.strictEqual(input.response?.card, 'Research');
+}
+
+function testOpeningUsesRobinsonActionBeforeExpensiveSpaceCardWhenCashTight() {
+  const hand = [makeCard('Giant Space Mirror')];
+  const state = makeState({mc: 4, gen: 1, hand});
+  state.thisPlayer.titanium = 8;
+  state.thisPlayer.tableau = [{name: 'Robinson Industries'}];
+  const input = BOT.handleInput(makeProjectVsActionWorkflow(hand, [makeCard('Robinson Industries')]), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 1);
 }
 
 function testPassesOnWeakNoSpMidgameCard() {
@@ -484,6 +503,72 @@ function testLateDraftKeepSkipsSearchForLifePseudoVpTrap() {
   assert.ok(!input.cards.includes('Search For Life'));
 }
 
+function testDraftKeepDoesNotOverweightOpeningBias() {
+  const pack = ['Jovian Lanterns', 'Mineral Deposit', 'Release of Inert Gases', 'Subterranean Reservoir'].map(makeCard);
+  const state = makeState({mc: 0, gen: 1, hand: pack, income: 0});
+  state.game.phase = 'initial_drafting';
+  state.game.temperature = -30;
+  state.game.oxygenLevel = 0;
+  state.game.oceans = 0;
+  state.thisPlayer.tableau = [];
+  const input = BOT.handleInput(makeDraftKeepWorkflow(pack), state);
+  BOT.flushReasoning();
+  assert.deepStrictEqual(input, {type: 'card', cards: ['Jovian Lanterns']});
+}
+
+function testMolecularPrintingScalesWithCitiesAndColoniesInPlay() {
+  const card = makeCard('Molecular Printing');
+  const emptyState = makeState({mc: 20, gen: 5, hand: [card], income: 20});
+  const liveState = makeState({
+    mc: 20,
+    gen: 5,
+    hand: [card],
+    income: 20,
+    players: [
+      {color: 'red', citiesCount: 2},
+      {color: 'blue', citiesCount: 1},
+      {color: 'green', citiesCount: 0},
+    ],
+  });
+  liveState.game.colonies = [
+    {name: 'Luna', colonies: ['red', 'blue']},
+    {name: 'Triton', colonies: [{color: 'green'}]},
+  ];
+  const emptyScore = BOT.TM_BRAIN.scoreCard(card, emptyState);
+  const liveScore = BOT.TM_BRAIN.scoreCard(card, liveState);
+  assert.strictEqual(Math.round((liveScore - emptyScore) * 10) / 10, 6);
+}
+
+function testBuildColonyPrefersTritonForEarlySpaceHand() {
+  const hand = ['Space Hotels', 'Space Port Colony'].map(makeCard);
+  const state = makeState({mc: 5, gen: 1, hand, income: 22});
+  state.thisPlayer.titanium = 0;
+  const colonies = [
+    {name: 'Europa', colonies: []},
+    {name: 'Titan', colonies: []},
+    {name: 'Triton', colonies: []},
+  ];
+  const input = BOT.handleInput(makeBuildColonyWorkflow(colonies), state);
+  BOT.flushReasoning();
+  assert.deepStrictEqual(input, {type: 'colony', colonyName: 'Triton'});
+}
+
+function testEarlyStandardProjectColonyUsesTritonSpaceHandContext() {
+  const hand = ['Space Hotels', 'Space Port Colony'].map(makeCard);
+  const state = makeState({mc: 17, gen: 1, hand, income: 22});
+  state.thisPlayer.titanium = 0;
+  state.game.colonies = [
+    {name: 'Europa', colonies: []},
+    {name: 'Titan', colonies: []},
+    {name: 'Triton', colonies: []},
+  ];
+  state.thisPlayer.coloniesCount = 0;
+  const input = BOT.handleInput(makeStandardOnlyWorkflow(['Build Colony', 'Power Plant:SP'].map(makeCard)), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+}
+
 function testPassesOnUndergroundDetonationsTrapMidgame() {
   const hand = [makeCard('Underground Detonations')];
   const input = BOT.handleInput(makeWorkflow(hand), makeState({mc: 10, gen: 4, hand, income: 22}));
@@ -593,6 +678,17 @@ function testFreeDelegateDoesNotDelayProjectCardPass() {
   BOT.flushReasoning();
   assert.strictEqual(input.type, 'or');
   assert.strictEqual(input.index, 2);
+}
+
+function testSeptemOpeningUsesCorpActionBeforeProjectCard() {
+  const hand = [makeCard('Spin-off Department')];
+  const state = makeState({mc: 42, gen: 1, hand, income: 0});
+  state.thisPlayer.tableau = [{name: 'Septem Tribus'}];
+  const input = BOT.handleInput(makeProjectVsActionWorkflow(hand, [{name: 'Septem Tribus'}]), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 1);
+  assert.deepStrictEqual(input.response?.cards, ['Septem Tribus']);
 }
 
 function testBuyPhaseRelaxesReserveWhenHandStarved() {
@@ -1698,6 +1794,10 @@ function main() {
   testSearchForLifeScienceShellStillPlayableEarly();
   testLateBuySkipsSearchForLifePseudoVpTrap();
   testLateDraftKeepSkipsSearchForLifePseudoVpTrap();
+  testDraftKeepDoesNotOverweightOpeningBias();
+  testMolecularPrintingScalesWithCitiesAndColoniesInPlay();
+  testBuildColonyPrefersTritonForEarlySpaceHand();
+  testEarlyStandardProjectColonyUsesTritonSpaceHandContext();
   testPassesOnUndergroundDetonationsTrapMidgame();
   testCheapEventNoSpGen3CardIsPlayable();
   testPrefersHeatOverFreeDelegate();
@@ -1706,6 +1806,7 @@ function main() {
   testSkipsPaidDelegateInMidgame();
   testStillUsesFreeDelegateAsFallback();
   testFreeDelegateDoesNotDelayProjectCardPass();
+  testSeptemOpeningUsesCorpActionBeforeProjectCard();
   testBuyPhaseRelaxesReserveWhenHandStarved();
   testStarvedBuySkipsWeakFiller();
   testBuyPhaseStaysTightWhenHandIsAlreadyFull();
@@ -1787,6 +1888,7 @@ module.exports = {
   testSkipsPaidDelegateInMidgame,
   testStarvedBuySkipsWeakFiller,
   testFreeDelegateDoesNotDelayProjectCardPass,
+  testSeptemOpeningUsesCorpActionBeforeProjectCard,
   testPassesOnWeakNoSpMidgameCard,
   testPassesOnExactFloorTrapWhenLowOnCash,
   testPassesOnInflatedWeakUtilityWhenLowOnCash,
@@ -1806,6 +1908,10 @@ module.exports = {
   testSearchForLifeScienceShellStillPlayableEarly,
   testLateBuySkipsSearchForLifePseudoVpTrap,
   testLateDraftKeepSkipsSearchForLifePseudoVpTrap,
+  testDraftKeepDoesNotOverweightOpeningBias,
+  testMolecularPrintingScalesWithCitiesAndColoniesInPlay,
+  testBuildColonyPrefersTritonForEarlySpaceHand,
+  testEarlyStandardProjectColonyUsesTritonSpaceHandContext,
   testPassesOnUndergroundDetonationsTrapMidgame,
   testThinHandMidgamePrefersPlayableCardOverSmallSpEdge,
   testThinHandMidgameStillLetsSpBeatWeakCard,
@@ -1871,6 +1977,7 @@ module.exports = {
   testStillFundsAwardWhenVisibleCardsAreWeak,
   testStillUsesFreeDelegateAsFallback,
   testStillPlaysStrongCardWhenLowOnCash,
+  testOpeningUsesRobinsonActionBeforeExpensiveSpaceCardWhenCashTight,
 };
 
 if (require.main === module) {
