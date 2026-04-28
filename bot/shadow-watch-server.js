@@ -100,6 +100,11 @@ async function discoverGames(serverUrl, serverId) {
   return fetchJSON(`${serverUrl}/api/games?${params.toString()}`);
 }
 
+function isDiscoveryUnauthorizedError(error) {
+  return /\/api\/games\?/.test(String(error?.message || '')) &&
+    /returned 403\b/.test(String(error?.message || ''));
+}
+
 function readInputLogMarker(inputFile) {
   try {
     const stat = fs.statSync(inputFile);
@@ -256,11 +261,18 @@ async function main() {
         const games = await discoverGames(args.serverUrl, args.serverId);
         currentIds = new Set(games.map((entry) => entry.gameId).filter(Boolean));
       } catch (err) {
+        const unauthorized = isDiscoveryUnauthorizedError(err);
         appendJsonl(managerLog, {
-          type: 'discovery_error',
+          type: unauthorized ? 'discovery_unauthorized' : 'discovery_error',
           ts: new Date().toISOString(),
           error: err.message,
+          hint: unauthorized
+            ? 'SERVER_ID is missing, stale, or belongs to a different TM server. Sync/restart tm-shadow-watch with the active tm-server SERVER_ID.'
+            : null,
         });
+        if (unauthorized) {
+          throw new Error(`Cannot discover games: ${err.message}. SERVER_ID is missing/stale or does not match ${args.serverUrl}.`);
+        }
         nextDiscoveryAt = now + args.discoverInterval;
         await new Promise((resolve) => setTimeout(resolve, 1000));
         continue;
@@ -404,6 +416,7 @@ module.exports = {
   computeNextPollDelay,
   computePollInterval,
   finalizeActiveSessions,
+  isDiscoveryUnauthorizedError,
   inputLogAdvanced,
   parseArgs,
   phaseNeedsAllPlayers,

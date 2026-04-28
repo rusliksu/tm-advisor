@@ -11,6 +11,7 @@ const {
   computePollInterval,
   finalizeActiveSessions,
   inputLogAdvanced,
+  isDiscoveryUnauthorizedError,
   phaseNeedsAllPlayers,
   readInputLogMarker,
   refreshSessionInputActivity,
@@ -113,6 +114,17 @@ function testInputLogHelpersDetectGrowthAndArmBurst() {
   assert.strictEqual(session.nextPollAt, 123);
 }
 
+function testDiscoveryUnauthorizedErrorDetection() {
+  assert.strictEqual(
+    isDiscoveryUnauthorizedError(new Error('https://tm.knightbyte.win/api/games?serverId=old returned 403')),
+    true,
+  );
+  assert.strictEqual(
+    isDiscoveryUnauthorizedError(new Error('https://tm.knightbyte.win/api/game?id=g1 returned 403')),
+    false,
+  );
+}
+
 async function testFinalizeActiveSessionsStopsAndMergesSessions() {
   const sessions = new Map([
     ['g1', {gameId: 'g1', logFile: 'shadow-g1.jsonl'}],
@@ -147,6 +159,7 @@ async function main() {
   testComputeNextPollDelayKeepsBaseWithoutChange();
   testComputeNextPollDelayUsesBurstWhileInputBurstActive();
   testInputLogHelpersDetectGrowthAndArmBurst();
+  testDiscoveryUnauthorizedErrorDetection();
   await testFinalizeActiveSessionsStopsAndMergesSessions();
   console.log('shadow-watch-server tests passed');
 }

@@ -2,12 +2,18 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 
 const {
   analyze,
   formatReport,
+  parseArgs,
   normalizeLogEntry,
+  resolveFiles,
 } = require('./shadow-analyze');
+const {SHADOW_DIR} = require('./shadow-runtime');
+const {MERGED_DIR} = require('./shadow-merge');
 
 function testNormalizeMergedTurn() {
   const normalized = normalizeLogEntry({
@@ -59,6 +65,36 @@ function testAnalyzeMergedMatch() {
   assert.strictEqual(stats.botVsPlayer.comparable, 1);
   assert.strictEqual(stats.botVsPlayer.matched, 1);
   assert.strictEqual(stats.botVsPlayer.byPromptType.or.matched, 1);
+}
+
+function testNormalizeMergedRejectedInputIsNotComparable() {
+  const entries = normalizeLogEntry({
+    type: 'merged_turn',
+    matchStatus: 'matched',
+    generation: 1,
+    player: 'Ruslan',
+    playerId: 'p1',
+    color: 'red',
+    promptType: 'card',
+    botAction: 'cards: Medical Lab',
+    inputAction: 'cards: Jovian Lanterns',
+    observedAction: 'state changed',
+    input: {
+      result: 'rejected',
+      raw: {
+        result: 'rejected',
+        errorId: '#invalid-run-id',
+      },
+    },
+    shadow: {
+      raw: {mc: 0},
+    },
+  });
+
+  assert.strictEqual(entries.length, 1);
+  assert.strictEqual(entries[0].inputAction, null);
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsPlayer.comparable, 0);
 }
 
 function testNormalizeRawShadowEntryRepairsBrokenPromptTitle() {
@@ -288,9 +324,72 @@ function testAnalyzeRawObservedIntermediateIsUnscorable() {
   assert.strictEqual(stats.botVsObserved.scorable, 0);
 }
 
+function testFormatReportWarnsWhenMergedWithoutExactInputs() {
+  const entries = normalizeLogEntry({
+    type: 'merged_turn',
+    matchStatus: 'shadow_only',
+    generation: 1,
+    player: 'Ruslan',
+    playerId: 'p1',
+    color: 'red',
+    promptType: 'or',
+    botAction: 'play Spin-off Department',
+    observedAction: 'action Septem Tribus',
+    playerActed: true,
+    status: 'resolved',
+    shadow: {
+      botReasoning: ['gen=1 mc=42', 'DECISION card=Spin-off Department(57) vs SP(-999)', 'hand(1)'],
+      raw: {mc: 42},
+    },
+  });
+
+  const report = formatReport(analyze(entries), ['merged-g2.jsonl']);
+  assert.ok(report.includes('WARNING: no exact player-input matches'));
+  assert.ok(report.includes('NO EXACT PLAYER INPUTS'));
+  assert.ok(report.includes('pattern evidence only'));
+}
+
+function testFormatReportDoesNotSuggestBotTuningWithoutDecisions() {
+  const report = formatReport(analyze([]), ['merged-empty.jsonl']);
+  assert.ok(report.includes('No DECISION traces found'));
+  assert.ok(report.includes('Investigate why this game produced zero shadow DECISION traces'));
+  assert.ok(report.includes('before changing bot logic'));
+  assert.ok(!report.includes('improve card play rate'));
+}
+
+function testParseGameIdOption() {
+  const args = parseArgs(['node', 'bot/shadow-analyze.js', '--game', 'g123']);
+  assert.strictEqual(args.gameId, 'g123');
+  assert.deepStrictEqual(args.files, []);
+}
+
+function testResolveGameIdFallsBackToRawShadowWhenOtherMergedLogsExist() {
+  const gameId = 'gtest-shadow-only-resolve';
+  const shadowFile = path.join(SHADOW_DIR, `shadow-${gameId}.jsonl`);
+  const unrelatedMergedFile = path.join(MERGED_DIR, 'merged-gtest-unrelated-resolve.jsonl');
+  fs.mkdirSync(SHADOW_DIR, {recursive: true});
+  fs.mkdirSync(MERGED_DIR, {recursive: true});
+  fs.writeFileSync(shadowFile, '{"type":"shadow_start"}\n');
+  fs.writeFileSync(unrelatedMergedFile, '{"type":"merged_turn"}\n');
+  try {
+    const files = resolveFiles(parseArgs(['node', 'bot/shadow-analyze.js', '--game', gameId]));
+    assert.deepStrictEqual(files, [shadowFile]);
+  } finally {
+    fs.rmSync(shadowFile, {force: true});
+    fs.rmSync(unrelatedMergedFile, {force: true});
+  }
+}
+
+function testParseHelpOptionDoesNotBecomeFile() {
+  const args = parseArgs(['node', 'bot/shadow-analyze.js', '--help']);
+  assert.strictEqual(args.help, true);
+  assert.deepStrictEqual(args.files, []);
+}
+
 function main() {
   testNormalizeMergedTurn();
   testAnalyzeMergedMatch();
+  testNormalizeMergedRejectedInputIsNotComparable();
   testNormalizeRawShadowEntryRepairsBrokenPromptTitle();
   testNormalizeLegacyRawShadowEntryWithoutPlayerId();
   testNormalizeMergedEntryRepairsBrokenPromptTitle();
@@ -300,6 +399,11 @@ function main() {
   testAnalyzeRawObservedOutcomeMismatchReport();
   testAnalyzeRawObservedCardActionOutcomeMatch();
   testAnalyzeRawObservedIntermediateIsUnscorable();
+  testFormatReportWarnsWhenMergedWithoutExactInputs();
+  testFormatReportDoesNotSuggestBotTuningWithoutDecisions();
+  testParseGameIdOption();
+  testResolveGameIdFallsBackToRawShadowWhenOtherMergedLogsExist();
+  testParseHelpOptionDoesNotBecomeFile();
   console.log('shadow-analyze tests passed');
 }
 

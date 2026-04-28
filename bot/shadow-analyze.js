@@ -5,6 +5,7 @@
  * Usage:
  *   node bot/shadow-analyze.js [data/shadow/merged/merged-*.jsonl]
  *   node bot/shadow-analyze.js --all
+ *   node bot/shadow-analyze.js --game <gameId>
  *   node bot/shadow-analyze.js --last N
  *   node bot/shadow-analyze.js --shadow-only
  *
@@ -23,6 +24,8 @@ function parseArgs(argv) {
   const result = {
     all: args.includes('--all'),
     last: null,
+    gameId: null,
+    help: args.includes('--help') || args.includes('-h'),
     shadowOnly: args.includes('--shadow-only'),
     mergedOnly: args.includes('--merged-only'),
     files: [],
@@ -30,7 +33,12 @@ function parseArgs(argv) {
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    if (arg === '--all' || arg === '--shadow-only' || arg === '--merged-only') continue;
+    if (arg === '--all' || arg === '--shadow-only' || arg === '--merged-only' || arg === '--help' || arg === '-h') continue;
+    if (arg === '--game') {
+      result.gameId = args[i + 1] || null;
+      i++;
+      continue;
+    }
     if (arg === '--last') {
       result.last = parseInt(args[i + 1], 10) || 5;
       i++;
@@ -70,10 +78,28 @@ function resolveFiles(options) {
   if (explicitFiles.length > 0) return explicitFiles;
 
   const baseDir = resolveDefaultLogDir(options);
+  if (options.gameId) {
+    const candidates = [];
+    if (!options.shadowOnly) candidates.push(path.join(MERGED_DIR, `merged-${options.gameId}.jsonl`));
+    if (!options.mergedOnly) candidates.push(path.join(SHADOW_DIR, `shadow-${options.gameId}.jsonl`));
+    return candidates.filter((file) => fs.existsSync(file));
+  }
+
   const candidates = listJsonlFiles(baseDir);
   if (options.all) return candidates.map((entry) => entry.path);
   if (options.last != null) return candidates.slice(0, Math.max(1, options.last)).map((entry) => entry.path);
   return candidates.length > 0 ? [candidates[0].path] : [];
+}
+
+function formatUsage() {
+  return [
+    'Usage:',
+    '  node bot/shadow-analyze.js [data/shadow/merged/merged-*.jsonl]',
+    '  node bot/shadow-analyze.js --all',
+    '  node bot/shadow-analyze.js --game <gameId>',
+    '  node bot/shadow-analyze.js --last N',
+    '  node bot/shadow-analyze.js --shadow-only',
+  ].join('\n');
 }
 
 function readJsonl(file) {
@@ -109,7 +135,7 @@ function normalizeLogEntry(entry) {
       promptType: entry.promptType || rawShadow.promptType || rawInput.promptType || null,
       promptTitle,
       botAction: normalizeActionSummaryText(entry.botAction || rawShadow.botAction || null),
-      inputAction: normalizeActionSummaryText(entry.inputAction || null),
+      inputAction: rawInput.result && rawInput.result !== 'accepted' ? null : normalizeActionSummaryText(entry.inputAction || null),
       observedAction: entry.observedAction || rawShadow.observedAction || null,
       observedChanges: entry.shadow?.observedChanges || rawShadow.observedChanges || null,
       playerActed: entry.shadow?.playerActed ?? rawShadow.playerActed ?? null,
@@ -510,6 +536,9 @@ function formatReport(stats, files) {
       lines.push(`  Matched exact inputs: ${stats.sourceCoverage.matched}`);
       lines.push(`  Shadow only:          ${stats.sourceCoverage.shadowOnly}`);
       lines.push(`  Input only:           ${stats.sourceCoverage.inputOnly}`);
+      if (stats.sourceCoverage.matched === 0 && stats.sourceCoverage.shadowOnly > 0) {
+        lines.push('  WARNING: no exact player-input matches; observed mismatch analysis is heuristic.');
+      }
     }
     lines.push(`  Raw shadow turns: ${stats.sourceCoverage.shadowTurns}`);
     lines.push('');
@@ -645,6 +674,10 @@ function formatReport(stats, files) {
   lines.push('');
 
   lines.push('## Detected Issues');
+  if (stats.sourceCoverage.mergedTurns > 0 && stats.sourceCoverage.matched === 0 && stats.sourceCoverage.shadowOnly > 0) {
+    lines.push('  NO EXACT PLAYER INPUTS — server-input log is missing or not merged');
+    lines.push('  Configure TM server with SHADOW_LOG=1 and SHADOW_LOG_DIR=data/shadow/server-inputs before using mismatch rates for calibration');
+  }
   if (stats.totalDecisions === 0) {
     lines.push('  No DECISION traces found in the selected logs.');
   } else {
@@ -677,15 +710,24 @@ function formatReport(stats, files) {
     }
     if (stats.botVsObserved.scorable > 0 && stats.botVsObserved.differed / stats.botVsObserved.scorable > 0.4) {
       lines.push('  Bot choices diverge from observed player outcomes on >40% of scorable turns');
-      lines.push('  Consider: inspect observed mismatch patterns, especially for raw shadow-only logs');
+      const exactCoverage = stats.sourceCoverage.matched > 0;
+      lines.push(exactCoverage
+        ? '  Consider: inspect observed mismatch patterns, then add focused bot regressions'
+        : '  Consider: treat this as pattern evidence only until exact player-input logs are captured');
     }
   }
   lines.push('');
 
   lines.push('## Suggestions for AI Code Review');
-  lines.push('Feed this report to Claude/Codex with:');
-  lines.push('  "Analyze this shadow bot report and suggest changes to bot/smartbot.js');
-  lines.push('   to improve card play rate, reduce pass rate, and lower avg generation."');
+  if (stats.totalDecisions === 0) {
+    lines.push('Feed this report to Claude/Codex with:');
+    lines.push('  "Investigate why this game produced zero shadow DECISION traces.');
+    lines.push('   Check start-live-logging coverage, shadow log paths, and server-input capture before changing bot logic."');
+  } else {
+    lines.push('Feed this report to Claude/Codex with:');
+    lines.push('  "Analyze this shadow bot report and suggest changes to bot/smartbot.js');
+    lines.push('   to improve card play rate, reduce pass rate, and lower avg generation."');
+  }
   lines.push('');
 
   return lines.join('\n');
@@ -693,6 +735,10 @@ function formatReport(stats, files) {
 
 function main(argv = process.argv) {
   const options = parseArgs(argv);
+  if (options.help) {
+    console.log(formatUsage());
+    return 0;
+  }
   const files = resolveFiles(options);
   if (files.length === 0) {
     console.log('No shadow or merged logs found. Run shadow-watch-server.js first.');
