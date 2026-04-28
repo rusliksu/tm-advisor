@@ -58,6 +58,7 @@
     var getPlayerVueData = input && input.getPlayerVueData;
     var scoreDraftCard = input && input.scoreDraftCard;
     var getSynergyIndicators = input && input.getSynergyIndicators;
+    var revealPendingContextBadge = input && input.revealPendingContextBadge;
     var setReasonPayload = input && input.setReasonPayload;
     var clearReasonPayload = input && input.clearReasonPayload;
     var serializeReasonRowsPayload = input && input.serializeReasonRowsPayload;
@@ -74,6 +75,7 @@
     var myHand = typeof getMyHandWithDrafted === 'function' ? getMyHandWithDrafted() : [];
     var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
     if (!ctx) return;
+    if (ctx._stateReady === false) return;
     if (typeof enrichCtxForScoring === 'function') enrichCtxForScoring(ctx, myTableau, myHand);
 
     var offeredCorps = [];
@@ -117,7 +119,10 @@
           if (typeof updateBadgeScore === 'function') {
             updateBadgeScore(badge, data.t, data.s, corpResult.total, '', undefined, true);
           }
+          if (typeof revealPendingContextBadge === 'function') revealPendingContextBadge(badge);
           applyReasonPayload(el, corpResult, setReasonPayload, clearReasonPayload);
+        } else if (typeof revealPendingContextBadge === 'function') {
+          revealPendingContextBadge(badge);
         }
         return;
       }
@@ -134,6 +139,7 @@
         if (frozen) {
           badge.innerHTML = frozen.html;
           badge.className = frozen.className;
+          if (typeof revealPendingContextBadge === 'function') revealPendingContextBadge(badge);
           applyReasonPayload(el, { reasons: frozen.reasons || '', reasonRows: frozen.reasonRows || '' }, setReasonPayload, clearReasonPayload);
           if (frozen.dimClass) el.classList.add('tm-dim'); else el.classList.remove('tm-dim');
           return;
@@ -155,6 +161,7 @@
       var newTier = typeof updateBadgeScore === 'function'
         ? updateBadgeScore(badge, data.t, data.s, result.total, cardOpp ? ' tm-opp-badge' : '', result.uncappedTotal, showContextDisplay)
         : data.t;
+      if (typeof revealPendingContextBadge === 'function') revealPendingContextBadge(badge);
 
       var oldHint = el.querySelector('.tm-synergy-hint');
       if (oldHint) oldHint.remove();

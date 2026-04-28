@@ -43,6 +43,7 @@
     var ratings = input && input.ratings;
     var scoreDraftCard = input && input.scoreDraftCard;
     var updateBadgeScore = input && input.updateBadgeScore;
+    var revealPendingContextBadge = input && input.revealPendingContextBadge;
     var setReasonPayload = input && input.setReasonPayload;
 
     var myCorp = typeof detectMyCorp === 'function' ? detectMyCorp() : '';
@@ -51,6 +52,7 @@
     var myTableau = typeof getMyTableauNames === 'function' ? getMyTableauNames() : [];
     var myHand = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
     var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
+    if (!ctx || ctx._stateReady === false) return;
     if (ctx && typeof enrichCtxForScoring === 'function') enrichCtxForScoring(ctx, myTableau, myHand);
 
     documentObj.querySelectorAll(selHand).forEach(function(el) {
@@ -65,6 +67,7 @@
         badge.setAttribute('data-tm-orig-tier', origData.t);
       }
       var newTier = updateBadgeScore(badge, origData.t, origData.s, result.total, '', result.uncappedTotal);
+      if (typeof revealPendingContextBadge === 'function') revealPendingContextBadge(badge);
       if (newTier === 'D' || newTier === 'F') el.classList.add('tm-dim');
       else el.classList.remove('tm-dim');
       applyReasonPayload(el, result, setReasonPayload, null);
@@ -134,6 +137,7 @@
           ratings: ratings,
           scoreDraftCard: scoreDraftCard,
           updateBadgeScore: updateBadgeScore,
+          revealPendingContextBadge: revealPendingContextBadge,
           setReasonPayload: setReasonPayload
         });
       }
@@ -159,6 +163,7 @@
     if ((!prep || !prep.ctx) && ctx && typeof enrichCtxForScoring === 'function') {
       enrichCtxForScoring(ctx, myTableau, myHand);
     }
+    if (!ctx || ctx._stateReady === false) return;
 
     var gen = prep ? prep.gen : (typeof detectGeneration === 'function' ? detectGeneration() : 1);
     var offeredCorps = prep ? prep.offeredCorps : ((!myCorp && gen <= 1 && typeof detectOfferedCorps === 'function') ? detectOfferedCorps() : []);

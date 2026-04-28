@@ -561,6 +561,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
   // ── Badge injection ──
 
+  function shouldDeferContextBadge(cardEl) {
+    if (!cardEl || /\/cards\b/.test(window.location.pathname)) return false;
+    if (!/\/player\b/.test(window.location.pathname)) return false;
+    return true;
+  }
+
   function injectBadge(cardEl) {
     if (TM_CONTENT_BADGES && typeof TM_CONTENT_BADGES.injectBadge === 'function') {
       TM_CONTENT_BADGES.injectBadge({
@@ -569,7 +575,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         getRatingByCardName: _getRatingByCardName,
         hideTooltip: hideTooltip,
         showTooltip: showTooltip,
-        tierFilter: tierFilter
+        tierFilter: tierFilter,
+        shouldDeferContextBadge: shouldDeferContextBadge
       });
       return;
     }
@@ -5204,6 +5211,47 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return false;
   }
 
+  var _contextScoreRetryTimer = 0;
+  var _contextScoreRetryDelay = 0;
+
+  function hasPendingContextBadges() {
+    return !!document.querySelector('.tm-tier-badge[data-tm-pending-context]');
+  }
+
+  function runContextScoreRefresh() {
+    _contextScoreRetryTimer = 0;
+    if (!_tabVisible || !enabled || !hasPendingContextBadges()) {
+      _contextScoreRetryDelay = 0;
+      return;
+    }
+    if (_processingNow) {
+      scheduleContextScoreRefresh(80);
+      return;
+    }
+    _processingNow = true;
+    try {
+      if (document.querySelector('.wf-component--select-card .card-container, .wf-component--select-prelude .card-container')) {
+        updateDraftRecommendations();
+      }
+      updateHandScores();
+    } finally {
+      _processingNow = false;
+    }
+    if (hasPendingContextBadges()) {
+      scheduleContextScoreRefresh();
+    } else {
+      _contextScoreRetryDelay = 0;
+    }
+  }
+
+  function scheduleContextScoreRefresh(delayMs) {
+    if (_contextScoreRetryTimer || !hasPendingContextBadges()) return;
+    if (delayMs == null) {
+      _contextScoreRetryDelay = _contextScoreRetryDelay ? Math.min(1000, Math.round(_contextScoreRetryDelay * 1.7)) : 80;
+      delayMs = _contextScoreRetryDelay;
+    }
+    _contextScoreRetryTimer = setTimeout(runContextScoreRefresh, delayMs);
+  }
   // ── Standard Project Rating ──
 
   var _spLastUpdate = 0;
@@ -6237,6 +6285,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       bumpProcessAllRunId();
       markSlowScoreRefresh();
       markWorkflowScoreRefresh();
+      scheduleContextScoreRefresh(50);
       return;
     }
     if (!enabled || _processingNow) return;
@@ -6294,6 +6343,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       bumpProcessAllRunId();
       markSlowScoreRefresh();
       markWorkflowScoreRefresh();
+      scheduleContextScoreRefresh(50);
       // Restore scroll if it jumped during DOM manipulation
       if (Math.abs(window.scrollY - scrollY) > 5) {
         window.scrollTo(0, scrollY);
@@ -6792,8 +6842,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     const gen = detectGeneration();
     const gensLeft = estimateGensLeft(pv);
     const myCorp = detectMyCorp();
+    const stateReady = !!(pv && pv.thisPlayer && pv.game);
 
     const ctx = {
+      _stateReady: stateReady,
+      _stateSource: pv ? (pv._source || 'bridge') : 'missing',
       gen: gen,
       gensLeft: gensLeft,
       tags: {},
@@ -12382,6 +12435,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         ratings: typeof TM_RATINGS !== 'undefined' ? TM_RATINGS : null,
         scoreDraftCard: scoreDraftCard,
         updateBadgeScore: updateBadgeScore,
+        revealPendingContextBadge: revealPendingContextBadge,
         setReasonPayload: setReasonPayload
       });
       return;
@@ -13794,6 +13848,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         getPlayerVueData: getPlayerVueData,
         scoreDraftCard: scoreDraftCard,
         getSynergyIndicators: getSynergyIndicators,
+        revealPendingContextBadge: revealPendingContextBadge,
         setReasonPayload: setReasonPayload,
         clearReasonPayload: clearReasonPayload,
         serializeReasonRowsPayload: serializeReasonRowsPayload
@@ -14796,10 +14851,22 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
   const debouncedProcess = debounce(processAll, 350);
   const observer = new MutationObserver(function(records) {
+    var bridgeTouched = false;
+    for (var bi = 0; bi < records.length; bi++) {
+      if (records[bi].type === 'attributes' && records[bi].attributeName === 'data-tm-vue-bridge') {
+        bridgeTouched = true;
+        break;
+      }
+    }
+    if (bridgeTouched) scheduleContextScoreRefresh(0);
     if (!_processingNow && _tabVisible && hasRelevantMutations(records)) debouncedProcess();
   });
-  observer.observe(document.body, { childList: true, subtree: true });
-
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['data-tm-vue-bridge']
+  });
   // Extension no longer renders Elo badges in-game. Only clean up old injected nodes.
   removeEloBadges();
 

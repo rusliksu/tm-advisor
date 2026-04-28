@@ -14,12 +14,17 @@
     var t = data.t;
     if (!t || s == null) return;
     var visible = input.tierFilter[t] !== false;
+    var shouldDeferContextBadge = input && input.shouldDeferContextBadge;
 
     var badge = document.createElement('div');
     badge.className = 'tm-tier-badge tm-tier-' + t;
     badge.textContent = t + ' ' + s;
     var workflowOwned = !!cardEl.closest('.wf-component--select-card, .wf-component--select-prelude');
-    if (workflowOwned) {
+    var contextOwned = typeof shouldDeferContextBadge === 'function'
+      ? !!shouldDeferContextBadge(cardEl, name, data)
+      : false;
+    var pendingContext = workflowOwned || contextOwned;
+    if (pendingContext) {
       badge.setAttribute('data-tm-pending-context', '1');
       badge.style.visibility = 'hidden';
     }
@@ -39,7 +44,7 @@
       cardEl.addEventListener('mouseleave', input.hideTooltip);
     }
 
-    if (t === 'D' || t === 'F') {
+    if (!pendingContext && (t === 'D' || t === 'F')) {
       cardEl.classList.add('tm-dim');
     }
   }
