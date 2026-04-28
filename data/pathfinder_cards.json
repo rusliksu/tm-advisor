@@ -1375,7 +1375,7 @@
     ],
     "cost": 32,
     "startingMegaCredits": null,
-    "description": "Every player loses 2 plants. Raise the temperature 1 step. Raise the oxygen 1 step.",
+    "description": "Every player loses 2 plants. Raise the temperature 1 step. Raise the oxygen 1 step. Place an ocean ON AN AREA NOT RESERVED FOR OCEAN. Gain 1 titanium.",
     "requirements": null,
     "victoryPoints": null,
     "resourceType": null,

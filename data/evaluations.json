@@ -10490,13 +10490,19 @@
   },
   "Small Comet": {
     "name": "Small Comet",
-    "score": 48,
-    "tier": "D",
+    "score": 72,
+    "tier": "B",
     "type": "project",
-    "economy": "35 MC total (32+3), ti payable. Every player loses 2 plants. +1 temp TR (7 MC) + 1 O2 TR (7 MC) + ocean. Total TR: ~14 MC + ocean (~7 MC). Mars+Space теги. Grand total: ~21 MC.",
-    "reasoning": "35 MC (ti payable) за 2 TR + ocean + symmetric plant attack. 21 MC value за 35 MC = terrible ratio. Ti payable critical — при 10 ti real cost ~20-23 MC, что acceptable. Plant attack в 3P = take-that element, но symmetric (all players) делает его менее вредным. Mars+Space теги для tracks. Без ti дисконта — D-tier.",
-    "synergies": [],
-    "when_to_pick": "Только с significant ti для оплаты. Без ti — слишком дорого для 2 TR."
+    "economy": "35 MC total (32+3), ti payable. Immediate: +1 temp, +1 O2, +1 ocean = 3 TR (~21-22 MC) + flexible ocean placement (~3-5 MC) + 1 titanium (~3 MC) + small plant denial. Mars+Space tags help Pathfinders tracks and titanium payment. Pure MC is close to fair; with 4+ titanium/space discounts/CrediCor it becomes efficient.",
+    "reasoning": "Old entry undervalued the card as 2 TR and missed the printed ocean + 1 titanium. In reality Small Comet is a compact terraform-rush event: three global steps in one action, a flexible non-reserved ocean, and a titanium refund. The 35 MC sticker is high, so it is not an automatic buy in pure cash, but it is a good titanium sink and strong tempo card while globals are open.",
+    "synergies": [
+      "CrediCor",
+      "Optimal Aerobraking",
+      "Media Group",
+      "Interplanetary Cinematics",
+      "Lakefront Resorts"
+    ],
+    "when_to_pick": "Early-mid game while temperature, oxygen, and oceans are open, especially with titanium/space discounts, CrediCor, event rebates, or TR-rush incentives. Downgrade sharply if any of the three global steps is close to maxed or you must pay full cash."
   },
   "Small Open Pit Mine": {
     "name": "Small Open Pit Mine",
