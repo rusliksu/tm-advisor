@@ -46,7 +46,7 @@ const TM_CARD_DISCOUNTS = {
   'Shuttles': { space: 2, _globalReq: true },             // Requires 5% oxygen
   'Warp Drive': { space: 4, _tagReq: 5 },                // Requires 5 science tags
   'Sky Docks': { _all: 1, _tagReq: 2 },                  // Requires 2 earth tags
-  'Mercurian Alloys': { _all: 2 },  // 2 Wild tags — approximated as general discount
+  // Mercurian Alloys increases titanium value; it is not a generic card discount.
   'Dirigibles': { venus: 2 },
   'Venus Waystation': { venus: 2 },
   'Luna Conference': { _all: 1 },       // -1 MC per science tag played (effect)

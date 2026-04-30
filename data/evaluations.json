@@ -2577,16 +2577,17 @@
   },
   "Mangrove": {
     "name": "Mangrove",
-    "score": 78,
-    "tier": "B",
+    "score": 80,
+    "tier": "A",
     "type": "project",
-    "economy": "Cost 12+3=15 MC. Value: 1 greenery (TR if O2 not maxed = 7-7.4) + 1 VP (5) + placement bonus (2-4) + Plant tag (1-2). Total ~15-19 MC. Great efficiency.",
-    "reasoning": "One of the best VP cards in the game. Cheap greenery on ocean space with 1 VP printed. If oxygen isn't maxed, you get TR + VP + placement bonuses for very little. The 4C requirement is easy to meet. COTD experts universally praise it. Plant tag adds value for NRA/Insects synergy.",
+    "economy": "Cost 12+3=15 MC. Value: 1 greenery (TR if O2 not maxed = 7-7.4) + 1 VP (5) + placement bonus (2-4) + Plant tag (1-2). Total ~15-19 MC, with very clean VP/MC efficiency once the +4C window opens.",
+    "reasoning": "One of the best cheap VP greenery payoffs. It converts 15 MC into printed VP, greenery VP, usually an oxygen TR, placement bonus, and a Plant tag while ignoring normal greenery placement. The +4C requirement is a timing window, not a reason to treat it as a weak card in the opener. EcoTec/Ecoline and NRA-style plant shells raise the ceiling, and Mining Guild can care about the ocean-space placement bonuses.",
     "synergies": [
+      "EcoTec",
       "Ecoline",
+      "Mining Guild",
       "Arctic Algae",
-      "Nitrogen-Rich Asteroid",
-      "Insects"
+      "Nitrogen-Rich Asteroid"
     ],
     "when_to_pick": "Almost always draft if offered. Best in mid-to-late game but worth speculating on early. Even without O2 raise, 1 VP + greenery for 15 MC is solid.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1cm8aje/cotd_mangrove_7_may_2024/"
@@ -8861,17 +8862,17 @@
   },
   "Asimov": {
     "name": "Asimov",
-    "score": 48,
-    "tier": "D",
+    "score": 76,
+    "tier": "B",
     "type": "ceo",
-    "economy": "OPG: free award funding (saves 8-14 MC) + choose from 10-X options (early = more choice). Ongoing: +2 score for ALL awards = potential +10 VP (5 awards x 2 VP). Total value: 8-14 MC (funding) + 10-50 MC equivalent in VP (2-10 VP from +2 bonus across awards). Over 8-9 gens, ongoing alone = 10-20+ MC in VP value.",
-    "reasoning": "Один из слабейших CEOs. +2 к наградам звучит хорошо, но на практике: awards непредсказуемы в 3P, конкуренция за них высокая, и +2 редко меняет результат (нужен 1st/2nd place уже без бонуса). Бесплатный fund экономит 8-14 MC — это ОК, но одноразовый эффект. Ongoing почти не работает. Per expert review: один из худших CEOs.",
+    "economy": "OPG: free award funding saves 8-20 MC depending on timing and lets you add/choose a favorable award. Ongoing: +2 award score is not direct VP; it matters when it flips an award race into 1st/2nd place. Typical value is one good funded award plus 0-2 flipped award placements, roughly 25-45 MC-equivalent in games where awards are contested.",
+    "reasoning": "Сильный, но не автопик A-tier. Бесплатный fund и выбор подходящей награды дают высокий floor, а +2 score может решить плотные award races. Но эффект не даёт VP напрямую: если ты не конкурируешь в наградах или awards уже не под твою линию, ongoing почти пустой. Поэтому это сильный B, а не D и не уверенный A/S.",
     "synergies": [
-      "Strip Mine",
-      "Research",
-      "Terraforming Ganymede"
+      "Любая корпорация с сильной специализацией (Phobolog для Miner, Ecoline для Mayor)",
+      "Award-heavy стратегии",
+      "Diversified engines (чтобы быть 2nd+ в нескольких наградах)"
     ],
-    "when_to_pick": "Почти всегда отличный pick. Особенно хорош если стратегия позволяет быть competitive в 2-3 наградах. Слабее если вынужден играть узкую стратегию где ни одна award не подходит."
+    "when_to_pick": "Бери, если старт/корпы дают понятный путь к 1-2 awards или можно рано выбрать свою награду. Слабее в узкой линии без award alignment и когда стол уже явно контролирует funded awards."
   },
   "Bjorn": {
     "name": "Bjorn",
@@ -9959,17 +9960,17 @@
   },
   "Ceres Spaceport": {
     "name": "Ceres Spaceport",
-    "score": 77,
-    "tier": "B",
+    "score": 84,
+    "tier": "A",
     "type": "project",
-    "economy": "39 MC total (36+3), ti payable. +2 MC-prod (10-12 MC) + 1 ti-prod per 2 Jovian tags. При 4 Jovian тегах (включая 2 на этой): 2 ti-prod (25 MC) + 2 MC-prod (10 MC) = 35 MC + City tile + 1 VP. Quad tag (Jovian x2, City, Space).",
-    "reasoning": "Мощная Jovian payoff карта. 2 Jovian тега — огромная ценность для Jovian track (2 шага сразу). Ti-prod scaling при 4+ Jovian тегах делает карту экономически сильной. City tile добавляет MC-prod adjacency. Дорогая (36 MC), но ti payable существенно снижает стоимость. Jovian cards редки, но если идёшь Jovian — это must-pick.",
+    "economy": "39 MC total (36+3), ti payable. +2 MC-prod (~10-12 MC) + 1 ti-prod per 2 Jovian tags, including the 2 tags on this card (minimum +1 ti-prod, often +2). Also draw 1 card, place an ocean, place the reserved city, and score 1 VP. Quad tag (Jovian x2, City, Space).",
+    "reasoning": "Old text undercounted the payload by omitting the printed card draw, ocean, and reserved city placement. Ceres Spaceport is expensive, but the floor is already strong: production package + ocean TR + city + card + VP, with titanium payment and two Jovian tags. In a Jovian plan it becomes one of the best payoff cards in Pathfinders.",
     "synergies": [
       "Io Mining Industries",
       "Ganymede Colony",
       "Jupiter Floating Station"
     ],
-    "when_to_pick": "При 2+ Jovian тегах до розыгрыша. С Phobolog — S-tier. Без Jovian engine — переоценена."
+    "when_to_pick": "При 0-2 Jovian тегах уже playable because it counts itself; при 2+ Jovian before play becomes premium. Strong with titanium income/discounts, Phobolog, Unity, and city/ocean incentives."
   },
   "Charity Donation": {
     "name": "Charity Donation",
@@ -10321,15 +10322,15 @@
   },
   "Museum of Early Colonisation": {
     "name": "Museum of Early Colonisation",
-    "score": 62,
-    "tier": "C",
+    "score": 72,
+    "tier": "B",
     "type": "project",
-    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Mars+Building теги. Description truncated — likely production/VP gain. Complex requirement.",
-    "reasoning": "Тройной requirement (ocean + city + greenery) — строгое, но обычно выполнимо к gen 3-4. Mars+Building теги + steel payable помогают. 20 MC дорого, но с steel — ~16-17 MC. Ценность зависит от truncated effect. Building + Mars теги ценны. Requirements ограничивают timing window.",
+    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Effect: -1 energy-prod, +1 steel-prod, +1 titanium-prod, +1 plant-prod, +1 TR. Raw production/TR package is ~25-30 MC before tags and steel payment.",
+    "reasoning": "Old entry was based on a truncated description. With the full text this is a compact production package: three relevant productions plus a TR for the cost of one energy production and a strict board requirement. Timing is the limiter, not raw value. Strong if you can spare energy and pay some steel; awkward if energy is already at 0.",
     "synergies": [
       "Gordon"
     ],
-    "when_to_pick": "При наличии city + greenery + ocean. Steel payable. Mars тег для track."
+    "when_to_pick": "Когда уже есть ocean + city + greenery on Mars and you can afford the -1 energy-prod. Better with steel payment, production engines, Manutech-style bonuses, or TR-rush."
   },
   "New Venice": {
     "name": "New Venice",
@@ -10446,15 +10447,15 @@
   },
   "Red City": {
     "name": "Red City",
-    "score": 60,
+    "score": 68,
     "tier": "C",
     "type": "project",
-    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. City tile. Special VP. City+Building теги. City value: MC-prod adjacency (~5-8 MC). Special VP depends on implementation.",
-    "reasoning": "City + special VP при Reds ruling — niche Turmoil card. Steel payable снижает стоимость. City+Building теги для milestones. Requirement Reds ruling ограничивает — Reds обычно anti-terraform, что конфликтует с most strategies. Special VP potentially strong if based on non-TR elements. Situational but can be good.",
+    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. Effect: -1 energy-prod, +2 MC-prod, special no-greenery city tile, and 1 VP per empty/hazard adjacent space. City+Building tags.",
+    "reasoning": "Old entry missed the concrete production and VP text. The card is still situational because Reds timing and tile placement matter, but the ceiling is real: +2 MC-prod plus a high-VP blocker city can repay the energy hit. It is not a generic city card; it wants an open placement with many empty/hazard adjacencies and a board where blocking greeneries matters.",
     "synergies": [
       "Gordon"
     ],
-    "when_to_pick": "При Reds influence и city plans. Steel payable. Situational."
+    "when_to_pick": "При Reds influence/2 delegates, available high-adjacency spot, and spare energy production. Better with steel payment, Gordon/city incentives, and games where greenery blocking is relevant."
   },
   "Return to Abandoned Technology": {
     "name": "Return to Abandoned Technology",

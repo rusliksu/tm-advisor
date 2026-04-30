@@ -411,8 +411,8 @@
     "combo_id": 52,
     "cards": ["Robotic Workforce", "Medical Lab"],
     "category": "special",
-    "value": "'Magnificent.' One of the best combos. Copy Medical Lab production for 15 MC",
-    "rating": "great",
+    "value": "Good only when Medical Lab already makes 2+ MC-prod; copy value belongs to Robotic Workforce, not to overpaying Medical Lab",
+    "rating": "good",
     "source": "BonelessDota Ep.05"
   },
   {
