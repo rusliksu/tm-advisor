@@ -60,6 +60,54 @@
     return !phase || phase === 'action';
   }
 
+  function sameColor(a, b) {
+    return !!a && !!b && lower(a) === lower(b);
+  }
+
+  function colorOf(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value.color || value.playerColor || value.activePlayer || '';
+  }
+
+  function activeColorFromState(state) {
+    var game = (state && state.game) || {};
+    return colorOf(state && (state.activePlayerColor || state.activePlayer || state.currentPlayerColor || state.currentPlayer)) ||
+      colorOf(game.activePlayerColor || game.activePlayer || game.currentPlayerColor || game.currentPlayer);
+  }
+
+  function myPlayerRow(state) {
+    var myColor = colorOf(state && state.thisPlayer);
+    var players = asArray((state && state.players) || (state && state.game && state.game.players));
+    for (var i = 0; i < players.length; i++) {
+      if (sameColor(colorOf(players[i]), myColor)) return players[i];
+    }
+    return state && state.thisPlayer;
+  }
+
+  function activePlayerRow(state) {
+    var players = asArray((state && state.players) || (state && state.game && state.game.players));
+    for (var i = 0; i < players.length; i++) {
+      if (players[i] && players[i].isActive === true) return players[i];
+    }
+    return null;
+  }
+
+  function isMyActionTurn(state) {
+    if (!state || !state.thisPlayer) return false;
+    var myColor = colorOf(state.thisPlayer);
+    var myRow = myPlayerRow(state);
+    if (myRow && (myRow.isActive === false || myRow.active === false)) return false;
+
+    var activeRow = activePlayerRow(state);
+    if (activeRow) return sameColor(colorOf(activeRow), myColor);
+
+    var activeColor = activeColorFromState(state);
+    if (activeColor && myColor) return sameColor(activeColor, myColor);
+
+    return true;
+  }
+
   function isActionChoicePrompt(waitingFor) {
     return !!(waitingFor && waitingFor.type === 'or' && Array.isArray(waitingFor.options) && waitingFor.options.length > 0);
   }
@@ -257,7 +305,7 @@
 
   function computeActionRecommendation(input) {
     var rawState = (input && (input.state || input.pv)) || {};
-    if (!rawState || !rawState.thisPlayer || !rawState.game || !isActionPhase(rawState)) return null;
+    if (!rawState || !rawState.thisPlayer || !rawState.game || !isActionPhase(rawState) || !isMyActionTurn(rawState)) return null;
     var waitingFor = (input && input.waitingFor) || getWaitingFor(rawState);
     if (!waitingFor) return null;
     var state = cloneStateWithWaitingFor(rawState, waitingFor);
@@ -295,6 +343,11 @@
       '.wf-component--select-option',
       '.wf-component'
     ]);
+  }
+
+  function isNotYourTurnAnchor(anchor) {
+    var text = normalizeText(anchor && anchor.textContent);
+    return text.indexOf('not your turn') >= 0 && text.indexOf('take any actions') >= 0;
   }
 
   function restoreTarget(node) {
@@ -457,6 +510,7 @@
     if (!rec) return [];
 
     var anchor = findActionsAnchor(documentObj);
+    if (isNotYourTurnAnchor(anchor)) return [];
     var box = createBox(documentObj, rec, !!anchor);
     if (anchor) {
       if (anchor.style && !anchor.style.position) anchor.style.position = 'relative';
@@ -477,7 +531,8 @@
     renderActionRecommendation: renderActionRecommendation,
     _private: {
       normalizeActionLabel: normalizeActionLabel,
-      getWaitingFor: getWaitingFor
+      getWaitingFor: getWaitingFor,
+      isMyActionTurn: isMyActionTurn
     }
   };
 })(typeof globalThis !== 'undefined' ? globalThis : window);

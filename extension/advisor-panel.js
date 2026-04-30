@@ -1340,6 +1340,56 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return ' tm-advisor-sp-row--bad';
   }
 
+  function panelColorOf(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value.color || value.playerColor || value.activePlayer || '';
+  }
+
+  function panelSameColor(a, b) {
+    return !!a && !!b && String(a).toLowerCase() === String(b).toLowerCase();
+  }
+
+  function panelMyPlayerRow(state) {
+    var myColor = panelColorOf(state && state.thisPlayer);
+    var players = (state && (state.players || (state.game && state.game.players))) || [];
+    if (!Array.isArray(players)) return state && state.thisPlayer;
+    for (var i = 0; i < players.length; i++) {
+      if (panelSameColor(panelColorOf(players[i]), myColor)) return players[i];
+    }
+    return state && state.thisPlayer;
+  }
+
+  function panelActivePlayerRow(state) {
+    var players = (state && (state.players || (state.game && state.game.players))) || [];
+    if (!Array.isArray(players)) return null;
+    for (var i = 0; i < players.length; i++) {
+      if (players[i] && players[i].isActive === true) return players[i];
+    }
+    return null;
+  }
+
+  function panelActiveColor(state) {
+    var game = (state && state.game) || {};
+    return panelColorOf(state && (state.activePlayerColor || state.activePlayer || state.currentPlayerColor || state.currentPlayer)) ||
+      panelColorOf(game.activePlayerColor || game.activePlayer || game.currentPlayerColor || game.currentPlayer);
+  }
+
+  function panelIsMyActionTurn(state) {
+    if (!state || !state.thisPlayer) return false;
+    var myColor = panelColorOf(state.thisPlayer);
+    var myRow = panelMyPlayerRow(state);
+    if (myRow && (myRow.isActive === false || myRow.active === false)) return false;
+
+    var activeRow = panelActivePlayerRow(state);
+    if (activeRow) return panelSameColor(panelColorOf(activeRow), myColor);
+
+    var activeColor = panelActiveColor(state);
+    if (activeColor && myColor) return panelSameColor(activeColor, myColor);
+
+    return true;
+  }
+
   function buildStandardProjectsHint(state) {
     var spModule = (typeof TM_CONTENT_STANDARD_PROJECTS !== 'undefined' && TM_CONTENT_STANDARD_PROJECTS)
       ? TM_CONTENT_STANDARD_PROJECTS
@@ -1347,7 +1397,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var sc = (typeof TM_SCORING_CONFIG !== 'undefined' && TM_SCORING_CONFIG)
       ? TM_SCORING_CONFIG
       : null;
-    if (!state || !state.thisPlayer || !state.game || !spModule || typeof spModule.computeAllSP !== 'function' || !sc) {
+    if (!state || !state.thisPlayer || !state.game || !panelIsMyActionTurn(state) || !spModule || typeof spModule.computeAllSP !== 'function' || !sc) {
       return null;
     }
     var gensLeft = typeof TM_ADVISOR.estimateGensLeft === 'function' ? TM_ADVISOR.estimateGensLeft(state) : 0;
@@ -1420,7 +1470,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   }
 
   function buildBotActionHint(state) {
-    if (!state || !state._waitingFor || !state.thisPlayer || typeof TM_ADVISOR.analyzeActions !== 'function') return null;
+    if (!state || !state._waitingFor || !state.thisPlayer || !panelIsMyActionTurn(state) || typeof TM_ADVISOR.analyzeActions !== 'function') return null;
     var wf = state._waitingFor;
     if (wf.type !== 'or' || !wf.options || wf.options.length === 0) return null;
 
@@ -2270,6 +2320,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     window.__TM_ADVISOR_PANEL_TEST__ = {
       buildBotActionHint: buildBotActionHint,
       buildBotHintStatus: buildBotHintStatus,
+      buildStandardProjectsHint: buildStandardProjectsHint,
       collectVarianceWarnings: collectVarianceWarnings,
       renderBotHintCard: renderBotHintCard,
       renderStandardProjectHint: renderStandardProjectHint

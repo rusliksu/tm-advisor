@@ -79,6 +79,12 @@ function testSignalFallbackRequiresActionPrompt() {
 }
 
 function testNoRecommendationOutsideTurnOrActionPhase() {
+  const advisor = {
+    analyzeActions() {
+      return [{index: 0, action: 'Play project card', score: 90, reason: 'Would be best on my turn'}];
+    },
+  };
+
   assert.strictEqual(
     actionRec.computeActionRecommendation({state: makeState({_waitingFor: null}), advisor: {}}),
     null,
@@ -88,6 +94,39 @@ function testNoRecommendationOutsideTurnOrActionPhase() {
     actionRec.computeActionRecommendation({state: makeState({game: {phase: 'drafting'}}), advisor: {}}),
     null,
     'drafting should not emit action recommendation'
+  );
+  assert.strictEqual(
+    actionRec.computeActionRecommendation({
+      state: makeState({
+        players: [
+          {color: 'hydro', isActive: false},
+          {color: 'red', isActive: true},
+        ],
+      }),
+      advisor,
+    }),
+    null,
+    'stale waitingFor from a previous turn should not emit recommendation when another player is active'
+  );
+  assert.strictEqual(
+    actionRec.computeActionRecommendation({
+      state: makeState({game: {phase: 'action', activePlayer: 'red'}}),
+      advisor,
+    }),
+    null,
+    'activePlayer mismatch should suppress action recommendation'
+  );
+  assert(
+    actionRec.computeActionRecommendation({
+      state: makeState({
+        players: [
+          {color: 'hydro', isActive: true},
+          {color: 'red', isActive: false},
+        ],
+      }),
+      advisor,
+    }),
+    'own active turn should still emit recommendation'
   );
 }
 
@@ -239,9 +278,32 @@ function testRenderAnchorsAndHighlightsAction() {
   assert(!play.className.includes('tm-action-recommendation-target'), 'clear should remove highlight');
 }
 
+function testRenderSuppressesNotYourTurnBlock() {
+  const doc = new FakeDocument();
+  const actions = doc.createElement('div');
+  actions.className = 'player_home_block--actions';
+  actions.textContent = 'Actions Not your turn to take any actions';
+  doc.body.appendChild(actions);
+
+  const rendered = actionRec.renderActionRecommendation({
+    documentObj: doc,
+    recommendation: {
+      id: 'advisor:0:Use action',
+      title: 'Use action',
+      optionTitle: 'Use action',
+      optionIndex: 0,
+      score: 80,
+    },
+  });
+
+  assert.deepStrictEqual(rendered, [], 'not-your-turn actions block should not render a recommendation box');
+  assert.strictEqual(actions.querySelectorAll('.tm-action-recommendation').length, 0, 'no box should be inserted');
+}
+
 testAdvisorRecommendationRanksCard();
 testSignalFallbackRequiresActionPrompt();
 testNoRecommendationOutsideTurnOrActionPhase();
 testRenderAnchorsAndHighlightsAction();
+testRenderSuppressesNotYourTurnBlock();
 
 console.log('content-action-recommendation checks: OK');

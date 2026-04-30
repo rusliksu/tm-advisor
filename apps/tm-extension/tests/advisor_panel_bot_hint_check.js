@@ -61,6 +61,7 @@ const windowObj = {
   addEventListener() {},
 };
 
+let standardProjectCalls = 0;
 const sandbox = {
   console,
   document: documentObj,
@@ -74,6 +75,16 @@ const sandbox = {
   setInterval() { return 0; },
   clearTimeout() {},
   clearInterval() {},
+  TM_CONTENT_STANDARD_PROJECTS: {
+    computeAllSP() {
+      standardProjectCalls += 1;
+      return {
+        best: {name: 'Greenery', score: 42, net: 1},
+        all: [{name: 'Greenery', score: 42, net: 1}],
+      };
+    },
+  },
+  TM_SCORING_CONFIG: {standardProjects: true},
 };
 sandbox.globalThis = sandbox;
 
@@ -114,6 +125,31 @@ assert.strictEqual(hooks.buildBotHintStatus(rankedState, [{ action: 'Pass for th
 const botHint = hooks.buildBotActionHint(rankedState);
 assert.strictEqual(botHint.title, 'Pass');
 assert.strictEqual(botHint.reason, 'ranked');
+
+const offTurnState = {
+  game: { phase: 'action' },
+  thisPlayer: { color: 'hydro' },
+  players: [
+    { color: 'hydro', isActive: false },
+    { color: 'red', isActive: true },
+  ],
+  _waitingFor: {
+    type: 'or',
+    title: 'Take your next action',
+    options: [{ title: 'Pass for this generation' }],
+  },
+};
+assert.strictEqual(hooks.buildBotActionHint(offTurnState), null, 'bot hint should not render on another player turn');
+standardProjectCalls = 0;
+assert.strictEqual(hooks.buildStandardProjectsHint(offTurnState), null, 'standard project hint should not render on another player turn');
+assert.strictEqual(standardProjectCalls, 0, 'off-turn standard project hint should not evaluate SP scores');
+
+const ownTurnSpHint = hooks.buildStandardProjectsHint({
+  game: { phase: 'action' },
+  thisPlayer: { color: 'hydro' },
+  players: [{ color: 'hydro', isActive: true }],
+});
+assert(ownTurnSpHint, 'standard project hint should still render on own active turn');
 
 const statusHtml = hooks.renderBotHintCard(noPromptStatus, true);
 assert(statusHtml.includes('tm-advisor-bot-status'), statusHtml);
