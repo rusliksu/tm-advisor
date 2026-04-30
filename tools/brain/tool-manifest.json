@@ -5,6 +5,7 @@
     "tools/brain/sync-core.js",
     "tools/brain/sync-card-variants.js",
     "tools/brain/sync-manual-ev.js",
+    "tools/brain/calibrate-game-lengths.js",
     "scripts/test-tm-brain-core.js",
     "scripts/sync-tm-brain-core.js",
     "scripts/sync-tm-card-variants.js"
@@ -17,6 +18,7 @@
         "\"brain:check-card-variants\": \"node tools/brain/sync-card-variants.js --check\"",
         "\"brain:check-core\": \"node tools/brain/sync-core.js --check\"",
         "\"brain:check-manual-ev\": \"node tools/brain/sync-manual-ev.js --check\"",
+        "\"brain:calibrate-game-lengths\": \"node tools/brain/calibrate-game-lengths.js\"",
         "\"brain:sync-card-variants\": \"node tools/brain/sync-card-variants.js\"",
         "\"brain:sync-core\": \"node tools/brain/sync-core.js\"",
         "\"brain:sync-manual-ev\": \"node tools/brain/sync-manual-ev.js\""
