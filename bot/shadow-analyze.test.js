@@ -357,6 +357,95 @@ function testFormatReportDoesNotSuggestBotTuningWithoutDecisions() {
   assert.ok(!report.includes('improve card play rate'));
 }
 
+function testAnalyzeDoesNotCountOpaqueOptionIndexAsPass() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 2,
+    promptType: 'or',
+    title: 'Take your next action',
+    botAction: 'option[0]',
+    playerActed: true,
+    status: 'resolved',
+    mc: 9,
+    botReasoning: [
+      'gen=2 steps=40 gensLeft=7 mc=9',
+      'DECISION: card=none(-999) vs SP(-999)',
+    ],
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.totalDecisions, 1);
+  assert.strictEqual(stats.byGen[2].pass, 0);
+  assert.strictEqual(stats.spVsCard.bothNone, 0);
+  assert.strictEqual(stats.spVsCard.unknownOptions, 1);
+  assert.strictEqual(stats.projectCardCandidates.noCandidateLine, 1);
+  assert.strictEqual(stats.projectCardCandidates.belowThreshold, 0);
+
+  const report = formatReport(stats, ['shadow-g.jsonl']);
+  assert.ok(report.includes('Unclassified option actions: 1'));
+  assert.ok(report.includes('No project-card candidate: 1 / 1'));
+  assert.ok(report.includes('No candidate line: 1'));
+  assert.ok(report.includes('Candidates below threshold: 0'));
+  assert.ok(!report.includes('Empty hand (0 playable)'));
+  assert.ok(!report.includes('High pass rate in Gen 1-3'));
+}
+
+function testAnalyzeSeparatesBelowThresholdProjectCards() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 4,
+    promptType: 'or',
+    title: 'Take your next action',
+    botAction: 'pass',
+    playerActed: true,
+    status: 'resolved',
+    mc: 16,
+    botReasoning: [
+      'gen=4 steps=35 gensLeft=6 mc=16',
+      'hand(2): Weak Card=-9(6MC), Trap Card=-12(3MC) thr=-8',
+      'DECISION: card=none(-999) vs SP(-999)',
+    ],
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.totalDecisions, 1);
+  assert.strictEqual(stats.projectCardCandidates.noCandidateLine, 0);
+  assert.strictEqual(stats.projectCardCandidates.belowThreshold, 1);
+
+  const report = formatReport(stats, ['shadow-g.jsonl']);
+  assert.ok(report.includes('No candidate line: 0'));
+  assert.ok(report.includes('Candidates below threshold: 1'));
+}
+
+function testAnalyzeCountsExplicitPassOptionAsPass() {
+  const entries = normalizeLogEntry({
+    gameId: 'g-shadow',
+    player: 'Ruslan',
+    color: 'red',
+    gen: 2,
+    promptType: 'or',
+    title: 'Take your next action',
+    botAction: 'pass',
+    playerActed: true,
+    status: 'resolved',
+    mc: 9,
+    botReasoning: [
+      'gen=2 steps=40 gensLeft=7 mc=9',
+      'DECISION: card=none(-999) vs SP(-999)',
+    ],
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.totalDecisions, 1);
+  assert.strictEqual(stats.byGen[2].pass, 1);
+  assert.strictEqual(stats.spVsCard.bothNone, 1);
+  assert.strictEqual(stats.spVsCard.unknownOptions, 0);
+}
+
 function testParseGameIdOption() {
   const args = parseArgs(['node', 'bot/shadow-analyze.js', '--game', 'g123']);
   assert.strictEqual(args.gameId, 'g123');
@@ -401,6 +490,9 @@ function main() {
   testAnalyzeRawObservedIntermediateIsUnscorable();
   testFormatReportWarnsWhenMergedWithoutExactInputs();
   testFormatReportDoesNotSuggestBotTuningWithoutDecisions();
+  testAnalyzeDoesNotCountOpaqueOptionIndexAsPass();
+  testAnalyzeSeparatesBelowThresholdProjectCards();
+  testAnalyzeCountsExplicitPassOptionAsPass();
   testParseGameIdOption();
   testResolveGameIdFallsBackToRawShadowWhenOtherMergedLogsExist();
   testParseHelpOptionDoesNotBecomeFile();

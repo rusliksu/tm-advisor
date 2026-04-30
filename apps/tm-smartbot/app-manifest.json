@@ -8,6 +8,7 @@
     "bot/generated-data.js",
     "bot/tm-brain.js",
     "bot/shared/brain-core.js",
+    "bot/shared/manual-ev.js",
     "bot/card_data.js",
     "bot/card_global_reqs.js",
     "bot/card_tags.js",
@@ -15,6 +16,7 @@
   ],
   "shared_dependencies": [
     "packages/tm-brain-js/src/brain-core.js",
+    "packages/tm-brain-js/src/manual-ev.js",
     "packages/tm-data/generated/bot/card_data.js",
     "packages/tm-data/generated/bot/card_global_reqs.js",
     "packages/tm-data/generated/bot/card_tags.js",
@@ -24,6 +26,10 @@
     {
       "path": "bot/shared/brain-core.js",
       "source": "packages/tm-brain-js/src/brain-core.js"
+    },
+    {
+      "path": "bot/shared/manual-ev.js",
+      "source": "packages/tm-brain-js/src/manual-ev.js"
     },
     {
       "path": "bot/card_data.js",
@@ -60,6 +66,7 @@
       "path": "bot/tm-brain.js",
       "contains": [
         "require('./shared/brain-core')",
+        "require('./shared/manual-ev')",
         "var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;",
         "var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;",
         "var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;"

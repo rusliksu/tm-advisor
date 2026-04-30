@@ -41,6 +41,7 @@
         "data/colony_data.js",
         "data/card_variants.js",
         "shared/brain-core.js",
+        "shared/manual-ev.js",
         "tm-brain.js",
         "advisor-core.js",
         "advisor-workflow.js",

@@ -23,6 +23,13 @@ function dbg(...args) {
 }
 function flushReasoning() { const r = _lastReasoning; _lastReasoning = null; return r; }
 
+function getHandCards(state) {
+  const topLevelHand = state?.cardsInHand;
+  if (Array.isArray(topLevelHand)) return topLevelHand;
+  const playerHand = state?.thisPlayer?.cardsInHand;
+  return Array.isArray(playerHand) ? playerHand : [];
+}
+
 // === Server lifecycle management (OOM fix) ===
 const { execSync, spawn } = require('child_process');
 const SERVER_DIR = '/home/openclaw/terraforming-mars';
@@ -236,7 +243,7 @@ function countSupportTags(state, tag, excludeName) {
     if (!name || name === excludeName) continue;
     if ((CARD_TAGS[name] || []).includes(tag)) count++;
   }
-  const hand = state?.cardsInHand || tp.cardsInHand || [];
+  const hand = getHandCards(state);
   for (const card of hand) {
     const name = card?.name || card || '';
     if (!name || name === excludeName) continue;
@@ -328,6 +335,34 @@ function isSellProtectedCard(card, state, corp, isEndgame) {
     if (!isEvent && gen <= 6 && cost <= 10 && keepScore >= 4) return true;
   }
   return false;
+}
+
+function isLateCleanupSellCandidate(card, state, corp) {
+  const name = card?.name || '';
+  if (!name) return false;
+  const gen = state?.game?.generation ?? 5;
+  const steps = remainingSteps(state);
+  if (gen < 8 || steps <= 0 || steps <= 8) return false;
+
+  const data = CARD_DATA[name] || {};
+  const vpd = CARD_VP[name] || data.vp || {};
+  const score = scoreCard(card, state) + corpCardBoost(name, corp);
+  const protectedCard = isSellProtectedCard(card, state, corp, false);
+  const lowStaticVpFiller =
+    vpd.type === 'static' &&
+    Number(vpd.vp || 0) <= 1 &&
+    score <= 1;
+
+  if (lowStaticVpFiller) return true;
+  return !protectedCard && score <= 2;
+}
+
+function getLateCleanupSellCards(cards, state, corp) {
+  return [...(cards || [])]
+    .filter((card) => isLateCleanupSellCandidate(card, state, corp))
+    .sort((a, b) =>
+      (scoreCard(a, state) + corpCardBoost(a.name, corp)) -
+      (scoreCard(b, state) + corpCardBoost(b.name, corp)));
 }
 
 function estimateCardCashCost(card, state) {
@@ -567,7 +602,7 @@ function getBestTradeInfo(tradeIdx, opts, state, resources) {
 
 function estimateSpaceHandTitaniumDemand(state) {
   const tp = state?.thisPlayer || {};
-  const hand = state?.cardsInHand || tp.cardsInHand || [];
+  const hand = getHandCards(state);
   const titanium = tp.titanium || 0;
   const titaniumValue = tp.titaniumValue || 3;
   let demand = 0;
@@ -682,6 +717,25 @@ function hasProductionGain(cardName) {
   const production = CARD_DATA[cardName]?.behavior?.production;
   if (!production || typeof production !== 'object') return false;
   return Object.values(production).some((value) => Number(value) > 0);
+}
+
+function isLatePremiumVpPayoffCard(cardName) {
+  if (!cardName || isWeakPseudoVpActionCard(cardName)) return false;
+  const data = CARD_DATA[cardName] || {};
+  const type = String(data.type || '').toLowerCase();
+  const vp = CARD_VP[cardName] || data.vp || {};
+  if (DYNAMIC_VP_CARDS.has(cardName)) return true;
+  return type === 'active' && (
+    VP_CARDS.has(cardName) ||
+    vp.type === 'per_resource' ||
+    vp.type === 'per_tag'
+  );
+}
+
+function getLateCoreNonProgressCardFloor(cardName, coreSteps, gen11OceanLagCompletion) {
+  if (coreSteps <= 5) return 50;
+  if (gen11OceanLagCompletion) return 22;
+  return isLatePremiumVpPayoffCard(cardName) ? 20 : 36;
 }
 
 function scoreCardForEarlyAwardDelay(card, state) {
@@ -831,7 +885,7 @@ function shouldApplyClosureTerraformingBoost(spCard, state) {
 function getClosureBoostCap(steps, spCard, rawSpEV) {
   const lower = String(spCard?.name || spCard || '').toLowerCase();
   if (lower.includes('asteroid') && rawSpEV <= 0) {
-    if (steps > 16) return 12;
+    if (steps > 16) return 10;
     if (steps > 10) return 15;
   }
   if (lower.includes('aquifer') && rawSpEV <= 0 && steps > 8) {
@@ -1343,7 +1397,7 @@ function classifyStrategy(state) {
     if (cached && cached.generation === gen) return cached;
 
     var tp = (state && state.thisPlayer) || {};
-    var hand = (state && state.cardsInHand) || [];
+    var hand = getHandCards(state);
     var corpName = ((tp.tableau || [])[0] || {}).name || '';
     var myTags = tp.tags || {};
 
@@ -1431,7 +1485,7 @@ function planGeneration(state) {
 
   const mc = me.megacredits || 0;
   const income = (me.megacreditProduction || 0) + (me.terraformRating || 20);
-  const hand = me.cardsInHand || [];
+  const hand = getHandCards(state);
   const steps = remainingSteps(state);
   const ratePerGen = Math.max(4, (state?.players?.length || 3) * 2);
   const gensLeft = Math.max(1, Math.ceil(steps / ratePerGen));
@@ -1640,7 +1694,7 @@ function handleInput(wf, state, depth = 0) {
     const heat = state?.thisPlayer?.heat ?? 0;
     const plants = state?.thisPlayer?.plants ?? 0;
     const energy = state?.thisPlayer?.energy ?? 0;
-    const cardsInHand = state?.cardsInHand || [];
+    const cardsInHand = getHandCards(state);
 
     const titles = opts.map((o, i) => ({ i, t: getTitle(o).toLowerCase(), o }));
     // Filter out undo — bot should never undo
@@ -2410,7 +2464,9 @@ function handleInput(wf, state, depth = 0) {
     const terraformUrgency = gen <= 3 ? 0 : (gen <= 5 ? 3 : (gen <= 7 ? 5 : 7));
     const spGetsClosureBoost = shouldApplyClosureTerraformingBoost(bestSpCard, state);
     const rawClosureBoost = leadBonus + pushBonus + tempoSwitchBonus + terraformUrgency;
-    const spAdjustment = spGetsClosureBoost ? Math.min(rawClosureBoost, getClosureBoostCap(steps, bestSpCard, bestSpEV)) : 0;
+    const farFromClosureNegativeCoreSp = spGetsClosureBoost && gen <= 6 && steps > 30 && bestSpEV <= 0;
+    const closureBoostCap = farFromClosureNegativeCoreSp ? 0 : getClosureBoostCap(steps, bestSpCard, bestSpEV);
+    const spAdjustment = spGetsClosureBoost ? Math.min(rawClosureBoost, closureBoostCap) : 0;
     const standardProjectFloor = spGetsClosureBoost ? 1 : (gen <= 2 ? 3 : -2);
     const adjustedSpEV = bestSpEV + spAdjustment;
     // v75: When in tempo mode, also penalize card EV (play fewer cards, push SP)
@@ -2430,7 +2486,11 @@ function handleInput(wf, state, depth = 0) {
       dbg(`opening action setup: ${bestBlueAction.name} before ${bestCard.name}`);
       return pick(cardActionIdx);
     }
-    const lateCoreNonProgressCardFloor = coreSteps <= 5 ? 50 : (gen11OceanLagCompletion ? 24 : 36);
+    const lateCoreNonProgressCardFloor = getLateCoreNonProgressCardFloor(
+      bestCard?.name,
+      coreSteps,
+      gen11OceanLagCompletion
+    );
     if (
       lateCoreCompletionSp &&
       (
@@ -2458,7 +2518,14 @@ function handleInput(wf, state, depth = 0) {
       dbg(`late-core catch-up guard: ${lateCoreCatchUpSp.name} before ${bestCard?.name || 'no-card'}`);
       return pick(stdProjIdx);
     }
-    if (bestCard && bestCardEV >= requiredCardEV) {
+    const negativeRawSpSmallEdge = bestCard && bestSpCard && bestSpEV < 0 &&
+      bestCardEV >= 8 &&
+      adjustedSpEV - bestCardEV <= 1 &&
+      steps > 8;
+    if (bestCard && (bestCardEV >= requiredCardEV || negativeRawSpSmallEdge)) {
+      if (negativeRawSpSmallEdge && bestCardEV < requiredCardEV) {
+        dbg(`negative-raw SP small-edge bias: play ${bestCard.name} over ${bestSpCard.name}`);
+      }
       const subWf2 = opts[playCardIdx] || {};
       return {
         type: 'or', index: playCardIdx,
@@ -2608,6 +2675,13 @@ function handleInput(wf, state, depth = 0) {
     if (hasPaidDelegate && gen >= 7 && mc >= 10 && cardsInHand.length === 0 && urgency >= 0.35) return pick(delegateIdx);
 
     // Sell excess cards (more aggressive as urgency rises: 8 cards early → 5 late)
+    const lateCleanupSellCards = sellIdx >= 0
+      ? getLateCleanupSellCards(opts[sellIdx]?.cards || cardsInHand, state, corp)
+      : [];
+    if (sellIdx >= 0 && lateCleanupSellCards.length > 0 && passIdx >= 0) {
+      dbg(`late-cleanup sell: ${lateCleanupSellCards.slice(0, 3).map(c => c.name).join(', ')}`);
+      return pick(sellIdx);
+    }
     const sellThreshold = Math.max(4, Math.round(8 - urgency * 4));
     if (sellIdx >= 0 && cardsInHand.length > sellThreshold) return pick(sellIdx);
 
@@ -2725,7 +2799,7 @@ function handleInput(wf, state, depth = 0) {
       const mc = state?.thisPlayer?.megacredits ?? 40;
       const cardCost = state?.thisPlayer?.cardCost ?? 3;
       const gen = state?.game?.generation ?? 5;
-      const handCount = (state?.thisPlayer?.cardsInHand || []).length;
+      const handCount = getHandCards(state).length;
       const income = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const steps = remainingSteps(state);
       const isEndgame = steps <= 8 || gen >= 20;
@@ -2734,7 +2808,11 @@ function handleInput(wf, state, depth = 0) {
       // Buy cards aggressively — cards are how you build economy AND score VP
       // Urgency-scaled reserves and thresholds: tighter buying as game ends
       const stepsNow = remainingSteps(state);
-      const urg = stepsNow > 0 ? Math.max(0, Math.min(1, 1 - (stepsNow - 2) / 14)) : 0;
+      const boardUrgency = stepsNow > 0 ? Math.max(0, Math.min(1, 1 - (stepsNow - 2) / 14)) : 0;
+      // Buying needs a generation clock too: late games with lagging globals still have
+      // too little runway for low-priority filler that play scoring will keep rejecting.
+      const generationBuyUrgency = Math.max(0, Math.min(1, (gen - 6) / 5));
+      const urg = Math.max(boardUrgency, generationBuyUrgency);
       // Reserve MC for SP: always keep enough for asteroid (14 MC) from gen 3+
       const starvingHand = gen >= 4 && gen <= 8 && handCount <= 1 && income <= 30 && stepsNow > 10;
       let reserve = gen <= 2 ? 0 : Math.max(14, Math.round(14 + urg * 6)); // 14 early → 20 late
@@ -2752,7 +2830,7 @@ function handleInput(wf, state, depth = 0) {
         const prod = data.behavior?.production || {};
         const hasDiscount = hasCardDiscountUtility(card.name);
         const hasDraw = hasCardDrawUtility(card.name);
-        const setupCard = ENGINE_CARDS.has(card.name) || PROD_CARDS.has(card.name) || hasDiscount || hasDraw;
+        const setupCard = ENGINE_CARDS.has(card.name) || PROD_CARDS.has(card.name) || hasProductionGain(card.name) || hasDiscount || hasDraw;
         // VP/city priority: modest bonus (scoreCard handles EV, this is just ordering)
         const vpBonus = 3 + Math.round(urg * 4);
         if ((VP_CARDS.has(card.name) || DYNAMIC_VP_CARDS.has(card.name)) && !isWeakPseudoVpActionCard(card.name)) score += vpBonus;
@@ -2787,9 +2865,12 @@ function handleInput(wf, state, depth = 0) {
       const _hbIncome = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
       const _hbPlayRate = Math.max(1, _hbIncome / 15);
       const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
+      const _hbBufferedMidgame = gen >= 4 && !starvingHand && _hbHand >= 7;
       // Hand bloat: tempo 10-12 normal, engine 20-25 normal, up to 40 possible
       if (_hbHand >= 30) { threshold += 5; }
       else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) { threshold += 3; }
+      else if (_hbBufferedMidgame && _hbHand >= 10) { threshold += 2; }
+      else if (_hbBufferedMidgame) { threshold += 1; }
       const worthBuying = buyCards.filter((c, idx) => {
         if (c._buyScore < threshold) return false;
         if (starvingHand && idx >= 2 && !c._buySetup && c._buyScore < threshold + 5) return false;
@@ -2800,9 +2881,17 @@ function handleInput(wf, state, depth = 0) {
       if (starvingHand) maxBuy = Math.min(max, maxBuy + 1);
       if (_hbHand >= 30) maxBuy = Math.max(0, maxBuy - 1);
       else if (_hbHand >= 22 && _hbHand / _hbPlayRate > _hbGensLeft + 1) maxBuy = Math.max(1, maxBuy - 1);
-      const count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
+      else if (_hbBufferedMidgame && _hbHand >= 10) maxBuy = Math.max(1, maxBuy - 2);
+      else if (_hbBufferedMidgame) maxBuy = Math.max(1, maxBuy - 1);
+      let count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
+      if (starvingHand && count > 1 && worthBuying.length > 0) {
+        const topLineCashCost = estimateCardCashCost(worthBuying[0], state);
+        if (topLineCashCost > 0 && mc - cardCost >= topLineCashCost) {
+          while (count > 1 && mc - count * cardCost < topLineCashCost) count--;
+        }
+      }
       dbg(`BUY: ${buyCards.length} cards, thr=${threshold} worth=${worthBuying.length} afford=${canAfford} max=${maxBuy} buy=${count} hand=${_hbHand} reserve=${reserve} starved=${starvingHand?1:0} top3=${buyCards.slice(0,3).map(c=>`${c.name}=${c._buyScore.toFixed(0)}`).join(',')}`);
-      return { type: 'card', cards: buyCards.slice(0, count).map(c => c.name) };
+      return { type: 'card', cards: worthBuying.slice(0, count).map(c => c.name) };
     }
 
     if (title.includes('cannot afford')) {
@@ -2883,16 +2972,20 @@ function handleInput(wf, state, depth = 0) {
       const gen = state?.game?.generation ?? 5;
       const steps = remainingSteps(state);
       const isEndgame = steps <= 8 || gen >= 20;
+      const lateCleanupSellCards = getLateCleanupSellCards(scored, state, corp);
       // Midgame: keep setup/high-value cards and only trim obvious filler.
       const sellable = scored.filter(c => !isSellProtectedCard(c, state, corp, isEndgame));
-      let preferredCount = sellable.length;
-      if (!isEndgame) {
+      let pool = lateCleanupSellCards.length > 0 ? lateCleanupSellCards : sellable;
+      let preferredCount = pool.length;
+      if (!isEndgame && lateCleanupSellCards.length > 0) {
+        preferredCount = Math.min(pool.length, cards.length >= 8 ? 2 : 1);
+      } else if (!isEndgame) {
         if (cards.length >= 14) preferredCount = Math.min(sellable.length, 3);
         else if (cards.length >= 8) preferredCount = Math.min(sellable.length, 2);
         else preferredCount = Math.min(sellable.length, 1);
       }
-      const count = Math.max(min, Math.min(preferredCount, sellable.length));
-      const pool = sellable.length >= min ? sellable : scored;
+      const count = Math.max(min, Math.min(preferredCount, pool.length));
+      if (pool.length < min) pool = scored;
       return { type: 'card', cards: pool.slice(0, count).map(c => c.name) };
     }
 
@@ -3108,7 +3201,7 @@ function handleInput(wf, state, depth = 0) {
     // "Gain X units of standard resource" — pick based on hand needs
     const include = wf.include || ['megacredits'];
     const tp = state?.thisPlayer || {};
-    const hand = state?.cardsInHand || [];
+    const hand = getHandCards(state);
     // Count space/building tags in hand to see what we need
     let spaceTags = 0, buildTags = 0;
     for (const c of hand) {
@@ -3438,7 +3531,7 @@ function mlLogAction(playerName, state, action, phase) {
     plants: me.plants || 0, plant_prod: me.plantProduction || 0,
     energy: me.energy || 0, energy_prod: me.energyProduction || 0,
     heat: me.heat || 0, heat_prod: me.heatProduction || 0,
-    hand_size: (me.cardsInHand || []).length,
+    hand_size: getHandCards(state).length,
     tableau_size: (me.tableau || []).length,
     tags: me.tags || {},
     colonies: me.coloniesCount || 0,

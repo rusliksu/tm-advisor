@@ -74,7 +74,8 @@
     "extension/advisor-core.js",
     "extension/advisor-workflow.js",
     "extension/advisor-panel.js",
-    "extension/shared/brain-core.js"
+    "extension/shared/brain-core.js",
+    "extension/shared/manual-ev.js"
   ],
   "shared_dependencies": [
     "tools/extension/sync-background.js",
@@ -112,6 +113,7 @@
     "tools/extension/sync-utils.js",
     "tools/extension/sync-vue-bridge.js",
     "packages/tm-brain-js/src/brain-core.js",
+    "packages/tm-brain-js/src/manual-ev.js",
     "packages/tm-advisor-js/src/advisor-workflow.js",
     "packages/tm-data/generated/extension/ratings.json.js",
     "packages/tm-data/generated/extension/combos.json.js",
@@ -278,6 +280,10 @@
     {
       "path": "extension/shared/brain-core.js",
       "source": "packages/tm-brain-js/src/brain-core.js"
+    },
+    {
+      "path": "extension/shared/manual-ev.js",
+      "source": "packages/tm-brain-js/src/manual-ev.js"
     },
     {
       "path": "extension/data/ratings.json.js",
@@ -857,6 +863,7 @@
       "path": "apps/tm-extension/src/manifest.json",
       "contains": [
         "\"shared/brain-core.js\"",
+        "\"shared/manual-ev.js\"",
         "\"tm-brain.js\"",
         "\"advisor-core.js\"",
         "\"advisor-workflow.js\"",
@@ -959,6 +966,7 @@
         "'extension/tm-brain.js'",
         "'extension/advisor-panel.js'",
         "'extension/shared/brain-core.js'",
+        "'extension/shared/manual-ev.js'",
         "'extension/data/ratings.json.js'",
         "console.log('tm-extension syntax checks: OK');"
       ]
@@ -981,6 +989,7 @@
         "data/scoring_config.json.js",
         "data/synergy_tables.json.js",
         "shared/brain-core.js",
+        "shared/manual-ev.js",
         "tm-brain.js",
         "content-badges.js",
         "content-draft-intel.js",
@@ -1004,6 +1013,7 @@
     {
       "path": "extension/tm-brain.js",
       "contains": [
+        "var TM_MANUAL_EV = null;",
         "var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;",
         "var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;",
         "var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;"

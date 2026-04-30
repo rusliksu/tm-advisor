@@ -170,6 +170,26 @@ function testSummarizeActionOptionWithoutIndex() {
   assert.strictEqual(summarizeAction({type: 'option', index: 2}), 'option[2]');
 }
 
+function testSummarizeOrOptionUsesWorkflowTitle() {
+  const workflow = {
+    type: 'or',
+    title: 'Take your next action',
+    options: [
+      {title: 'Send a delegate in an area (from lobby)', type: 'party'},
+      {title: 'Pass for this generation', type: 'option'},
+    ],
+  };
+
+  assert.strictEqual(
+    summarizeAction({type: 'or', index: 0, response: {type: 'option'}}, workflow),
+    'option[0]: Send a delegate in an area (from lobby)',
+  );
+  assert.strictEqual(
+    summarizeAction({type: 'or', index: 1, response: {type: 'option'}}, workflow),
+    'pass',
+  );
+}
+
 function testGetPlayersToPollUsesAllPlayersDuringInputBurst() {
   const session = {
     inputBurstPollsRemaining: 2,
@@ -289,6 +309,7 @@ async function main() {
   testStateSummaryExtractsMessageTitle();
   testSolarPhaseStalePromptDoesNotCreatePrediction();
   testSummarizeActionOptionWithoutIndex();
+  testSummarizeOrOptionUsesWorkflowTitle();
   testGetPlayersToPollUsesAllPlayersDuringInputBurst();
   testResolvePendingEntryUsesInputSeqForPlayerActed();
   await testPollContinuesOnTransientGameFetchFailure();

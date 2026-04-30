@@ -107,13 +107,29 @@ function hashWf(wf) {
   ].join('||');
 }
 
-function summarizeAction(input) {
+function summarizeOptionSelection(input, workflow) {
+  const index = Number.isInteger(input?.index) ? input.index : null;
+  const prefix = index == null ? 'option' : `option[${index}]`;
+  const option = index == null ? null : safeArray(workflow?.options)[index];
+  const title = getTitle(option).trim();
+  if (!title) return prefix;
+  const low = title.toLowerCase();
+  if (low.includes('pass for this generation') || low === 'pass' || low.includes('end turn')) return 'pass';
+  if (low.includes('do nothing') || low.includes('skip')) return 'skip';
+  return `${prefix}: ${title}`;
+}
+
+function summarizeAction(input, workflow = null) {
   if (!input) return '?';
   if (input.type === 'or') {
     const inner = input.response;
     if (inner?.type === 'projectCard') return `play ${inner.card}`;
     if (inner?.type === 'card') return `cards: ${(inner.cards || []).join(', ')}`;
-    return `option[${input.index}]`;
+    if (inner?.type === 'colony' || inner?.type === 'space') return summarizeAction(inner);
+    if (inner?.type === 'option' || inner?.type === 'party' || inner?.type === 'and' || !inner) {
+      return summarizeOptionSelection(input, workflow);
+    }
+    return summarizeAction(inner);
   }
   if (input.type === 'and') {
     return safeArray(input.responses).map(summarizeAction).join(' + ');
@@ -328,7 +344,7 @@ function buildPredictionEntry(session, playerMeta, rawState, summary) {
     promptInputSeq: summary.inputSeq ?? null,
     inputSeq: null,
     mc: summary.mc,
-    botAction: summarizeAction(botInput),
+    botAction: summarizeAction(botInput, rawState.waitingFor),
     botReasoning: reasoning,
     playerActed: false,
     observedAction: null,

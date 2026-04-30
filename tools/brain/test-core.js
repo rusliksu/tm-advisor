@@ -76,6 +76,69 @@ function testCoreHelpers() {
     2,
     'late 3P WGT closeout should estimate two generations, not three'
   );
+  const fullOpeningState = {
+    game: {
+      generation: 1,
+      temperature: -30,
+      oxygenLevel: 0,
+      oceans: 0,
+      venusScaleLevel: 0,
+      gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+  };
+  assert.strictEqual(
+    core.estimateGensLeftFromState(fullOpeningState),
+    9,
+    'Gen 1 with 42 core steps left should use avg 9-gen baseline, not show ~11 generations'
+  );
+  const mangroveReq = core.scoreRequirementPenalty({
+    state: fullOpeningState,
+    name: 'Mangrove',
+    globalReqs: {temperature: {min: 4}},
+    tagReqs: null,
+  });
+  assert.strictEqual(
+    mangroveReq.globalPenalty,
+    33.5,
+    'temperature requirements should be penalized by terraform steps and expected delay, not raw degrees'
+  );
+  const lunaReq = core.scoreRequirementPenalty({
+    state: fullOpeningState,
+    name: 'Luna Governor',
+    globalReqs: null,
+    tagReqs: {earth: 3},
+    myTags: {},
+    handCards: [{name: 'Earth Office'}, {name: 'Cartel'}, {name: 'Luna Metropolis'}, {name: 'Luna Governor'}],
+    getCardTags: (name) => {
+      if (name === 'Earth Office') return ['earth'];
+      if (name === 'Cartel') return ['earth'];
+      if (name === 'Luna Metropolis') return ['earth'];
+      if (name === 'Luna Governor') return ['earth', 'earth'];
+      return [];
+    },
+  });
+  assert.strictEqual(
+    lunaReq.tagPenalty,
+    6,
+    'tag requirements should require tableau tags while giving partial credit for matching tags in hand'
+  );
+  const fullOpeningNoWgtState = {
+    game: {
+      generation: 1,
+      temperature: -30,
+      oxygenLevel: 0,
+      oceans: 0,
+      venusScaleLevel: 0,
+      gameOptions: {solarPhaseOption: false, preludeExtension: true, coloniesExtension: true},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+  };
+  assert.strictEqual(
+    core.estimateGensLeftFromState(fullOpeningNoWgtState),
+    10,
+    'Gen 1 3P without WGT should use the calibrated ~10-gen baseline, not the old 11-gen step divisor'
+  );
   const gen6CloseState = {
     game: {
       generation: 6,
@@ -98,8 +161,24 @@ function testCoreHelpers() {
   );
   assert.strictEqual(
     core.estimateGensLeftFromState(gen6CloseState),
-    3,
-    'Gen 6 with 4+6+1 core steps left should estimate three generations, not six'
+    2,
+    'Gen 6 rush pace with 4+6+1 core steps left should use observed speed and estimate two generations'
+  );
+  const currentRushState = {
+    game: {
+      generation: 5,
+      temperature: -18,
+      oxygenLevel: 8,
+      oceans: 7,
+      venusScaleLevel: 8,
+      gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+    },
+    players: [{color: 'green'}, {color: 'blue'}, {color: 'black'}],
+  };
+  assert.strictEqual(
+    core.estimateGensLeftFromState(currentRushState),
+    4,
+    'Gen 5 rush pace should use observed core-step speed instead of baselineing to five or six gens left'
   );
   const closeoutInterpolated = core.estimateScoreCardTimingInterpolated({
     state: closeoutState,

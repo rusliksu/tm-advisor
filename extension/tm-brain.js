@@ -6,7 +6,27 @@
 ;(function(root) {
   'use strict';
 
-  var TM_BRAIN_CORE = root.TM_BRAIN_CORE || null;
+  var TM_BRAIN_CORE = (typeof module !== 'undefined' && module.exports)
+    ? require('./shared/brain-core')
+    : (root.TM_BRAIN_CORE || null);
+  var TM_CARD_VARIANTS = null;
+  if (typeof module !== 'undefined' && module.exports) {
+    try {
+      TM_CARD_VARIANTS = require('./shared/card-variants');
+    } catch (_variantErr) {
+      TM_CARD_VARIANTS = require('../packages/tm-brain-js/src/card-variants');
+    }
+  }
+  var TM_MANUAL_EV = null;
+  if (typeof module !== 'undefined' && module.exports) {
+    try {
+      TM_MANUAL_EV = require('./shared/manual-ev');
+    } catch (_manualEvErr) {
+      TM_MANUAL_EV = require('../packages/tm-brain-js/src/manual-ev');
+    }
+  } else {
+    TM_MANUAL_EV = root.TM_MANUAL_EV || null;
+  }
   var sharedEstimateTriggersPerGen = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateTriggersPerGen;
   var sharedPAtLeastOne = TM_BRAIN_CORE && TM_BRAIN_CORE.pAtLeastOne;
   var sharedBuildEndgameTiming = TM_BRAIN_CORE && TM_BRAIN_CORE.buildEndgameTiming;
@@ -22,10 +42,160 @@
   var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;
   var sharedScoreCardDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDiscountValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
+  var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
+  var sharedScoreRequirementPenalty = (TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty) || localScoreRequirementPenalty;
   var sharedApplyManualEVAdjustments = TM_BRAIN_CORE && TM_BRAIN_CORE.applyManualEVAdjustments;
   var sharedEstimateScoreCardTimingInterpolated = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateScoreCardTimingInterpolated;
   var sharedBuildScoreCardContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildScoreCardContext;
   var sharedBuildProductionValuationContext = TM_BRAIN_CORE && TM_BRAIN_CORE.buildProductionValuationContext;
+  var normalizeOpeningHandBias = (TM_BRAIN_CORE && TM_BRAIN_CORE.normalizeOpeningHandBias) || function(rawBias) {
+    if (typeof rawBias !== 'number' || !isFinite(rawBias) || rawBias === 0) return 0;
+    var scaled = Math.round(rawBias * 0.6);
+    if (scaled === 0) scaled = rawBias > 0 ? 1 : -1;
+    return Math.max(-5, Math.min(5, scaled));
+  };
+  var isOpeningHandContext = (TM_BRAIN_CORE && TM_BRAIN_CORE.isOpeningHandContext) || function(state) {
+    if (!state) return false;
+    if (state._openingHand != null) return !!state._openingHand;
+    var game = state.game || {};
+    var phase = game.phase || '';
+    if (phase === 'initial_drafting' || phase === 'corporationsDrafting') return true;
+    var generation = typeof game.generation === 'number' ? game.generation : 99;
+    if (generation > 1) return false;
+    var tp = state.thisPlayer || {};
+    var tableau = tp.tableau || [];
+    return tableau.length === 0;
+  };
+
+  function localEstimateAverageGameLengthFromState(state, options) {
+    var opts = options || {};
+    var g = (state && state.game) || {};
+    var playerCount = typeof opts.playerCount === 'number'
+      ? opts.playerCount
+      : ((state && state.players) ? (state.players.length || 3) : 3);
+    var gameOptions = g.gameOptions || {};
+    var avgGameLen = playerCount <= 2 ? 11.5 : (playerCount === 3 ? 9 : (playerCount === 4 ? 8.5 : 8));
+    var hasSolarPhase = !!(gameOptions.solarPhaseOption || gameOptions.worldGovernmentTerraforming);
+    var noSolarPhase = gameOptions.solarPhaseOption === false || gameOptions.worldGovernmentTerraforming === false;
+    if (noSolarPhase && !hasSolarPhase) {
+      avgGameLen += playerCount <= 2 ? 1.5 : (playerCount === 3 ? 1 : 0.5);
+    }
+    if (gameOptions.preludeExtension === false) avgGameLen += 1;
+    if (gameOptions.requiresVenusTrackCompletion) avgGameLen += 0.5;
+    if (hasSolarPhase && playerCount >= 4) avgGameLen -= 0.2;
+    return Math.max(7.5, Math.min(13.5, avgGameLen));
+  }
+
+  function localGlobalRequirementCurrent(param, game) {
+    var g = game || {};
+    if (param === 'oceans') return typeof g.oceans === 'number' ? g.oceans : 0;
+    if (param === 'oxygen') return typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0;
+    if (param === 'temperature') return typeof g.temperature === 'number' ? g.temperature : -30;
+    if (param === 'venus') return typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 0;
+    return 0;
+  }
+
+  function localGlobalRequirementStepGap(param, fromValue, toValue) {
+    var diff = Math.max(0, Number(toValue) - Number(fromValue));
+    if (!isFinite(diff) || diff <= 0) return 0;
+    if (param === 'temperature' || param === 'venus') return Math.ceil(diff / 2);
+    return Math.ceil(diff);
+  }
+
+  function localScoreGlobalRequirementGap(param, stepGap, state) {
+    if (!stepGap) return 0;
+    var avgLen = localEstimateAverageGameLengthFromState(state);
+    var avgRate = param === 'venus' ? (15 / avgLen) : (42 / avgLen);
+    var delayGens = Math.max(1, Math.ceil(stepGap / Math.max(1, avgRate)));
+    var raw = stepGap * 1.5 + delayGens * 2;
+    var cap = param === 'venus' ? 30 : 36;
+    return Math.min(cap, raw);
+  }
+
+  function localCountHandTagsForRequirement(handCards, selfName, getCardTags) {
+    var counts = {};
+    var lookupCardTags = getCardTags || function() { return []; };
+    for (var hci = 0; hci < (handCards || []).length; hci++) {
+      var hcName = handCards[hci] && (handCards[hci].name || handCards[hci]);
+      if (!hcName || hcName === selfName) continue;
+      var hcTags = lookupCardTags(hcName) || [];
+      for (var hti = 0; hti < hcTags.length; hti++) {
+        counts[hcTags[hti]] = (counts[hcTags[hti]] || 0) + 1;
+      }
+    }
+    return counts;
+  }
+
+  function localScoreRequirementPenalty(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var game = state.game || {};
+    var name = opts.name || '';
+    var globalReqs = opts.globalReqs || null;
+    var tagReqs = opts.tagReqs || null;
+    var myTags = opts.myTags || {};
+    var handCards = opts.handCards || [];
+    var getCardTags = opts.getCardTags || function() { return []; };
+    var globalPenalty = 0;
+    var tagPenalty = 0;
+    var details = [];
+
+    if (globalReqs) {
+      for (var grk in globalReqs) {
+        var grObj = globalReqs[grk];
+        var grMin = typeof grObj === 'object' ? grObj.min : grObj;
+        var grMax = typeof grObj === 'object' ? grObj.max : undefined;
+        var current = localGlobalRequirementCurrent(grk, game);
+        if (grMin !== undefined && current < grMin) {
+          var minGap = localGlobalRequirementStepGap(grk, current, grMin);
+          var minPenalty = localScoreGlobalRequirementGap(grk, minGap, state);
+          globalPenalty += minPenalty;
+          details.push({ type: 'global-min', key: grk, steps: minGap, penalty: minPenalty });
+        }
+        if (grMax !== undefined && current > grMax) {
+          var maxGap = localGlobalRequirementStepGap(grk, grMax, current);
+          var maxPenalty = 50 + Math.min(20, maxGap * 3);
+          globalPenalty += maxPenalty;
+          details.push({ type: 'global-max', key: grk, steps: maxGap, penalty: maxPenalty });
+        }
+      }
+    }
+
+    if (tagReqs) {
+      var handTagCounts = localCountHandTagsForRequirement(handCards, name, getCardTags);
+      var handCredit = typeof opts.handTagCredit === 'number' ? opts.handTagCredit : 0.75;
+      var perMissingTag = typeof opts.perMissingTagPenalty === 'number' ? opts.perMissingTagPenalty : 8;
+      for (var trk in tagReqs) {
+        var needed = tagReqs[trk];
+        var have = myTags[trk] || 0;
+        var wildHave = trk !== 'wild' ? (myTags.wild || 0) : 0;
+        var gap = needed - have - wildHave;
+        if (gap > 0) {
+          var exactHandHelp = handTagCounts[trk] || 0;
+          var wildHandHelp = trk !== 'wild' ? (handTagCounts.wild || 0) : 0;
+          var handHelp = Math.min(gap, exactHandHelp + wildHandHelp);
+          var effectiveGap = Math.max(0, gap - handHelp * handCredit);
+          var localPenalty = effectiveGap * perMissingTag;
+          tagPenalty += localPenalty;
+          details.push({
+            type: 'tag',
+            key: trk,
+            missing: gap,
+            handHelp: handHelp,
+            effectiveGap: effectiveGap,
+            penalty: localPenalty,
+          });
+        }
+      }
+    }
+
+    return {
+      penalty: globalPenalty + tagPenalty,
+      globalPenalty: globalPenalty,
+      tagPenalty: tagPenalty,
+      details: details,
+    };
+  }
 
   // ══════════════════════════════════════════════════════════════
   // CARD DATA INJECTION (set from outside)
@@ -40,8 +210,33 @@
   var _cardTagReqs = {};     // tag requirements (earth:2, science:3, etc.)
   var _cardEffects = {};     // card effects (cost, production, etc.) from card_effects.json.js
   // Variant data loaded from data/card_variants.js (TM_VARIANT_RATING_OVERRIDES, TM_CARD_VARIANT_RULES)
-  var _VARIANT_RATING_OVERRIDES = (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined') ? TM_VARIANT_RATING_OVERRIDES : {};
-  var _CARD_VARIANT_RULES = (typeof TM_CARD_VARIANT_RULES !== 'undefined') ? TM_CARD_VARIANT_RULES : [];
+  var _VARIANT_RATING_OVERRIDES = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.TM_VARIANT_RATING_OVERRIDES) ||
+    (typeof TM_VARIANT_RATING_OVERRIDES !== 'undefined' ? TM_VARIANT_RATING_OVERRIDES : {});
+  var _CARD_VARIANT_RULES = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.TM_CARD_VARIANT_RULES) ||
+    (typeof TM_CARD_VARIANT_RULES !== 'undefined' ? TM_CARD_VARIANT_RULES : []);
+  var _OVERLAY_NAME_ALIASES = {
+    'Ecoline': 'EcoLine',
+    'EcoLine': 'EcoLine',
+    'Phobolog': 'PhoboLog',
+    'PhoboLog': 'PhoboLog',
+    'Septum Tribus': 'Septem Tribus',
+    'Septem Tribus': 'Septem Tribus',
+    'Morning Star Inc': 'Morning Star Inc.',
+    'Morning Star Inc.': 'Morning Star Inc.',
+  };
+  var _OVERLAY_RATINGS = (function() {
+    if (root && root.TM_RATINGS) return root.TM_RATINGS;
+    if (!(typeof module !== 'undefined' && module.exports)) return null;
+    try {
+      var fs = require('fs');
+      var path = require('path');
+      var ratingsPath = path.resolve(__dirname, '..', 'packages', 'tm-data', 'generated', 'extension', 'ratings.json.js');
+      var raw = fs.readFileSync(ratingsPath, 'utf8').replace(/\bconst\b/g, 'var');
+      return (new Function(raw + '\nreturn TM_RATINGS;'))();
+    } catch (_err) {
+      return null;
+    }
+  })();
 
   function setCardData(cardTags, cardVP, cardData, cardGlobalReqs, cardTagReqs, cardEffects) {
     if (cardTags) _cardTags = cardTags;
@@ -53,12 +248,16 @@
   }
 
   // Shared utils from data/card_variants.js
-  var baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
+  var baseCardName = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.tmBaseCardName) ||
+    (typeof tmBaseCardName !== 'undefined' ? tmBaseCardName : function(n) { return n; });
 
   function isVariantOptionEnabled(rule, state) {
+    var fn = (TM_CARD_VARIANTS && TM_CARD_VARIANTS.tmIsVariantOptionEnabled) ||
+      (typeof tmIsVariantOptionEnabled !== 'undefined' ? tmIsVariantOptionEnabled : null);
+    if (!fn) return false;
     var game = state && state.game;
     var opts = game && game.gameOptions;
-    return tmIsVariantOptionEnabled(rule, game, opts);
+    return fn(rule, game, opts);
   }
 
   function resolveVariantCardName(name, state) {
@@ -130,12 +329,25 @@
   }
 
   function getOverlayRatingByName(name, state) {
-    if (typeof TM_RATINGS === 'undefined') return null;
+    if (!_OVERLAY_RATINGS || !name) return null;
     var resolvedName = resolveVariantCardName(name, state);
     var baseName = baseCardName(resolvedName || name);
-    var baseRating = TM_RATINGS[resolvedName] || TM_RATINGS[name] || TM_RATINGS[baseName] || null;
+    var aliasName = _OVERLAY_NAME_ALIASES[resolvedName] || _OVERLAY_NAME_ALIASES[name] || _OVERLAY_NAME_ALIASES[baseName] || null;
+    var baseRating = _OVERLAY_RATINGS[resolvedName] || _OVERLAY_RATINGS[name] || _OVERLAY_RATINGS[baseName] || (aliasName ? _OVERLAY_RATINGS[aliasName] : null) || null;
     var override = _VARIANT_RATING_OVERRIDES[resolvedName];
     return override ? Object.assign({}, baseRating || {}, override) : baseRating;
+  }
+
+  function getOpeningHandBiasForName(name, state) {
+    var overlayRating = getOverlayRatingByName(name, state);
+    if (!overlayRating || !isOpeningHandContext(state)) return 0;
+    return normalizeOpeningHandBias(overlayRating.o);
+  }
+
+  function getOverlayRatingScore(name, state, fallbackScore) {
+    var overlayRating = getOverlayRatingByName(name, state);
+    if (!overlayRating || typeof overlayRating.s !== 'number') return fallbackScore;
+    return overlayRating.s + getOpeningHandBiasForName(name, state);
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -165,6 +377,12 @@
     'Urbanized Area', 'Magnetic Field Generators', 'Early Settlement',
     'Self-Sufficient Settlement', 'Stratopolis', 'Martian Zoo', 'Refugee Camps',
     'Cultural Metropolis', 'City',
+  ]);
+
+  var OFFBOARD_CITY_CARDS = new Set([
+    'Ganymede Colony', 'Phobos Space Haven', 'Luna Metropolis',
+    'Stratopolis', 'Stanford Torus', 'Dawn City', 'Maxwell Base',
+    'Venera Base', 'Dyson Screens',
   ]);
 
   var PROD_CARDS = new Set([
@@ -210,12 +428,16 @@
   var MICROBE_VP_CARDS = new Set([
     'Ants', 'Tardigrades', 'Decomposers', 'Viral Enhancers',
     'Regolith Eaters', 'Extreme-Cold Fungus', 'Nitrophilic Moss', 'Symbiotic Fungus',
-    'GHG Factories',
+    'GHG Factories', 'Extremophiles', 'Venusian Insects',
   ]);
 
   var FLOATER_VP_CARDS = new Set([
     'Jovian Lanterns', 'Dirigibles', 'Stratospheric Birds', 'Venusian Animals',
   ]);
+
+  function isOffBoardCityCard(name) {
+    return OFFBOARD_CITY_CARDS.has(name);
+  }
 
   // ══════════════════════════════════════════════════════════════
   // STATIC DATA
@@ -941,6 +1163,49 @@
     return count;
   }
 
+  function normalizeResourceType(type) {
+    var value = String(type || '').toLowerCase();
+    if (value === 'microbes') return 'microbe';
+    if (value === 'animals') return 'animal';
+    if (value === 'floaters') return 'floater';
+    return value;
+  }
+
+  function cardResourceTypeForScoring(cardName, state) {
+    var cd = getCardDataByName(cardName, state) || {};
+    var directType = normalizeResourceType(cd.resourceType);
+    if (directType) return directType;
+    if (MICROBE_VP_CARDS.has(cardName)) return 'microbe';
+    if (ANIMAL_VP_CARDS.has(cardName)) return 'animal';
+    if (FLOATER_VP_CARDS.has(cardName)) return 'floater';
+    return '';
+  }
+
+  function scoreAddedResourcesToBestVpCard(resourceType, count, state, vpValueMC) {
+    var normalized = normalizeResourceType(resourceType);
+    var qty = Number(count) || 0;
+    if (!normalized || qty <= 0) return { value: 0, target: '', vp: 0 };
+
+    var tp = (state && state.thisPlayer) || {};
+    var tableau = tp.tableau || [];
+    var best = { value: 0, target: '', vp: 0 };
+    for (var ri = 0; ri < tableau.length; ri++) {
+      var cardObj = tableau[ri] || {};
+      var targetName = cardObj.name || cardObj;
+      if (!targetName || cardResourceTypeForScoring(targetName, state) !== normalized) continue;
+      var vpDef = getCardVPByName(targetName, state) || {};
+      if (vpDef.type !== 'per_resource') continue;
+      var per = Number(vpDef.per) || 1;
+      var current = Number(cardObj.resources) || 0;
+      var wholeVp = Math.floor((current + qty) / per) - Math.floor(current / per);
+      var fractionalVp = qty / per;
+      var vpGain = Math.max(wholeVp, fractionalVp * 0.6);
+      var value = vpGain * (vpValueMC || 8);
+      if (value > best.value) best = { value: value, target: targetName, vp: vpGain };
+    }
+    return best;
+  }
+
   var hasVPCard = (TM_BRAIN_CORE && TM_BRAIN_CORE.hasVPCard) || function(tableauNames, vpSet) {
     var arr = [];
     vpSet.forEach(function(c) { arr.push(c); });
@@ -1021,349 +1286,12 @@
     'Electro Catapult': 'plants_or_steel',
   };
 
+  // MANUAL EV OVERRIDES
+  // Single source of truth: packages/tm-brain-js/src/manual-ev.js
+  // Runtime copies are synced to bot/shared and extension/shared.
   // ══════════════════════════════════════════════════════════════
-  // MANUAL EV OVERRIDES — for cards where parser misses effects
-  // perGen: MC-equivalent value generated per generation
-  // once: one-time MC-equivalent bonus
-  // ══════════════════════════════════════════════════════════════
 
-  var MANUAL_EV = {
-    // === Engine / Discount effects NOT captured by parser ===
-    // Cards with cardDiscount in parser data are handled automatically
-    'Advanced Alloys':         { perGen: 4 },   // +1 steel AND +1 ti value. With 2 steel+1 ti prod = ~5-7 MC/gen
-    'Toll Station':            { perGen: 3 },   // +1 MC per opponent space tag
-    'Interplanetary Trade':    { perGen: 4 },   // +1 MC income per 5 played tags
-    'Earth Catapult':          { perGen: 5 },   // -2 MC on ALL cards. ~2.5 cards/gen = 5 MC/gen
-    'Anti-Gravity Technology': { perGen: 5 },   // -2 MC on ALL cards + 3 VP. ~2.5 cards/gen = 5 MC/gen
-    'Solar Logistics':         { perGen: 3.5 }, // -1 MC on ALL cards. ~2.5 cards/gen = 2.5 MC/gen + ti stock + 1 VP
-    'Cutting Edge Technology': { perGen: 3 },   // -2 MC on cards with requirements. ~1.5 req cards/gen = 3 MC/gen
-
-    // === Action cards (draw, MC, TR) ===
-    'AI Central':              { perGen: 7 },   // action: draw 2 cards
-    'Martian Rails':           { perGen: 2 },   // action: 1 MC per city
-    'Business Network':        { perGen: 2 },   // action: buy 1 card (net ~0.5 MC + filtering)
-    'Hi-Tech Lab':             { perGen: 2.2 }, // action: spend energy to dig for the best card. Higher ceiling than Development Center, but only in real energy shells
-    'Olympus Conference':      { perTrigger: 2, triggerTag: 'science' },   // look+keep on science tag (~0.5 card ≈ 2 MC)
-    'Mars University':         { perTrigger: 1.5, triggerTag: 'science' }, // discard→draw on science
-    'Media Archives':          { perTrigger: 1, triggerTag: 'event' },     // +1 MC on event
-    'Optimal Aerobraking':     { perTrigger: 2, triggerTag: 'space_event' }, // +3 steel +3 heat on space event
-    'Standard Technology':     { perGen: 5 },   // trigger: +3 MC per std project. 2-3 SP/gen mid-late = 6-9 MC/gen
-    'Red Ships':               { perGen: 3 },   // action: MC per empty adj (scales)
-    'Directed Impactors':      { perGen: 1.2 }, // expensive asteroid/TR action; earlier value made Ares rush lines too sticky
-    'Power Infrastructure':    { perGen: 2 },   // action: energy→MC
-
-    // === Trigger/passive cards ===
-    'Arctic Algae':            { perGen: 3 },   // +2 plants per ocean — calculated based on remaining oceans
-    'Herbivores':              { perGen: 1.5 }, // +1 animal per greenery (trigger, not action — ~1/gen)
-    'Pets':                    { perGen: 1.5 }, // +1 animal per city (any player, trigger)
-    'Ecological Survey':       { perGen: 1.5 }, // +1 plant per greenery action
-    'Geological Survey':       { perGen: 1.5 }, // +1 steel per placement bonus
-    'Marketing Experts':       { perTrigger: 2, triggerTag: 'event' },   // +1 MC per event played
-    'Decomposers':             { perTrigger: 1.5, triggerTag: 'bio' },   // +1 microbe per bio tag (value depends on VP target)
-    'GHG Factories':           { perGen: 1.5 }, // spend 1 heat → +1 heat prod
-    'Viral Enhancers':         { perTrigger: 1.5, triggerTag: 'bio' },   // +1 plant/animal/microbe on bio tag
-    'Ants':                    { perGen: 1 },   // action: steal 1 microbe → this
-    'Protected Habitats':      { once: 16 },    // defense: opponents can't remove plants/animals/microbes. In 3P blocks 1-2 attacks/game (~5-8 MC each) + protects animal VP cards
-    'Immigrant City':          { perGen: 1, once: 3 },  // city(8) - prod penalty(-1MC -1energy ≈ 5) = +3 once + perGen:1 for +1MC/city trigger
-    'Adaptation Technology':   { once: 5 },     // -2 to all req → opens cards
-    'Media Group':             { perTrigger: 3, triggerTag: 'event' },   // +3 MC per event
-    "Inventors' Guild":        { perGen: 1.5 }, // action: buy 1 card from deck
-
-    // === Resource placement (multi) ===
-    'Nobel Labs':              { perGen: 3.5 }, // action: +2 microbe/data/floater to ANY card (req 4 sci)
-
-    // === Floater actions ===
-    'Dirigibles':              { perGen: 2 },   // action: add 1 floater, 3 floaters = 1 Venus TR
-    'Jovian Lanterns':         { perGen: 1.5 }, // action: spend 1 ti → +2 floaters, 2 = 1 TR
-    'Venusian Animals':        { perTrigger: 1.5, triggerTag: 'venus' }, // +1 animal per Venus tag
-
-    // === Colony-related ===
-    'Trade Envoys':            { perGen: 1.5 }, // +1 to trade bonus
-    'Rim Freighters':          { perGen: 1.5 }, // trade costs 1 less
-    'Orbital Laboratories':    { perGen: 1.5 }, // draw card when trading
-
-    // === Awards/Milestones enablers ===
-    'Aquifer Pumping':         { perGen: 1.5 },   // action: 8 MC (steel) → ocean. D35
-
-    // === Discount/value modifiers (not cardDiscount) ===
-    'Earth Office':            { perGen: 3 },   // -3 MC on earth cards (high impact, many earth cards)
-    'Space Station':           { perGen: 2 },   // -2 MC on space cards
-    'Sky Docks':               { perGen: 2 },   // -1 MC on all cards (=cardDiscount but parser misses)
-    'Shuttles':                { perGen: 2 },   // -2 MC on space cards + 1 VP
-    'Warp Drive':              { perGen: 2 },   // -4 MC on space cards (big but narrow)
-    'Mass Converter':          { perGen: 2 },   // -5 MC on space cards (huge but narrow)
-    'Rego Plastics':           { perGen: 1.5 }, // +1 steel value
-    'Mercurian Alloys':        { perGen: 2 },   // +2 titanium value
-    'Lunar Steel':             { perGen: 1 },   // +1 steel value on Moon cards
-    'Quantum Extractor':       { perGen: 2 },   // -2 MC on space cards + energy prod
-
-    // === Trigger/passive cards (continued) ===
-    'Rover Construction':      { perGen: 1.5 }, // +2 MC per city placed
-    'Spin-off Department':     { perGen: 2 },   // draw 1 card on card play with prod increase
-    'Meat Industry':           { perGen: 1.5 }, // +2 MC per animal tag played
-    'Topsoil Contract':        { perGen: 1 },   // +1 MC per microbe tag + sell plants
-    'Breeding Farms':          { perGen: 1 },   // +2 plants per animal tag played
-    'Pollinators':             { perGen: 1 },   // +1 animal per plant tag
-    'Bioengineering Enclosure':{ perGen: 3 },   // action: +1 animal (1 VP per 2 animals) + science tag. NOT in card_data
-    'Event Analysts':          { perGen: 1 },   // +1 influence per event
-    'Floater Technology':      { perGen: 1 },   // +1 floater per science tag
-    'GMO Contract':            { perGen: 1 },   // +2 MC per animal/plant/microbe tag
-    'Agro-Drones':             { perGen: 1 },   // +1 plant per Mars tag
-    'Communication Center':    { perGen: 1 },   // +1 MC per event (3P)
-    'Advertising':             { perGen: 1 },   // +2 MC per card with req fulfilled
-    'Botanical Experience':    { perGen: 1 },   // +1 plant per plant tag (any player)
-    'Floyd Continuum':         { perGen: 0.8 }, // science tag is scored separately; only trim the speculative action payoff a bit
-    'Self-replicating Robots': { perGen: 3 },   // -2 MC on space/building cards with no tags, repeats
-    'Homeostasis Bureau':      { perGen: 1.5 }, // +2 plants per city (trigger)
-
-    // === Action: TR/global raises ===
-    'Caretaker Contract':      { perGen: 5.5 }, // action: 8 heat → 1 TR. With heat engine = guaranteed 1 TR/gen ≈ trMC * 0.5
-    'Symbiotic Fungus':        { perGen: 1 },   // action: add 1 microbe to another card
-    'Predators':               { perGen: 1 },   // action: steal 1 animal from opponent
-    'Extreme-Cold Fungus':     { perGen: 1 },   // action: +1 plant or +1 microbe
-
-    // === Colony / trade modifiers ===
-    'Trading Colony':          { perGen: 2 },   // +2 resources per trade (~2 trades left, ~4 MC/trade bonus)
-    'L1 Trade Terminal':       { perGen: 2 },   // no energy/MC for trade, +1 VP
-    'Cryo-Sleep':              { perGen: 1 },   // +1 trade income
-
-    // === VP accumulators the parser can't score ===
-    'Ocean Sanctuary':         { perGen: 3 },   // action: +1 animal per ocean (1 VP/animal). NOT in card_data. Action value only, no double-count
-    'Whales':                  { perGen: 4 },   // action: +1 animal (1 VP/animal) + 2 MC prod. Action value, NOT in card_data
-    'Anthozoa':                { perGen: 0.5 }, // +1 animal per ocean placed, no action
-    'Stratopolis':             { perGen: 1 },   // +1 floater per Venus tag, 1 VP/2 floaters
-
-    // === Action: energy converters (TR/oxygen/ocean) ===
-    'Development Center':      { perGen: 3 },   // action: spend 1 energy → draw 1 card
-    'Water Splitting Plant':   { perGen: 2.5 }, // action: spend 3 energy → place ocean
-    'Steelworks':              { perGen: 2.5 }, // action: spend 4 energy → +2 steel + oxygen
-    'Ironworks':               { perGen: 2 },   // action: spend 4 energy → +1 steel + oxygen
-    'Ore Processor':           { perGen: 2 },   // action: spend 4 energy → +1 titanium + oxygen
-    'Electro Catapult':        { perGen: 5, once: -8 }, // action: spend 1 plant/steel → +7 MC (net ~5 MC/action). once: -1 energy-prod loss (1.7*5≈8)
-    'Venus Magnetizer':        { perGen: 2 },   // action: -1 energy prod → raise Venus
-
-    // === Action: microbe/floater → TR (free raises) ===
-    'GHG Producing Bacteria':  { perGen: 1.5 }, // action: +1 microbe OR spend 2 → raise temp
-    'Nitrite Reducing Bacteria': { perGen: 1.5 }, // action: +1 microbe OR spend 3 → +1 TR (starts with 3)
-    'Regolith Eaters':         { perGen: 1.5 }, // action: +1 microbe OR spend 2 → raise oxygen
-    'Thermophiles':            { perGen: 2 },   // action: +1 microbe OR spend 2 → raise Venus
-    'Sulphur-Eating Bacteria': { perGen: 1.5 }, // action: +1 microbe OR spend 3 → raise Venus
-    'Forced Precipitation':    { perGen: 1.5 }, // action: 2 MC → +1 floater OR 2 floaters → Venus
-    'Rotator Impacts':         { perGen: 1.5 }, // action: 6 MC(ti) → +1 asteroid OR spend 1 → Venus
-    'Extractor Balloons':      { perGen: 3 },   // action: +1 floater OR 3 → Venus (starts with 3). ~2 Venus raises in 6 gens
-    'Jet Stream Microscrappers': { perGen: 0.8 }, // action: 1 ti → +2 floaters OR 2 → Venus. Ti cost high, slow floater trap. D36
-
-    // === Action: VP accumulators (free VP/gen) ===
-    // VP accumulators: perGen reflects full action+VP value (no separate VP per_resource calc)
-    // 1 VP/animal ≈ 3 MC mid-game, with action cost discount → ~2.5/gen
-    'Fish':                    { perGen: 2.5 }, // action: +1 animal (1 VP each)
-    'Birds':                   { perGen: 3.5 }, // action: +1 animal (1 VP each). -2 plant-prod opponent = free bonus (~3 MC). Baseline underrates by -29
-    'Livestock':               { perGen: 3.5 }, // action: +1 animal (1 VP each) + 1 food tag. +2 MC prod baseline often misses animal VP scaling
-    'Penguins':                { perGen: 2.5 }, // action: +1 animal (1 VP each)
-    'Stratospheric Birds':     { perGen: 2.5 }, // action: +1 animal (1 VP each, Venus)
-    'Sub-zero Salt Fish':      { perGen: 2.5 }, // action: +1 animal (1 VP each) + colony trigger
-    'Small Animals':           { perGen: 1.2 }, // action: +1 animal (1 VP per 2)
-    'Refugee Camps':           { perGen: 1.5 }, // action: spend 1 MC → +1 VP counter (net ~2 MC/gen)
-    'Martian Zoo':             { perGen: 2 },   // action: 1 MC → +1 VP + earth tag trigger MC
-    'Physics Complex':         { perGen: 2 },   // action: spend 6 energy → +1 science (1 VP, expensive)
-    'Tardigrades':             { perGen: 0.7 }, // action: +1 microbe (1 VP per 4)
-    'Extremophiles':           { perGen: 0.8 }, // action: +1 microbe (1 VP per 3)
-    'Venusian Insects':        { perGen: 1.2 }, // action: +1 microbe (1 VP per 2)
-    'Floating Habs':           { perGen: 0.7 }, // action: 2 MC → +1 floater (1 VP per 2, costs 2 MC)
-
-    // === Action: resource converters ===
-    'Deuterium Export':        { perGen: 1.5 }, // action: +1 floater OR spend 1 → +1 energy prod
-    'Atmo Collectors':         { perGen: 1.5 }, // action: +1 floater OR spend 1 → 2 any resource
-    'Jupiter Floating Station': { perGen: 1 },  // action: +1 floater (VP/3) + MC on Jovian tag
-    'Directed Heat Usage':     { perGen: 1 },   // action: 3 heat → +1 steel or +1 MC prod
-    'Cryptocurrency':          { perGen: 1 },   // action: +1 resource (usable as MC for SP)
-
-    // === Discount: Venus ===
-    'Venus Waystation':        { perGen: 1.5 }, // -2 MC on Venus cards
-
-    // === One-time value adjustments ===
-    'Mangrove':                { once: 3 },     // greenery placement bonus + positional choice value
-    'Mohole Lake':             { once: 5 },     // city + ocean + 3 plants, parser misses city/ocean combo
-    'Research Outpost':        { once: 3 },     // city + draw 1, parser misses city
-    // 'Maxwell Base': removed — parser now handles city + energy cost correctly
-    'Robotic Workforce':       { once: 5 },     // duplicate production box of 1 building card
-    'Sponsored Academies':     { once: 6 },     // discard 1 old-hand card(~1 MC), then draw 3(~10.5 MC) - opponents draw 1 each(~3.5 MC in 3P) ≈ 6
-    'Psychrophiles':           { perGen: 1 },   // action: +1 microbe (usable as 2 MC on plant cards)
-
-    // === Colony cards (parser writes production:0 for dynamic/colony effects) ===
-    'Space Port Colony':       { once: 20 },    // place colony(10) + trade fleet(~10 MC over game) + 1 VP. Parser: prod:0
-    'Ice Moon Colony':         { once: 18 },    // place colony(10) + place ocean(~10 with TR+tempo). Parser: prod:0
-    'Pioneer Settlement':      { once: 10 },    // place colony (~10 MC total with trade income) + 2 VP. Parser has -2 MC prod, correct
-    'Gyropolis':               { perGen: 2 },   // city + MC prod per earth+venus tags. Parser: prod:0 MC
-    'Power Grid':              { perGen: 2 },   // energy prod = power tags. Parser: prod:0 energy
-    'Luxury Estate':           { once: 6 },     // +1 titanium per city+greenery you own (one-time). Req 7% O2. Tags: Earth/Mars/Building
-    'Immigration Shuttles':    { perGen: 3 },   // +5 MC prod + VP per 3 cities. Cost 31 now properly deducted. Tags: Earth/Space
-    'Geological Expedition':   { perGen: 1.5 }, // effect: +1 extra space bonus per Mars tile placed. 2 VP. Tags: Mars/Science
-    'Cassini Station':         { perGen: 3, once: 3 }, // +1 energy prod per colony (~4 in 3P) + 2 floaters/3 data. Tags: Power/Sci/Space
-    'Huygens Observatory':     { once: 19 },    // colony(7) + free trade(6) + 1 TR(7) + 1 VP(~3) - overhead ≈ 19. _behOverrides nulls parser tr:1
-
-    // === Dynamic production (parser writes 0, real value depends on board/tags) ===
-    'Energy Saving':           { perGen: 3 },   // +1 energy prod per city in play (~4-5 cities in 3P). Parser: prod:0
-    'Pollinators':             { perGen: 4 },   // +1 plant prod + 2 MC prod + action: +1 animal (1 VP/animal). Tags: Plant/Animal
-    'Zeppelins':               { perGen: 1.5 }, // +1 MC prod per Mars city (~3-4). Parser: prod:0. No tags
-    'Hydrogen Processing Plant': { perGen: 1.5 }, // -1 oxy, +1 energy prod per 2 oceans. -1 VP. Tags: Building/Power
-    'Advanced Power Grid':     { perGen: 2 },   // +2 energy prod + MC prod per power tag. Tags: Power/Building/Mars
-    'Flat Mars Theory':        { perGen: 2.5 }, // +1 MC prod per generation so far (~5 at gen 5). Req: max 1 sci. Tags: Earth
-    'Soletta':                 { perGen: 5 },   // +7 heat prod = 1 temp/gen (≈10 MC/gen). Parser values heat at 0.5 → 3.5. Extra 5 for temp conversion potential
-
-    // === Cards missing from card_data entirely ===
-    'Quantum Communications':  { perGen: 3 },   // +1 MC prod per colony in play (~3-4 in 3P). Tags: none
-    'Floating Trade Hub':      { perGen: 2 },   // +1 MC per trade fleet (~2 in 3P). Tags: Space
-    'Lunar Mining':            { perGen: 2.5 }, // +1 ti prod per Moon mining tag (~1-2). Tags: Earth
-    'Insects':                 { perGen: 4 },   // +1 plant prod per plant tag (~2-3 tags = 2-3 plant-prod permanent). Tags: Microbe
-    'Worms':                   { perGen: 1.5 }, // +1 plant prod per microbe tag (have 1+). Tags: Microbe
-    'Floater Leasing':         { perGen: 1.5 }, // +1 MC per floater on any card. Tags: none
-    'Community Services':      { perGen: 2 },   // +1 MC prod per no-tag card in play (~3-4). Tags: none
-    'Aerosport Tournament':    { once: 5 },     // gain 1 MC per floater on any card (~5 floaters avg). Req 5 floaters. 1 VP
-    'Venus Orbital Survey':    { perGen: 3 },   // action: reveal 4, buy Venus cards free (~1 free Venus/2-3 gens). Tags: space,venus
-    'Imported Nitrogen':       { once: 5 },     // +3 microbes on microbe card + 2 animals on animal card ≈ 5 MC value (parser misses)
-    'Imported Nutrients':      { once: 4 },     // +4 microbes on any microbe card ≈ 4 MC (parser misses)
-    'Aerobraked Ammonia Asteroid': { perGen: 2.5, once: 2 }, // _behOverride. cost 26, +2 heat(0.8*2=1.6)+2 plant(2*2=4)=5.6/gen→perGen:2.5. +2 microbes≈2 MC once. D40
-    'Solar Reflectors':        { perGen: 2 },   // 5 heat prod at 0.5/heat is 2.5/gen; real value with temp raises ≈ 4.5/gen. Diff ≈ 2
-    'Pharmacy Union':          { perGen: 2, once: -6 }, // Corp: 4 diseases cured by science tags → post-cure each science = +1 TR. ~0.6 sci/gen × trMC. once: -6 = cure delay cost. Two Corps reduces risk. Microbe tags add diseases back (~1/game)
-    'Data Leak':               { once: 5 },     // +1 data on each data card (~3-4 data). Tags: none. Pathfinders
-    'Cultural Metropolis':     { once: 8 },     // +2 delegates (5-6 MC) + city positional value (~2 MC). Parser misses delegates entirely. Delta -34
-    'Crashlanding':            { once: 12 },    // event: remove up to 3 animals → gain 12 + N MC. Tags: Event
-    'Oumuamua Type Object Survey': { once: 12 }, // draw 2: play sci/microbe free, +3 energy for space. Tags: Space/Science
-    'Solarpedia':              { perGen: 2 },   // action: +2 data to any card + 1 VP/6 data. Req 4 tags. Tags: Space
-    'Kickstarter':             { once: 8 },     // choose planet tag + raise track 3 steps. Tags: clone
-    'Social Events':           { once: 5 },     // +1 TR per 2 Mars tags. Event. Tags: Earth/Mars
-    'Declaration of Independence': { once: 3 }, // 4 VP + 2 delegates. Req 6 Mars tags. Event. Tags: Mars
-    'Private Security':        { once: 4 },     // opponents can't remove your basic prod. Tags: Earth
-    'Nanotech Industries':     { perGen: 2 },   // corp: draw 3 keep 2 + action: +1 sci resource (1 VP/2). Tags: Science/Moon
-
-    // === Cards with empty/wrong parsed behavior needing MANUAL_EV ===
-    'Colonizer Training Camp':  { once: 4 },     // 2 VP + Jovian tag (3-5 MC) + steel payable. Parser: empty beh
-    'Hermetic Order of Mars':   { once: 5 },     // +MC per empty adj area (~2-3 MC one-time). Parser misses adj bonus
-    'Martian Survey':           { once: 3 },     // draw 2 (keep best) + 1 VP. Event. Parser: drawCard but undervalues selection
-    'Astra Mechanica':          { once: 3 },     // draw 2 selected from discard + VP. Better than random draw
-
-    // === High-delta underrated cards (delta = normalized_baseline - manual_rating) ===
-    "CEO's Favorite Project":  { once: 5 },     // 1 MC → +1 resource to ANY card. With VP accumulators (Birds, Fish) = 1 VP ≈ 5 MC. Even without VP cards, microbes/floaters have value. Delta -34
-    'Interstellar Colony Ship': { once: 8 },     // 4 VP event, Earth+Space tags (3-5 MC tag value). Req 5 Science harsh but VP density high when playable. Parser sees vp:4 but misses tag value. Delta -35
-    'Advanced Ecosystems':     { once: 6 },     // 3 VP for 11+3=14 MC. Triple tag (Animal+Microbe+Plant ≈ 6 MC). Req 3 specific tags but when met, excellent VP density. Delta -28
-    'Magnetic Shield':         { once: 5 },     // 4 TR, Space tag. Parser sees tr:4 ep:-2 correctly, but -2 energy prod less painful with 3+ Power tags (req). Space tag ~2 MC + energy infrastructure makes ep loss bearable. Delta -31
-
-    // === Undervalued cards with correct parsed data but missing MANUAL_EV ===
-    'Titan Shuttles':          { perGen: 2.5 }, // action: +2 floaters OR spend floaters → titanium. 1 VP. Tags: Jovian/Space
-    'Archimedes Hydroponics Station': { once: 8 }, // -1 energy, -1 MC, +2 plant prod ≈ net 9 MC. Parser: action:stock:MC (wrong)
-    'Terraforming Ganymede':   { once: 15 },    // +1 TR per Jovian tag (~2-3 TR incl card) + 2 VP. Parser: tr:1 (wrong, dynamic)
-
-    // === More dynamic production cards (parser writes 0 or wrong values) ===
-    'Interplanetary Transport': { perGen: 1 },  // +1 MC prod per offworld city. Parser: drawCard mush
-    'Martian Monuments':       { perGen: 2 },   // +1 MC prod per Mars tag. Parser: prod:0. Tags: Mars/Building
-    'New Venice':              { once: 2 },     // city + 2 MC prod + 1 energy prod - 2 plants. Parser: energy:-1 (wrong sign?)
-    'Red City':                { once: 2 },     // city + 2 MC prod - 1 energy. Req: Reds ruling. Parser OK-ish but no tags
-    'Cyberia Systems':         { once: 10 },    // +1 steel prod + copy 2 building prod boxes. Parser: +2 energy (wrong)
-    'Galilean Waystation':     { perGen: 2 },   // +1 MC prod per Jovian tag in play (~4-6 in 3P). 1 VP. Tags: Space
-    'Think Tank':              { perGen: 2 },   // action: 2 MC → data, shift requirements. Tags: Mars/Venus/Science. Parser: drawCard mush
-    'Martian Nature Wonders':  { once: 2 },     // block a space + 2 VP. Tags: Science/Mars. Parser: no tags
-
-    // === Per-tag production (parser can't handle dynamic prod) ===
-    'Public Spaceline':        { once: 0 },     // tags and +2 MC prod are already scored by parser/generic tag value
-
-    // === Corp action cards (not project cards, but scored via scoreCard with cost:0) ===
-    'Viron':                   { perGen: 1.5 }, // corp action: reuse blue card action (extra activation ≈ 1.5 MC/gen avg)
-    'Recyclon':                { perGen: 1.5 }, // corp action: +1 microbe or spend 2 microbes → plant prod. Microbe+building tags
-    'Astrodrill':              { perGen: 1.5, once: 3 }, // corp action: +1 asteroid or spend → TR/temp. Start with 3 asteroids. Space tag
-
-    // === Preludes with bad parsed data ===
-    'Merger':                  { once: 20 },    // pay 42 MC → new corp (avg +21 MC capital + ability ~10 MC). Gamble card, ситуативно
-
-    // === Dynamic production cards (parser writes 0, _behOverrides nulls parsed data) ===
-    'Medical Lab':             { perGen: 2 },   // +1 MC prod per 2 building tags (~4 buildings = 2 MC prod). Tags: Building/Science
-    'Luna Metropolis':         { perGen: 2.5, once: 6 }, // city(6) + MC prod per Earth tag (~2-3). Tags: Earth/City
-    'Parliament Hall':         { perGen: 1.5 }, // +1 MC prod per 3 building tags (~4-6 = 1-2 MC prod). Tags: Building
-    'Miranda Resort':          { perGen: 2.5 }, // +1 MC prod per Earth tag (~3-4 Earth tags). Tags: Earth/Jovian
-    'Venus Trade Hub':         { perGen: 1.5 }, // +1 MC prod per trade fleet (~2 fleets). Tags: Venus/Space
-    'Cloud Tourism':           { perGen: 2.5 }, // +1 MC prod per Venus+Jovian tag (~3-4 total). Tags: Venus
-    'Molecular Printing':      { once: 4 },     // +1 MC per City+Earth tag (~4 total one-time). Tags: Building
-    'Martian Media Center':    { perGen: 1 },   // +1 MC prod per event trigger (~1/gen). Tags: Building
-    'Ecology Research':        { perGen: 2 },   // +1 plant prod per 2 bio tags (~2-3 bio = 1 plant prod). Tags: Science
-    'Ceres Spaceport':         { perGen: 5, once: 6 }, // city(6) + 2 MC prod + ti prod per Jovian (~2). Tags: Jovian/Space
-    'Lunar Embassy':           { perGen: 5, once: 6 }, // city(6) + 3 MC prod + plant prod per Moon road (~1-2). Tags: Earth/Moon
-    'Static Harvesting':       { perGen: 2.5 }, // +1 MC prod per Power tag (~2-3) + energy prod. Tags: Power/Building
-    'Red Tourism Wave':        { once: 6 },     // MC per adj empty spaces near oceans (~6 MC avg). Tags: Earth
-    'Cartel':                  { perGen: 3 },   // +1 MC prod per Earth tag incl this (~3-4). Tags: Earth
-    'Satellites':              { perGen: 3 },   // +1 MC prod per Space tag incl this (~3-4). Tags: Space
-    'Protected Valley':        { once: 0 },     // handled by contextual scoring below
-    'Stanford Torus':          { once: 0 },     // handled by contextual scoring below
-    'Designed Microorganisms': { once: 0 },     // handled by contextual scoring below
-    'Copernicus Tower':        { perGen: 2 },   // action: spend data → TR. ~1 TR per 3-4 gens. Tags: Science/Building/Moon
-    'Project Workshop':        { perGen: 2 },   // corp action: draw+discard building → build free or +3 MC. Tags: none
-
-    // === Cards with wrong/missing MANUAL_EV (no _behOverride needed) ===
-    'Titan Air-scrapping':     { perGen: 1.5 }, // action: +1 floater or spend 2 → remove heat → raise temp. Slow but free TR
-    'Underground Detonations': { perGen: 0.5 }, // action: 8 MC (steel) → raise temp. Glorified SP, F-tier
-    'United Nations Mars Initiative': { perGen: 3 }, // action: 3 MC → raise TR if raised this gen. ~1 TR/gen = 4 MC net
-    'Cloud Vortex Outpost':    { perGen: 3, once: 7 }, // action: floater→Venus + colony placement(7 MC). Tags: Venus/Jovian
-    'Micro-Geodesics':         { perGen: 3 },   // ongoing: -2 MC on Ares-compatible cards. Tags: Mars/Science
-    'Titan Floating Launch-pad': { perGen: 2.5 }, // action: +1 floater or spend → free colony placement. Tags: Jovian/Space
-    'The Darkside of The Moon Syndicate': { perGen: 2 }, // action: spend MC → steal opponent's resource. Tags: Moon
-    'Meltworks':               { perGen: 0.5 }, // action: spend 5 heat → 1 steel. Marginal but free steel
-    'Microgravity Nutrition':  { perGen: 1.2 }, // action: +1 microbe (1 VP per 2). Parser has per:0.5 bug
-
-    // === MEDIUM confidence — action/trigger cards parser undervalues ===
-    'Ecological Zone':         { perGen: 1.5 }, // +1 animal per plant/animal tag played. 1 VP/2 animals. Tags: Plant/Animal
-    'Asteroid Hollowing':      { perGen: 0.5 }, // action: 1 ti → +1 asteroid (1 VP, costs 3 MC = bad rate). No tags. F30
-    'Floater-Urbanism':        { perGen: 1.5 }, // action: +1 floater or spend → city. Tags: Venus
-    'Space Wargames':          { once: 5 },     // event: 3 data → +3 VP or draw 3 or +5 MC. Tags: Space/Science
-    'Bactoviral Research':     { once: 5 },     // +1 microbe per science tag (~3 microbes ≈ 3 MC) + draw card (3.5 MC). Tags: Microbe/Science
-    'Private Military Contractor': { perGen: 1.5 }, // +1 resource per Earth tag. 1 VP/2. Tags: Earth/Science
-    'Hecate Speditions':       { perGen: 2, once: 8 }, // action: data VP + trade fleet (~8 MC over game). Tags: Moon/Space
-    'Asteroid Rights':         { perGen: 2 },   // action: +1 asteroid or spend → MC/titanium. Tags: none
-    'Martian Culture':         { perGen: 0.7 }, // action: +1 data (1 VP/2 data). Tags: Mars/Building
-    'Ancient Shipyards':       { perGen: 1.5 }, // action: spend 3 data → draw 2 cards. Tags: Jovian/Space
-    'Processor Factory':       { perGen: 1 },   // action: spend 1 energy → +2 data to any card. Tags: Building
-    'Rust Eating Bacteria':    { perGen: 1 },   // action: +1 microbe or spend 3 → raise oxygen. Tags: Microbe
-    'Search For Life':         { perGen: 0.5 }, // action: 1 MC → reveal top card, +3 VP if microbe. ~10% chance. Tags: Science
-    'Darkside Incubation Plant': { perGen: 1 }, // action: +1 microbe (1 VP/2). Tags: Microbe/Moon
-
-    // === Overcosted/weak cards (cost now properly deducted; smaller corrective penalties) ===
-    'Beam From A Thorium Asteroid': { perGen: 3 }, // _behOverride. cost 32, +3 heat+3 energy → perGen:3. C58
-    'Mass Converter':          { perGen: 2, once: 8 },   // _behOverride. net +1 energy(~8 MC) + -5 MC space(perGen:2). B75
-    'Aerial Lenses':           { once: -20 },   // cost 2 but +2 heat-prod -1 MC-prod. Net-negative exchange. F20
-    'Underground Detonations': { perGen: 0, once: -20 }, // glorified SP, F15 (overwrite earlier 0.5)
-    'Orbital Reflectors':      { once: -15 },   // no tags, heat-prod overvalued. D35
-    'Asteroid Hollowing':      { perGen: 0, once: -10 }, // bad ti→VP exchange, no tags. F30 (overwrite earlier 0.5)
-    'Security Fleet':          { perGen: 0, once: -8 },  // bad ti→VP exchange, no tags. D42
-    'Space Mirrors':           { once: -12 },   // action: 7 MC → +1 energy-prod. Glorified SP. D42
-    'Micro-Mills':             { once: -10 },   // cost 3, +1 heat-prod, no tags. F30
-    'Sulphur Exports':         { once: -10 },   // heat-prod overvalued. D45
-    'Solar Storm':             { once: -4 },    // no temp/heat; all-player plant loss + data snipe is weak but not a -10 extra penalty. D38
-    'Biomass Combustors':      { once: -10 },   // take-that in 3P + plant-prod loss. D48
-    'Callisto Penal Mines':    { once: -8 },    // overcosted for +3 MC-prod. D46
-    'Icy Impactors':           { once: -8 },    // slow ti→VP accumulator. D42
-    'Food Factory':            { once: -10 },   // -1 plant-prod conflict, no tags. D42
-    'Floater Leasing':         { perGen: 0.5 }, // marginal floater value. D38 (overwrite earlier 1.5)
-    'Designed Organisms':      { once: -5 },    // max-req inflates gensLeft. D50
-    'Titan Air-scrapping':     { perGen: 0.5 }, // slow floater trap. D42 (overwrite earlier 1.5)
-    'Oumuamua Type Object Survey': { once: 2 }, // draw 2 play free. D42 (overwrite earlier 12)
-    'Crashlanding':            { once: 2 },     // event: remove animals → MC. D40 (overwrite earlier 12)
-    'Microgravity Nutrition':  { perGen: 0.3 }, // slow VP accumulator. D50 (overwrite earlier 1.2)
-    'GHG Factories':           { perGen: 0.3 }, // marginal heat→heat-prod. (overwrite earlier 1.5)
-    'Dust Seals':              { once: -8 },    // no tags, marginal plant protect. D35
-    'Martian Lumber Corp':     { once: -8 },    // effect is a trap, tags ok. D50 (overwrite earlier implicit)
-    'Parliament Hall':         { perGen: 0.5 }, // overvalued dynamic prod. D42 (overwrite earlier 1.5)
-    'Hydrogen Processing Plant': { perGen: 0.5 }, // -1 VP, marginal. D40 (overwrite earlier 1.5)
-    'Heat Trappers':           { once: -8 },    // take-that in 3P. D49
-    'Equatorial Magnetizer':   { perGen: 1 },   // D45
-    'Aquifer Pumping':         { perGen: 0.5 }, // expensive SP-like. D35 (overwrite earlier 1.5)
-    'Martian Rails':           { perGen: 0.5 }, // needs many cities. D40 (overwrite earlier 2)
-    'Magnetic Field Generators': { once: -8 },  // energy-prod loss huge. D42
-    'GHG Import From Venus':   { once: -5 },   // heat-prod overvalued. D45
-    'Geothermal Power':        { once: -5 },    // overvalued energy-prod. C56
-    'Agro-Drones':             { perGen: 0.3 }, // very modest trigger. D52 (overwrite earlier 1)
-
-    // === Cheap attack/event cards parser undervalues ===
-    'Air Raid':                { once: 6 },     // 0 MC + 1 floater → steal 5 MC. Floater often expendable. Event tag for Legend.
-    'Hired Raiders':           { once: 4 },     // 1 MC → steal 2 steel or 3 MC. Cheap event tag.
-  };
+  var MANUAL_EV = (TM_MANUAL_EV && TM_MANUAL_EV.MANUAL_EV) || {};
 
 
   // ══════════════════════════════════════════════════════════════
@@ -1521,70 +1449,6 @@
     var beh = cd.behavior || {};
     var act = cd.action || {};
 
-    // ── REQUIREMENT CHECK ──
-    // Penalize cards whose requirements are not yet met
-    var reqPenalty = 0;
-    var g2r = (state && state.game) || {};
-
-    // Global parameter requirements (oxygen, temperature, oceans, venus)
-    var globalReqs = _cardGlobalReqs[name];
-    if (globalReqs) {
-      for (var grk in globalReqs) {
-        var grObj = globalReqs[grk];
-        var grMin = typeof grObj === 'object' ? grObj.min : grObj;
-        var grMax = typeof grObj === 'object' ? grObj.max : undefined;
-        var grCurrent = grk === 'oceans' ? (g2r.oceans || 0) :
-                      grk === 'oxygen' ? (g2r.oxygenLevel || 0) :
-                      grk === 'temperature' ? (g2r.temperature || -30) :
-                      grk === 'venus' ? (g2r.venusScaleLevel || 0) : 0;
-        if (grMin !== undefined && grCurrent < grMin) {
-          reqPenalty += (grMin - grCurrent) * 3; // -3 per step away
-        }
-        if (grMax !== undefined && grCurrent > grMax) {
-          reqPenalty += 50; // max req passed = unplayable
-        }
-      }
-    }
-
-    // Tag requirements (earth:2, science:3, etc.)
-    // Count tags from: tableau (myTags) + self-tag + hand cards (partial credit)
-    var tagReqs = _cardTagReqs[name];
-    if (tagReqs) {
-      // Count tags available in hand (excluding this card) — partial credit (0.6x)
-      // because hand cards aren't played yet but likely will be
-      var handTagCounts = {};
-      var handCards = tp.cardsInHand || [];
-      for (var hci = 0; hci < handCards.length; hci++) {
-        var hcName = handCards[hci].name || handCards[hci];
-        if (hcName === name) continue; // skip self
-        var hcTags = getCardTagsByName(hcName, null, state);
-        for (var hti = 0; hti < hcTags.length; hti++) {
-          handTagCounts[hcTags[hti]] = (handTagCounts[hcTags[hti]] || 0) + 1;
-        }
-      }
-
-      for (var trk in tagReqs) {
-        var needed = tagReqs[trk];
-        var have = myTags[trk] || 0;
-        var wildHave = trk !== 'wild' ? (myTags.wild || 0) : 0;
-        // Count self-tag: playing this card adds its own tags
-        var selfTagCount = 0;
-        for (var sti = 0; sti < tags.length; sti++) {
-          if (tags[sti] === trk) selfTagCount++;
-        }
-        var totalAfter = have + wildHave + selfTagCount;
-        if (totalAfter < needed) {
-          var gap = needed - totalAfter;
-          // Reduce gap by hand tags (partial credit: hand cards likely to be played)
-          var exactHandHelp = handTagCounts[trk] || 0;
-          var wildHandHelp = trk !== 'wild' ? (handTagCounts.wild || 0) : 0;
-          var handHelp = Math.min(gap, exactHandHelp + wildHandHelp);
-          var effectiveGap = gap - handHelp * 0.6; // 60% credit for hand tags
-          reqPenalty += Math.max(0, effectiveGap) * 8;
-        }
-      }
-    }
-
     // _behOverrides: cards where parser gives wrong behavior data.
     // Null parsed behavior → scoreCard relies only on MANUAL_EV for these.
     var _behOverrides = {
@@ -1655,8 +1519,20 @@
       'Aerobraked Ammonia Asteroid': true, // parsed production inflates value. MANUAL_EV handles.
     };
     if (_behOverrides[name]) { beh = {}; act = {}; }
-    var vpInfo = cd.vp || _cardVP[name] || null;
+    var vpInfo = cd.vp || getCardVPByName(name, state) || null;
     var discount = cd.cardDiscount || null;
+    var resolvedReqName = resolveVariantCardName(name, state);
+    var baseReqName = baseCardName(resolvedReqName || name);
+    var reqInfo = sharedScoreRequirementPenalty ? sharedScoreRequirementPenalty({
+      state: state,
+      name: name,
+      globalReqs: _cardGlobalReqs[resolvedReqName] || _cardGlobalReqs[name] || _cardGlobalReqs[baseReqName] || null,
+      tagReqs: _cardTagReqs[resolvedReqName] || _cardTagReqs[name] || _cardTagReqs[baseReqName] || null,
+      myTags: myTags,
+      handCards: handCards,
+      getCardTags: function(cardName) { return getCardTagsByName(cardName, null, state); },
+    }) : { penalty: 0 };
+    var reqPenalty = reqInfo.penalty || 0;
 
     var ev = 0;
 
@@ -1715,18 +1591,20 @@
     // late game SP wins (TR is worth more, fewer gens for production).
     var tempoBonus = _isPatched ? 0 : (gensLeft >= 5 ? 8 : (gensLeft >= 3 ? 6 : 4));
     var glob = beh.global;
-    if (glob) {
-      var trRaises = 0;
-      for (var gk in glob) trRaises += glob[gk];
-      ev += trRaises * (trMC(gensLeft, redsTax) + tempoBonus);
-    }
-    if (beh.tr) ev += beh.tr * trMC(gensLeft, redsTax); // pure TR (no tempo, doesn't shorten game)
-    if (beh.ocean) ev += (typeof beh.ocean === 'number' ? beh.ocean : 1) * (trMC(gensLeft, redsTax) + tempoBonus + 4); // TR + tempo + ~4 MC avg board bonus (steel/ti/plants/cards)
-    if (beh.greenery) ev += trMC(gensLeft, redsTax) + tempoBonus + vpMC(gensLeft) + 3; // TR + tempo + 1 VP + ~3 MC placement/adjacency bonus
+    ev += sharedScoreGlobalTileValue ? sharedScoreGlobalTileValue({
+      beh: beh,
+      card: card,
+      game: g2,
+      gensLeft: gensLeft,
+      redsTax: redsTax,
+      trMC: trMC,
+      vpMC: vpMC,
+      tempoBonus: tempoBonus
+    }) : 0;
 
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
-    if (beh.city) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
+    if (beh.city && !isOffBoardCityCard(name)) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
     ev += estimateAresPlacementDelta(name, state, gensLeft);
 
     // ── COLONY ──
@@ -1967,6 +1845,21 @@
       }
       return total;
     };
+
+    if (tags.indexOf('science') >= 0 && tableauNames.has('Venusian Animals')) {
+      ev += 8; // existing Venusian Animals converts each future science tag into 1 VP.
+    }
+
+    if (name === 'Bactoviral Research') {
+      var bactoviralMicrobes = Math.max(1, (myTags.science || 0) + currentWildTags + 1);
+      var bactoviralResourceValue = scoreAddedResourcesToBestVpCard('microbe', bactoviralMicrobes, state, 8);
+      ev += bactoviralResourceValue.value + drawVal;
+    }
+
+    if (name === 'Imported Nutrients') {
+      var nutrientResourceValue = scoreAddedResourcesToBestVpCard('microbe', 4, state, 8);
+      ev += nutrientResourceValue.value;
+    }
 
     if (name === 'Acquired Company') {
       var acquiredCompanyPenalty = 0;
@@ -2495,6 +2388,7 @@
 
     // ── FINAL: EV minus cost ──
     // cost already includes server-side discounts via calculatedCost
+    if (isOpeningHandContext(state)) ev += getOpeningHandBiasForName(name, state);
     var netEV = ev - cost;
 
     return Math.round(netEV * 10) / 10; // 1 decimal precision
@@ -2594,7 +2488,7 @@
       // Blend with overlay rating if available (browser only)
       var overlayRating = getOverlayRatingByName(name, state);
       if (overlayRating) {
-        var baseScore = overlayRating.s || 50;
+        var baseScore = (overlayRating.s || 50) + getOpeningHandBiasForName(name, state);
         score = Math.round((score + baseScore) / 2);
       }
 

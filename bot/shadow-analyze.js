@@ -186,6 +186,27 @@ function canonicalizeAction(action) {
   return value || null;
 }
 
+function isExplicitPassAction(action) {
+  const value = String(action || '').trim().toLowerCase();
+  if (!value) return false;
+  return value === 'pass' ||
+    value === 'end turn' ||
+    value === 'skip' ||
+    value.includes('pass for this generation') ||
+    value.includes('do nothing');
+}
+
+function isOpaqueOptionIndex(action) {
+  return /^option\[\d+\]$/.test(String(action || '').trim());
+}
+
+function classifyNoCardNoSpAction(action) {
+  if (isExplicitPassAction(action)) return 'pass';
+  if (isOpaqueOptionIndex(action)) return 'unknownOption';
+  if (String(action || '').trim().startsWith('option')) return 'otherAction';
+  return 'otherAction';
+}
+
 function safeArray(value) {
   return Array.isArray(value) ? value : [];
 }
@@ -313,10 +334,11 @@ function analyze(entries) {
     byGen: {},
     byPlayer: {},
     actionDistribution: {},
-    spVsCard: {spWins: 0, cardWins: 0, bothNone: 0},
+    spVsCard: {spWins: 0, cardWins: 0, bothNone: 0, otherActions: 0, unknownOptions: 0},
     cardEVs: [],
     spEVs: [],
     reasoningPatterns: {noCards: 0, noSP: 0, cardBetterThanSP: 0, spBetterThanCard: 0},
+    projectCardCandidates: {noCandidateLine: 0, belowThreshold: 0},
     handSizes: [],
     mcAtDecision: [],
     lowMCDecisions: 0,
@@ -487,11 +509,26 @@ function analyze(entries) {
         stats.spEVs.push(spEV);
         stats.byGen[gen].sp++;
       } else {
-        stats.spVsCard.bothNone++;
-        stats.byGen[gen].pass++;
+        const noCardNoSpKind = classifyNoCardNoSpAction(e.botAction);
+        if (noCardNoSpKind === 'pass') {
+          stats.spVsCard.bothNone++;
+          stats.byGen[gen].pass++;
+        } else if (noCardNoSpKind === 'unknownOption') {
+          stats.spVsCard.unknownOptions++;
+          stats.byGen[gen].action++;
+        } else {
+          stats.spVsCard.otherActions++;
+          stats.byGen[gen].action++;
+        }
       }
 
-      if (!cardName || cardName === 'none') stats.reasoningPatterns.noCards++;
+      if (!cardName || cardName === 'none') {
+        stats.reasoningPatterns.noCards++;
+        const handCountMatch = handLine ? handLine.match(/hand\((\d+)\)/) : null;
+        const handCount = handCountMatch ? parseInt(handCountMatch[1], 10) : 0;
+        if (handCount > 0) stats.projectCardCandidates.belowThreshold++;
+        else stats.projectCardCandidates.noCandidateLine++;
+      }
       if (spEV <= -900) stats.reasoningPatterns.noSP++;
     }
 
@@ -515,7 +552,7 @@ function analyze(entries) {
     }
 
     stats.passRate.total++;
-    if (action.includes('pass') || (spEV <= -900 && (!cardName || cardName === 'none'))) {
+    if (isExplicitPassAction(action)) {
       stats.passRate.passes++;
     }
   }
@@ -629,11 +666,14 @@ function formatReport(stats, files) {
   }
 
   lines.push('## Card vs SP Decisions');
-  const total = stats.spVsCard.cardWins + stats.spVsCard.spWins + stats.spVsCard.bothNone;
+  const total = stats.spVsCard.cardWins + stats.spVsCard.spWins + stats.spVsCard.bothNone +
+    stats.spVsCard.otherActions + stats.spVsCard.unknownOptions;
   if (total > 0) {
     lines.push(`  Card wins: ${stats.spVsCard.cardWins} (${(stats.spVsCard.cardWins / total * 100).toFixed(0)}%)`);
     lines.push(`  SP wins:   ${stats.spVsCard.spWins} (${(stats.spVsCard.spWins / total * 100).toFixed(0)}%)`);
-    lines.push(`  Neither:   ${stats.spVsCard.bothNone} (${(stats.spVsCard.bothNone / total * 100).toFixed(0)}%)`);
+    lines.push(`  Explicit pass/no-op: ${stats.spVsCard.bothNone} (${(stats.spVsCard.bothNone / total * 100).toFixed(0)}%)`);
+    lines.push(`  Other actions: ${stats.spVsCard.otherActions} (${(stats.spVsCard.otherActions / total * 100).toFixed(0)}%)`);
+    lines.push(`  Unclassified option actions: ${stats.spVsCard.unknownOptions} (${(stats.spVsCard.unknownOptions / total * 100).toFixed(0)}%)`);
   }
   if (stats.cardEVs.length > 0) {
     const avgCardEV = stats.cardEVs.reduce((a, b) => a + b, 0) / stats.cardEVs.length;
@@ -645,12 +685,18 @@ function formatReport(stats, files) {
   }
   lines.push('');
 
-  if (stats.handSizes.length > 0) {
-    const avgHand = stats.handSizes.reduce((a, b) => a + b, 0) / stats.handSizes.length;
+  if (stats.handSizes.length > 0 || stats.totalDecisions > 0) {
     lines.push('## Hand Analysis');
-    lines.push(`  Avg playable cards in hand: ${avgHand.toFixed(1)}`);
+    if (stats.handSizes.length > 0) {
+      const avgHand = stats.handSizes.reduce((a, b) => a + b, 0) / stats.handSizes.length;
+      lines.push(`  Avg playable cards in hand: ${avgHand.toFixed(1)}`);
+    } else {
+      lines.push('  Avg playable cards in hand: n/a');
+    }
     if (stats.totalDecisions > 0) {
-      lines.push(`  Empty hand (0 playable): ${stats.reasoningPatterns.noCards} / ${stats.totalDecisions} (${(stats.reasoningPatterns.noCards / stats.totalDecisions * 100).toFixed(0)}%)`);
+      lines.push(`  No project-card candidate: ${stats.reasoningPatterns.noCards} / ${stats.totalDecisions} (${(stats.reasoningPatterns.noCards / stats.totalDecisions * 100).toFixed(0)}%)`);
+      lines.push(`  No candidate line: ${stats.projectCardCandidates.noCandidateLine}`);
+      lines.push(`  Candidates below threshold: ${stats.projectCardCandidates.belowThreshold}`);
     }
     lines.push('');
   }
@@ -682,8 +728,8 @@ function formatReport(stats, files) {
     lines.push('  No DECISION traces found in the selected logs.');
   } else {
     if (stats.reasoningPatterns.noCards / stats.totalDecisions > 0.6) {
-      lines.push('  EMPTY HAND >60% of decisions — bot runs out of playable cards too fast');
-      lines.push('  Consider: buy more cards, lower play threshold, hold cards for later gens');
+      lines.push('  NO PROJECT-CARD CANDIDATE >60% of decisions — bot often has no playable/scored project card');
+      lines.push('  Consider: buy more cards, improve affordability, lower play threshold, or use action/SP labels before tuning pass rate');
     }
     if (stats.lowMCDecisions / stats.totalDecisions > 0.4) {
       lines.push('  LOW MC >40% of decisions — bot spends MC too aggressively');
@@ -693,7 +739,12 @@ function formatReport(stats, files) {
       lines.push('  SP dominates cards 2:1 — scoreCard may undervalue cards');
       lines.push('  Consider: increase sunk cost bonus, add tag value to scoreCard');
     }
-    if (total > 0 && stats.spVsCard.bothNone / total > 0.5) {
+    if (total > 0 && stats.spVsCard.unknownOptions / total > 0.25) {
+      lines.push('  RAW OPTION ACTIONS >25% — old shadow logs do not identify selected option titles');
+      lines.push('  Consider: regenerate shadow logs after runtime option-label logging before tuning pass rate');
+    }
+    const classifiedDecisionTotal = Math.max(1, total - stats.spVsCard.unknownOptions);
+    if (total > 0 && stats.spVsCard.bothNone / classifiedDecisionTotal > 0.5) {
       lines.push('  >50% decisions have neither card nor SP — bot passes too much');
       lines.push('  Consider: lower thresholds, use blue card actions more');
     }

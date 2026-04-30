@@ -196,6 +196,17 @@ function makeSellWorkflow(cards, min = 1) {
   };
 }
 
+function makeSellOrPassWorkflow(cards) {
+  return {
+    type: 'or',
+    title: 'Take your next action',
+    options: [
+      makeSellWorkflow(cards),
+      {title: 'Pass for this generation', type: 'option'},
+    ],
+  };
+}
+
 function makeDraftKeepWorkflow(cards, min = 1) {
   return {
     type: 'card',
@@ -351,7 +362,28 @@ function testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport() {
   ];
   const state = makeState({mc: 30, gen: 3, hand});
   const score = BOT.TM_BRAIN.scoreCard(hand[0], state);
-  assert.ok(score >= 20);
+  const noSupportScore = BOT.TM_BRAIN.scoreCard(makeCard('Optimal Aerobraking'), makeState({
+    mc: 30,
+    gen: 3,
+    hand: [makeCard('Optimal Aerobraking')],
+  }));
+  assert.ok(score > noSupportScore + 6);
+}
+
+function testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport() {
+  const eventSupport = [
+    makeCard('Optimal Aerobraking'),
+    makeCard('Comet'),
+    makeCard('Big Asteroid'),
+  ];
+  const nonEventSupport = [
+    makeCard('Optimal Aerobraking'),
+    makeCard('Comet'),
+    makeCard('Space Station'),
+  ];
+  const eventScore = BOT.TM_BRAIN.scoreCard(eventSupport[0], makeState({mc: 30, gen: 3, hand: eventSupport}));
+  const nonEventScore = BOT.TM_BRAIN.scoreCard(nonEventSupport[0], makeState({mc: 30, gen: 3, hand: nonEventSupport}));
+  assert.ok(eventScore > nonEventScore);
 }
 
 function testScoreCardValuesDiscountCardMoreWithMatchingHand() {
@@ -388,7 +420,7 @@ function testScoreCardDelaysExpensivePureVpCardsEarly() {
 }
 
 function testScoreCardRewardsVpActionCardsEarlier() {
-  const card = makeCard('Birds');
+  const card = makeCard('Tardigrades');
   const earlyState = makeState({mc: 30, gen: 3, hand: []});
   earlyState.game.temperature = -20;
   earlyState.game.oxygenLevel = 2;
@@ -405,7 +437,7 @@ function testScoreCardRewardsVpActionCardsEarlier() {
 }
 
 function testScoreCardDoesNotGiveWeakPseudoVpActionEarlyBoost() {
-  const card = makeCard('Search For Life');
+  const card = makeCard('Security Fleet');
   const earlyState = makeState({mc: 30, gen: 3, hand: []});
   earlyState.game.temperature = -20;
   earlyState.game.oxygenLevel = 2;
@@ -700,6 +732,19 @@ function testBuyPhaseRelaxesReserveWhenHandStarved() {
   assert.ok(input.cards.includes('Acquired Company'));
 }
 
+function testStarvedBuyPreservesCashForExpensiveTopLine() {
+  const pack = ['Immigration Shuttles', 'Casino', 'Excavator Leasing', 'Energy Tapping'].map(makeCard);
+  const mc = 36;
+  const input = BOT.handleInput(makeBuyWorkflow(pack), makeState({mc, gen: 5, hand: []}));
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'card');
+  assert.ok(input.cards.includes('Immigration Shuttles'), 'the expensive top-line card should still be bought');
+  assert.ok(
+    mc - input.cards.length * 3 >= BOT.CARD_DATA['Immigration Shuttles'].cost,
+    'starved buy should not add filler that makes the expensive top-line card unaffordable after research',
+  );
+}
+
 function testStarvedBuySkipsWeakFiller() {
   const pack = ['Research', 'Acquired Company', 'Political Alliance', 'Envoys From Venus'].map(makeCard);
   const input = BOT.handleInput(makeBuyWorkflow(pack), makeState({mc: 24, gen: 5, hand: []}));
@@ -708,6 +753,58 @@ function testStarvedBuySkipsWeakFiller() {
   assert.ok(input.cards.includes('Research'));
   assert.ok(input.cards.includes('Acquired Company'));
   assert.ok(!input.cards.includes('Envoys From Venus'));
+}
+
+function testLateBuySkipsLowPriorityPlayableFiller() {
+  const pack = ['Research', 'Cutting Edge Technology', 'Weather Balloons', 'Land Claim'].map(makeCard);
+  const hand = Array.from({length: 5}, (_, i) => ({name: `Held${i}`}));
+  const state = makeState({mc: 60, gen: 10, hand, income: 35});
+  state.game.temperature = 0;
+  state.game.oxygenLevel = 12;
+  state.game.oceans = 6;
+  state.game.venusScaleLevel = 14;
+  state.thisPlayer.tags = {science: 4};
+  const input = BOT.handleInput(makeBuyWorkflow(pack), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'card');
+  assert.ok(input.cards.includes('Research'));
+  assert.ok(input.cards.includes('Cutting Edge Technology'));
+  assert.ok(!input.cards.includes('Weather Balloons'));
+  assert.ok(!input.cards.includes('Land Claim'));
+}
+
+function testMidgameBufferedHandSkipsFourthProductionFiller() {
+  const pack = ['Business Network', 'Kaguya Tech', 'Bushes', 'Trees', 'Asteroid Mining', 'Research', 'Cutting Edge Technology', 'Weather Balloons'].map(makeCard);
+  const hand = Array.from({length: 7}, (_, i) => ({name: `Held${i}`}));
+  const state = makeState({mc: 60, gen: 5, hand, income: 35});
+  state.game.temperature = -4;
+  state.game.oxygenLevel = 7;
+  state.game.oceans = 5;
+  state.game.venusScaleLevel = 14;
+  state.thisPlayer.tags = {science: 2};
+  const input = BOT.handleInput(makeBuyWorkflow(pack), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'card');
+  assert.ok(input.cards.includes('Trees'));
+  assert.ok(input.cards.includes('Research'));
+  assert.ok(input.cards.length <= 3, 'buffered midgame hand should not buy a fourth setup filler');
+  assert.ok(!input.cards.includes('Bushes'), 'Bushes is playable but should not be the fourth buy when hand is already buffered');
+}
+
+function testBuyPhaseUsesTopLevelHandForBufferedThrottle() {
+  const pack = ['Business Network', 'Kaguya Tech', 'Bushes', 'Trees', 'Asteroid Mining', 'Research', 'Cutting Edge Technology', 'Weather Balloons'].map(makeCard);
+  const hand = Array.from({length: 7}, (_, i) => ({name: `Held${i}`}));
+  const state = makeState({mc: 60, gen: 5, hand, income: 35});
+  delete state.thisPlayer.cardsInHand;
+  state.game.temperature = -4;
+  state.game.oxygenLevel = 7;
+  state.game.oceans = 5;
+  state.game.venusScaleLevel = 14;
+  state.thisPlayer.tags = {science: 2};
+  const input = BOT.handleInput(makeBuyWorkflow(pack), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'card');
+  assert.ok(input.cards.length <= 3, 'server-shaped state should still count top-level cardsInHand for buffered buy throttle');
 }
 
 function testBuyPhaseStaysTightWhenHandIsAlreadyFull() {
@@ -1180,6 +1277,35 @@ function testGen10CoreCompletionDefersNonCoreCardForGreenery() {
   assert.deepStrictEqual(input.response?.cards, ['Greenery']);
 }
 
+function testGen10CoreCompletionStillPlaysPremiumVpActionPayoff() {
+  const hand = ['Jovian Lanterns'].map(makeCard);
+  const state = makeState({mc: 42, gen: 10, hand, income: 35});
+  state.game.temperature = 8;
+  state.game.oxygenLevel = 14;
+  state.game.oceans = 1;
+  state.game.venusScaleLevel = 30;
+  state.thisPlayer.titanium = 5;
+  state.thisPlayer.terraformRating = 35;
+  state.thisPlayer.tags = {jovian: 3};
+  state.thisPlayer.tableau = [
+    {name: 'Viron'},
+    {name: 'Io Mining Industries'},
+    {name: 'Ganymede Colony'},
+    {name: 'Titan Shuttles'},
+  ];
+  state.thisPlayer.victoryPointsBreakdown = {total: 75};
+  state.players = [
+    {color: 'red', megacreditProduction: 35, terraformRating: 35, victoryPointsBreakdown: {total: 75}, tags: {jovian: 3}},
+    {color: 'blue', megacreditProduction: 25, terraformRating: 30, victoryPointsBreakdown: {total: 68}},
+    {color: 'green', megacreditProduction: 18, terraformRating: 28, victoryPointsBreakdown: {total: 62}},
+  ];
+  const input = BOT.handleInput(makeStandardProjectWorkflow(hand), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.strictEqual(input.response?.card, 'Jovian Lanterns');
+}
+
 function testGen12TwoCoreGlobalsDefersNonCoreCardForAquifer() {
   const hand = ['Jovian Embassy', 'Livestock', 'Acidizing', 'Huygens Observatory'].map(makeCard);
   const state = makeState({mc: 48, gen: 12, hand, income: 35});
@@ -1436,6 +1562,25 @@ function testFarFromClosureAsteroidDoesNotBeatStrongCardOnTempoBoost() {
   assert.strictEqual(input.type, 'or');
   assert.strictEqual(input.index, 0);
   assert.strictEqual(input.response?.card, 'Extremophiles');
+}
+
+function testFarFromClosureNegativeAsteroidPassesInsteadOfTempoPush() {
+  const standardCards = ['Asteroid:SP', 'Aquifer', 'Greenery'].map(makeCard);
+  const state = makeState({mc: 37, gen: 4, hand: [], income: 28});
+  state.game.temperature = -30;
+  state.game.oxygenLevel = 0;
+  state.game.oceans = 0;
+  state.game.venusScaleLevel = 14;
+  state.thisPlayer.victoryPointsBreakdown = {total: 21};
+  state.players = [
+    {color: 'red', megacreditProduction: 28, terraformRating: 21, victoryPointsBreakdown: {total: 21}},
+    {color: 'blue', megacreditProduction: 45, terraformRating: 30, victoryPointsBreakdown: {total: 8}},
+    {color: 'green', megacreditProduction: 20, terraformRating: 22, victoryPointsBreakdown: {total: 7}},
+  ];
+  const input = BOT.handleInput(makeCustomActionVsStandardProjectWorkflow([], standardCards), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 2);
 }
 
 function testNearClosureAsteroidStillBeatsWeakCardOnTempoBoost() {
@@ -1710,6 +1855,20 @@ function testSellPatentsStillDumpsDeadCardsInEndgame() {
   assert.strictEqual(input.cards.length, 4);
 }
 
+function testLateIdleCleansWeakCardBeforePass() {
+  const pack = ['Supermarkets', 'Tundra Farming'].map(makeCard);
+  const state = makeState({mc: 30, gen: 9, hand: pack, income: 35});
+  state.game.temperature = 0;
+  state.game.oxygenLevel = 10;
+  state.game.oceans = 7;
+  state.game.venusScaleLevel = 30;
+  const input = BOT.handleInput(makeSellOrPassWorkflow(pack), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.deepStrictEqual(input.response?.cards, ['Supermarkets']);
+}
+
 function testDelaysFirstAwardForStrongPlayableCard() {
   const hand = ['Olympus Conference', 'Think Tank', 'Mining Expedition'].map(makeCard);
   const players = [
@@ -1782,6 +1941,7 @@ function main() {
   testScoreCardPenalizesGlobalRaiseThatHelpsOpponents();
   testScoreCardValuesGreenhousesWhenCitiesExist();
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport();
+  testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport();
   testScoreCardValuesDiscountCardMoreWithMatchingHand();
   testScoreCardGivesProductionCardsMoreRunwayEarly();
   testScoreCardDelaysExpensivePureVpCardsEarly();
@@ -1808,7 +1968,11 @@ function main() {
   testFreeDelegateDoesNotDelayProjectCardPass();
   testSeptemOpeningUsesCorpActionBeforeProjectCard();
   testBuyPhaseRelaxesReserveWhenHandStarved();
+  testStarvedBuyPreservesCashForExpensiveTopLine();
   testStarvedBuySkipsWeakFiller();
+  testLateBuySkipsLowPriorityPlayableFiller();
+  testMidgameBufferedHandSkipsFourthProductionFiller();
+  testBuyPhaseUsesTopLevelHandForBufferedThrottle();
   testBuyPhaseStaysTightWhenHandIsAlreadyFull();
   testThinHandMidgamePrefersPlayableCardOverSmallSpEdge();
   testThinHandMidgameStillLetsSpBeatWeakCard();
@@ -1839,6 +2003,7 @@ function main() {
   testLateCoreCompletionDefersNonCoreCardForAquifer();
   testLateCoreCompletionFundsCoreSpBeforeAward();
   testGen10CoreCompletionDefersNonCoreCardForGreenery();
+  testGen10CoreCompletionStillPlaysPremiumVpActionPayoff();
   testGen12TwoCoreGlobalsDefersNonCoreCardForAquifer();
   testGen12ThirteenCoreStepsDefersMidValueCardForAquifer();
   testFinalCoreStepsDefersHighValueVenusCardForGreenery();
@@ -1853,6 +2018,7 @@ function main() {
   testLateCoreGlobalClosurePrefersGreeneryOverBlueActions();
   testLateOceanClosurePrefersAquiferOverBlueActions();
   testFarFromClosureAsteroidDoesNotBeatStrongCardOnTempoBoost();
+  testFarFromClosureNegativeAsteroidPassesInsteadOfTempoPush();
   testNearClosureAsteroidStillBeatsWeakCardOnTempoBoost();
   testMidClosureAsteroidDoesNotBeatSolidCardOnNegativeRaw();
   testLateTerraformRaceDefersProductionCardForAsteroid();
@@ -1869,6 +2035,7 @@ function main() {
   testSellPatentsKeepsSetupCardsInMidgame();
   testSellPatentsDoesNotProtectSearchForLifeTrap();
   testSellPatentsStillDumpsDeadCardsInEndgame();
+  testLateIdleCleansWeakCardBeforePass();
   testDelaysFirstAwardForStrongPlayableCard();
   testDelaysSecondAwardForVeryStrongPlayableCard();
   testStillFundsAwardWhenVisibleCardsAreWeak();
@@ -1879,7 +2046,11 @@ module.exports = {
   testSmartPayLeavesOneFloaterForStratosphericBirdsWhenSingleSource,
   testSmartPayCanSpendAllFloatersForStratosphericBirdsWhenMultipleSources,
   testBuyPhaseRelaxesReserveWhenHandStarved,
+  testStarvedBuyPreservesCashForExpensiveTopLine,
   testBuyPhaseStaysTightWhenHandIsAlreadyFull,
+  testLateBuySkipsLowPriorityPlayableFiller,
+  testMidgameBufferedHandSkipsFourthProductionFiller,
+  testBuyPhaseUsesTopLevelHandForBufferedThrottle,
   testPrefersHeatOverFreeDelegate,
   testGen12FarCoreConvertsHeatBeforeAward,
   testClosedTemperatureSkipsHeatAndPushesGreenery,
@@ -1896,6 +2067,7 @@ module.exports = {
   testScoreCardPenalizesGlobalRaiseThatHelpsOpponents,
   testScoreCardValuesGreenhousesWhenCitiesExist,
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport,
+  testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport,
   testScoreCardValuesDiscountCardMoreWithMatchingHand,
   testScoreCardGivesProductionCardsMoreRunwayEarly,
   testScoreCardDelaysExpensivePureVpCardsEarly,
@@ -1942,6 +2114,7 @@ module.exports = {
   testLateCoreCompletionDefersNonCoreCardForAquifer,
   testLateCoreCompletionFundsCoreSpBeforeAward,
   testGen10CoreCompletionDefersNonCoreCardForGreenery,
+  testGen10CoreCompletionStillPlaysPremiumVpActionPayoff,
   testGen12TwoCoreGlobalsDefersNonCoreCardForAquifer,
   testGen12ThirteenCoreStepsDefersMidValueCardForAquifer,
   testFinalCoreStepsDefersHighValueVenusCardForGreenery,
@@ -1956,6 +2129,7 @@ module.exports = {
   testLateCoreGlobalClosurePrefersGreeneryOverBlueActions,
   testLateOceanClosurePrefersAquiferOverBlueActions,
   testFarFromClosureAsteroidDoesNotBeatStrongCardOnTempoBoost,
+  testFarFromClosureNegativeAsteroidPassesInsteadOfTempoPush,
   testNearClosureAsteroidStillBeatsWeakCardOnTempoBoost,
   testMidClosureAsteroidDoesNotBeatSolidCardOnNegativeRaw,
   testLateTerraformRaceDefersProductionCardForAsteroid,
@@ -1972,6 +2146,7 @@ module.exports = {
   testSellPatentsKeepsSetupCardsInMidgame,
   testSellPatentsDoesNotProtectSearchForLifeTrap,
   testSellPatentsStillDumpsDeadCardsInEndgame,
+  testLateIdleCleansWeakCardBeforePass,
   testDelaysFirstAwardForStrongPlayableCard,
   testDelaysSecondAwardForVeryStrongPlayableCard,
   testStillFundsAwardWhenVisibleCardsAreWeak,

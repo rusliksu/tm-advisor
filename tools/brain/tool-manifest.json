@@ -4,6 +4,7 @@
     "tools/brain/test-core.js",
     "tools/brain/sync-core.js",
     "tools/brain/sync-card-variants.js",
+    "tools/brain/sync-manual-ev.js",
     "scripts/test-tm-brain-core.js",
     "scripts/sync-tm-brain-core.js",
     "scripts/sync-tm-card-variants.js"
@@ -15,8 +16,10 @@
         "\"test:brain-core\": \"node tools/brain/test-core.js\"",
         "\"brain:check-card-variants\": \"node tools/brain/sync-card-variants.js --check\"",
         "\"brain:check-core\": \"node tools/brain/sync-core.js --check\"",
+        "\"brain:check-manual-ev\": \"node tools/brain/sync-manual-ev.js --check\"",
         "\"brain:sync-card-variants\": \"node tools/brain/sync-card-variants.js\"",
-        "\"brain:sync-core\": \"node tools/brain/sync-core.js\""
+        "\"brain:sync-core\": \"node tools/brain/sync-core.js\"",
+        "\"brain:sync-manual-ev\": \"node tools/brain/sync-manual-ev.js\""
       ]
     },
     {
@@ -38,6 +41,14 @@
       "contains": [
         "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'brain', 'sync-card-variants.js');",
         "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
+      ]
+    },
+    {
+      "path": "tools/brain/sync-manual-ev.js",
+      "contains": [
+        "packages', 'tm-brain-js', 'src', 'manual-ev.js'",
+        "extension', 'shared', 'manual-ev.js'",
+        "bot', 'shared', 'manual-ev.js'"
       ]
     }
   ]

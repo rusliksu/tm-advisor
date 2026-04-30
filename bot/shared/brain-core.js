@@ -308,7 +308,14 @@
           else if (triggerTag === 'event' && ht === 'event') handTagCount++;
           else if (triggerTag === 'venus' && ht === 'venus') handTagCount++;
           else if (triggerTag === 'bio' && (ht === 'plant' || ht === 'animal' || ht === 'microbe')) handTagCount++;
-          else if (triggerTag === 'space_event' && ht === 'space') handTagCount++;
+          else if (
+            triggerTag === 'space_event' &&
+            hcTags.indexOf('space') >= 0 &&
+            hcTags.indexOf('event') >= 0
+          ) {
+            handTagCount++;
+            break;
+          }
         }
       }
     }
@@ -353,6 +360,27 @@
     };
   }
 
+  function estimateAverageGameLengthFromState(state, options) {
+    var opts = options || {};
+    var g = (state && state.game) || {};
+    var playerCount = typeof opts.playerCount === 'number'
+      ? opts.playerCount
+      : ((state && state.players) ? (state.players.length || 3) : 3);
+    var gameOptions = g.gameOptions || {};
+
+    var avgGameLen = playerCount <= 2 ? 11.5 : (playerCount === 3 ? 9 : (playerCount === 4 ? 8.5 : 8));
+    var hasSolarPhase = !!(gameOptions.solarPhaseOption || gameOptions.worldGovernmentTerraforming);
+    var noSolarPhase = gameOptions.solarPhaseOption === false || gameOptions.worldGovernmentTerraforming === false;
+    if (noSolarPhase && !hasSolarPhase) {
+      avgGameLen += playerCount <= 2 ? 1.5 : (playerCount === 3 ? 1 : 0.5);
+    }
+    if (gameOptions.preludeExtension === false) avgGameLen += 1;
+    if (gameOptions.requiresVenusTrackCompletion) avgGameLen += 0.5;
+    if (hasSolarPhase && playerCount >= 4) avgGameLen -= 0.2;
+
+    return Math.max(7.5, Math.min(13.5, avgGameLen));
+  }
+
   function estimateGensLeftFromState(state, options) {
     var opts = options || {};
     var breakdown = buildGlobalProgressBreakdown(state);
@@ -361,34 +389,27 @@
     var playerCount = typeof opts.playerCount === 'number'
       ? opts.playerCount
       : ((state && state.players) ? (state.players.length || 3) : 3);
-    var isWgt = !!(g.gameOptions && g.gameOptions.solarPhaseOption);
     var coreSteps = breakdown.tempSteps + breakdown.oxySteps + breakdown.oceanSteps;
 
     if (coreSteps <= 0) return 1;
 
-    var baseSteps;
-    if (playerCount <= 2) baseSteps = isWgt ? 4 : 3;
-    else if (playerCount >= 4) baseSteps = isWgt ? 8 : 6;
-    else baseSteps = isWgt ? 6 : 4;
-
-    var stepsPerGen = baseSteps;
-    if (gen <= 3) {
-      stepsPerGen = Math.max(3, baseSteps - 2);
-    } else if (gen >= 7) {
-      stepsPerGen = baseSteps + (playerCount >= 3 ? 2 : 1);
-    }
-
-    var lateCloseout = gen >= 7 && coreSteps <= 18;
-    if (breakdown.venus < 30 && isWgt) {
-      if (lateCloseout) {
-        stepsPerGen += 1;
-      } else if (gen < 7) {
-        stepsPerGen = Math.max(3, stepsPerGen - 1);
+    var avgGameLen = typeof opts.avgGameLen === 'number'
+      ? opts.avgGameLen
+      : estimateAverageGameLengthFromState(state, { playerCount: playerCount });
+    var totalCoreSteps = 42;
+    var avgRatePerGen = totalCoreSteps / avgGameLen;
+    var genBased = Math.max(1, Math.ceil(avgGameLen - gen + 1));
+    var stepsBased = Math.max(1, Math.ceil(coreSteps / avgRatePerGen));
+    var gensLeft = Math.min(genBased, stepsBased);
+    var completedGens = Math.max(0, gen - 1);
+    var completedCoreSteps = Math.max(0, totalCoreSteps - coreSteps);
+    if (completedGens >= 3 && completedCoreSteps >= 12) {
+      var observedRatePerGen = completedCoreSteps / completedGens;
+      if (observedRatePerGen > avgRatePerGen * 1.05) {
+        var observedStepsBased = Math.max(1, Math.ceil(coreSteps / observedRatePerGen));
+        gensLeft = Math.min(gensLeft, observedStepsBased);
       }
     }
-
-    var rawGens = coreSteps / Math.max(1, stepsPerGen);
-    var gensLeft = lateCloseout ? Math.round(rawGens) : Math.ceil(rawGens);
 
     if (gen >= 8 && playerCount >= 3 && coreSteps <= 18) {
       gensLeft = Math.min(gensLeft, 2);
@@ -549,7 +570,7 @@
       heatDevalue: tempStepsLeft <= 1 ? 0.2 : (tempStepsLeft <= 3 ? 0.5 : 1.0),
       plantDevalue: oxyStepsLeft <= 1 ? 0.6 : (oxyStepsLeft <= 3 ? 0.8 : 1.0),
       prodCompound: isPatched ? (gensLeft >= 8 ? 1.3 : (gensLeft >= 5 ? 1.15 : 1.0)) : 1.0,
-      prodLatePenalty: gensLeft <= 1 ? 0.15 : (gensLeft <= 2 ? 0.4 : (gensLeft <= 3 ? 0.65 : 1.0)),
+      prodLatePenalty: gensLeft <= 1 ? 0.05 : (gensLeft <= 2 ? 0.25 : (gensLeft <= 3 ? 0.55 : 1.0)),
     };
   }
 
@@ -576,6 +597,124 @@
   function getOpeningHandBias(overlayRating, state) {
     if (!overlayRating || typeof overlayRating.o !== 'number') return 0;
     return isOpeningHandContext(state) ? normalizeOpeningHandBias(overlayRating.o) : 0;
+  }
+
+  function getGlobalRequirementCurrent(param, game) {
+    var g = game || {};
+    if (param === 'oceans') return typeof g.oceans === 'number' ? g.oceans : 0;
+    if (param === 'oxygen') return typeof g.oxygenLevel === 'number' ? g.oxygenLevel : 0;
+    if (param === 'temperature') return typeof g.temperature === 'number' ? g.temperature : -30;
+    if (param === 'venus') return typeof g.venusScaleLevel === 'number' ? g.venusScaleLevel : 0;
+    return 0;
+  }
+
+  function globalRequirementStepGap(param, fromValue, toValue) {
+    var diff = Math.max(0, Number(toValue) - Number(fromValue));
+    if (!isFinite(diff) || diff <= 0) return 0;
+    if (param === 'temperature' || param === 'venus') return Math.ceil(diff / 2);
+    return Math.ceil(diff);
+  }
+
+  function estimateGlobalRequirementDelay(param, stepGap, state) {
+    if (!stepGap) return 0;
+    var avgLen = estimateAverageGameLengthFromState(state);
+    var avgRate = param === 'venus' ? (15 / avgLen) : (42 / avgLen);
+    return Math.max(1, Math.ceil(stepGap / Math.max(1, avgRate)));
+  }
+
+  function scoreGlobalRequirementGap(param, stepGap, state) {
+    if (!stepGap) return 0;
+    var delayGens = estimateGlobalRequirementDelay(param, stepGap, state);
+    var raw = stepGap * 1.5 + delayGens * 2;
+    var cap = param === 'venus' ? 30 : 36;
+    return Math.min(cap, raw);
+  }
+
+  function countHandTagsForRequirement(handCards, selfName, getCardTags) {
+    var counts = {};
+    var lookupCardTags = getCardTags || function() { return []; };
+    for (var hci = 0; hci < (handCards || []).length; hci++) {
+      var hcName = handCards[hci] && (handCards[hci].name || handCards[hci]);
+      if (!hcName || hcName === selfName) continue;
+      var hcTags = lookupCardTags(hcName) || [];
+      for (var hti = 0; hti < hcTags.length; hti++) {
+        counts[hcTags[hti]] = (counts[hcTags[hti]] || 0) + 1;
+      }
+    }
+    return counts;
+  }
+
+  function scoreRequirementPenalty(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var game = state.game || {};
+    var name = opts.name || '';
+    var globalReqs = opts.globalReqs || null;
+    var tagReqs = opts.tagReqs || null;
+    var myTags = opts.myTags || {};
+    var handCards = opts.handCards || [];
+    var getCardTags = opts.getCardTags || function() { return []; };
+    var penalty = 0;
+    var globalPenalty = 0;
+    var tagPenalty = 0;
+    var details = [];
+
+    if (globalReqs) {
+      for (var grk in globalReqs) {
+        var grObj = globalReqs[grk];
+        var grMin = typeof grObj === 'object' ? grObj.min : grObj;
+        var grMax = typeof grObj === 'object' ? grObj.max : undefined;
+        var current = getGlobalRequirementCurrent(grk, game);
+        if (grMin !== undefined && current < grMin) {
+          var minGap = globalRequirementStepGap(grk, current, grMin);
+          var minPenalty = scoreGlobalRequirementGap(grk, minGap, state);
+          globalPenalty += minPenalty;
+          details.push({ type: 'global-min', key: grk, steps: minGap, penalty: minPenalty });
+        }
+        if (grMax !== undefined && current > grMax) {
+          var maxGap = globalRequirementStepGap(grk, grMax, current);
+          var maxPenalty = 50 + Math.min(20, maxGap * 3);
+          globalPenalty += maxPenalty;
+          details.push({ type: 'global-max', key: grk, steps: maxGap, penalty: maxPenalty });
+        }
+      }
+    }
+
+    if (tagReqs) {
+      var handTagCounts = countHandTagsForRequirement(handCards, name, getCardTags);
+      var handCredit = typeof opts.handTagCredit === 'number' ? opts.handTagCredit : 0.75;
+      var perMissingTag = typeof opts.perMissingTagPenalty === 'number' ? opts.perMissingTagPenalty : 8;
+      for (var trk in tagReqs) {
+        var needed = tagReqs[trk];
+        var have = myTags[trk] || 0;
+        var wildHave = trk !== 'wild' ? (myTags.wild || 0) : 0;
+        var gap = needed - have - wildHave;
+        if (gap > 0) {
+          var exactHandHelp = handTagCounts[trk] || 0;
+          var wildHandHelp = trk !== 'wild' ? (handTagCounts.wild || 0) : 0;
+          var handHelp = Math.min(gap, exactHandHelp + wildHandHelp);
+          var effectiveGap = Math.max(0, gap - handHelp * handCredit);
+          var localPenalty = effectiveGap * perMissingTag;
+          tagPenalty += localPenalty;
+          details.push({
+            type: 'tag',
+            key: trk,
+            missing: gap,
+            handHelp: handHelp,
+            effectiveGap: effectiveGap,
+            penalty: localPenalty,
+          });
+        }
+      }
+    }
+
+    penalty = globalPenalty + tagPenalty;
+    return {
+      penalty: penalty,
+      globalPenalty: globalPenalty,
+      tagPenalty: tagPenalty,
+      details: details,
+    };
   }
 
   function analyzePass(state, options) {
@@ -1172,6 +1311,60 @@
     return delta;
   }
 
+  function liveGlobalRaiseCount(param, amount, game, counter) {
+    var count = Number(amount) || 0;
+    if (count <= 0) return 0;
+    var key = String(param || '').toLowerCase();
+    var g2 = game || {};
+    var tempNow = typeof g2.temperature === 'number' ? g2.temperature : -30;
+    var oxyNow = typeof g2.oxygenLevel === 'number' ? g2.oxygenLevel : 0;
+    var oceansNow = typeof g2.oceans === 'number' ? g2.oceans : 0;
+    var venusNow = typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30;
+    var left = count;
+    if (key === 'temperature' || key === 'temp' || key === 'heat') left = Math.max(0, Math.round((8 - tempNow) / 2));
+    else if (key === 'oxygen' || key === 'o2') left = Math.max(0, 14 - oxyNow);
+    else if (key === 'ocean' || key === 'oceans') left = Math.max(0, 9 - oceansNow);
+    else if (key === 'venus') left = Math.max(0, Math.round((30 - venusNow) / 2));
+    var live = Math.min(count, left);
+    if (counter) counter.maxed += Math.max(0, count - live);
+    return live;
+  }
+
+  function scoreGlobalTileValue(options) {
+    var opts = options || {};
+    var beh = opts.beh || {};
+    var card = opts.card || {};
+    var game = opts.game || {};
+    var gensLeft = typeof opts.gensLeft === 'number' ? opts.gensLeft : 1;
+    var redsTax = opts.redsTax || 0;
+    var trMCFn = opts.trMC || trMC;
+    var vpMCFn = opts.vpMC || vpMC;
+    var tempoBonus = opts.tempoBonus || 0;
+    var glob = beh.global;
+    var counter = { maxed: 0 };
+    var delta = 0;
+
+    if (glob) {
+      var trRaises = 0;
+      for (var gk in glob) trRaises += liveGlobalRaiseCount(gk, glob[gk], game, counter);
+      delta += trRaises * (trMCFn(gensLeft, redsTax) + tempoBonus);
+    }
+    if (counter.maxed > 0) delta -= counter.maxed * 3;
+    if (beh.tr) delta += beh.tr * trMCFn(gensLeft, redsTax);
+    if (beh.ocean) {
+      var oceanRaises = liveGlobalRaiseCount('oceans', typeof beh.ocean === 'number' ? beh.ocean : 1, game, counter);
+      delta += oceanRaises * (trMCFn(gensLeft, redsTax) + tempoBonus + 2);
+    }
+    if (beh.greenery) {
+      var oxyRaise = liveGlobalRaiseCount('oxygen', 1, game, counter);
+      delta += oxyRaise * (trMCFn(gensLeft, redsTax) + tempoBonus) + vpMCFn(gensLeft);
+    }
+    if ((card.warnings || []).indexOf('maxvenus') >= 0 || (counter.maxed > 0 && glob && Object.keys(glob).length > 0)) {
+      delta -= 6;
+    }
+    return delta;
+  }
+
   function applyManualEVAdjustments(options) {
     var opts = options || {};
     var name = opts.name || '';
@@ -1260,6 +1453,7 @@
     pAtLeastOne: pAtLeastOne,
     buildGlobalProgressBreakdown: buildGlobalProgressBreakdown,
     estimateGensLeftFromState: estimateGensLeftFromState,
+    estimateAverageGameLengthFromState: estimateAverageGameLengthFromState,
     buildEndgameTiming: buildEndgameTiming,
     estimateScoreCardTimingInterpolated: estimateScoreCardTimingInterpolated,
     estimateScoreCardTimingAccelerating: estimateScoreCardTimingAccelerating,
@@ -1268,6 +1462,7 @@
     normalizeOpeningHandBias: normalizeOpeningHandBias,
     isOpeningHandContext: isOpeningHandContext,
     getOpeningHandBias: getOpeningHandBias,
+    scoreRequirementPenalty: scoreRequirementPenalty,
     analyzePass: analyzePass,
     rankHandCards: rankHandCards,
     analyzeActions: analyzeActions,
@@ -1279,6 +1474,7 @@
     scoreRecurringActionValue: scoreRecurringActionValue,
     scoreCardDiscountValue: scoreCardDiscountValue,
     scoreCardDisruptionValue: scoreCardDisruptionValue,
+    scoreGlobalTileValue: scoreGlobalTileValue,
     applyManualEVAdjustments: applyManualEVAdjustments,
   };
 
