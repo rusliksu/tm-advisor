@@ -338,6 +338,21 @@ class RequirementsChecker:
         return total
 
     @staticmethod
+    def _xavier_requirement_wild_tags(state) -> int:
+        """Xavier's OPG gives 2 wild tags for this generation, usable for tag requirements."""
+        me = getattr(state, "me", None)
+        for card in getattr(me, "tableau", []) or []:
+            name = card.get("name", "") if isinstance(card, dict) else str(card)
+            is_disabled = bool(card.get("isDisabled", False)) if isinstance(card, dict) else False
+            if name == "Xavier" and not is_disabled:
+                return 2
+        return 0
+
+    def _count_requirement_tags_for_state(self, state, tag_name: str) -> int:
+        tags = state.tags if hasattr(state, "tags") else {}
+        return self._count_requirement_tags(tags, tag_name) + self._xavier_requirement_wild_tags(state)
+
+    @staticmethod
     def _count_cities_in_play(state) -> int:
         raw = getattr(state, "raw", {}) or {}
         players = raw.get("players", []) if isinstance(raw, dict) else []
@@ -536,7 +551,7 @@ class RequirementsChecker:
         if ttm:
             tag_need = int(ttm.group(1))
             tag_name = ttm.group(2).lower()
-            have_t = self._count_requirement_tags(state.tags or {}, tag_name)
+            have_t = self._count_requirement_tags_for_state(state, tag_name)
             tag_gap = tag_need - have_t
             if req_ok:
                 delta += 5 if tag_need >= 3 else 3 if tag_need >= 2 else 0
@@ -715,8 +730,7 @@ class RequirementsChecker:
         if m:
             need = int(m.group(1))
             tag_name = m.group(2).lower()
-            tags = state.tags if hasattr(state, 'tags') else {}
-            have = self._count_requirement_tags(tags, tag_name)
+            have = self._count_requirement_tags_for_state(state, tag_name)
             if have < need:
                 return False, f"Нужно {need} {tag_name} tag (есть {have})"
             return True, ""

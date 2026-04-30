@@ -791,10 +791,10 @@ CEO_STRATEGY: dict[str, dict] = {
         "opg_timing": "mid_game",  # when productions are built up
     },
     "Asimov": {
-        "tier": "A", "score": 82,
+        "tier": "B", "score": 76,
         "ongoing": "+2 score for all awards",
         "opg": "Draw 10-gen awards (min 1), choose and fund for free",
-        "strategy": "+2 ко всем awards = доминация. OPG рано = больше выбор, но award менее ценен. Gen 3-5 оптимально",
+        "strategy": "Free fund + выбранная award дают floor. +2 score решает только плотные award races, это не прямые VP",
         "best_corps": ["Credicor", "any with strong award alignment"],
         "opg_timing": "early_mid",
     },

@@ -92,7 +92,7 @@ def build_floater_state(*, floater_cards: list[tuple[str, int]], plants: int = 0
     })
 
 
-def build_tag_state(tags: dict[str, int]) -> GameState:
+def build_tag_state(tags: dict[str, int], *, tableau: list[dict] | None = None) -> GameState:
     me = {
         "color": "red",
         "name": "me",
@@ -105,7 +105,7 @@ def build_tag_state(tags: dict[str, int]) -> GameState:
         "heatProduction": 4,
         "terraformRating": 20,
         "cardsInHandNbr": 1,
-        "tableau": [],
+        "tableau": tableau or [],
         "tags": tags,
     }
     return GameState({
@@ -294,6 +294,24 @@ def main() -> int:
     )
     assert not tectonic_no_wild_ok, tectonic_no_wild_reason
     assert "Нужно 2 science tag (есть 1)" in tectonic_no_wild_reason, tectonic_no_wild_reason
+
+    fusion_xavier_ok, fusion_xavier_reason = checker.check(
+        "Fusion Power", build_tag_state({}, tableau=[{"name": "Xavier", "isDisabled": False}])
+    )
+    assert fusion_xavier_ok, fusion_xavier_reason
+    assert fusion_xavier_reason == "", fusion_xavier_reason
+
+    fusion_no_xavier_ok, fusion_no_xavier_reason = checker.check(
+        "Fusion Power", build_tag_state({})
+    )
+    assert not fusion_no_xavier_ok, fusion_no_xavier_reason
+    assert "Нужно 2 power tag (есть 0)" in fusion_no_xavier_reason, fusion_no_xavier_reason
+
+    fusion_spent_xavier_ok, fusion_spent_xavier_reason = checker.check(
+        "Fusion Power", build_tag_state({}, tableau=[{"name": "Xavier", "isDisabled": True}])
+    )
+    assert not fusion_spent_xavier_ok, fusion_spent_xavier_reason
+    assert "Нужно 2 power tag (есть 0)" in fusion_spent_xavier_reason, fusion_spent_xavier_reason
 
     omnicourt_one_wild_ok, omnicourt_one_wild_reason = checker.check(
         "Omnicourt", build_tag_state({"earth": 4, "wild": 1})

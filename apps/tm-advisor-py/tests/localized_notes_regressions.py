@@ -125,6 +125,20 @@ def main() -> int:
     assert "Посмотрите 4 верхние карты колоды" in business_contacts_desc, business_contacts_desc
     assert any("\u0400" <= ch <= "\u04FF" for ch in business_contacts_desc), business_contacts_desc
 
+    hal_desc = db.get_advisor_description("HAL 9000", max_len=220)
+    assert "decrease each of your productions" in hal_desc.lower(), hal_desc
+
+    van_allen_desc = db.get_advisor_description("Van Allen", max_len=220)
+    assert "milestones always cost 0" in van_allen_desc.lower(), van_allen_desc
+
+    co_leadership_desc = db.get_advisor_description("Co-leadership", max_len=220)
+    assert "draw 3 ceo cards" in co_leadership_desc.lower(), co_leadership_desc
+
+    co2_eval = db.get("CO2Reducers")
+    assert co2_eval and co2_eval["name"] == "CO² Reducers", co2_eval
+    co2_info = db.get_info("CO² Reducers")
+    assert co2_info and co2_info["name"] == "CO2Reducers", co2_info
+
     established_blurb = db.get_advisor_blurb("Established Methods", locale="ru", note_max_len=140, desc_max_len=180, total_max_len=280)
     assert established_blurb.startswith("Гибкая prelude"), established_blurb
     assert "Описание:" not in established_blurb, established_blurb

@@ -19,7 +19,7 @@ from tm_advisor.synergy import SynergyEngine  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 from tm_advisor.shared_data import resolve_data_path  # noqa: E402
 from tm_advisor.colony_advisor import analyze_trade_options, colony_trade_value_at  # noqa: E402
-from tm_advisor.draft_play_advisor import play_hold_advice  # noqa: E402
+from tm_advisor.draft_play_advisor import mc_allocation_advice, play_hold_advice  # noqa: E402
 from tm_advisor.economy import resource_values  # noqa: E402
 from tm_advisor.requirements import RequirementsChecker  # noqa: E402
 
@@ -131,6 +131,24 @@ def main() -> None:
     assert europa["resource"] == "plant-prod", europa
     assert europa["net_profit"] < 0, europa
     assert "Europa" not in (trade.get("best_hint") or ""), trade
+
+    energy_trade_state = build_state(generation=7, temperature=8, oxygen=14, oceans=9)
+    energy_trade_state.me.mc = 9
+    energy_trade_state.me.energy = 3
+    energy_trade_state.me.fleet_size = 1
+    energy_trade_state.me.trades_this_gen = 0
+    energy_trade_alloc = mc_allocation_advice(
+        energy_trade_state,
+        engine,
+        req_checker,
+    )
+    trade_alloc = next(
+        a for a in energy_trade_alloc["allocations"]
+        if a["type"] == "trade"
+    )
+    assert trade_alloc["cost"] == 0, trade_alloc
+    assert "energy" in trade_alloc["cost_desc"], trade_alloc
+    assert trade_alloc["opportunity_cost_mc"] > 0, trade_alloc
 
     full_fleet = build_state(generation=7, temperature=8, oxygen=14, oceans=9)
     full_fleet.me.mc = 7

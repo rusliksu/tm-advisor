@@ -6,7 +6,8 @@ import re
 from pathlib import Path
 from typing import Optional
 
-from .shared_data import load_generated_extension_object, load_json_file, resolve_data_path
+from .shared_data import resolve_data_path
+from .shared_data import load_generated_extension_object, load_json_file
 
 
 class CardDatabase:
@@ -57,8 +58,8 @@ class CardDatabase:
         # Load card descriptions from canonical data files
         self.card_info: dict[str, dict] = {}  # name -> {description, tags, cost, type, ...}
         self._norm_info: dict[str, str] = {}
-        for filename in ("all_cards.json", "corporations.json", "preludes.json"):
-            data_path = resolve_data_path(filename)
+        all_cards_path = resolve_data_path("all_cards.json")
+        for data_path in (all_cards_path, resolve_data_path("corporations.json"), resolve_data_path("preludes.json")):
             if not os.path.exists(data_path):
                 continue
             cards = load_json_file(data_path)
@@ -96,7 +97,13 @@ class CardDatabase:
 
     @staticmethod
     def _normalize(name: str) -> str:
-        return re.sub(r"[^a-z0-9]", "", name.lower())
+        normalized = (
+            str(name)
+            .lower()
+            .replace("²", "2")
+            .replace("³", "3")
+        )
+        return re.sub(r"[^a-z0-9]", "", normalized)
 
     @staticmethod
     def _truncate(text: str, max_len: int) -> str:
@@ -194,7 +201,18 @@ class CardDatabase:
             return None
 
         info = dict(card)
-        info["_raw_description"] = card.get("description", "")
+        raw_description = card.get("description", "")
+        if not self._normalize_text_value(raw_description):
+            raw_description = card.get("fullDescription", "")
+        if not self._normalize_text_value(raw_description):
+            parts = [
+                self._normalize_text_value(card.get("opgAction", "")),
+                self._normalize_text_value(card.get("ongoingEffect", "")),
+            ]
+            raw_description = " | ".join(part for part in parts if part)
+        info["_raw_description"] = raw_description
+        if self._normalize_text_value(raw_description) and not self._normalize_text_value(info.get("description", "")):
+            info["description"] = raw_description
         generated_desc = self.generated_card_descriptions.get(name)
         if isinstance(generated_desc, str) and generated_desc.strip():
             info["description"] = generated_desc

@@ -463,7 +463,10 @@ def _format_allocation_summary_line(entry: dict) -> str:
         return f"💰 ФОНДИРУЙ {label}! ({', '.join(bits)})"
 
     if kind == "trade":
-        return f"🚀 {action} ({cost} MC → {value} value)"
+        cost_desc = str(entry.get("cost_desc", "") or "").strip()
+        if not cost_desc:
+            cost_desc = f"{cost} MC"
+        return f"🚀 {action} ({cost_desc} → {value} value)"
 
     if kind == "conversion":
         icon = "🌿" if "Greenery" in action else "🔥"

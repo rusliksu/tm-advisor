@@ -125,6 +125,17 @@ def main():
     assert summary["best_move"].startswith("PLAY Lunar Beam"), summary
     assert "Martian Zoo" not in summary["best_move"], summary
 
+    energy_trade_line = advisor_snapshot._format_allocation_summary_line({
+        "action": "Trade Luna",
+        "cost": 0,
+        "cost_desc": "3 energy",
+        "value_mc": 9.0,
+        "priority": 3,
+        "type": "trade",
+    })
+    assert "3 energy" in energy_trade_line, energy_trade_line
+    assert "0.9 MC" not in energy_trade_line, energy_trade_line
+
     low_value_stall_summary = advisor_snapshot._build_summary_block(
         result,
         [
