@@ -30,6 +30,9 @@
   var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;
   var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;
   var sharedScoreCardDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDiscountValue;
+  var sharedScoreHandDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreHandDiscountValue;
+  var sharedScoreCityTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCityTimingValue;
+  var sharedScoreProductionTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreProductionTimingValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
   var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
   var sharedScoreRequirementPenalty = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty;
@@ -1401,45 +1404,27 @@
       if (discount.tag) cardsPerGen = 1; // tag-specific: fewer matching cards
       ev += discount.amount * cardsPerGen * gensLeft;
     }
-
-    // Hand-aware discount value: near-term matching cards materially increase real discount payoff.
-    {
-      var discountMap = {
-        'Earth Office': { tag: 'earth', amount: 3 },
-        'Earth Catapult': { tag: null, amount: 2 },
-        'Space Station': { tag: 'space', amount: 2 },
-        'Anti-Gravity Technology': { tag: null, amount: 2 },
-        'Warp Drive': { tag: 'space', amount: 4 },
-        'Cutting Edge Technology': { tag: null, amount: 2 },
-        'Sky Docks': { tag: 'earth', amount: 2 },
-        'Mass Converter': { tag: 'space', amount: 2 },
-        'Shuttles': { tag: 'space', amount: 2 },
-        'Research Outpost': { tag: null, amount: 1 },
-      };
-      var discountInfo = discountMap[name];
-      if (discountInfo || discount) {
-        var handSaving = 0;
-        var requiredTag = discountInfo && discountInfo.tag;
-        var amount = (discountInfo && discountInfo.amount) || discount.amount || 1;
-        for (var hdi = 0; hdi < handCards.length; hdi++) {
-          var handCardName = handCards[hdi].name || handCards[hdi] || '';
-          if (!handCardName || handCardName === name) continue;
-          var handTags = _cardTags[handCardName] || [];
-          if (!requiredTag || handTags.indexOf(requiredTag) >= 0) handSaving += amount;
-        }
-        ev += Math.min(handSaving, 20);
-      }
+    if (sharedScoreHandDiscountValue) {
+      ev += sharedScoreHandDiscountValue({
+        name: name,
+        discount: discount,
+        handCards: handCards,
+        getCardTags: function(cardName) {
+          return _cardTags[cardName] || [];
+        },
+      });
     }
 
-    // Production timing policy belongs in base EV: the same production card should score higher
-    // in buy/draft/play when there is enough runway left for compounding.
     var urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
-    {
-      if (PROD_CARDS.has(name)) {
-        ev += gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
-      }
+    if (sharedScoreProductionTimingValue) {
+      ev += sharedScoreProductionTimingValue({
+        name: name,
+        gen: gen,
+        steps: steps,
+        reqPenalty: reqPenalty,
+        isProdCard: function(cardName) { return PROD_CARDS.has(cardName); },
+      });
     }
-
     {
       var hasVpCard = (vpInfo || VP_CARDS.has(name) || DYNAMIC_VP_CARDS.has(name));
       var hasWeakPseudoVpAction = WEAK_PSEUDO_VP_ACTION_CARDS.has(name);
@@ -1452,13 +1437,16 @@
         ev += 4;
       }
     }
-
-    if ((CITY_CARDS.has(name) || beh.city) && !isOffBoardCityCard(name)) {
-      var myCities = tp.citiesCount || 0;
-      var cityTimingUrgency = Math.max(urgency, 1 - Math.max(0, gensLeft - 1) / 4);
-      var cityPremium = 4 + Math.round(cityTimingUrgency * 4);
-      if (myCities < 2) cityPremium += 4;
-      ev += cityPremium;
+    if (sharedScoreCityTimingValue) {
+      ev += sharedScoreCityTimingValue({
+        name: name,
+        beh: beh,
+        tp: tp,
+        steps: steps,
+        gensLeft: gensLeft,
+        isCityCard: function(cardName) { return CITY_CARDS.has(cardName); },
+        isOffBoardCityCard: isOffBoardCityCard,
+      });
     }
 
     // ── DECREASE ANY PRODUCTION (opponent harm) ──
@@ -2143,6 +2131,25 @@
         var triggersPerGen = _estimateTriggersPerGen(manual.triggerTag, tp, _handCards);
         ev += manual.perTrigger * triggersPerGen * gensLeft;
       }
+    }
+
+    // ── DYNAMIC PRODUCTION OVERRIDES ──
+    // Gyropolis: +1 MC-prod per venus + earth tag (replaces static perGen:2)
+    if (name === 'Gyropolis') {
+      var gyroTags = (myTags['venus'] || 0) + (myTags['earth'] || 0);
+      var gyroProd = Math.max(0, gyroTags - 2); // perGen:2 already counted, add extra
+      ev += gyroProd * (PROD_MC['megacredits'] || 5) * gensLeft * prodLatePenalty;
+    }
+
+    if (name === 'Iron Extraction Center' || name === 'Titanium Extraction Center') {
+      // Moon cards scale with mining rate. Prefer the real rate from state when present,
+      // otherwise use a conservative generation-based fallback for extension-only contexts.
+      var miningRate = g2.miningRate;
+      if (typeof miningRate !== 'number') miningRate = g2.moonMiningRate;
+      if (typeof miningRate !== 'number') miningRate = Math.max(2, Math.min(6, gen - 1));
+      var prodSteps = Math.max(0, Math.floor(miningRate / 2));
+      var moonProdType = name === 'Iron Extraction Center' ? 'steel' : 'titanium';
+      ev += prodSteps * (PROD_MC[moonProdType] || 1) * gensLeft * prodCompound * prodLatePenalty;
     }
 
     // ── REQUIREMENT PENALTY ──

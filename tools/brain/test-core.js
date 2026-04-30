@@ -332,6 +332,62 @@ function testCoreHelpers() {
 
   assert.strictEqual(core.scoreCardDiscountValue({discount: {amount: 2}, gensLeft: 4}), 20);
   assert.strictEqual(core.scoreCardDiscountValue({discount: {tag: 'science', amount: 2}, gensLeft: 4}), 8);
+  assert.strictEqual(
+    core.scoreHandDiscountValue({
+      name: 'Earth Office',
+      handCards: [{name: 'Earth Catapult'}, {name: 'Cartel'}, {name: 'Sponsors'}],
+      getCardTags: (name) => {
+        if (name === 'Earth Catapult') return ['earth'];
+        if (name === 'Cartel') return ['earth', 'building'];
+        if (name === 'Sponsors') return ['earth'];
+        return [];
+      },
+    }),
+    9,
+    'hand-aware discount value should come from shared brain, not bot-only scoring'
+  );
+  assert(
+    core.scoreCityTimingValue({
+      name: 'Underground City',
+      beh: {city: true},
+      tp: {citiesCount: 0},
+      steps: 8,
+      gensLeft: 4,
+      isCityCard: () => true,
+      isOffBoardCityCard: () => false,
+    }) > core.scoreCityTimingValue({
+      name: 'Underground City',
+      beh: {city: true},
+      tp: {citiesCount: 2},
+      steps: 8,
+      gensLeft: 4,
+      isCityCard: () => true,
+      isOffBoardCityCard: () => false,
+    }),
+    'shared city timing value should keep first Mars city premium out of bot-only scoring'
+  );
+  assert.strictEqual(
+    core.scoreProductionTimingValue({
+      name: 'Insulation',
+      gen: 6,
+      steps: 10,
+      reqPenalty: 0,
+      isProdCard: () => true,
+    }),
+    2,
+    'shared production timing should preserve midgame setup-card preference'
+  );
+  assert.strictEqual(
+    core.scoreProductionTimingValue({
+      name: 'Venus Governor',
+      gen: 1,
+      steps: 42,
+      reqPenalty: 6,
+      isProdCard: () => true,
+    }),
+    0,
+    'production timing should not boost tag-gated cards before requirements are ready'
+  );
   assert.strictEqual(core.scoreCardDisruptionValue({beh: {decreaseAnyProduction: {count: 2}, removeAnyPlants: 4}}), 5);
 
   const manualDelta = core.applyManualEVAdjustments({

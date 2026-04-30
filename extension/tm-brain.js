@@ -41,6 +41,9 @@
   var sharedScoreCardVPInfo = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardVPInfo;
   var sharedScoreRecurringActionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRecurringActionValue;
   var sharedScoreCardDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDiscountValue;
+  var sharedScoreHandDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreHandDiscountValue;
+  var sharedScoreCityTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCityTimingValue;
+  var sharedScoreProductionTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreProductionTimingValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
   var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
   var sharedScoreRequirementPenalty = (TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty) || localScoreRequirementPenalty;
@@ -1702,6 +1705,36 @@
       var cardsPerGen = 2.5; // avg cards played per gen (universal discount)
       if (discount.tag) cardsPerGen = 1; // tag-specific: fewer matching cards
       ev += discount.amount * cardsPerGen * gensLeft;
+    }
+    if (sharedScoreHandDiscountValue) {
+      ev += sharedScoreHandDiscountValue({
+        name: name,
+        discount: discount,
+        handCards: handCards,
+        getCardTags: function(cardName) {
+          return _cardTags[cardName] || [];
+        },
+      });
+    }
+    if (sharedScoreCityTimingValue) {
+      ev += sharedScoreCityTimingValue({
+        name: name,
+        beh: beh,
+        tp: tp,
+        steps: steps,
+        gensLeft: gensLeft,
+        isCityCard: function(cardName) { return CITY_CARDS.has(cardName); },
+        isOffBoardCityCard: isOffBoardCityCard,
+      });
+    }
+    if (sharedScoreProductionTimingValue) {
+      ev += sharedScoreProductionTimingValue({
+        name: name,
+        gen: gen,
+        steps: steps,
+        reqPenalty: reqPenalty,
+        isProdCard: function(cardName) { return PROD_CARDS.has(cardName); },
+      });
     }
 
     // ── DECREASE ANY PRODUCTION (opponent harm) ──

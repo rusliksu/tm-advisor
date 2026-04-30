@@ -1298,6 +1298,68 @@
     return discount.amount * cardsPerGen * gensLeft;
   }
 
+  function scoreHandDiscountValue(options) {
+    var opts = options || {};
+    var name = opts.name || '';
+    var discount = opts.discount || null;
+    var handCards = opts.handCards || [];
+    var getCardTags = opts.getCardTags || function() { return []; };
+    var discountMap = {
+      'Earth Office': { tag: 'earth', amount: 3 },
+      'Earth Catapult': { tag: null, amount: 2 },
+      'Space Station': { tag: 'space', amount: 2 },
+      'Anti-Gravity Technology': { tag: null, amount: 2 },
+      'Warp Drive': { tag: 'space', amount: 4 },
+      'Cutting Edge Technology': { tag: null, amount: 2 },
+      'Sky Docks': { tag: 'earth', amount: 2 },
+      'Mass Converter': { tag: 'space', amount: 2 },
+      'Shuttles': { tag: 'space', amount: 2 },
+      'Research Outpost': { tag: null, amount: 1 },
+    };
+    var discountInfo = discountMap[name];
+    if (!discountInfo && !discount) return 0;
+    var requiredTag = discountInfo && discountInfo.tag;
+    var amount = (discountInfo && discountInfo.amount) || discount.amount || 1;
+    var handSaving = 0;
+    for (var i = 0; i < handCards.length; i++) {
+      var handCardName = handCards[i] && (handCards[i].name || handCards[i]);
+      if (!handCardName || handCardName === name) continue;
+      var handTags = getCardTags(handCardName) || [];
+      if (!requiredTag || handTags.indexOf(requiredTag) >= 0) handSaving += amount;
+    }
+    return Math.min(handSaving, 20);
+  }
+
+  function scoreCityTimingValue(options) {
+    var opts = options || {};
+    var beh = opts.beh || {};
+    var name = opts.name || '';
+    var isCityCard = opts.isCityCard || function() { return false; };
+    var isOffBoardCityCard = opts.isOffBoardCityCard || function() { return false; };
+    if (!(isCityCard(name) || beh.city) || isOffBoardCityCard(name)) return 0;
+    var steps = typeof opts.steps === 'number' ? opts.steps : 0;
+    var gensLeft = typeof opts.gensLeft === 'number' ? opts.gensLeft : 1;
+    var tp = opts.tp || {};
+    var urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
+    var myCities = tp.citiesCount || 0;
+    var cityTimingUrgency = Math.max(urgency, 1 - Math.max(0, gensLeft - 1) / 4);
+    var cityPremium = 4 + Math.round(cityTimingUrgency * 4);
+    if (myCities < 2) cityPremium += 4;
+    return cityPremium;
+  }
+
+  function scoreProductionTimingValue(options) {
+    var opts = options || {};
+    var name = opts.name || '';
+    var isProdCard = opts.isProdCard || function() { return false; };
+    if (!isProdCard(name)) return 0;
+    if ((opts.reqPenalty || 0) > 0) return 0;
+    var gen = typeof opts.gen === 'number' ? opts.gen : 1;
+    var steps = typeof opts.steps === 'number' ? opts.steps : 0;
+    var urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
+    return gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
+  }
+
   function scoreCardDisruptionValue(options) {
     var opts = options || {};
     var beh = opts.beh || {};
@@ -1473,6 +1535,9 @@
     scoreCardVPInfo: scoreCardVPInfo,
     scoreRecurringActionValue: scoreRecurringActionValue,
     scoreCardDiscountValue: scoreCardDiscountValue,
+    scoreHandDiscountValue: scoreHandDiscountValue,
+    scoreCityTimingValue: scoreCityTimingValue,
+    scoreProductionTimingValue: scoreProductionTimingValue,
     scoreCardDisruptionValue: scoreCardDisruptionValue,
     scoreGlobalTileValue: scoreGlobalTileValue,
     applyManualEVAdjustments: applyManualEVAdjustments,

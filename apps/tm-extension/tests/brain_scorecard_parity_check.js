@@ -8,6 +8,12 @@ const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 
+const CARD_DATA = loadConst('packages/tm-data/generated/extension/card_data.js', ['TM_CARD_DATA']).TM_CARD_DATA;
+const CARD_TAGS = loadConst('packages/tm-data/generated/extension/card_tags.js', ['TM_CARD_TAGS']).TM_CARD_TAGS;
+const CARD_VP = loadConst('packages/tm-data/generated/extension/card_vp.js', ['TM_CARD_VP']).TM_CARD_VP;
+const CARD_EFFECTS = loadConst('packages/tm-data/generated/extension/card_effects.json.js', ['TM_CARD_EFFECTS']).TM_CARD_EFFECTS;
+const CARD_REQS = loadConst('packages/tm-data/generated/extension/card_tag_reqs.js', ['TM_CARD_TAG_REQS', 'TM_CARD_GLOBAL_REQS']);
+
 function loadConst(relPath, names) {
   const code = fs.readFileSync(path.join(ROOT, relPath), 'utf8');
   const ctx = {};
@@ -26,13 +32,15 @@ function loadBrain(relPath) {
   const fullPath = path.join(ROOT, relPath);
   delete require.cache[require.resolve(fullPath)];
   const brain = require(fullPath);
-  const data = loadConst('packages/tm-data/generated/extension/card_data.js', ['TM_CARD_DATA']);
-  const tags = loadConst('packages/tm-data/generated/extension/card_tags.js', ['TM_CARD_TAGS']);
-  const vp = loadConst('packages/tm-data/generated/extension/card_vp.js', ['TM_CARD_VP']);
-  const effects = loadConst('packages/tm-data/generated/extension/card_effects.json.js', ['TM_CARD_EFFECTS']);
-  const reqs = loadConst('packages/tm-data/generated/extension/card_tag_reqs.js', ['TM_CARD_TAG_REQS', 'TM_CARD_GLOBAL_REQS']);
-  brain.setCardData(tags.TM_CARD_TAGS, vp.TM_CARD_VP, data.TM_CARD_DATA, reqs.TM_CARD_GLOBAL_REQS, reqs.TM_CARD_TAG_REQS, effects.TM_CARD_EFFECTS);
+  brain.setCardData(CARD_TAGS, CARD_VP, CARD_DATA, CARD_REQS.TM_CARD_GLOBAL_REQS, CARD_REQS.TM_CARD_TAG_REQS, CARD_EFFECTS);
   return brain;
+}
+
+function cardWithCost(name) {
+  const data = CARD_DATA[name] || {};
+  const effects = CARD_EFFECTS[name] || {};
+  const cost = effects.c != null ? effects.c : (data.cost || 0);
+  return {name, cost, calculatedCost: cost};
 }
 
 function makeEndgameState() {
@@ -85,6 +93,67 @@ function makeEndgameState() {
   };
 }
 
+function makeOpeningEngineShellState() {
+  const handNames = [
+    'Business Network',
+    'Restricted Area',
+    'Sponsors',
+    'Earth Office',
+    'Cartel',
+    'Luna Governor',
+    'Luna Metropolis',
+    'Venus Governor',
+    'Unexpected Application',
+    'Venus Waystation',
+    'Gyropolis',
+    'Sulphur Exports',
+    'Open City',
+    'Titanium Extraction Center',
+    'Iron Extraction Center',
+  ];
+  return {
+    game: {
+      generation: 1,
+      temperature: -30,
+      oxygenLevel: 0,
+      oceans: 0,
+      venusScaleLevel: 0,
+      gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    thisPlayer: {
+      color: 'red',
+      megacredits: 40,
+      megaCredits: 40,
+      steel: 0,
+      titanium: 0,
+      steelValue: 2,
+      titaniumValue: 3,
+      cardsInHand: handNames.map(cardWithCost),
+      tableau: [],
+      tags: {},
+    },
+  };
+}
+
+function assertParityForCards(cardNames, state, message) {
+  delete global.TM_BRAIN_CORE;
+  delete global.TM_RATINGS;
+  const bot = loadBrain('bot/tm-brain.js');
+  const extension = loadBrain('extension/tm-brain.js');
+
+  for (const name of cardNames) {
+    const card = cardWithCost(name);
+    const botScore = bot.scoreCard(card, state);
+    const extensionScore = extension.scoreCard(card, state);
+    assert.strictEqual(
+      extensionScore,
+      botScore,
+      `${message}: ${name} should score identically in bot and extension brain`,
+    );
+  }
+}
+
 function testScoreCardParityOnEndgameDiscardHand() {
   delete global.TM_BRAIN_CORE;
   delete global.TM_RATINGS;
@@ -101,6 +170,25 @@ function testScoreCardParityOnEndgameDiscardHand() {
       `${card.name} should score identically in bot and extension brain`,
     );
   }
+}
+
+function testScoreCardParityOnOpeningEngineShell() {
+  assertParityForCards(
+    [
+      'Sponsors',
+      'Earth Office',
+      'Cartel',
+      'Luna Governor',
+      'Venus Governor',
+      'Venus Waystation',
+      'Gyropolis',
+      'Open City',
+      'Titanium Extraction Center',
+      'Iron Extraction Center',
+    ],
+    makeOpeningEngineShellState(),
+    'opening engine shell parity',
+  );
 }
 
 function normalizeManualEV(manualEV) {
@@ -125,6 +213,7 @@ function testManualEVParity() {
 }
 
 testScoreCardParityOnEndgameDiscardHand();
+testScoreCardParityOnOpeningEngineShell();
 testManualEVParity();
 
 console.log('brain scorecard parity checks: OK');
