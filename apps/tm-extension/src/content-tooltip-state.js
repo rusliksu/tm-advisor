@@ -137,6 +137,11 @@
     var checks = [];
     var gp = pv.game;
     var isMax = /max/i.test(reqText);
+    var isEarlyFutureWindow = !isMax && gp && (
+      gp.phase === 'initial_drafting' ||
+      gp.phase === 'corporationsDrafting' ||
+      (typeof gp.generation === 'number' && gp.generation <= 1)
+    );
     var reqFlex = input.getRequirementFlexSteps(cardEl.getAttribute('data-tm-card') || '', input.detectMyCorps());
 
     var tempMatch = reqText.match(/([\-\d]+)\s*°?C/i);
@@ -144,25 +149,33 @@
     var oceanMatch = reqText.match(/(\d+)\s*ocean/i);
     var venusMatch = reqText.match(/(\d+)\s*%?\s*Venus/i);
 
+    function pushGlobalRequirementCheck(text) {
+      if (isEarlyFutureWindow) {
+        checks.push({tone: 'muted', text: 'Окно позже: ' + text});
+      } else {
+        checks.push(text);
+      }
+    }
+
     if (tempMatch && typeof gp.temperature === 'number') {
       var tempValue = parseInt(tempMatch[1], 10);
       var effectiveTemp = isMax ? tempValue + reqFlex.any * 2 : tempValue - reqFlex.any * 2;
       if (!(isMax ? gp.temperature <= effectiveTemp : gp.temperature >= effectiveTemp)) {
-        checks.push('Темп ' + gp.temperature + '°C/' + effectiveTemp + '°C');
+        pushGlobalRequirementCheck('Темп ' + gp.temperature + '°C/' + effectiveTemp + '°C');
       }
     }
     if (oxyMatch && typeof gp.oxygenLevel === 'number') {
       var oxyValue = parseInt(oxyMatch[1], 10);
       var effectiveOxy = isMax ? oxyValue + reqFlex.any : oxyValue - reqFlex.any;
       if (!(isMax ? gp.oxygenLevel <= effectiveOxy : gp.oxygenLevel >= effectiveOxy)) {
-        checks.push('O₂ ' + gp.oxygenLevel + '%/' + effectiveOxy + '%');
+        pushGlobalRequirementCheck('O₂ ' + gp.oxygenLevel + '%/' + effectiveOxy + '%');
       }
     }
     if (oceanMatch && typeof gp.oceans === 'number') {
       var oceanValue = parseInt(oceanMatch[1], 10);
       var effectiveOcean = isMax ? oceanValue + reqFlex.any : oceanValue - reqFlex.any;
       if (!(isMax ? gp.oceans <= effectiveOcean : gp.oceans >= effectiveOcean)) {
-        checks.push('Океаны ' + gp.oceans + '/' + effectiveOcean);
+        pushGlobalRequirementCheck('Океаны ' + gp.oceans + '/' + effectiveOcean);
       }
     }
     if (venusMatch && typeof gp.venusScaleLevel === 'number') {
@@ -170,7 +183,7 @@
       var venusFlex = reqFlex.any + reqFlex.venus;
       var effectiveVenus = isMax ? venusValue + venusFlex * 2 : venusValue - venusFlex * 2;
       if (!(isMax ? gp.venusScaleLevel <= effectiveVenus : gp.venusScaleLevel >= effectiveVenus)) {
-        checks.push('Венера ' + gp.venusScaleLevel + '%/' + effectiveVenus + '%');
+        pushGlobalRequirementCheck('Венера ' + gp.venusScaleLevel + '%/' + effectiveVenus + '%');
       }
     }
 

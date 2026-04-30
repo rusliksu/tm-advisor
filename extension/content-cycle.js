@@ -29,6 +29,8 @@
     var rateStandardProjects = input && input.rateStandardProjects;
     var enhanceGameLog = input && input.enhanceGameLog;
     var highlightPlayable = input && input.highlightPlayable;
+    var updateGameSignals = input && input.updateGameSignals;
+    var updateActionRecommendation = input && input.updateActionRecommendation;
     var tmLog = input && input.tmLog;
     var setLastProcessAllMs = input && input.setLastProcessAllMs;
 
@@ -77,6 +79,8 @@
       if (typeof rateStandardProjects === 'function') rateStandardProjects();
       if (typeof enhanceGameLog === 'function') enhanceGameLog();
       if (typeof highlightPlayable === 'function') highlightPlayable();
+      if (typeof updateGameSignals === 'function') updateGameSignals();
+      if (typeof updateActionRecommendation === 'function') updateActionRecommendation();
     } finally {
       setProcessingNow(false);
       if (windowObj && typeof windowObj.scrollTo === 'function' && Math.abs((windowObj.scrollY || 0) - scrollY) > 5) {
@@ -96,16 +100,24 @@
     var documentObj = input && input.documentObj;
     var hideTooltip = input && input.hideTooltip;
     var clearReasonPayload = input && input.clearReasonPayload;
+    var clearGameSignals = input && input.clearGameSignals;
+    var clearActionRecommendation = input && input.clearActionRecommendation;
     if (!documentObj) return;
 
+    if (typeof clearGameSignals === 'function') clearGameSignals();
+    if (typeof clearActionRecommendation === 'function') clearActionRecommendation();
     documentObj.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score').forEach(function(el) {
       el.remove();
     });
     documentObj.querySelectorAll('.tm-combo-highlight, .tm-combo-godmode, .tm-combo-great, .tm-combo-good, .tm-combo-decent, .tm-combo-niche').forEach(function(el) {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche');
     });
-    documentObj.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-playable, .tm-unplayable').forEach(function(el) {
-      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-playable', 'tm-unplayable');
+    documentObj.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-rec-discard, .tm-playable, .tm-unplayable').forEach(function(el) {
+      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-rec-discard', 'tm-playable', 'tm-unplayable');
+      if (el.getAttribute('data-tm-discard-style') === '1') {
+        el.style.boxShadow = '';
+        el.removeAttribute('data-tm-discard-style');
+      }
     });
     documentObj.querySelectorAll('[data-tm-processed]').forEach(function(el) {
       el.removeAttribute('data-tm-processed');

@@ -179,8 +179,81 @@ function testRenderCardOverlayPrefersRuNoteOverSynergyFallback() {
   assert(!overlay.innerHTML.includes('tm-iov-syn'), 'overlay should not fall back to synergy when RU note exists');
 }
 
+function testRequirementHtmlCanRenderMutedFutureWindow() {
+  const html = tooltip.buildRequirementHtml({
+    checks: [{tone: 'muted', text: 'Окно позже: Темп -30°C/4°C'}],
+  });
+
+  assert(html.includes('tm-tip-row--muted'), 'future requirement window should render as muted instead of error');
+  assert(!html.includes('✗'), 'future requirement window should not show a hard error marker');
+  assert(html.includes('Окно позже: Темп -30°C/4°C'));
+}
+
+function testTooltipHeaderIncludesCopyButton() {
+  const html = tooltip.buildHeaderHtml({
+    baseScore: 80,
+    baseTier: 'A',
+    cardCost: 12,
+    ctxScore: 80,
+    ctxTier: 'A',
+    escHtml(value) {
+      return String(value);
+    },
+    isOppCard: false,
+    localizedName: 'Мангровые леса',
+    name: 'Mangrove',
+  });
+
+  assert(html.includes('tm-tooltip-copy'), 'tooltip header should expose a copy button');
+  assert(html.includes('data-tm-tooltip-copy'), 'copy button should be discoverable by delegated click handler');
+  assert(html.includes('float:left'), 'copy button should sit at the upper-left of the tooltip header');
+}
+
+function testTagGateReasonsSurviveOverlayPayload() {
+  const badge = makeBadge('C 58');
+  const el = makeCardEl('Luna Governor', badge);
+
+  overlays.applyDraftRecommendationCardUi({
+    item: {
+      el,
+      name: 'Luna Governor',
+      total: 58,
+      uncappedTotal: 58,
+      reasons: [
+        'Tag gate Earth: need 3 on table (hand +5) -12',
+        'Tag route Earth support +2',
+      ],
+    },
+    scored: [],
+    bestScore: 58,
+    isDraftOrResearch: false,
+    ratings: {
+      'Luna Governor': {t: 'C', s: 71},
+    },
+    revealPendingContextBadge() {},
+    scoreToTier() {
+      return 'C';
+    },
+  });
+
+  const {parsedRows} = parseStoredRows(el);
+  assert.strictEqual(parsedRows.length, 2, 'tag-gate route reasons should survive into tooltip rows');
+  assert.strictEqual(parsedRows[0].text, 'Tag gate Earth: need 3 on table (hand +5) -12');
+  assert.strictEqual(parsedRows[0].tone, 'negative', 'tag-gate penalty should render as negative tooltip row');
+  assert.strictEqual(parsedRows[1].text, 'Tag route Earth support +2');
+  assert.strictEqual(parsedRows[1].tone, 'positive', 'tag route support should render as positive tooltip row');
+  assert.strictEqual(
+    el.getAttribute('data-tm-reasons'),
+    'Tag gate Earth: need 3 on table (hand +5) -12|Tag route Earth support +2',
+    'plain tooltip payload should keep both tag-gate reason texts',
+  );
+}
+
 testDraftRecommendationFallbackKeepsToneInferred();
 testOverlayFallbackKeepsToneInferred();
 testRenderCardOverlayPrefersRuNoteOverSynergyFallback();
+testRequirementHtmlCanRenderMutedFutureWindow();
+testTooltipHeaderIncludesCopyButton();
+testTagGateReasonsSurviveOverlayPayload();
 
 console.log('reason payload fallback checks: OK');

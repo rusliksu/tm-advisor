@@ -48,10 +48,24 @@ const yWeightSource = extractFunctionSource(source, 'yWeight');
 const reasonCardLabelSource = extractFunctionSource(source, 'reasonCardLabel');
 const describeNamedSynergySource = extractFunctionSource(source, 'describeNamedSynergy');
 const describeCorpBoostReasonSource = extractFunctionSource(source, 'describeCorpBoostReason');
+const formatReasonNumberSource = extractFunctionSource(source, 'formatReasonNumber');
+const globalParamRaisesSource = extractFunctionSource(source, 'globalParamRaises');
+const estimateGensLeftSource = extractFunctionSource(source, 'estimateGensLeft');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
 const pushStructuredReasonSource = extractFunctionSource(source, 'pushStructuredReason');
+const getRequirementHardnessSource = extractFunctionSource(source, 'getRequirementHardness');
 const getProductionFloorStatusSource = extractFunctionSource(source, 'getProductionFloorStatus');
 const getRequirementTagReasonLabelSource = extractFunctionSource(source, 'getRequirementTagReasonLabel');
+const getRequirementHandTagCountsSource = extractFunctionSource(source, 'getRequirementHandTagCounts');
+const getCardTagCountsForNamesSource = extractFunctionSource(source, 'getCardTagCountsForNames');
+const countRequirementTagsSource = extractFunctionSource(source, 'countRequirementTags');
+const getXavierRequirementWildCountSource = extractFunctionSource(source, 'getXavierRequirementWildCount');
+const getRequirementFlexStepsSource = extractFunctionSource(source, 'getRequirementFlexSteps');
+const getBoardRequirementCountsSource = extractFunctionSource(source, 'getBoardRequirementCounts');
+const getBoardRequirementDisplayNameSource = extractFunctionSource(source, 'getBoardRequirementDisplayName');
+const parseBoardRequirementsSource = extractFunctionSource(source, 'parseBoardRequirements');
+const evaluateBoardRequirementsSource = extractFunctionSource(source, 'evaluateBoardRequirements');
+const scoreCardRequirementsSource = extractFunctionSource(source, 'scoreCardRequirements');
 const scoreTagSynergiesSource = extractFunctionSource(source, 'scoreTagSynergies');
 const scoreResourceSynergiesSource = extractFunctionSource(source, 'scoreResourceSynergies');
 const scoreCardEconomyInContextSource = extractFunctionSource(source, 'scoreCardEconomyInContext');
@@ -69,11 +83,32 @@ const ftnRowSource = extractFunctionSource(source, 'ftnRow');
 const computeCardValueSource = extractFunctionSource(source, 'computeCardValue');
 const scoreBreakEvenTimingSource = extractFunctionSource(source, 'scoreBreakEvenTiming');
 const scoreFTNTimingSource = extractFunctionSource(source, 'scoreFTNTiming');
+const scoreHandSynergySource = extractFunctionSource(source, 'scoreHandSynergy');
+const scoreDiscountsAndPaymentsSource = extractFunctionSource(source, 'scoreDiscountsAndPayments');
+const scoreTerraformRateSource = extractFunctionSource(source, 'scoreTerraformRate');
+const openingPolicyScoreFromMCSource = extractFunctionSource(source, 'openingPolicyScoreFromMC');
+const pushOpeningPolicyReasonSource = extractFunctionSource(source, 'pushOpeningPolicyReason');
+const getOpeningContextGameOptionsSource = extractFunctionSource(source, 'getOpeningContextGameOptions');
+const getOpeningPlayerCountSource = extractFunctionSource(source, 'getOpeningPlayerCount');
+const getOpeningVisibleColoniesForTimingSource = extractFunctionSource(source, 'getOpeningVisibleColoniesForTiming');
+const estimateOpeningAverageGameLengthSource = extractFunctionSource(source, 'estimateOpeningAverageGameLength');
+const openingExpectedEndGenSource = extractFunctionSource(source, 'openingExpectedEndGen');
+const openingRemainingStepsForParamSource = extractFunctionSource(source, 'openingRemainingStepsForParam');
+const openingRequirementRouteFactorSource = extractFunctionSource(source, 'openingRequirementRouteFactor');
+const openingHandRequirementStepsSource = extractFunctionSource(source, 'openingHandRequirementSteps');
+const openingRequirementRateScaleSource = extractFunctionSource(source, 'openingRequirementRateScale');
+const openingRequirementStepsPerGenSource = extractFunctionSource(source, 'openingRequirementStepsPerGen');
+const estimateOpeningRequirementDelayProfileSource = extractFunctionSource(source, 'estimateOpeningRequirementDelayProfile');
+const openingLatePayoffScoreFromDelaySource = extractFunctionSource(source, 'openingLatePayoffScoreFromDelay');
+const scoreOpeningDraftPolicySource = extractFunctionSource(source, 'scoreOpeningDraftPolicy');
 const isPreludeOrCorpCardSource = extractFunctionSource(source, 'isPreludeOrCorpCard');
 const formatTableauSynergyReasonSource = extractFunctionSource(source, 'formatTableauSynergyReason');
 const dampTableauSynergyWeightSource = extractFunctionSource(source, 'dampTableauSynergyWeight');
 const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTableauSynergy');
 const scoreTableauSynergySource = extractFunctionSource(source, 'scoreTableauSynergy');
+const getComboIndexSource = extractFunctionSource(source, 'getComboIndex');
+const getAntiComboIndexSource = extractFunctionSource(source, 'getAntiComboIndex');
+const scoreComboPotentialSource = extractFunctionSource(source, 'scoreComboPotential');
 const scoreSynergyRulesSource = extractFunctionSource(source, '_scoreSynergyRules');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
@@ -86,6 +121,8 @@ const positionalScoring = new Proxy({
   drawEarlyBonus: 5,
   drawMidBonus: 2,
   drawLatePenalty: 4,
+  handEmptyBonus: 3,
+  handEmptyThreshold: 3,
   tableauSynergyPer: 3,
   tableauSynergyMax: 4,
   delegateFew: 3,
@@ -114,6 +151,8 @@ const positionalScoring = new Proxy({
   lateProdGen8: -10,
   lateProdGen7: -5,
   lateProdGen6: -2,
+  mcProdExcessPenalty: 2,
+  mcProdExcessThreshold: 15,
   ftnReferenceGL: 7,
   ftnScaleProd: 2.0,
   ftnScaleOther: 1.5,
@@ -124,6 +163,7 @@ const positionalScoring = new Proxy({
   maxGL: 13,
   oxyMax: 14,
   tempMax: 8,
+  oceansMax: 9,
   plantsPerGreenery: 8,
   plantEngineConvBonus: 2,
   endgameGreeneryBonus: 3,
@@ -136,6 +176,35 @@ const positionalScoring = new Proxy({
   draftCost: 3,
   breakEvenCap: 15,
   breakEvenMul: 3,
+  comboGodmode: 10,
+  comboGreat: 7,
+  comboGood: 5,
+  comboDecent: 3,
+  timingBlue6: 1.5,
+  timingBlue4: 1.2,
+  timingBlue2: 0.8,
+  timingBlue1: 0.5,
+  timingProd5: 1.3,
+  timingProd3: 1.0,
+  timingProd1: 0.4,
+  timingVPBurst2: 1.4,
+  timingVPBurst4: 1.1,
+  timingVPBurstHi: 0.8,
+  timingAccum5: 1.4,
+  timingAccum3: 1.1,
+  timingAccum1: 0.6,
+  triggerCap: 10,
+  discountCap: 10,
+  discountStackMax: 3,
+  steelPayCap: 6,
+  steelPayDivisor: 4,
+  tiPayCap: 8,
+  tiPayDivisor: 5,
+  terraformFastThreshold: 3,
+  terraformSlowThreshold: 1,
+  terraformFastProdPenalty: 2,
+  terraformSlowProdBonus: 2,
+  terraformFastVPBonus: 2,
 }, {
   get(target, prop) {
     return Object.prototype.hasOwnProperty.call(target, prop) ? target[prop] : 0;
@@ -150,6 +219,23 @@ const sandbox = {
   TM_CARD_DATA: {},
   TM_CARD_TAGS: {},
   TM_CARD_TAG_REQS: {},
+  TM_CARD_GLOBAL_REQS: {},
+  TM_CARD_DISCOUNTS: {},
+  TM_TAG_TRIGGERS: {},
+  TM_ANIMAL_VP_CARDS: [],
+  TM_MICROBE_VP_CARDS: [],
+  TM_ANIMAL_PLACERS: {},
+  TM_ENERGY_PRODUCERS: [],
+  TM_ENERGY_CONSUMERS: [],
+  TM_JOVIAN_VP_CARDS: [],
+  TM_FLOATER_GENERATORS: [],
+  TM_FLOATER_CONSUMERS: [],
+  TM_STACKING_RULES: [],
+  TM_NAMED_EFF_COMBOS: [],
+  TM_NAMED_TAG_COMBOS: [],
+  TM_OPP_CORP_VULN_GLOBAL: {},
+  TM_DELEGATE_CARDS: {},
+  TM_CARD_DESCRIPTIONS: {},
   TM_FTN_TABLE: {
     0: [8.0, 0.0, 8.0],
     1: [8.0, 0.5, 7.5],
@@ -169,6 +255,8 @@ const sandbox = {
   FTN_FALLBACK: [7, 5, 5],
   TM_RATINGS: {},
   _TM_RATINGS_RAW: {},
+  TM_COMBOS: [],
+  TM_ANTI_COMBOS: [],
   TM_CORPS: {},
   FLOATER_TARGETS: new Set(),
   ANIMAL_TARGETS: new Set(),
@@ -203,6 +291,15 @@ const sandbox = {
   getVisibleColonyNames() {
     return [];
   },
+  cardIsColonyRelatedByName() {
+    return false;
+  },
+  cardBuildsColonyByName() {
+    return false;
+  },
+  cardHasTradeEngineByName() {
+    return false;
+  },
   computeParamSaturation() {
     return {penalty: 0, reason: ''};
   },
@@ -214,6 +311,20 @@ const sandbox = {
   },
   getFx() {
     return null;
+  },
+  cardN(card) {
+    if (typeof card === 'string') return card;
+    return card && card.name ? card.name : '';
+  },
+  getMyHandNames() {
+    return sandbox.__tm_test_handNames || [];
+  },
+  getPlayerVueData() {
+    return sandbox.__tm_test_pv || null;
+  },
+  __tm_test_generation: 1,
+  detectGeneration() {
+    return sandbox.__tm_test_generation || 1;
   },
 };
 sandbox.FTN_TABLE = sandbox.TM_FTN_TABLE;
@@ -242,9 +353,23 @@ vm.runInNewContext(
     reasonCardLabelSource,
     describeNamedSynergySource,
     describeCorpBoostReasonSource,
+    formatReasonNumberSource,
+    globalParamRaisesSource,
+    estimateGensLeftSource,
     getCorpBoostSource,
     pushStructuredReasonSource,
+    getRequirementHardnessSource,
     getRequirementTagReasonLabelSource,
+    getRequirementHandTagCountsSource,
+    getCardTagCountsForNamesSource,
+    countRequirementTagsSource,
+    getXavierRequirementWildCountSource,
+    getRequirementFlexStepsSource,
+    getBoardRequirementCountsSource,
+    getBoardRequirementDisplayNameSource,
+    parseBoardRequirementsSource,
+    evaluateBoardRequirementsSource,
+    scoreCardRequirementsSource,
     scoreTagSynergiesSource,
     scoreResourceSynergiesSource,
     scoreCardEconomyInContextSource,
@@ -263,11 +388,33 @@ vm.runInNewContext(
     computeCardValueSource,
     scoreBreakEvenTimingSource,
     scoreFTNTimingSource,
+    scoreHandSynergySource,
+    scoreDiscountsAndPaymentsSource,
+    scoreTerraformRateSource,
+    openingPolicyScoreFromMCSource,
+    pushOpeningPolicyReasonSource,
+    getOpeningContextGameOptionsSource,
+    getOpeningPlayerCountSource,
+    getOpeningVisibleColoniesForTimingSource,
+    estimateOpeningAverageGameLengthSource,
+    openingExpectedEndGenSource,
+    openingRemainingStepsForParamSource,
+    openingRequirementRouteFactorSource,
+    openingHandRequirementStepsSource,
+    openingRequirementRateScaleSource,
+    openingRequirementStepsPerGenSource,
+    estimateOpeningRequirementDelayProfileSource,
+    openingLatePayoffScoreFromDelaySource,
+    scoreOpeningDraftPolicySource,
     isPreludeOrCorpCardSource,
     formatTableauSynergyReasonSource,
     dampTableauSynergyWeightSource,
     isSpentTableauSynergySource,
     scoreTableauSynergySource,
+    'var _comboIndex = null; var _antiComboIndex = null;',
+    getComboIndexSource,
+    getAntiComboIndexSource,
+    scoreComboPotentialSource,
     scoreSynergyRulesSource,
     getNamedRequirementDelayProfileSource,
     scorePositionalFactorsSource,
@@ -276,7 +423,9 @@ vm.runInNewContext(
     getOpeningHandBiasSource,
     getInitialDraftRatingScoreSource,
     'globalThis.__tm_test_describeCorpBoostReason = describeCorpBoostReason;',
+    'globalThis.__tm_test_estimateGensLeft = estimateGensLeft;',
     'globalThis.__tm_test_getCorpBoost = getCorpBoost;',
+    'globalThis.__tm_test_scoreCardRequirements = scoreCardRequirements;',
     'globalThis.__tm_test_scoreTagSynergies = scoreTagSynergies;',
     'globalThis.__tm_test_scoreResourceSynergies = scoreResourceSynergies;',
     'globalThis.__tm_test_scoreCardEconomyInContext = scoreCardEconomyInContext;',
@@ -295,8 +444,15 @@ vm.runInNewContext(
     'globalThis.__tm_test_computeCardValue = computeCardValue;',
     'globalThis.__tm_test_scoreBreakEvenTiming = scoreBreakEvenTiming;',
     'globalThis.__tm_test_scoreFTNTiming = scoreFTNTiming;',
+    'globalThis.__tm_test_scoreHandSynergy = scoreHandSynergy;',
+    'globalThis.__tm_test_scoreDiscountsAndPayments = scoreDiscountsAndPayments;',
+    'globalThis.__tm_test_scoreTerraformRate = scoreTerraformRate;',
+    'globalThis.__tm_test_openingExpectedEndGen = openingExpectedEndGen;',
+    'globalThis.__tm_test_estimateOpeningRequirementDelayProfile = estimateOpeningRequirementDelayProfile;',
+    'globalThis.__tm_test_scoreOpeningDraftPolicy = scoreOpeningDraftPolicy;',
     'globalThis.__tm_test_isPreludeOrCorpCard = isPreludeOrCorpCard;',
     'globalThis.__tm_test_scoreTableauSynergy = scoreTableauSynergy;',
+    'globalThis.__tm_test_scoreComboPotential = scoreComboPotential;',
     'globalThis.__tm_test_resourcePlacementCanReachTarget = resourcePlacementCanReachTarget;',
     'globalThis.__tm_test_scoreSynergyRules = _scoreSynergyRules;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
@@ -309,7 +465,9 @@ vm.runInNewContext(
 );
 
 const describeCorpBoostReason = sandbox.__tm_test_describeCorpBoostReason;
+const estimateGensLeft = sandbox.__tm_test_estimateGensLeft;
 const getCorpBoost = sandbox.__tm_test_getCorpBoost;
+const scoreCardRequirements = sandbox.__tm_test_scoreCardRequirements;
 const scoreTagSynergies = sandbox.__tm_test_scoreTagSynergies;
 const scoreResourceSynergies = sandbox.__tm_test_scoreResourceSynergies;
 const scoreCardEconomyInContext = sandbox.__tm_test_scoreCardEconomyInContext;
@@ -328,8 +486,15 @@ const getVpAccumulatorProjectedResources = sandbox.__tm_test_getVpAccumulatorPro
 const computeCardValue = sandbox.__tm_test_computeCardValue;
 const scoreBreakEvenTiming = sandbox.__tm_test_scoreBreakEvenTiming;
 const scoreFTNTiming = sandbox.__tm_test_scoreFTNTiming;
+const scoreHandSynergy = sandbox.__tm_test_scoreHandSynergy;
+const scoreDiscountsAndPayments = sandbox.__tm_test_scoreDiscountsAndPayments;
+const scoreTerraformRate = sandbox.__tm_test_scoreTerraformRate;
+const openingExpectedEndGen = sandbox.__tm_test_openingExpectedEndGen;
+const estimateOpeningRequirementDelayProfile = sandbox.__tm_test_estimateOpeningRequirementDelayProfile;
+const scoreOpeningDraftPolicy = sandbox.__tm_test_scoreOpeningDraftPolicy;
 const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
 const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
+const scoreComboPotential = sandbox.__tm_test_scoreComboPotential;
 const resourcePlacementCanReachTarget = sandbox.__tm_test_resourcePlacementCanReachTarget;
 const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
@@ -337,8 +502,16 @@ const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
 const getOpeningHandBias = sandbox.__tm_test_getOpeningHandBias;
 const getInitialDraftRatingScore = sandbox.__tm_test_getInitialDraftRatingScore;
 
+function assertNoUglyFloatReasons(result, label) {
+  const reasons = result && Array.isArray(result.reasons) ? result.reasons : [];
+  const ugly = reasons.find((reason) => /\d+\.\d{6,}/.test(reason));
+  assert(!ugly, `${label} should not expose JS floating point artifacts: ${ugly || ''}`);
+}
+
 assert.strictEqual(typeof describeCorpBoostReason, 'function', 'describeCorpBoostReason should be exposed');
+assert.strictEqual(typeof estimateGensLeft, 'function', 'estimateGensLeft should be exposed');
 assert.strictEqual(typeof getCorpBoost, 'function', 'getCorpBoost should be exposed');
+assert.strictEqual(typeof scoreCardRequirements, 'function', 'scoreCardRequirements should be exposed');
 assert.strictEqual(typeof scoreTagSynergies, 'function', 'scoreTagSynergies should be exposed');
 assert.strictEqual(typeof scoreResourceSynergies, 'function', 'scoreResourceSynergies should be exposed');
 assert.strictEqual(typeof scoreCardEconomyInContext, 'function', 'scoreCardEconomyInContext should be exposed');
@@ -357,12 +530,869 @@ assert.strictEqual(typeof getVpAccumulatorProjectedResources, 'function', 'getVp
 assert.strictEqual(typeof computeCardValue, 'function', 'computeCardValue should be exposed');
 assert.strictEqual(typeof scoreBreakEvenTiming, 'function', 'scoreBreakEvenTiming should be exposed');
 assert.strictEqual(typeof scoreFTNTiming, 'function', 'scoreFTNTiming should be exposed');
+assert.strictEqual(typeof scoreHandSynergy, 'function', 'scoreHandSynergy should be exposed');
+assert.strictEqual(typeof scoreDiscountsAndPayments, 'function', 'scoreDiscountsAndPayments should be exposed');
+assert.strictEqual(typeof scoreTerraformRate, 'function', 'scoreTerraformRate should be exposed');
+assert.strictEqual(typeof openingExpectedEndGen, 'function', 'openingExpectedEndGen should be exposed');
+assert.strictEqual(typeof estimateOpeningRequirementDelayProfile, 'function', 'estimateOpeningRequirementDelayProfile should be exposed');
+assert.strictEqual(typeof scoreOpeningDraftPolicy, 'function', 'scoreOpeningDraftPolicy should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
+assert.strictEqual(typeof scoreComboPotential, 'function', 'scoreComboPotential should be exposed');
 assert.strictEqual(typeof resourcePlacementCanReachTarget, 'function', 'resourcePlacementCanReachTarget should be exposed');
 assert.strictEqual(typeof scoreSynergyRules, 'function', 'scoreSynergyRules should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
 assert.strictEqual(typeof getOpeningHandBias, 'function', 'getOpeningHandBias should be exposed');
 assert.strictEqual(typeof getInitialDraftRatingScore, 'function', 'getInitialDraftRatingScore should be exposed');
+assert(source.includes("co2-reducers"), 'Pathfinders CO2/CO² Reducers alias should be present in content lookup');
+
+const contentFullOpeningNoWgt = {
+  game: {
+    generation: 1,
+    temperature: -30,
+    oxygenLevel: 0,
+    oceans: 0,
+    gameOptions: {solarPhaseOption: false, preludeExtension: true, coloniesExtension: true},
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+  },
+};
+sandbox.__tm_test_generation = 1;
+sandbox.SC.genParamDivisor = 4;
+sandbox.TM_ADVISOR = null;
+sandbox.TM_BRAIN_CORE = null;
+assert.strictEqual(
+  estimateGensLeft(contentFullOpeningNoWgt),
+  10,
+  'content fallback should use calibrated 3P no-WGT baseline instead of 42/genParamDivisor ~= 11'
+);
+sandbox.TM_BRAIN_CORE = {
+  estimateGensLeftFromState() {
+    return 7;
+  },
+};
+assert.strictEqual(
+  estimateGensLeft(contentFullOpeningNoWgt),
+  7,
+  'content fallback should delegate to TM_BRAIN_CORE when TM_ADVISOR is not available yet'
+);
+sandbox.TM_BRAIN_CORE = null;
+
+assert.strictEqual(
+  openingExpectedEndGen({
+    gen: 1,
+    _playerCount: 3,
+    gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+  }),
+  9,
+  'opening timing should use the same 3P WGT baseline as header gens-left'
+);
+assert.strictEqual(
+  openingExpectedEndGen({
+    gen: 1,
+    _playerCount: 3,
+    gameOptions: {solarPhaseOption: false, preludeExtension: true, coloniesExtension: true},
+  }),
+  10,
+  'opening timing should use the calibrated 3P no-WGT baseline'
+);
+assert.strictEqual(
+  openingExpectedEndGen({
+    gen: 1,
+    _playerCount: 2,
+    gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+  }),
+  11.5,
+  'opening timing should use the calibrated 2P baseline'
+);
+let capturedOpeningLengthState = null;
+sandbox.TM_BRAIN_CORE = {
+  estimateAverageGameLengthFromState(state, options) {
+    capturedOpeningLengthState = {state, options};
+    return 10.5;
+  },
+};
+assert.strictEqual(
+  openingExpectedEndGen({
+    gen: 1,
+    _playerCount: 3,
+    gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+  }),
+  10.5,
+  'opening timing should delegate its baseline to TM_BRAIN_CORE when available'
+);
+assert.strictEqual(
+  capturedOpeningLengthState.options.playerCount,
+  3,
+  'opening timing should pass player count into TM_BRAIN_CORE baseline estimation'
+);
+sandbox.TM_BRAIN_CORE = null;
+
+sandbox.TM_CARD_EFFECTS = {
+  'Cloud Seeding': {c: 11, pp: 2, mp: -1, pOpp: 1},
+  'Trigger One': {},
+  'Trigger Two': {},
+  'Trigger Three': {},
+};
+sandbox.TM_CARD_TAGS = {
+  'Cloud Seeding': [],
+  'Trigger One': [],
+  'Trigger Two': [],
+  'Trigger Three': [],
+};
+sandbox.TM_TAG_TRIGGERS = {
+  'Trigger One': [{tags: ['plant'], value: 1}],
+  'Trigger Two': [{tags: ['microbe'], value: 1}],
+  'Trigger Three': [{tags: ['earth'], value: 1}],
+};
+sandbox.TM_CARD_DISCOUNTS = {};
+const cloudSeedingNoTagPenalty = scoreHandSynergy(
+  'Cloud Seeding',
+  ['Cloud Seeding', 'Trigger One', 'Trigger Two', 'Trigger Three'],
+  {
+    gensLeft: 7,
+    gen: 2,
+    globalParams: {temp: -24, oxy: 2, oceans: 3, venus: 0},
+    tags: {},
+    _myCorps: [],
+  },
+);
+const cloudSeedingNoTagReason = cloudSeedingNoTagPenalty.reasons.find((reason) => reason.includes('no tag: miss 3 trigger/disc')) || '';
+assert(cloudSeedingNoTagReason, 'Cloud Seeding should show the no-tag trigger/discount miss reason');
+assert(
+  !/1\.799999/.test(cloudSeedingNoTagReason),
+  'No-tag penalty reason should not expose JS floating point artifacts',
+);
+assert(
+  cloudSeedingNoTagReason.includes('−1.8'),
+  'No-tag penalty reason should be rounded to one decimal place',
+);
+assertNoUglyFloatReasons(cloudSeedingNoTagPenalty, 'Cloud Seeding no-tag penalty');
+
+sandbox.TM_CARD_EFFECTS = {
+  'Dirigibles': {c: 11},
+  'Immigration Shuttles': {c: 31, mp: 5},
+  'Mercurian Alloys': {c: 3},
+};
+sandbox.TM_CARD_TAGS = {
+  'Dirigibles': ['venus'],
+  'Immigration Shuttles': ['earth', 'space'],
+  'Mercurian Alloys': ['space'],
+};
+sandbox.TM_CARD_TAG_REQS = {};
+sandbox.TM_CARD_DISCOUNTS = {
+  'Mercurian Alloys': {_all: 2},
+};
+const mercurianDirigiblesSynergy = scoreHandSynergy(
+  'Dirigibles',
+  ['Dirigibles', 'Mercurian Alloys'],
+  {
+    gensLeft: 7,
+    gen: 3,
+    globalParams: {temp: -30, oxy: 4, oceans: 4, venus: 2},
+    tags: {science: 0},
+    _myCorps: [],
+  },
+);
+assert(
+  !mercurianDirigiblesSynergy.reasons.some((reason) => reason.includes('Mercurian Alloys') && reason.includes('скидка')),
+  'Mercurian Alloys should not be modeled as a generic discount for non-space Venus cards like Dirigibles',
+);
+sandbox.CORP_ABILITY_SYNERGY = {
+  'Tharsis Republic': {tags: ['city'], kw: ['city', 'город'], b: 4},
+  'Philares': {tags: [], kw: ['tile', 'тайл', 'city', 'город', 'greenery', 'озелен', 'ocean', 'океан'], b: 4},
+};
+sandbox.TAG_TRIGGERS = {};
+sandbox.CORP_DISCOUNTS = {};
+const immigrationCorpMarkers = scoreTagSynergies(
+  'Immigration Shuttles',
+  new Set(['earth', 'space']),
+  'green',
+  31,
+  1,
+  'increase your m€ production 5 steps. 1 vp for every 3 city tiles in play.',
+  {e: 'increase your m€ production 5 steps. 1 vp for every 3 city tiles in play.'},
+  ['Philares', 'Tharsis Republic'],
+  {
+    gen: 3,
+    gensLeft: 7,
+    tags: {earth: 1, space: 0, city: 1},
+    tagsWithHand: {earth: 2, space: 1, city: 1},
+    globalParams: {temp: -30, oxy: 4, oceans: 4, venus: 2},
+  },
+  null,
+);
+assert(
+  !immigrationCorpMarkers.reasons.some((reason) => reason.includes('Корп: Philares') || reason.includes('Корп: Tharsis Republic')),
+  'Immigration Shuttles should not show tile/city corp markers unless it actually places a tile/city',
+);
+sandbox.CORP_ABILITY_SYNERGY = {};
+sandbox.TM_CARD_DISCOUNTS = {};
+
+sandbox.TM_CARD_EFFECTS = {
+  'Harvest': {c: 4, mc: 12},
+  'Insects': {c: 9, pp: 1},
+};
+sandbox.TM_CARD_TAGS = {
+  'Harvest': ['event', 'plant'],
+  'Insects': ['plant'],
+};
+const harvestInsectsSynergy = scoreHandSynergy(
+  'Harvest',
+  ['Harvest', 'Insects'],
+  {
+    gensLeft: 7,
+    gen: 3,
+    globalParams: {temp: -30, oxy: 4, oceans: 4, venus: 2},
+    tags: {plant: 2},
+    _myCorps: [],
+  },
+);
+assert(
+  !harvestInsectsSynergy.reasons.some((reason) => reason.includes('Insects +tag')),
+  'Harvest should not count as an Insects plant-tag payoff because event tags do not persist',
+);
+const insectsHarvestSynergy = scoreHandSynergy(
+  'Insects',
+  ['Insects', 'Harvest'],
+  {
+    gensLeft: 7,
+    gen: 3,
+    globalParams: {temp: -30, oxy: 4, oceans: 4, venus: 2},
+    tags: {plant: 2},
+    _myCorps: [],
+  },
+);
+assert(
+  !insectsHarvestSynergy.reasons.some((reason) => reason.includes('plant tag')),
+  'Insects should not count plant tags from event cards in hand',
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  'Fish': {c: 9, vpAcc: 1},
+  'Pets': {c: 10, vpAcc: 1},
+  'Birds': {c: 10, vpAcc: 1},
+  'Small Animals': {c: 6, vpAcc: 1},
+};
+sandbox.TM_CARD_TAGS = {
+  'Fish': ['animal'],
+  'Pets': ['animal'],
+  'Birds': ['animal'],
+  'Small Animals': ['animal'],
+};
+const animalAttackPenalty = scoreHandSynergy(
+  'Fish',
+  ['Fish', 'Pets', 'Birds', 'Small Animals'],
+  {
+    gensLeft: 5,
+    gen: 4,
+    globalParams: {temp: -6, oxy: 8, oceans: 5, venus: 0},
+    tags: {},
+    _myCorps: [],
+    oppHasAnimalAttack: true,
+  },
+);
+const animalAttackReason = animalAttackPenalty.reasons.find((reason) => reason.includes('opp Pred/Ants')) || '';
+assert(animalAttackReason, 'Animal attack context should show the opponent-aware animal penalty');
+assertNoUglyFloatReasons(animalAttackPenalty, 'Opponent animal attack penalty');
+
+sandbox.TM_CARD_EFFECTS = {
+  'Nitrophilic Moss': {c: 8, pp: 2},
+  'Bushes': {c: 10, pp: 2},
+  'Moss': {c: 4, pp: 1},
+  'Ecological Zone': {c: 12, pp: 1},
+};
+sandbox.TM_CARD_TAGS = {
+  'Nitrophilic Moss': ['plant'],
+  'Bushes': ['plant'],
+  'Moss': ['plant'],
+  'Ecological Zone': ['plant'],
+};
+const plantAttackPenalty = scoreHandSynergy(
+  'Nitrophilic Moss',
+  ['Nitrophilic Moss', 'Bushes', 'Moss', 'Ecological Zone'],
+  {
+    gensLeft: 6,
+    gen: 3,
+    globalParams: {temp: -18, oxy: 4, oceans: 4, venus: 0},
+    tags: {},
+    _myCorps: [],
+    oppHasPlantAttack: true,
+  },
+);
+const plantAttackReason = plantAttackPenalty.reasons.find((reason) => reason.includes('opp plant atk risky')) || '';
+assert(plantAttackReason, 'Plant attack context should show the opponent-aware plant penalty');
+assertNoUglyFloatReasons(plantAttackPenalty, 'Opponent plant attack penalty');
+
+sandbox.TM_CARD_EFFECTS = {
+  'Protected Habitats': {c: 5},
+  'Kelp Farming': {c: 17, pp: 2, pl: 2, vp: 2},
+  'Fish': {c: 9, vpAcc: 1, res: 'animal', vpPer: 1},
+};
+sandbox.TM_CARD_TAGS = {
+  'Protected Habitats': ['plant'],
+  'Kelp Farming': ['plant'],
+  'Fish': ['animal'],
+};
+sandbox.TM_ANIMAL_VP_CARDS = ['Fish'];
+sandbox.TM_MICROBE_VP_CARDS = [];
+const protectedHabitatsLivePayoff = scoreHandSynergy(
+  'Protected Habitats',
+  ['Protected Habitats', 'Kelp Farming', 'Fish'],
+  {
+    gensLeft: 5,
+    gen: 5,
+    plants: 7,
+    animalTargetCount: 1,
+    microbeTargetCount: 0,
+    animalAccumRate: 1,
+    microbeAccumRate: 0,
+    globalParams: {temp: 2, oxy: 10, oceans: 8, venus: 0},
+    prod: {plants: 4},
+    tags: {plant: 3, animal: 1},
+    _myCorps: [],
+  },
+);
+assert(
+  protectedHabitatsLivePayoff.bonus >= 8,
+  'Protected Habitats should get a stronger live payoff bonus before Kelp/animal realization when plants/resources are already exposed',
+);
+assert(
+  protectedHabitatsLivePayoff.reasons.some((reason) => reason.includes('protect live bio payoff')),
+  'Protected Habitats should explain the live plant/animal/microbe protection bonus in tooltip reasons',
+);
+const protectedHabitatsEmptyHand = scoreHandSynergy(
+  'Protected Habitats',
+  ['Protected Habitats'],
+  {
+    gensLeft: 5,
+    gen: 5,
+    plants: 0,
+    animalTargetCount: 0,
+    microbeTargetCount: 0,
+    animalAccumRate: 0,
+    microbeAccumRate: 0,
+    globalParams: {temp: 2, oxy: 10, oceans: 8, venus: 0},
+    prod: {plants: 0},
+    tags: {},
+    _myCorps: [],
+  },
+);
+assert.strictEqual(
+  protectedHabitatsEmptyHand.bonus,
+  0,
+  'Protected Habitats should not inflate in empty hands without exposed resources or payoff cards',
+);
+
+sandbox.TM_COMBOS = [{
+  cards: ['Robotic Workforce', 'Medical Lab'],
+  r: 'great',
+  v: "'Magnificent.' One of the best combos. Copy Medical Lab production for 15 MC",
+}];
+sandbox.TM_ANTI_COMBOS = [];
+const medicalLabCopyTargetCombo = scoreComboPotential(
+  'Medical Lab',
+  'increase your m€ production 1 step for every 2 building tags you have.',
+  new Set(['Medical Lab', 'Robotic Workforce']),
+  {gensLeft: 6, globalParams: {}, _myCorps: []},
+);
+assert.strictEqual(
+  medicalLabCopyTargetCombo.bonus,
+  0,
+  'Medical Lab should not receive a direct combo score because Robotic Workforce could later copy it',
+);
+assert(
+  !medicalLabCopyTargetCombo.reasons.some((reason) => reason.includes('Magnificent')),
+  'Medical Lab should not surface the Robotic Workforce copy-target combo as its own scoring reason',
+);
+const roboticWorkforceCopyProviderCombo = scoreComboPotential(
+  'Robotic Workforce',
+  'copy the production box of one of your building cards.',
+  new Set(['Medical Lab', 'Robotic Workforce']),
+  {gensLeft: 6, globalParams: {}, _myCorps: []},
+);
+assert(
+  roboticWorkforceCopyProviderCombo.bonus > 0,
+  'Robotic Workforce should still score the Medical Lab copy combo when Robotic Workforce is the card being evaluated',
+);
+
+function fusionRequirementResult({tags = {}, tableau = [], handNames = []} = {}) {
+  sandbox.TM_CARD_TAG_REQS = {'Fusion Power': {power: 2}};
+  sandbox.TM_CARD_GLOBAL_REQS = {};
+  sandbox.TM_CARD_EFFECTS = {};
+  sandbox.__tm_test_handNames = handNames;
+  sandbox.__tm_test_pv = {
+    thisPlayer: {
+      tableau: tableau.map((entry) => (typeof entry === 'string' ? {name: entry} : entry)),
+    },
+  };
+  const tableauNames = tableau.map((entry) => (typeof entry === 'string' ? entry : entry.name));
+  return scoreCardRequirements(
+    null,
+    {
+      tags,
+      tableauNames: new Set(tableauNames),
+      globalParams: {temperature: -18, oxy: 4, oceans: 3, venus: 0},
+      gensLeft: 4,
+      gen: 5,
+      terraformRate: 1,
+      _myCorps: [],
+    },
+    'Fusion Power',
+  );
+}
+
+const fusionNoPowerReq = fusionRequirementResult();
+assert(
+  fusionNoPowerReq.reasons.some((reason) => reason.includes('Нет power')),
+  'Fusion Power should normally show a missing Power tag requirement',
+);
+
+const fusionXavierReq = fusionRequirementResult({tableau: ['Xavier']});
+assert(
+  !fusionXavierReq.reasons.some((reason) => reason.includes('Нет power')),
+  'Xavier OPG wild tags should cover Fusion Power tag requirement instead of showing Нет power',
+);
+assert(
+  fusionXavierReq.reasons.some((reason) => reason.includes('Xavier wild req')),
+  'Fusion Power should explain that Xavier is covering the tag requirement',
+);
+assert(
+  fusionXavierReq.bonus > fusionNoPowerReq.bonus,
+  'Xavier-covered Fusion Power should score higher than missing the Power requirement',
+);
+
+const fusionSpentXavierReq = fusionRequirementResult({tableau: [{name: 'Xavier', isDisabled: true}]});
+assert(
+  fusionSpentXavierReq.reasons.some((reason) => reason.includes('Нет power')),
+  'Spent Xavier should not cover future Fusion Power requirements',
+);
+
+sandbox.TM_CARD_TAG_REQS = {'Luna Governor': {earth: 3}};
+sandbox.TM_CARD_GLOBAL_REQS = {};
+sandbox.TM_CARD_EFFECTS = {};
+sandbox.__tm_test_handNames = [];
+sandbox.__tm_test_pv = {
+  thisPlayer: {tableau: []},
+};
+const lunaGovernorVisibleEarthShellReq = scoreCardRequirements(
+  null,
+  {
+    tags: {earth: 0},
+    tagsWithHand: {earth: 3},
+    _handTagCounts: {earth: 3},
+    globalParams: {temp: -30, oxy: 0, oceans: 0, venus: 0},
+    gensLeft: 10,
+    gen: 1,
+    terraformRate: 1,
+    _myCorps: [],
+    tableauNames: new Set(),
+  },
+  'Luna Governor',
+);
+assert(
+  !lunaGovernorVisibleEarthShellReq.reasons.some((reason) => reason.includes('Нет earth')),
+  'Luna Governor should not say Нет earth when the visible opening hand already contains enough Earth tag setup',
+);
+assert(
+  lunaGovernorVisibleEarthShellReq.reasons.some((reason) => reason.includes('Earth') && reason.includes('рука +3')),
+  'Luna Governor should explain that the Earth requirement is setup-gated by visible hand tags',
+);
+
+sandbox.TM_CARD_TAG_REQS = {'Venus Governor': {venus: 2}};
+sandbox.TM_CARD_GLOBAL_REQS = {};
+sandbox.TM_CARD_EFFECTS = {};
+sandbox.TM_CARD_TAGS = {
+  'Unexpected Application': ['event', 'venus'],
+  'Forced Precipitation': ['venus'],
+  'Venus Governor': ['venus', 'venus'],
+};
+sandbox.__tm_test_handNames = ['Unexpected Application', 'Forced Precipitation', 'Venus Governor'];
+sandbox.__tm_test_pv = {
+  thisPlayer: {tableau: []},
+};
+const venusGovernorEventVenusReq = scoreCardRequirements(
+  null,
+  {
+    tags: {venus: 1},
+    globalParams: {temp: -28, oxy: 0, oceans: 0, venus: 0},
+    gensLeft: 8,
+    gen: 2,
+    terraformRate: 1,
+    _myCorps: [],
+    tableauNames: new Set(),
+  },
+  'Venus Governor',
+);
+assert(
+  venusGovernorEventVenusReq.reasons.some((reason) => reason.includes('Venus') && reason.includes('рука +1')),
+  'Venus Governor should count only persistent Venus tags in hand as setup for its on-table tag requirement',
+);
+assert(
+  !venusGovernorEventVenusReq.reasons.some((reason) => reason.includes('рука +2')),
+  'Venus Governor should not count event Venus tags as future played Venus tags',
+);
+
+positionalScoring.strategyThresholds = Object.assign({}, positionalScoring.strategyThresholds || {}, {venus: 3});
+positionalScoring.strategyBase = 2;
+positionalScoring.strategyCap = 4;
+const venusGovernorRouteCtx = {
+  gen: 2,
+  gensLeft: 8,
+  tags: {venus: 1},
+  tagsWithHand: {venus: 4},
+  tagsWithPersistentHand: {venus: 3},
+  _handTagCounts: {venus: 4},
+  _persistentHandTagCounts: {venus: 3},
+  _handNamesSet: new Set(['Venus Governor', 'Unexpected Application', 'Forced Precipitation']),
+  prod: {mc: 4, steel: 0, ti: 0, energy: 0, heat: 0, plants: 0},
+  globalParams: {temp: -28, oxy: 0, oceans: 0, venus: 0},
+};
+const venusGovernorTagSynergy = scoreTagSynergies(
+  'Venus Governor',
+  new Set(['venus']),
+  'green',
+  4,
+  1,
+  'requires 2 venus tags. increase your m€ production 2 steps.',
+  {e: 'Requires 2 Venus tags. Increase your M€ production 2 steps.'},
+  [],
+  venusGovernorRouteCtx,
+  null,
+);
+assert(
+  !venusGovernorTagSynergy.reasons.some((reason) => reason.includes('рука venus')),
+  'Venus Governor should not receive generic hand Venus affinity from its own tags or event Venus tags',
+);
+const venusGovernorPositional = scorePositionalFactors(
+  new Set(['venus']),
+  'green',
+  'Venus Governor',
+  4,
+  1,
+  'requires 2 venus tags. increase your m€ production 2 steps.',
+  {e: 'Requires 2 Venus tags. Increase your M€ production 2 steps.'},
+  venusGovernorRouteCtx,
+  74,
+  false,
+  true,
+  false,
+);
+assert(
+  !venusGovernorPositional.reasons.some((reason) => reason.includes('venus стратегия')),
+  'Venus Governor should not infer a Venus strategy from its own unplayable tags plus an event tag',
+);
+
+sandbox.TM_CARD_TAG_REQS = {'Interstellar Colony Ship': {science: 5}};
+sandbox.TM_CARD_GLOBAL_REQS = {};
+sandbox.TM_CARD_EFFECTS = {};
+sandbox.__tm_test_handNames = [];
+sandbox.__tm_test_pv = {
+  thisPlayer: {tableau: []},
+};
+const interstellarThinScienceReq = scoreCardRequirements(
+  null,
+  {
+    tags: {science: 0},
+    tagsWithHand: {science: 3},
+    _handTagCounts: {science: 3},
+    globalParams: {temp: -18, oxy: 9, oceans: 7, venus: 8},
+    gensLeft: 4,
+    gen: 6,
+    terraformRate: 1,
+    _myCorps: [],
+    tableauNames: new Set(),
+  },
+  'Interstellar Colony Ship',
+);
+assert(
+  interstellarThinScienceReq.bonus <= -16,
+  'Interstellar Colony Ship should be heavily penalized when 5 Science are not on table and the visible route is still short',
+);
+assert(
+  interstellarThinScienceReq.reasons.some((reason) =>
+    reason.includes('Нужно 5 science на стол') &&
+    reason.includes('есть 0') &&
+    reason.includes('рука +3')),
+  'Interstellar Colony Ship should explain the played Science requirement instead of hiding it behind a small Нет science penalty',
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  'Gyropolis': {c: 20, mp: 0, ep: -2, city: 1},
+};
+const gyropolisFastRushTiming = scoreFTNTiming(
+  'Gyropolis',
+  {
+    gensLeft: 4,
+    gen: 6,
+    prod: {energy: 3},
+    globalParams: {temp: -18, oxy: 12, oceans: 7, venus: 8},
+  },
+  {},
+);
+assert(
+  !gyropolisFastRushTiming.reasons.some((reason) => reason.includes('Тайминг +15')),
+  'Gyropolis should not receive the full positive timing cap just because the energy-production loss is deferred in a fast rush',
+);
+assert(
+  gyropolisFastRushTiming.bonus <= 4,
+  `Gyropolis timing relief should be capped for a late energy-sac city, got ${gyropolisFastRushTiming.bonus}`,
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  'Space Port Colony': {c: 27, colony: {allowDuplicates: true}, tradeFleet: 1},
+};
+const spacePortColonyRushEconomy = scoreCardEconomyInContext(
+  new Set(['space']),
+  'green',
+  'Space Port Colony',
+  27,
+  1,
+  'requires 1 colony. build a colony and gain 1 trade fleet. 1 vp per 2 colonies.',
+  {e: 'requires 1 colony. build a colony and gain 1 trade fleet. 1 vp per 2 colonies.'},
+  {
+    gensLeft: 4,
+    gen: 6,
+    terraformRate: 4,
+    tags: {},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    coloniesOwned: 1,
+    prod: {},
+    mc: 29,
+    globalParams: {temp: -18, oxy: 12, oceans: 7, venus: 8},
+  },
+  false,
+);
+assert(
+  spacePortColonyRushEconomy.bonus <= -8,
+  `Late Space Port Colony should be penalized as an expensive colony engine in a rush, got ${spacePortColonyRushEconomy.bonus}`,
+);
+assert(
+  spacePortColonyRushEconomy.reasons.some((reason) => reason.includes('Быстр. colony engine')),
+  'Late Space Port Colony should explain the rush penalty as colony-engine timing',
+);
+
+const spacePortColonyFastRate = scoreTerraformRate(
+  {terraformRate: 4, gen: 6, gensLeft: 4},
+  'requires 1 colony. build a colony and gain 1 trade fleet. 1 vp per 2 colonies.',
+  {e: 'requires 1 colony. build a colony and gain 1 trade fleet. 1 vp per 2 colonies.'},
+);
+assert(
+  !spacePortColonyFastRate.reasons.some((reason) => reason.includes('Быстр. → VP')),
+  'Conditional colony VP text should not receive the generic fast-game VP burst bonus',
+);
+
+const duplicateTharsisTriggers = scoreDiscountsAndPayments(
+  new Set(['city']),
+  null,
+  'green',
+  {
+    discounts: {},
+    steel: 0,
+    titanium: 0,
+    steelVal: 2,
+    tiVal: 3,
+    tagTriggers: [
+      {tags: ['city'], value: 4, desc: 'Tharsis → +1 MC-прод'},
+      {tags: ['city'], value: 4, desc: 'Tharsis → +1 MC-прод'},
+    ],
+  },
+  1,
+);
+assert.strictEqual(
+  duplicateTharsisTriggers.bonus,
+  4,
+  'Duplicate Tharsis city triggers should not score the same city-trigger twice',
+);
+assert(
+  duplicateTharsisTriggers.reasons.length === 1 &&
+    (duplicateTharsisTriggers.reasons[0].match(/Tharsis → \+1 MC-прод/g) || []).length === 1,
+  'Duplicate Tharsis city triggers should be displayed once',
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  'Asteroid Mining': {c: 30, tp: 2, vp: 2},
+  'Rover Construction': {c: 12, vp: 1},
+  'Mangrove': {c: 12, grn: 1, vp: 1, minG: 4},
+  'Topsoil Contract': {c: 8, pl: 3},
+  'Unexpected Application': {c: 4, vn: 1},
+  'Psychrophiles': {c: 2, res: 'microbe'},
+  'Research': {c: 11, cd: 2, vp: 1},
+  'Luna Governor': {c: 4, mp: 2},
+  'Cartel': {c: 8, mp: 2},
+  'Cloud Seeding': {c: 11, pp: 2, mp: -1, pOpp: 1},
+  'Planetary Alliance': {c: 0, tr: 2},
+  'Space Lanes': {c: 0, ti: 3, mc: 9},
+};
+sandbox.TM_CARD_TAGS = {
+  'Asteroid Mining': ['jovian', 'space'],
+  'Rover Construction': ['building'],
+  'Mangrove': ['plant'],
+  'Topsoil Contract': ['earth', 'microbe'],
+  'Unexpected Application': ['event', 'venus'],
+  'Psychrophiles': ['microbe'],
+  'Research': ['science', 'science'],
+  'Luna Governor': ['earth', 'earth'],
+  'Cartel': ['earth'],
+  'Planetary Alliance': ['earth', 'jovian', 'venus'],
+  'Space Lanes': ['space'],
+};
+sandbox.TM_CARD_GLOBAL_REQS = {'Mangrove': {temperature: {min: 4}}};
+sandbox.TM_CARD_TAG_REQS = {'Luna Governor': {earth: 3}};
+
+const currentOpeningHand = [
+  'Asteroid Mining',
+  'Rover Construction',
+  'Mangrove',
+  'Topsoil Contract',
+  'Unexpected Application',
+  'Psychrophiles',
+  'Research',
+  'Luna Governor',
+  'Cartel',
+  'Cloud Seeding',
+  'Planetary Alliance',
+  'Space Lanes',
+];
+const openingCtx = {
+  _openingHand: true,
+  gen: 1,
+  gensLeft: 10,
+  globalParams: {temp: -30, oxy: 0, oceans: 0, venus: 0},
+  tags: {earth: 0, jovian: 0, venus: 0, science: 0, space: 0, microbe: 0, plant: 0, building: 0, wild: 0},
+  tagsWithHand: {earth: 5, jovian: 2, venus: 2, science: 2, space: 2, microbe: 2, plant: 1, building: 1},
+  _handTagCounts: {earth: 5, jovian: 2, venus: 2, science: 2, space: 2, microbe: 2, plant: 1, building: 1},
+  titanium: 0,
+  steel: 0,
+  tiVal: 3,
+  steelVal: 2,
+  prod: {mc: 0, ti: 0, steel: 0, energy: 0, plants: 0, heat: 0},
+  discounts: {},
+  _myCorps: [],
+};
+function openingPolicyFor(cardName, eLower) {
+  const tags = new Set(sandbox.TM_CARD_TAGS[cardName] || []);
+  const fx = sandbox.TM_CARD_EFFECTS[cardName] || {};
+  const type = tags.has('event') ? 'red' : 'green';
+  return scoreOpeningDraftPolicy(
+    cardName,
+    tags,
+    type,
+    fx.c,
+    eLower || '',
+    {e: eLower || ''},
+    openingCtx,
+    currentOpeningHand,
+  );
+}
+function hasCalibratedOpeningReason(result, label) {
+  return result.reasons.some((reason) => reason.includes(label) && /~\d+ MC/.test(reason));
+}
+
+const researchOpeningPolicy = openingPolicyFor('Research', 'draw 2 cards. 1 vp.');
+const cartelOpeningPolicy = openingPolicyFor('Cartel', 'increase your m€ production 1 step for every earth tag you have.');
+const lunaGovernorOpeningPolicy = openingPolicyFor('Luna Governor', 'requires 3 earth tags. increase your m€ production 2 steps.');
+const topsoilOpeningPolicy = openingPolicyFor('Topsoil Contract', 'gain 3 plants.');
+const mangroveOpeningPolicy = openingPolicyFor('Mangrove', 'temperature must be +4 c or warmer. place a greenery on an ocean reserved area.');
+const asteroidOpeningPolicy = openingPolicyFor('Asteroid Mining', 'increase your titanium production 2 steps. 2 vp.');
+const cloudSeedingOpeningPolicy = openingPolicyFor('Cloud Seeding', 'decrease your m€ production 1 step. increase your plant production 2 steps.');
+const mangroveLateOpeningReason = mangroveOpeningPolicy.reasons.find((reason) => reason.includes('Opening late payoff')) || '';
+const mangroveBaseOpeningDelay = estimateOpeningRequirementDelayProfile('temperature', 17, Object.assign({}, openingCtx, {
+  _gameOptions: {preludeExtension: true, coloniesExtension: false, solarPhaseOption: false},
+  _playerCount: 3,
+}));
+const mangroveIoOpeningDelay = estimateOpeningRequirementDelayProfile('temperature', 17, Object.assign({}, openingCtx, {
+  _gameOptions: {preludeExtension: true, coloniesExtension: true, solarPhaseOption: false},
+  _playerCount: 3,
+  colonyWorldCount: 5,
+  visibleColonies: ['Io'],
+}));
+
+assert(
+  researchOpeningPolicy.bonus >= 2 &&
+    hasCalibratedOpeningReason(researchOpeningPolicy, 'Opening anchor'),
+  'Research should be treated as a calibrated opening anchor because early draw stabilizes the route',
+);
+assert(
+  cartelOpeningPolicy.bonus >= 2 &&
+    hasCalibratedOpeningReason(cartelOpeningPolicy, 'Opening anchor'),
+  'Cartel should be treated as a calibrated opening anchor when Earth density is visible',
+);
+assert(
+  topsoilOpeningPolicy.bonus >= 1 &&
+    hasCalibratedOpeningReason(topsoilOpeningPolicy, 'Opening setup'),
+  'Topsoil Contract should be treated as calibrated cheap setup in the current opening route',
+);
+assert(
+  lunaGovernorOpeningPolicy.bonus >= 0 &&
+    hasCalibratedOpeningReason(lunaGovernorOpeningPolicy, 'Opening setup') &&
+    !lunaGovernorOpeningPolicy.reasons.some((reason) => reason.includes('Opening anchor')) &&
+    !lunaGovernorOpeningPolicy.reasons.some((reason) => reason.includes('Opening late payoff')),
+  'Luna Governor should stay a calibrated setup-gated payoff, not an opening anchor, when the visible hand has enough Earth route',
+);
+assert(
+  mangroveOpeningPolicy.bonus <= -10 &&
+    hasCalibratedOpeningReason(mangroveOpeningPolicy, 'Opening late payoff'),
+  'Mangrove at -30C should be capped by calibrated opening policy as a late payoff, not ranked as an opening anchor',
+);
+assert(
+  /Opening late payoff temperature -1[0-2]/.test(mangroveLateOpeningReason),
+  'Mangrove opening late-payoff penalty should be harsher than plain MC/2 when playable only near the expected end',
+);
+assert(
+  /~gen \d+/.test(mangroveLateOpeningReason),
+  'Mangrove opening late-payoff penalty should be calibrated from expected playable generation, not raw temperature steps',
+);
+assert.strictEqual(
+  mangroveBaseOpeningDelay.playableGen,
+  10,
+  'Mangrove at -30C in 3P no-WGT should use avg 10-generation game as the baseline playable-generation estimate',
+);
+assert(
+  mangroveIoOpeningDelay.playableGen < mangroveBaseOpeningDelay.playableGen,
+  'Io colony should shift temperature-gated opening cards earlier than the baseline timing model',
+);
+assert(
+  asteroidOpeningPolicy.bonus <= -5 &&
+    hasCalibratedOpeningReason(asteroidOpeningPolicy, 'Opening expensive payoff'),
+  'Asteroid Mining should be penalized by calibrated opening policy as an expensive payoff that competes with early economy/draw',
+);
+assert(
+  cloudSeedingOpeningPolicy.bonus <= -4 &&
+    hasCalibratedOpeningReason(cloudSeedingOpeningPolicy, 'Opening weak economy'),
+  'Cloud Seeding should be penalized as calibrated weak opening economy because it cuts MC production',
+);
+
+sandbox.TM_CARD_GLOBAL_REQS = {'Mangrove': {temperature: {min: 4}}};
+sandbox.TM_CARD_TAG_REQS = {};
+sandbox.TM_CARD_EFFECTS = {};
+sandbox.__tm_test_handNames = [];
+sandbox.__tm_test_pv = {
+  game: {
+    gameOptions: {solarPhaseOption: false},
+    players: [{}, {}, {}, {}],
+  },
+  thisPlayer: {tableau: []},
+};
+const mangroveOpenerFarTemperatureReq = scoreCardRequirements(
+  null,
+  {
+    gen: 1,
+    gensLeft: 10,
+    globalParams: {temp: -30, oxy: 0, oceans: 0, venus: 0},
+    tags: {},
+    tagsWithHand: {},
+    tagsProjected: {},
+    tableauNames: new Set(),
+  },
+  'Mangrove'
+);
+assert(
+  mangroveOpenerFarTemperatureReq.bonus <= -12 &&
+    mangroveOpenerFarTemperatureReq.reasons.some((reason) => reason.includes('Req далеко temperature')),
+  'Mangrove at -30C should keep a hard far-temperature penalty because +4C is 17 temp steps away'
+);
+sandbox.__tm_test_pv = null;
 
 function corpBoost(corpName, opts) {
   return getCorpBoost(corpName, Object.assign({
@@ -656,6 +1686,32 @@ assert(
   !soilStudiesNoGreenery.reasons.some((reason) => reason.includes('Финал: озелен')),
   'Soil Studies with a 5-plant burst and no plant stock should not receive the final O2 conversion bonus'
 );
+
+sandbox.TM_CARD_EFFECTS['Immigrant City'] = {c: 13, city: 1, ep: -1, mp: -2};
+const immigrantCityWithGordon = scorePostContextChecks(
+  'Immigrant City',
+  null,
+  'decrease your energy production 1 step and decrease your m€ production 2 steps. place a city tile.',
+  {e: 'Decrease your energy production 1 step and decrease your M€ production 2 steps. Place a city tile.'},
+  new Set(['building', 'city']),
+  {
+    gensLeft: 1,
+    prod: {plants: 0, heat: 0},
+    globalParams: {oxy: 14, temp: 8, oceans: 9},
+    tableauNames: new Set(['Gordon']),
+  },
+  null,
+  []
+);
+assert(
+  immigrantCityWithGordon.reasons.some((reason) => reason.includes('Gordon city +2')),
+  'Immigrant City should score Gordon CEO city placement cashback'
+);
+assert(
+  !immigrantCityWithGordon.reasons.some((reason) => reason.includes('Мало озелен')),
+  'Gordon should suppress the generic no-greenery city-placement penalty'
+);
+
 const soilStudiesCanGreenery = scorePostContextChecks(
   'Soil Studies',
   null,
@@ -878,6 +1934,78 @@ assert(
   'Nitrogen from Titan should not gain placer synergy from non-Jovian floater targets'
 );
 
+const arcticThreeOceansLeftTiming = scoreFTNTiming(
+  'Arctic Algae',
+  {
+    gensLeft: 5,
+    tags: {},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    prod: {steel: 0, ti: 0, energy: 0, heat: 0, plants: 0, mc: 0},
+    tableauNames: new Set(),
+    globalParams: {oxy: 0, temp: -12, oceans: 6, venus: 0},
+  },
+  {isPreludeOrCorp: false, myHand: []}
+);
+assert(
+  arcticThreeOceansLeftTiming.reasons.some((reason) => reason.includes('Океанов 3 −6')),
+  'Arctic Algae should get an explicit penalty when only three oceans remain'
+);
+
+const richEmptyLateCtx = {
+  gen: 6,
+  gensLeft: 2,
+  handSize: 0,
+  mc: 77,
+  tags: {},
+  awardTags: {},
+  milestoneNeeds: {},
+  tagTriggers: [],
+  prod: {steel: 0, ti: 0, energy: 0, heat: 0, plants: 0, mc: 28},
+  tableauNames: new Set(),
+  globalParams: {oxy: 12, temp: 0, oceans: 8},
+};
+
+const richEmptyLateDrawTiming = scorePositionalFactors(
+  new Set(),
+  'green',
+  'Research',
+  11,
+  1,
+  'draw 2 cards.',
+  {e: 'Draw 2 cards.'},
+  richEmptyLateCtx,
+  60,
+  true,
+  false,
+  false
+);
+assert(
+  richEmptyLateDrawTiming.bonus > 0 &&
+    richEmptyLateDrawTiming.reasons.some((reason) => reason.includes('Пустая рука+MC')) &&
+    !richEmptyLateDrawTiming.reasons.some((reason) => reason.includes('Рисовка поздно')),
+  'late rich players with an empty hand should treat project draw as VP-conversion, not as dead late draw'
+);
+
+sandbox.TM_CARD_EFFECTS['Acquired Company'] = {c: 10, mp: 3};
+const richEmptyLateProdEconomy = scoreCardEconomyInContext(
+  new Set(['earth']),
+  'green',
+  'Acquired Company',
+  10,
+  1,
+  'increase your m€ production 3 steps.',
+  {e: 'Increase your M€ production 3 steps.'},
+  richEmptyLateCtx,
+  false
+);
+assert(
+  richEmptyLateProdEconomy.bonus <= -16 &&
+    richEmptyLateProdEconomy.reasons.some((reason) => reason.includes('Нет VP-конверсии')),
+  'late rich players with an empty hand should receive an extra penalty on pure production with no VP conversion'
+);
+
 const lateDirigiblesEconomy = scoreCardEconomyInContext(
   new Set(['venus']),
   'blue',
@@ -973,6 +2101,33 @@ const baseCtx = {
   titanium: 0,
   gen: 1,
 };
+
+positionalScoring.strategyThresholds = Object.assign({}, positionalScoring.strategyThresholds || {}, {building: 6});
+positionalScoring.strategyBase = 2;
+positionalScoring.strategyCap = 4;
+const medicalLabPositionScore = scorePositionalFactors(
+  new Set(['building', 'science']),
+  'green',
+  'Medical Lab',
+  13,
+  0.8,
+  'increase your m€ production 1 step for every 2 building tags you have.',
+  {e: 'Increase your M€ production 1 step for every 2 building tags you have.'},
+  Object.assign({}, baseCtx, {
+    tagsWithHand: {building: 6},
+    tags: {building: 1},
+    prod: {steel: 1, ti: 0, energy: 0, heat: 0, plants: 0, mc: 0},
+    globalParams: {},
+  }),
+  69,
+  true,
+  false,
+  false
+);
+assert(
+  !medicalLabPositionScore.reasons.some((reason) => reason.includes('building стратегия')),
+  'Medical Lab should not receive generic building-strategy bonus on top of its own played-building-tag production',
+);
 
 const prefabPositionalScore = scorePositionalFactors(
   new Set(['building', 'city']),
@@ -1176,8 +2331,18 @@ assert(
 );
 
 assert(
+  source.includes("pushStructuredReason(reasons, reasonRows, 'Океанов 3 −6', -6);"),
+  'Arctic Algae should already be strongly discounted when only three oceans remain'
+);
+
+assert(
   source.includes("if (cardName === 'Arctic Algae' && ctx && ctx.globalParams) {"),
   'Arctic Algae should have dedicated dead-window guards in runtime scoring'
+);
+
+assert(
+  source.includes("descs.push('ocean cap ' + ncUsableTotal + '/' + ncTotal"),
+  'Arctic Algae hand ocean synergy should expose remaining-ocean caps'
 );
 
 assert(

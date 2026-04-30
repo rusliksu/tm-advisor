@@ -108,11 +108,16 @@
     var ratings = input && input.ratings;
     var ruName = input && input.ruName;
     var yName = input && input.yName;
+    var discardMode = input && input.discardMode;
     if (!item) return null;
 
     var adjTotal28 = Math.round(item.total * 10) / 10;
     var rec28, recClass28;
-    if (adjTotal28 >= 70) { rec28 = '\u0411\u0415\u0420\u0418'; recClass28 = 'tm-iov-take'; }
+    if (discardMode) {
+      rec28 = item.discardCandidate ? '\u0421\u0411\u0420\u041E\u0421' : 'KEEP';
+      recClass28 = item.discardCandidate ? 'tm-iov-skip' : 'tm-iov-ok';
+    }
+    else if (adjTotal28 >= 70) { rec28 = '\u0411\u0415\u0420\u0418'; recClass28 = 'tm-iov-take'; }
     else if (adjTotal28 >= 55) { rec28 = 'OK'; recClass28 = 'tm-iov-ok'; }
     else { rec28 = '\u041F\u0410\u0421\u0421'; recClass28 = 'tm-iov-skip'; }
 
@@ -131,7 +136,7 @@
         }) + 1;
       }
     }
-    if (rank28 === 1) {
+    if (rank28 === 1 && !discardMode) {
       ovHTML += '<div class="tm-iov-rank">#1</div>';
       ovHTML += '<div class="tm-iov-botpick">\uD83E\uDD16 Bot pick</div>';
     }
@@ -217,6 +222,13 @@
     var intelBanner = document.querySelector('.tm-draft-intel');
     if (intelBanner) intelBanner.remove();
     document.querySelectorAll('.tm-rec-best').forEach(function(el) { el.classList.remove('tm-rec-best'); });
+    document.querySelectorAll('.tm-rec-discard, [data-tm-discard-style]').forEach(function(el) {
+      el.classList.remove('tm-rec-discard');
+      if (el.getAttribute('data-tm-discard-style') === '1') {
+        el.style.boxShadow = '';
+        el.removeAttribute('data-tm-discard-style');
+      }
+    });
     document.querySelectorAll('[data-tm-reasons], [data-tm-reason-rows]').forEach(function(el) {
       if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
       else {
@@ -258,14 +270,26 @@
     var overlayInput = input && input.overlayInput;
     var setReasonPayload = input && input.setReasonPayload;
     var clearReasonPayload = input && input.clearReasonPayload;
+    var discardMode = input && input.discardMode;
     if (!item || !item.el) return;
 
     var itemRankScore = item.uncappedTotal != null ? item.uncappedTotal : item.total;
-    var isBest = itemRankScore >= bestScore - 5;
+    var isBest = discardMode ? !!item.discardCandidate : itemRankScore >= bestScore - 5;
     var hasBonus = item.reasons.length > 0;
 
-    if (isBest && hasBonus) item.el.classList.add('tm-rec-best');
+    if (!discardMode && isBest && hasBonus) item.el.classList.add('tm-rec-best');
     else item.el.classList.remove('tm-rec-best');
+    if (discardMode && item.discardCandidate) {
+      item.el.classList.add('tm-rec-discard');
+      item.el.setAttribute('data-tm-discard-style', '1');
+      item.el.style.boxShadow = '0 0 12px rgba(231, 76, 60, 0.65)';
+    } else {
+      item.el.classList.remove('tm-rec-discard');
+      if (item.el.getAttribute('data-tm-discard-style') === '1') {
+        item.el.style.boxShadow = '';
+        item.el.removeAttribute('data-tm-discard-style');
+      }
+    }
 
     var badge = item.el.querySelector('.tm-tier-badge');
     if (badge) {
@@ -300,7 +324,11 @@
     if (oldOverlay) oldOverlay.remove();
     if (!isDraftOrResearch) return;
 
-    var overlay = renderCardOverlay(Object.assign({ item: item, scored: scored }, overlayInput || {}));
+    var overlay = renderCardOverlay(Object.assign({
+      item: item,
+      scored: scored,
+      discardMode: discardMode
+    }, overlayInput || {}));
     if (overlay) item.el.appendChild(overlay);
   }
 
@@ -379,6 +407,63 @@
       if (sec.querySelector('.card-content--blue, .blue-action, .card-content-wrapper[class*="blue"]')) hasBlueAction = true;
     });
     return !hasBlueAction && (isResearchPhase || (!myCorp && (scored || []).length <= 10));
+  }
+
+  function getWaitingForFromPlayerView(pv) {
+    if (!pv) return null;
+    return pv.waitingFor || pv._waitingFor ||
+      (pv.thisPlayer && (pv.thisPlayer.waitingFor || pv.thisPlayer._waitingFor)) ||
+      null;
+  }
+
+  function waitingForText(value) {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+    if (Array.isArray(value)) {
+      return value.map(waitingForText).filter(Boolean).join(' ');
+    }
+    if (typeof value === 'object') {
+      return [
+        value.message,
+        value.text,
+        value.label,
+        value.title,
+        value.buttonLabel,
+        value.type,
+        value.data
+      ].map(waitingForText).filter(Boolean).join(' ');
+    }
+    return '';
+  }
+
+  function detectDiscardSelectionMode(input) {
+    var getPlayerVueData = input && input.getPlayerVueData;
+    var selectCards = input && input.selectCards;
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var wf = getWaitingForFromPlayerView(pv);
+    var text = '';
+    if (wf) text = [wf.title, wf.buttonLabel, wf.type].map(waitingForText).filter(Boolean).join(' ');
+    if (!text && Array.isArray(selectCards)) {
+      for (var si = 0; si < selectCards.length; si++) {
+        text += ' ' + (selectCards[si] && selectCards[si].textContent || '');
+      }
+    }
+    return /\bdiscard\b|сброс|сбросьте|скинь/i.test(text);
+  }
+
+  function detectDiscardSelectionCount(input) {
+    var getPlayerVueData = input && input.getPlayerVueData;
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var wf = getWaitingForFromPlayerView(pv);
+    var count = wf && (wf.max || wf.min);
+    count = Number(count);
+    if (!(count > 0) && wf) {
+      var text = [wf.title, wf.buttonLabel, wf.type].map(waitingForText).filter(Boolean).join(' ');
+      var match = text.match(/(?:select|discard|сбросьте|скиньте|выберите)\s+(\d+)|(\d+)\s+(?:cards?|карт[а-я]*)/i);
+      count = match ? Number(match[1] || match[2]) : 0;
+    }
+    return count > 0 ? count : 1;
   }
 
   function detectResearchPhase(input) {
@@ -487,11 +572,25 @@
     var detectGeneration = input && input.detectGeneration;
 
     var scored = Array.isArray(scoredInput) ? scoredInput.slice() : [];
+    var discardMode = detectDiscardSelectionMode({
+      getPlayerVueData: getPlayerVueData,
+      selectCards: selectCards
+    });
     scored.sort(function(a, b) {
       var aRankScore = a && a.uncappedTotal != null ? a.uncappedTotal : a.total;
       var bRankScore = b && b.uncappedTotal != null ? b.uncappedTotal : b.total;
-      return bRankScore - aRankScore;
+      return discardMode ? aRankScore - bRankScore : bRankScore - aRankScore;
     });
+    var discardCount = discardMode ? detectDiscardSelectionCount({ getPlayerVueData: getPlayerVueData }) : 0;
+    if (discardMode) {
+      for (var sdi = 0; sdi < scored.length; sdi++) {
+        scored[sdi].discardCandidate = sdi < discardCount;
+        if (scored[sdi].discardCandidate) {
+          scored[sdi].reasons = scored[sdi].reasons || [];
+          scored[sdi].reasons.unshift('Discard: lowest remaining value');
+        }
+      }
+    }
 
     var bestScore = scored.length > 0
       ? (scored[0].uncappedTotal != null ? scored[0].uncappedTotal : scored[0].total)
@@ -503,12 +602,15 @@
       myCorp: myCorp,
       scored: scored
     });
+    if (discardMode) isDraftOrResearch = true;
     var gen = typeof detectGeneration === 'function' ? detectGeneration() : 1;
 
     return {
       scored: scored,
       bestScore: bestScore,
       isDraftOrResearch: isDraftOrResearch,
+      discardMode: discardMode,
+      discardCount: discardCount,
       gen: gen,
       intelScored: isDraftOrResearch && !isResearchPhase ? scored : []
     };
@@ -522,6 +624,7 @@
     collectDraftRecommendationScores: collectDraftRecommendationScores,
     createSellSummary: createSellSummary,
     prepareDraftRecommendationDisplayState: prepareDraftRecommendationDisplayState,
+    detectDiscardSelectionMode: detectDiscardSelectionMode,
     detectResearchPhase: detectResearchPhase,
     detectDraftRecommendationUiMode: detectDraftRecommendationUiMode,
     notifyDraftRecommendationToasts: notifyDraftRecommendationToasts,

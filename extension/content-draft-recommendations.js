@@ -289,6 +289,8 @@
     var bestScore = displayState
       ? displayState.bestScore
       : (scored[0].uncappedTotal != null ? scored[0].uncappedTotal : scored[0].total);
+    var discardMode = displayState ? !!displayState.discardMode : false;
+    var discardCount = displayState ? displayState.discardCount : 0;
 
     var isDraftOrResearch = displayState ? displayState.isDraftOrResearch : false;
     if (!displayState) {
@@ -318,15 +320,20 @@
           scoreToTier: scoreToTier
           ,
           setReasonPayload: setReasonPayload,
-          clearReasonPayload: clearReasonPayload
+          clearReasonPayload: clearReasonPayload,
+          discardMode: discardMode,
+          discardCount: discardCount
         });
         return;
       }
 
       var itemRankScore = item.uncappedTotal != null ? item.uncappedTotal : item.total;
-      var isBest = itemRankScore >= bestScore - 5;
+      var isBest = discardMode ? !!item.discardCandidate : itemRankScore >= bestScore - 5;
       var hasBonus = item.reasons.length > 0;
-      if (isBest && hasBonus) item.el.classList.add('tm-rec-best');
+      if (!discardMode && isBest && hasBonus) item.el.classList.add('tm-rec-best');
+      else item.el.classList.remove('tm-rec-best');
+      if (discardMode && item.discardCandidate) item.el.classList.add('tm-rec-discard');
+      else item.el.classList.remove('tm-rec-discard');
 
       var badge = item.el.querySelector('.tm-tier-badge');
       if (badge) {
@@ -353,7 +360,11 @@
       var oldOverlay = item.el.querySelector('.tm-inline-overlay');
       if (oldOverlay) oldOverlay.remove();
       if (!isDraftOrResearch || typeof renderCardOverlay !== 'function') return;
-      var overlay = renderCardOverlay(item, scored);
+      var overlay = renderCardOverlay({
+        item: item,
+        scored: scored,
+        discardMode: discardMode
+      });
       if (overlay) item.el.appendChild(overlay);
     });
 

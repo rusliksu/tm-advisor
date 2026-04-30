@@ -15,6 +15,9 @@ var TM_CONTENT_DRAFT_POLLER = (typeof globalThis !== 'undefined' && globalThis.T
 var TM_CONTENT_DRAFT_RECOMMENDATIONS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_RECOMMENDATIONS) ? globalThis.TM_CONTENT_DRAFT_RECOMMENDATIONS : null;
 var TM_CONTENT_DRAFT_TRACKER = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_DRAFT_TRACKER) ? globalThis.TM_CONTENT_DRAFT_TRACKER : null;
 var TM_CONTENT_GEN_TIMER = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_GEN_TIMER) ? globalThis.TM_CONTENT_GEN_TIMER : null;
+var TM_CONTENT_GAME_SIGNALS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_GAME_SIGNALS) ? globalThis.TM_CONTENT_GAME_SIGNALS : null;
+var TM_CONTENT_GAME_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_GAME_OVERLAYS) ? globalThis.TM_CONTENT_GAME_OVERLAYS : null;
+var TM_CONTENT_ACTION_RECOMMENDATION = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_ACTION_RECOMMENDATION) ? globalThis.TM_CONTENT_ACTION_RECOMMENDATION : null;
 var TM_CONTENT_HAND_SCORES = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_HAND_SCORES) ? globalThis.TM_CONTENT_HAND_SCORES : null;
 var TM_CONTENT_HAND_UI = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_HAND_UI) ? globalThis.TM_CONTENT_HAND_UI : null;
 var TM_CONTENT_LOG_UI = (typeof globalThis !== 'undefined' && globalThis.TM_CONTENT_LOG_UI) ? globalThis.TM_CONTENT_LOG_UI : null;
@@ -47,7 +50,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   // Shared utils from data/card_variants.js: tmBaseCardName, tmIsVariantOptionEnabled
   var _baseCardName = (typeof tmBaseCardName !== 'undefined') ? tmBaseCardName : function(n) { return n; };
   var _CARD_NAME_ALIASES = {
-    'allied banks': 'Allied Bank'
+    'allied banks': 'Allied Bank',
+    'co2reducers': 'CO² Reducers',
+    'co2 reducers': 'CO² Reducers'
   };
 
   function _resolveAliasedCardName(name) {
@@ -381,13 +386,19 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (tags.length === 1) return getRequirementTagReasonLabel(tags[0]);
     return 'discount';
   }
+  function formatReasonNumber(value) {
+    if (typeof value !== 'number' || !isFinite(value)) return String(value);
+    var rounded = Math.round(value * 10) / 10;
+    if (Object.is(rounded, -0)) rounded = 0;
+    return String(rounded);
+  }
   function formatDiscountTargetReason(discountEntry, targets, bonusValue) {
     if (!discountEntry || !Array.isArray(targets) || targets.length === 0) return '';
     var label = getDiscountTargetLabel(discountEntry);
     var noun = targets.length === 1 ? 'target' : 'targets';
     var shown = targets.slice(0, 2).map(reasonCardLabel).join(', ');
     var extra = targets.length > 2 ? ', +' + (targets.length - 2) : '';
-    var rounded = Math.round((bonusValue || 0) * 10) / 10;
+    var rounded = formatReasonNumber(bonusValue || 0);
     var head = targets.length + ' ' + label + ' discount ' + noun + ' +' + rounded;
     return shown ? (head + ' (' + shown + extra + ')') : head;
   }
@@ -399,25 +410,34 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
   function estimateGensLeft(pv) {
     // Delegate to TM_BRAIN.estimateGensLeft for unified calculation
-    if (typeof TM_ADVISOR !== 'undefined' && TM_ADVISOR.estimateGensLeft && pv) {
+    if (typeof TM_ADVISOR !== 'undefined' && TM_ADVISOR && typeof TM_ADVISOR.estimateGensLeft === 'function' && pv) {
       return TM_ADVISOR.estimateGensLeft(pv);
     }
-    // Fallback: gen-based estimate adapted to player count
-    var gen = detectGeneration();
-    var maxGen = SC.maxGenerations || 9;
-    // Adjust for player count and WGT
-    if (pv && pv.game) {
-      var plCount = (pv.game.players || []).length || 3;
-      var wgt = pv.game.gameOptions && pv.game.gameOptions.solarPhaseOption;
-      if (plCount >= 4) maxGen = wgt ? 12 : 14;
-      else if (plCount <= 2) maxGen = wgt ? 10 : 14;
-      else maxGen = wgt ? 10 : 12;
+    if (typeof TM_BRAIN_CORE !== 'undefined' && TM_BRAIN_CORE && typeof TM_BRAIN_CORE.estimateGensLeftFromState === 'function' && pv) {
+      return TM_BRAIN_CORE.estimateGensLeftFromState(pv);
     }
-    var glByGen = Math.max(1, maxGen - gen);
+
+    var g = pv && pv.game ? pv.game : {};
+    var gen = typeof g.generation === 'number' ? g.generation : detectGeneration();
+    var players = (g && Array.isArray(g.players) ? g.players : null) || (pv && Array.isArray(pv.players) ? pv.players : null) || [];
+    var plCount = players.length || 3;
+    var opts = g.gameOptions || {};
+    var avgGameLen = plCount <= 2 ? 11.5 : (plCount === 3 ? 9 : (plCount === 4 ? 8.5 : 8));
+    var hasSolarPhase = !!(opts.solarPhaseOption || opts.worldGovernmentTerraforming);
+    var noSolarPhase = opts.solarPhaseOption === false || opts.worldGovernmentTerraforming === false;
+    if (noSolarPhase && !hasSolarPhase) avgGameLen += plCount <= 2 ? 1.5 : (plCount === 3 ? 1 : 0.5);
+    if (opts.preludeExtension === false) avgGameLen += 1;
+    if (opts.requiresVenusTrackCompletion) avgGameLen += 0.5;
+    if (hasSolarPhase && plCount >= 4) avgGameLen -= 0.2;
+    avgGameLen = Math.max(7.5, Math.min(13.5, avgGameLen));
+
+    var glByGen = Math.max(1, Math.ceil(avgGameLen - gen + 1));
     if (pv && pv.game) {
       var raises = globalParamRaises(pv.game);
-      var glByRaises = Math.max(1, Math.ceil(raises.total / SC.genParamDivisor));
-      return Math.min(glByRaises, glByGen);
+      var glByRaises = Math.max(1, Math.ceil(raises.total / (42 / avgGameLen)));
+      var gensLeft = Math.min(glByRaises, glByGen);
+      if (gen >= 8 && plCount >= 3 && raises.total <= 18) gensLeft = Math.min(gensLeft, 2);
+      return Math.max(1, gensLeft);
     }
     return glByGen;
   }
@@ -500,6 +520,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     kebabLookup[name.toLowerCase().replace(/ /g, '-')] = name;
     lowerLookup[name.toLowerCase()] = name;
   }
+  kebabLookup['co2reducers'] = 'CO² Reducers';
+  kebabLookup['co2-reducers'] = 'CO² Reducers';
 
   var ruName = TM_UTILS.ruName;
 
@@ -727,9 +749,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function extractColonies(pv, playerColor, ctx) {
     if (!pv || !pv.game || !pv.game.colonies) return;
     ctx.colonyWorldCount = pv.game.colonies.length;
+    ctx.visibleColonies = [];
     var trackSum = 0, trackCount = 0;
     for (var i = 0; i < pv.game.colonies.length; i++) {
       var col = pv.game.colonies[i];
+      if (col && col.name) ctx.visibleColonies.push(col.name);
       if (col.colonies) {
         ctx.totalColonies += col.colonies.length;
         for (var j = 0; j < col.colonies.length; j++) {
@@ -2286,6 +2310,33 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var reasonRows = [];
     var suppressHarvestPlantDensity = cardName === 'Harvest' && ctx && ctx.gen <= 2 && (ctx.greeneries || 0) === 0;
     var suppressLatePureProdTagDensity = isLatePureProductionFx(cardName, ctx);
+    var cardTagReqsForScoring = (typeof TM_CARD_TAG_REQS !== 'undefined') ? TM_CARD_TAG_REQS[cardName] : null;
+    var routeTagsWithHand = cardTagReqsForScoring && ctx && Object.prototype.hasOwnProperty.call(ctx, 'tagsWithPersistentHand')
+      ? ctx.tagsWithPersistentHand
+      : (ctx ? ctx.tagsWithHand : null);
+    var routeHandTagCounts = cardTagReqsForScoring && ctx && Object.prototype.hasOwnProperty.call(ctx, '_persistentHandTagCounts')
+      ? ctx._persistentHandTagCounts
+      : (ctx ? ctx._handTagCounts : null);
+    if (cardTagReqsForScoring && ctx && ctx._handNamesSet && ctx._handNamesSet.has && ctx._handNamesSet.has(cardName)) {
+      var ownTagsForRoute = (typeof TM_CARD_TAGS !== 'undefined' && TM_CARD_TAGS[cardName]) ? TM_CARD_TAGS[cardName] : [];
+      if (ownTagsForRoute.indexOf('event') < 0 && ownTagsForRoute.length > 0) {
+        var ownRouteCounts = {};
+        for (var ort = 0; ort < ownTagsForRoute.length; ort++) {
+          if (ownTagsForRoute[ort] !== 'event') ownRouteCounts[ownTagsForRoute[ort]] = (ownRouteCounts[ownTagsForRoute[ort]] || 0) + 1;
+        }
+        if (routeHandTagCounts) {
+          routeHandTagCounts = Object.assign({}, routeHandTagCounts);
+          for (var orc in ownRouteCounts) routeHandTagCounts[orc] = Math.max(0, (routeHandTagCounts[orc] || 0) - ownRouteCounts[orc]);
+        }
+        if (routeTagsWithHand) {
+          routeTagsWithHand = Object.assign({}, routeTagsWithHand);
+          var ownRouteDiscount = SC.handTagDiscount || 0.5;
+          for (var ortp in ownRouteCounts) {
+            routeTagsWithHand[ortp] = Math.max(0, (routeTagsWithHand[ortp] || 0) - Math.round(ownRouteCounts[ortp] * ownRouteDiscount));
+          }
+        }
+      }
+    }
 
     // 5. Tag density bonus — rare tags get bonus at lower counts
     // Event cards: tags go face-down, so no persistent tag density value
@@ -2295,7 +2346,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       let bestTag = '';
       let bestCount = 0;
       for (const tag of cardTags) {
-        const count = (ctx.tagsWithHand ? ctx.tagsWithHand[tag] : ctx.tags[tag]) || 0;
+        const count = (routeTagsWithHand ? routeTagsWithHand[tag] : ctx.tags[tag]) || 0;
         const rarity = SC.tagRarity[tag] || 1;
         if (rarity <= 0) continue;
         let db = 0;
@@ -2322,13 +2373,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // 5a2. Hand tag affinity — rare tags matching concentrated tags in hand
-    if (!suppressLatePureProdTagDensity && cardTags.size > 0 && ctx && ctx._handTagCounts) {
+    if (!suppressLatePureProdTagDensity && cardTags.size > 0 && ctx && routeHandTagCounts) {
       var htRarity = SC.tagRarity || {};
       var bestHtBonus = 0;
       var bestHtTag = '';
       var bestHtCount = 0;
       for (var htTag of cardTags) {
-        var htCount = ctx._handTagCounts[htTag] || 0;
+        var htCount = routeHandTagCounts[htTag] || 0;
         var htR = htRarity[htTag] || 0;
         if (htR <= 0 || htCount < 2) continue;
         // Generic Earth clustering at x2 is too noisy for cheap Earth utility cards.
@@ -2427,6 +2478,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var corpShort5c = reasonCardLabel(casCorp);
         var alreadyInReasons5c = reasons.some(function(r) { return r.indexOf(corpShort5c) !== -1; });
         var corpPreviewBoost5c = getCorpBoost(casCorp, { eLower: eLower, cardTags: cardTags, cardCost: cardCost, cardType: cardType, cardName: cardName, ctx: ctx, globalParams: ctx ? ctx.globalParams : null });
+        var isTileCorpPreview5c = casCorp === 'Philares' || casCorp === 'Tharsis Republic';
+        if (isTileCorpPreview5c && !cardPlacesMapTileByName(cardName)) continue;
         if (!alreadyInReasons5c && corpPreviewBoost5c === 0) pushStructuredReason(reasons, reasonRows, 'Корп: ' + corpShort5c, null, 'positive');
         // Don't add bonus — getCorpBoost already handles numeric scoring
       }
@@ -2636,6 +2689,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // 44. City adjacency planning — city cards better with greenery engine
     if (ctx && data.e) {
       if (cardPlacesCityTileByName(cardName)) {
+        var hasGordonCEO44 = !!(ctx.tableauNames && ctx.tableauNames.has && ctx.tableauNames.has('Gordon'));
+        if (hasGordonCEO44) {
+          bonus += 2;
+          pushStructuredReason(reasons, reasonRows, 'Gordon city +2', 2);
+        }
         var myGreeneries = 0;
         if (pv && pv.game && pv.game.spaces && pv.thisPlayer) {
           for (var si = 0; si < pv.game.spaces.length; si++) {
@@ -2646,10 +2704,19 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (myGreeneries >= SC.cityGreeneryThreshold || ctx.prod.plants >= 4) {
           bonus += SC.cityAdjacencyBonus;
           pushStructuredReason(reasons, reasonRows, 'Город+озелен. +' + SC.cityAdjacencyBonus, SC.cityAdjacencyBonus);
-        } else if (ctx.gensLeft <= 1 && myGreeneries < 2) {
+        } else if (ctx.gensLeft <= 1 && myGreeneries < 2 && !hasGordonCEO44) {
           bonus -= SC.cityAdjacencyPenalty;
           pushStructuredReason(reasons, reasonRows, 'Мало озелен. −' + SC.cityAdjacencyPenalty, -SC.cityAdjacencyPenalty);
         }
+      }
+      var fxGordon44 = getFx(cardName);
+      if (
+        fxGordon44 && fxGordon44.grn > 0 &&
+        ctx.tableauNames && ctx.tableauNames.has && ctx.tableauNames.has('Gordon')
+      ) {
+        var gordonGreeneryBonus = Math.min(4, fxGordon44.grn * 2);
+        bonus += gordonGreeneryBonus;
+        pushStructuredReason(reasons, reasonRows, 'Gordon greenery +' + gordonGreeneryBonus, gordonGreeneryBonus);
       }
     }
 
@@ -2710,6 +2777,24 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
+    var positionalTagReqsForScoring = (typeof TM_CARD_TAG_REQS !== 'undefined') ? TM_CARD_TAG_REQS[cardName] : null;
+    var routeTagsWithHand = positionalTagReqsForScoring && ctx && Object.prototype.hasOwnProperty.call(ctx, 'tagsWithPersistentHand')
+      ? ctx.tagsWithPersistentHand
+      : (ctx ? ctx.tagsWithHand : null);
+    if (positionalTagReqsForScoring && ctx && ctx._handNamesSet && ctx._handNamesSet.has && ctx._handNamesSet.has(cardName) && routeTagsWithHand) {
+      var ownTagsForPosRoute = (typeof TM_CARD_TAGS !== 'undefined' && TM_CARD_TAGS[cardName]) ? TM_CARD_TAGS[cardName] : [];
+      if (ownTagsForPosRoute.indexOf('event') < 0 && ownTagsForPosRoute.length > 0) {
+        routeTagsWithHand = Object.assign({}, routeTagsWithHand);
+        var ownPosCounts = {};
+        for (var opt = 0; opt < ownTagsForPosRoute.length; opt++) {
+          if (ownTagsForPosRoute[opt] !== 'event') ownPosCounts[ownTagsForPosRoute[opt]] = (ownPosCounts[ownTagsForPosRoute[opt]] || 0) + 1;
+        }
+        var ownPosDiscount = SC.handTagDiscount || 0.5;
+        for (var opc in ownPosCounts) {
+          routeTagsWithHand[opc] = Math.max(0, (routeTagsWithHand[opc] || 0) - Math.round(ownPosCounts[opc] * ownPosDiscount));
+        }
+      }
+    }
 
     // 23. Stall value — cheap action cards are underrated (extra action = delay round end)
     if (cardType === 'blue' && cardCost != null && cardCost <= SC.stallCostMax) {
@@ -2794,8 +2879,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // Uses tagsWithHand: cards in hand show strategic commitment too
     if (cardTags.size > 0) {
       for (var tag of cardTags) {
+        if ((cardName === 'Medical Lab' || cardName === 'Parliament Hall') && tag === 'building') continue;
         var threshold = SC.strategyThresholds[tag];
-        var tagCountStrat = (ctx.tagsWithHand ? ctx.tagsWithHand[tag] : ctx.tags[tag]) || 0;
+        var tagCountStrat = (routeTagsWithHand ? routeTagsWithHand[tag] : ctx.tags[tag]) || 0;
         if (threshold && tagCountStrat >= threshold) {
           var depth = tagCountStrat - threshold;
           var stratBonusRaw = Math.min(SC.strategyCap, SC.strategyBase + depth);
@@ -2814,9 +2900,16 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       var isDrawCard = (eLower.includes('draw') || eLower.includes('рисуй') || eLower.includes('вытяни')) && !eLower.includes('withdraw');
       var isNonProjectDraw = eLower.includes('prelude') || eLower.includes('прелюд') || eLower.includes('corporation') || eLower.includes('корпорац') || eLower.includes('ceo');
       if (isDrawCard && !isNonProjectDraw) {
+        var richEmptyDrawCtx = ctx.gensLeft >= 2 && ctx.gensLeft <= 4 &&
+          typeof ctx.handSize === 'number' && ctx.handSize <= SC.handEmptyThreshold &&
+          ((ctx.mc || 0) >= 40 || (ctx.prod && (ctx.prod.mc || 0) >= (SC.mcProdExcessThreshold + 5)));
         if (ctx.gensLeft >= 5) {
           bonus += SC.drawEarlyBonus;
           reasons.push('Рисовка рано +' + SC.drawEarlyBonus);
+        } else if (richEmptyDrawCtx) {
+          var drawConversionBonus = Math.max(4, SC.drawMidBonus + 2);
+          bonus += drawConversionBonus;
+          reasons.push('Пустая рука+MC +' + drawConversionBonus);
         } else if (ctx.gensLeft >= 3) {
           bonus += SC.drawMidBonus;
           reasons.push('Рисовка mid +' + SC.drawMidBonus);
@@ -2983,6 +3076,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    // Expensive colony/trade-fleet engines need future trades to pay back. In a fast rush
+    // they should not inherit their opening-hand baseline unless the game still has time.
+    if (ctx && cardCost != null && cardCost >= 20) {
+      var colonyRushFx = getFx(cardName);
+      var isColonyEngineCard = !!(colonyRushFx && (colonyRushFx.colony || colonyRushFx.tradeFleet || colonyRushFx.trade));
+      var colonyRushGensLeft = typeof ctx.gensLeft === 'number' ? ctx.gensLeft : 99;
+      var isFastRushWindow = colonyRushGensLeft <= 4 &&
+        ((ctx.terraformRate || 0) >= SC.terraformFastThreshold || (ctx.gen || 1) >= 6);
+      if (isColonyEngineCard && isFastRushWindow) {
+        var colonyRushPenalty = 10;
+        if (cardCost >= 25) colonyRushPenalty += 4;
+        if (colonyRushFx.tradeFleet) colonyRushPenalty += 4;
+        if (colonyRushGensLeft <= 2) colonyRushPenalty += 4;
+        colonyRushPenalty = Math.min(colonyRushPenalty, 22);
+        bonus -= colonyRushPenalty;
+        pushStructuredReason(reasons, reasonRows, 'Быстр. colony engine −' + colonyRushPenalty, -colonyRushPenalty);
+      }
+    }
+
     // 16. Multi-tag bonus — cards with 2+ tags fire more triggers & help more M/A
     if (cardTags.size >= 2) {
       // Only give bonus if there are active triggers/awards that benefit
@@ -3015,6 +3127,15 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var penaltyVal = gl17 <= 1 ? SC.lateProdGen9 : gl17 <= 2 ? SC.lateProdGen8 : gl17 <= 3 ? SC.lateProdGen7 : SC.lateProdGen6;
           bonus += penaltyVal;
           pushStructuredReason(reasons, reasonRows, 'Позд. прод. ' + penaltyVal + ' (' + gl17 + ' пок.)', penaltyVal);
+          if (
+            gl17 <= 3 &&
+            typeof ctx.handSize === 'number' && ctx.handSize <= SC.handEmptyThreshold &&
+            ((ctx.mc || 0) >= 40 || (ctx.prod && (ctx.prod.mc || 0) >= (SC.mcProdExcessThreshold + 5)))
+          ) {
+            var conversionPenalty17 = gl17 <= 2 ? 6 : 4;
+            bonus -= conversionPenalty17;
+            pushStructuredReason(reasons, reasonRows, 'Нет VP-конверсии −' + conversionPenalty17, -conversionPenalty17);
+          }
         }
       }
     }
@@ -3623,6 +3744,18 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var adj = Math.max(-CAP, Math.min(CAP, Math.round(delta * SCALE)));
           if (meltworksCashout && adj < -4) adj = -4;
           if (isLateEcoZoneBioTriggerCard(cardName, ctx, fx, null) && adj < -4) adj = -4;
+          var negativeProdSteps =
+            Math.abs(Math.min(0, fx.mp || 0)) +
+            Math.abs(Math.min(0, fx.sp || 0)) +
+            Math.abs(Math.min(0, fx.tp || 0)) +
+            Math.abs(Math.min(0, fx.pp || 0)) +
+            Math.abs(Math.min(0, fx.ep || 0)) +
+            Math.abs(Math.min(0, fx.hp || 0));
+          if (adj > 0 && negativeProdSteps > 0 && !hasVP && !hasTR && !hasAction) {
+            var deferredCostReliefCap = fx.city ? 4 : 3;
+            if (ctx && ctx.gensLeft <= 2) deferredCostReliefCap = Math.min(deferredCostReliefCap, 2);
+            adj = Math.min(adj, deferredCostReliefCap);
+          }
           var actEpCost = Math.abs(Math.min(0, fx.act_ep || 0));
           var currentEnergyProd = ctx && ctx.prod ? (ctx.prod.energy || 0) : 0;
           if (adj < 0 && ctx.gensLeft <= 1 && fx.actTR > 0 && actEpCost > 0 && currentEnergyProd >= actEpCost) {
@@ -3674,6 +3807,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           } else if (_ocRem === 2) {
             bonus += -10;
             pushStructuredReason(reasons, reasonRows, 'Океанов 2 −10', -10);
+          } else if (_ocRem === 3) {
+            bonus += -6;
+            pushStructuredReason(reasons, reasonRows, 'Океанов 3 −6', -6);
+          } else if (_ocRem === 4) {
+            bonus += -3;
+            pushStructuredReason(reasons, reasonRows, 'Океанов 4 −3', -3);
           }
         } else if (_ocRem <= 0) {
           bonus += -20;
@@ -4223,11 +4362,52 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     for (var hi = 0; hi < handCards.length; hi++) {
       if (handCards[hi] === cardName) continue;
       var tags = cardTags[handCards[hi]] || [];
+      if (tags.indexOf('event') >= 0) continue;
       for (var tj = 0; tj < tags.length; tj++) {
         if (tags[tj] !== 'event') handTags[tags[tj]] = (handTags[tags[tj]] || 0) + 1;
       }
     }
     return handTags;
+  }
+
+  function getCardTagCountsForNames(cardNames, excludedCardName, options) {
+    var counts = {};
+    if (!Array.isArray(cardNames) || cardNames.length === 0) return counts;
+    var persistentOnly = options && options.persistentOnly;
+    var cardTags = typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : {};
+    for (var i = 0; i < cardNames.length; i++) {
+      var name = cardNames[i];
+      if (!name || name === excludedCardName) continue;
+      var tags = cardTags[name] || [];
+      if (persistentOnly && tags.indexOf('event') >= 0) continue;
+      for (var j = 0; j < tags.length; j++) {
+        if (tags[j] !== 'event') counts[tags[j]] = (counts[tags[j]] || 0) + 1;
+      }
+    }
+    return counts;
+  }
+
+  function countRequirementTags(tags, tagName, extraWild) {
+    var key = (tagName || '').toLowerCase();
+    var counts = tags || {};
+    var total = counts[key] || 0;
+    if (key === 'wild') return total + (extraWild || 0);
+    return total + (counts.wild || 0) + (extraWild || 0);
+  }
+
+  function getXavierRequirementWildCount(ctx) {
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    var tableau = pv && pv.thisPlayer && Array.isArray(pv.thisPlayer.tableau) ? pv.thisPlayer.tableau : [];
+    var sawXavier = false;
+    for (var i = 0; i < tableau.length; i++) {
+      if (cardN(tableau[i]) !== 'Xavier') continue;
+      sawXavier = true;
+      if (tableau[i].isDisabled !== true) return 2;
+    }
+    if (sawXavier) return 0;
+
+    if (ctx && ctx.tableauNames && ctx.tableauNames.has && ctx.tableauNames.has('Xavier')) return 2;
+    return 0;
   }
 
   function getRequirementFlexSteps(cardName, corpsArray) {
@@ -4362,7 +4542,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
   function isSoftNearRequirementReasonText(text) {
     if (!text) return false;
-    return /^Нужно 1 .+ сейчас [\-−]\d+/.test(text);
+    return /^Нужно 1 .+ (?:сейчас|на стол(?: \(рука \+\d+\))?) [\-−]\d+/.test(text);
   }
 
   function parseBoardRequirements(reqText) {
@@ -4452,9 +4632,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     if (tagReqs) {
       var myTags = ctx.tags || {};
+      var xavierWildTags = getXavierRequirementWildCount(ctx);
       for (var reqTag in tagReqs) {
         if (typeof tagReqs[reqTag] === 'object') continue;
-        if ((myTags[reqTag] || 0) < tagReqs[reqTag]) return false;
+        if (countRequirementTags(myTags, reqTag, xavierWildTags) < tagReqs[reqTag]) return false;
       }
     }
 
@@ -4531,6 +4712,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
                 reasons.push('Req далеко ' + reqParam + ' −30');
               } else if (adjustedNet > ctx.gensLeft) {
                 var distPen = Math.round(Math.min(15, Math.round(adjustedNet * 2.5)) * genScale);
+                if (ctx.gen <= 1 && stepsNeeded >= 10) {
+                  var farOpeningReqFloor = stepsNeeded >= 15 ? 12 : 8;
+                  distPen = Math.max(distPen, farOpeningReqFloor);
+                }
                 if (distPen > 0) { bonus += -distPen; reasons.push('Req далеко ' + reqParam + ' −' + distPen); }
               } else if (netSteps >= 3) {
                 var slowFactor = reqParam === 'venus' ? 1.5 : 1.0;
@@ -4602,7 +4787,17 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     if (tagReqs) {
       var myTags = ctx.tags || {};
+      var requirementHandNames = typeof getMyHandNames === 'function' ? getMyHandNames() : [];
+      var hasDirectRequirementHand = Array.isArray(requirementHandNames) && requirementHandNames.length > 0;
       var handTags0 = getRequirementHandTagCounts(cardName);
+      var ctxRequirementHandTags = ctx && Object.prototype.hasOwnProperty.call(ctx, '_persistentHandTagCounts')
+        ? ctx._persistentHandTagCounts
+        : (ctx ? ctx._handTagCounts : null);
+      var ctxRequirementTagsWithHand = ctx && Object.prototype.hasOwnProperty.call(ctx, 'tagsWithPersistentHand')
+        ? ctx.tagsWithPersistentHand
+        : (ctx ? ctx.tagsWithHand : null);
+      var xavierWildTags = getXavierRequirementWildCount(ctx);
+      var xavierReqHelp = 0;
       var miss = 0;
       var totalReqs = 0;
       var missList = [];
@@ -4610,19 +4805,64 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (typeof tagReqs[reqTag] === 'object') continue;
         totalReqs++;
         hardness = Math.max(hardness, tagReqs[reqTag]);
-        var haveNow = myTags[reqTag] || 0;
-        var haveSoon = haveNow + (handTags0[reqTag] || 0);
+        var haveNowNoXavier = countRequirementTags(myTags, reqTag, 0);
+        var handSupport = countRequirementTags(handTags0, reqTag, 0);
+        if (!hasDirectRequirementHand && ctxRequirementHandTags) {
+          handSupport = Math.max(handSupport, countRequirementTags(ctxRequirementHandTags, reqTag, 0));
+        }
+        if (!hasDirectRequirementHand && ctxRequirementTagsWithHand) {
+          var projectedHandHave = countRequirementTags(ctxRequirementTagsWithHand, reqTag, 0);
+          if (projectedHandHave > haveNowNoXavier) {
+            handSupport = Math.max(handSupport, projectedHandHave - haveNowNoXavier);
+          }
+        }
+        var haveNow = countRequirementTags(myTags, reqTag, xavierWildTags);
+        var haveSoonNoXavier = haveNowNoXavier + handSupport;
+        var haveSoon = haveNow + handSupport;
         var nowMiss = Math.max(0, tagReqs[reqTag] - haveNow);
         if (haveNow < tagReqs[reqTag]) metNow = false;
+        if (xavierWildTags > 0 && haveSoonNoXavier < tagReqs[reqTag] && haveSoon >= tagReqs[reqTag]) {
+          xavierReqHelp += Math.min(xavierWildTags, tagReqs[reqTag] - haveSoonNoXavier);
+        }
         if (nowMiss > 0 && haveSoon >= tagReqs[reqTag]) {
           var softNowPenalty = ctx.gensLeft <= 1 ? -20 : -Math.min(6, nowMiss * 3 + 1);
           bonus += softNowPenalty;
-          reasons.push('Нужно ' + nowMiss + ' ' + getRequirementTagReasonLabel(reqTag) + ' сейчас ' + softNowPenalty);
+          var supportHint = handSupport > 0 ? ' (рука +' + handSupport + ')' : '';
+          reasons.push('Нужно ' + nowMiss + ' ' + getRequirementTagReasonLabel(reqTag) + ' на стол' + supportHint + ' ' + softNowPenalty);
         }
         if (haveSoon < tagReqs[reqTag]) {
-          miss += (tagReqs[reqTag] - haveSoon);
-          missList.push(reqTag);
+          var visibleMiss = tagReqs[reqTag] - haveSoon;
+          var shouldExplainTagRoute = tagReqs[reqTag] >= 4 || handSupport > 0;
+          if (shouldExplainTagRoute) {
+            var playedTagMiss = Math.max(0, tagReqs[reqTag] - haveNowNoXavier);
+            var lateRoutePressure = ctx.gensLeft <= 2 ? 4 : (ctx.gen >= 4 && ctx.gensLeft <= 4 ? 2 : 0);
+            var highReqNoTablePenalty = tagReqs[reqTag] >= 4 && haveNowNoXavier <= 0 ? (reqTag === 'science' ? 4 : 2) : 0;
+            var visibleMissWeight = reqTag === 'science' ? 5 : 4;
+            var playedMissWeight = reqTag === 'science' && tagReqs[reqTag] >= 4 ? 2 : 1;
+            var rawTagReqPenalty =
+              visibleMiss * visibleMissWeight +
+              Math.min(playedTagMiss, tagReqs[reqTag]) * playedMissWeight +
+              lateRoutePressure +
+              highReqNoTablePenalty;
+            var routeScale = ctx.gen <= 1 ? 0.7 : (ctx.gen <= 3 ? 0.85 : 1);
+            var hardCap = ctx.gensLeft <= 1 ? 30 : 24;
+            var routedTagPenalty = -Math.min(hardCap, Math.max(8, Math.round(rawTagReqPenalty * routeScale)));
+            bonus += routedTagPenalty;
+            reasons.push(
+              'Нужно ' + tagReqs[reqTag] + ' ' + getRequirementTagReasonLabel(reqTag) +
+              ' на стол (есть ' + haveNowNoXavier + (handSupport > 0 ? ', рука +' + handSupport : '') + ') ' +
+              routedTagPenalty
+            );
+          } else {
+            miss += visibleMiss;
+            missList.push(reqTag);
+          }
         }
+      }
+      if (xavierReqHelp > 0) {
+        var xavierReqBonus = Math.min(3, xavierReqHelp * 2);
+        bonus += xavierReqBonus;
+        reasons.push('Xavier wild req +' + xavierReqBonus);
       }
       if (miss > 0 && totalReqs > 0) {
         var tagPenalty = ctx.gensLeft <= 1 ? -30 : Math.round(-8 * miss / Math.max(ctx.gensLeft * 0.5, 1));
@@ -4634,7 +4874,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (tagReqM) {
         hardness = Math.max(hardness, parseInt(tagReqM[1]));
         var tagReqName = tagReqM[2].toLowerCase();
-        var myTagCount = (ctx && ctx.tags) ? (ctx.tags[tagReqName] || 0) : 0;
+        var fallbackXavierWild = getXavierRequirementWildCount(ctx);
+        var myTagCount = (ctx && ctx.tags) ? countRequirementTags(ctx.tags, tagReqName, fallbackXavierWild) : fallbackXavierWild;
         if (myTagCount < parseInt(tagReqM[1])) metNow = false;
       }
     }
@@ -4806,12 +5047,48 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return cachedCtx;
   }
 
+  function syncCtxForScoringHand(ctx, myTableau, myHand) {
+    if (!ctx) return;
+    myTableau = Array.isArray(myTableau) ? myTableau : [];
+    myHand = Array.isArray(myHand) ? myHand : [];
+    ctx._allMyCards = [...myTableau, ...myHand];
+    ctx._allMyCardsSet = new Set(ctx._allMyCards);
+    ctx._handNamesSet = new Set(myHand);
+    var nameHandTags = getCardTagCountsForNames(myHand);
+    var persistentNameHandTags = getCardTagCountsForNames(myHand, null, {persistentOnly: true});
+    var domHandTags = getHandTagCounts();
+    for (var dht in domHandTags) {
+      nameHandTags[dht] = Math.max(nameHandTags[dht] || 0, domHandTags[dht] || 0);
+    }
+    ctx._handTagCounts = nameHandTags;
+    ctx._persistentHandTagCounts = persistentNameHandTags;
+
+    var tagsWithHand = {};
+    var tagsWithPersistentHand = {};
+    var baseTags = ctx.tags || {};
+    for (var bt in baseTags) tagsWithHand[bt] = baseTags[bt] || 0;
+    for (var pbt in baseTags) tagsWithPersistentHand[pbt] = baseTags[pbt] || 0;
+    var handTagDiscount = SC.handTagDiscount || 0.5;
+    for (var ht in nameHandTags) {
+      var projected = Math.round((nameHandTags[ht] || 0) * handTagDiscount);
+      if (projected > 0) tagsWithHand[ht] = (tagsWithHand[ht] || 0) + projected;
+    }
+    for (var pht in persistentNameHandTags) {
+      var projectedPersistent = Math.round((persistentNameHandTags[pht] || 0) * handTagDiscount);
+      if (projectedPersistent > 0) tagsWithPersistentHand[pht] = (tagsWithPersistentHand[pht] || 0) + projectedPersistent;
+    }
+    ctx.tagsWithHand = tagsWithHand;
+    ctx.tagsWithPersistentHand = tagsWithPersistentHand;
+    if (!ctx.tagsProjected) ctx.tagsProjected = {};
+    for (var twh in tagsWithHand) {
+      if ((ctx.tagsProjected[twh] || 0) < tagsWithHand[twh]) ctx.tagsProjected[twh] = tagsWithHand[twh];
+    }
+  }
+
   function enrichCtxForScoring(ctx, myTableau, myHand) {
     if (!ctx) return;
     ctx._playedEvents = getMyPlayedEventNames();
-    ctx._allMyCards = [...myTableau, ...myHand];
-    ctx._allMyCardsSet = new Set(ctx._allMyCards);
-    ctx._handTagCounts = getHandTagCounts();
+    syncCtxForScoringHand(ctx, myTableau, myHand);
   }
 
   /**
@@ -6427,6 +6704,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         rateStandardProjects: rateStandardProjects,
         enhanceGameLog: enhanceGameLog,
         highlightPlayable: highlightPlayable,
+        updateGameSignals: updateGameSignals,
+        updateActionRecommendation: updateActionRecommendation,
         tmLog: tmLog,
         setLastProcessAllMs: function(v) { _lastProcessAllMs = v; }
       });
@@ -6486,6 +6765,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       enhanceGameLog();
       // Playable card highlight (throttled to 2s internally)
       highlightPlayable();
+      updateGameSignals();
+      updateActionRecommendation();
     } finally {
       _processingNow = false;
       bumpProcessAllRunId();
@@ -6598,10 +6879,14 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
 
   function removeAll() {
+    clearGameSignals();
+    clearActionRecommendation();
     if (TM_CONTENT_CYCLE && TM_CONTENT_CYCLE.removeAll) {
       TM_CONTENT_CYCLE.removeAll({
         documentObj: document,
-        hideTooltip: hideTooltip
+        hideTooltip: hideTooltip,
+        clearGameSignals: clearGameSignals,
+        clearActionRecommendation: clearActionRecommendation
       });
       return;
     }
@@ -6612,8 +6897,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche');
     });
     // Strip single-class markers (8 selectors → 1 querySelectorAll)
-    document.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-playable, .tm-unplayable').forEach((el) => {
-      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-playable', 'tm-unplayable');
+    document.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-rec-discard, .tm-playable, .tm-unplayable').forEach((el) => {
+      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-rec-discard', 'tm-playable', 'tm-unplayable');
+      if (el.getAttribute('data-tm-discard-style') === '1') {
+        el.style.boxShadow = '';
+        el.removeAttribute('data-tm-discard-style');
+      }
     });
     // Clear data attributes
     document.querySelectorAll('[data-tm-processed]').forEach((el) => {
@@ -6622,7 +6911,86 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       el.removeAttribute('data-tm-tier');
     });
     document.querySelectorAll('[data-tm-reasons], [data-tm-reason-rows]').forEach((el) => clearReasonPayload(el));
+    clearActionRecommendation();
     hideTooltip();
+  }
+
+  function clearGameSignals() {
+    if (TM_CONTENT_GAME_OVERLAYS && typeof TM_CONTENT_GAME_OVERLAYS.clearGameSignals === 'function') {
+      TM_CONTENT_GAME_OVERLAYS.clearGameSignals({ documentObj: document });
+    }
+  }
+
+  function clearActionRecommendation() {
+    if (TM_CONTENT_ACTION_RECOMMENDATION && typeof TM_CONTENT_ACTION_RECOMMENDATION.clearActionRecommendation === 'function') {
+      TM_CONTENT_ACTION_RECOMMENDATION.clearActionRecommendation({ documentObj: document });
+    }
+  }
+
+  function updateGameSignals() {
+    if (!TM_CONTENT_GAME_SIGNALS || !TM_CONTENT_GAME_OVERLAYS) return;
+    if (typeof TM_CONTENT_GAME_SIGNALS.computeGameSignals !== 'function') return;
+    if (typeof TM_CONTENT_GAME_OVERLAYS.renderGameSignals !== 'function') return;
+    var pv = getPlayerVueData();
+    if (!pv || !pv.game || !pv.thisPlayer) {
+      clearGameSignals();
+      return;
+    }
+    var signals = TM_CONTENT_GAME_SIGNALS.computeGameSignals({
+      game: pv.game,
+      thisPlayer: pv.thisPlayer,
+      players: pv.players || (pv.game && pv.game.players) || [],
+      phase: pv.game.phase
+    });
+    TM_CONTENT_GAME_OVERLAYS.renderGameSignals({
+      documentObj: document,
+      signals: signals
+    });
+    return signals;
+  }
+
+  function updateActionRecommendation() {
+    if (!TM_CONTENT_ACTION_RECOMMENDATION) return;
+    if (typeof TM_CONTENT_ACTION_RECOMMENDATION.computeActionRecommendation !== 'function') return;
+    if (typeof TM_CONTENT_ACTION_RECOMMENDATION.renderActionRecommendation !== 'function') return;
+    var pv = getPlayerVueData();
+    if (!pv || !pv.game || !pv.thisPlayer) {
+      clearActionRecommendation();
+      return;
+    }
+    var waitingFor = pv._waitingFor || pv.waitingFor ||
+      (pv.thisPlayer && (pv.thisPlayer._waitingFor || pv.thisPlayer.waitingFor)) ||
+      null;
+    if (!waitingFor) {
+      clearActionRecommendation();
+      return;
+    }
+    var signals = [];
+    if (TM_CONTENT_GAME_SIGNALS && typeof TM_CONTENT_GAME_SIGNALS.computeGameSignals === 'function') {
+      signals = TM_CONTENT_GAME_SIGNALS.computeGameSignals({
+        game: pv.game,
+        thisPlayer: pv.thisPlayer,
+        players: pv.players || (pv.game && pv.game.players) || [],
+        phase: pv.game.phase
+      });
+    }
+    var advisor = (typeof TM_ADVISOR !== 'undefined' && TM_ADVISOR) ? TM_ADVISOR : null;
+    var rec = TM_CONTENT_ACTION_RECOMMENDATION.computeActionRecommendation({
+      state: pv,
+      waitingFor: waitingFor,
+      advisor: advisor,
+      signals: signals,
+      standardProjects: TM_CONTENT_STANDARD_PROJECTS,
+      estimateGensLeft: estimateGensLeft,
+      detectMyCorp: detectMyCorp,
+      ftnRow: ftnRow,
+      isGreeneryTile: isGreeneryTile,
+      sc: SC
+    });
+    TM_CONTENT_ACTION_RECOMMENDATION.renderActionRecommendation({
+      documentObj: document,
+      recommendation: rec
+    });
   }
 
   // ── Milestone/Award advisor ──
@@ -7008,6 +7376,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       heat: 0,
       plants: 0,
       colonies: 0,
+      visibleColonies: [],
       prod: { mc: 0, steel: 0, ti: 0, plants: 0, energy: 0, heat: 0 },
       tr: 0,
       // Milestone/Award context
@@ -7024,6 +7393,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       tableauSize: 0,
       uniqueTagCount: 0,
       tableauNames: new Set(),
+      _gameOptions: (pv && pv.game && pv.game.gameOptions) || {},
+      _playerCount: (pv && pv.game && pv.game.players) ? pv.game.players.length : 3,
     };
 
     if (pv && pv.thisPlayer) {
@@ -7845,6 +8216,16 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (tag === 'city') return tags.indexOf('city') >= 0 && handCardPlacesCityTile(n);
       return tags.indexOf(tag) >= 0;
     }
+    function handCardTagsArePersistent(n) {
+      var tags = handTagCache[n];
+      if (!tags) tags = getCardTagsLocal(n);
+      return tags.indexOf('event') < 0;
+    }
+    function persistentHandCardsForTag(tag) {
+      return (handTagMap[tag] || []).filter(function(n) {
+        return n !== cardName && handCardTagsArePersistent(n);
+      });
+    }
     var placesCityTile = handCardPlacesCityTile(cardName);
 
     // Pre-build hand tag index (tag → count, card → tags cache)
@@ -7865,7 +8246,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var gp = ctx && ctx.globalParams ? ctx.globalParams : {};
     var tempStepsLeft = typeof gp.temp === 'number' ? Math.max(0, (8 - gp.temp) / 2) : 19; // 19 total steps
     var oxyStepsLeft = typeof gp.oxy === 'number' ? Math.max(0, 14 - gp.oxy) : 14;
-    var ocStepsLeft = ctx && typeof ctx.oceansOnBoard === 'number' ? Math.max(0, 9 - ctx.oceansOnBoard) : 9;
+    var ocStepsLeft = ctx && typeof ctx.oceansOnBoard === 'number'
+      ? Math.max(0, 9 - ctx.oceansOnBoard)
+      : (typeof gp.oceans === 'number' ? Math.max(0, 9 - gp.oceans) : 9);
     var vnStepsLeft = typeof gp.venus === 'number' ? Math.max(0, (30 - gp.venus) / 2) : 15;
     // Headroom factor: 1.0 = fully open, 0.2 = nearly closed (enough for 1 card still)
     var tempHR = tempStepsLeft >= 3 ? 1.0 : Math.max(0.2, tempStepsLeft / 3);
@@ -7944,11 +8327,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (tagReqsHS) {
         var myTagsHS = ctx.tags || {};
         var handTagsHS = getRequirementHandTagCounts(targetCardName);
+        var xavierWildHS = getXavierRequirementWildCount(ctx);
         for (var reqTagHS in tagReqsHS) {
           if (typeof tagReqsHS[reqTagHS] === 'object') continue;
           var needHS = tagReqsHS[reqTagHS];
-          var haveNowHS = myTagsHS[reqTagHS] || 0;
-          var haveSoonHS = haveNowHS + (handTagsHS[reqTagHS] || 0);
+          var haveNowHS = countRequirementTags(myTagsHS, reqTagHS, xavierWildHS);
+          var haveSoonHS = haveNowHS + countRequirementTags(handTagsHS, reqTagHS, 0);
           if (haveNowHS < needHS) {
             status.metNow = false;
             if (haveSoonHS < needHS) {
@@ -8342,8 +8726,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // ── 4. TAG DENSITY: per-tag production/VP cards + matching tags in hand ──
     var perTagCards = {
-      'Medical Lab': { tag: 'building', per: 2, val: 1.5 },
-      'Parliament Hall': { tag: 'building', per: 3, val: 1.5 },
+      'Medical Lab': { tag: 'building', per: 2, val: 0.5 },
+      'Parliament Hall': { tag: 'building', per: 3, val: 0.5 },
       'Cartel': { tag: 'earth', per: 1, val: 1.5 },
       'Satellites': { tag: 'space', per: 1, val: 1.5 },
       'Insects': { tag: 'plant', per: 1, val: 1.5 },
@@ -8352,20 +8736,22 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     };
     if (perTagCards[cardName]) {
       var ptDef = perTagCards[cardName];
-      var handTagCnt = (handTagMap[ptDef.tag] || []).filter(function(n) { return n !== cardName; }).length +
-        (handTagMap['wild'] || []).filter(function(n) { return n !== cardName; }).length;
+      var handTagCnt = persistentHandCardsForTag(ptDef.tag).length +
+        persistentHandCardsForTag('wild').length;
       if (handTagCnt > 0) {
         var extraVal = Math.min(Math.floor(handTagCnt / ptDef.per) * ptDef.val, 6);
         if (extraVal > 0) { bonus += extraVal; descs.push(handTagCnt + ' ' + getRequirementTagReasonLabel(ptDef.tag) + ' tag'); }
       }
     }
     // Reverse: card has tag that matches a per-tag card in hand
-    for (var ptcName in perTagCards) {
-      if (ptcName === cardName || !handSet.has(ptcName)) continue;
-      var ptcDef = perTagCards[ptcName];
-      if (cardTagsArr.indexOf(ptcDef.tag) >= 0 || cardTagsArr.indexOf('wild') >= 0) {
-        bonus += ptcDef.val * 0.5;
-        descs.push(reasonCardLabel(ptcName) + ' +tag');
+    if (!isEvent) {
+      for (var ptcName in perTagCards) {
+        if (ptcName === cardName || !handSet.has(ptcName)) continue;
+        var ptcDef = perTagCards[ptcName];
+        if (cardTagsArr.indexOf(ptcDef.tag) >= 0 || cardTagsArr.indexOf('wild') >= 0) {
+          bonus += ptcDef.val * 0.5;
+          descs.push(reasonCardLabel(ptcName) + ' +tag');
+        }
       }
     }
 
@@ -8391,7 +8777,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // ── 6. DISCOUNT CHAIN (data-driven from TM_CARD_DISCOUNTS) ──
     var _cdData = typeof TM_CARD_DISCOUNTS !== 'undefined' ? TM_CARD_DISCOUNTS : {};
-    var _cdSkip = { 'Earth Office': 1, 'Shuttles': 1, 'Media Archives': 1, 'Science Fund': 1 }; // handled elsewhere
+    var _cdSkip = {
+      'Earth Office': 1,
+      'Shuttles': 1,
+      'Media Archives': 1,
+      'Science Fund': 1,
+      'Mercurian Alloys': 1 // titanium value, not a card discount
+    }; // handled elsewhere
     // This card benefits from discount engines in hand (stack all applicable)
     var discountDescs = [];
     for (var deName in _cdData) {
@@ -8570,6 +8962,22 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         'Kelp Farming', 'Farming', 'Greenhouses', 'Greenhouse'];
       var plantProducers = myHand.filter(function(n) { return plantProdCards.indexOf(n) >= 0; }).length;
       var protBonus = plantCardsInHand * 1 + plantProducers * 2 + animalVPInHand.length * 1;
+      var livePlants = ctx && typeof ctx.plants === 'number' ? ctx.plants : 0;
+      var livePlantProd = ctx && ctx.prod && typeof ctx.prod.plants === 'number' ? ctx.prod.plants : 0;
+      var liveBioTargets = ctx ? ((ctx.animalTargetCount || 0) + (ctx.microbeTargetCount || 0)) : 0;
+      var liveBioAccum = ctx ? ((ctx.animalAccumRate || 0) + (ctx.microbeAccumRate || 0)) : 0;
+      var payoffAhead = plantProducers + animalVPInHand.length + microbeVPInHand.length;
+      if (payoffAhead > 0 && (livePlants >= 6 || livePlantProd >= 4 || liveBioTargets > 0 || liveBioAccum > 0)) {
+        var liveProtectBonus = 0;
+        if (livePlants >= 6) liveProtectBonus += Math.min(3, Math.floor(livePlants / 3));
+        if (livePlantProd >= 4) liveProtectBonus += 2;
+        if (liveBioTargets > 0 || liveBioAccum > 0) liveProtectBonus += Math.min(2, liveBioTargets + Math.ceil(liveBioAccum));
+        liveProtectBonus = Math.min(6, liveProtectBonus);
+        if (liveProtectBonus > 0) {
+          protBonus += liveProtectBonus;
+          descs.push('protect live bio payoff +' + liveProtectBonus);
+        }
+      }
       if (protBonus > 0) { bonus += protBonus; descs.push('protect plants' + (animalVPInHand.length > 0 ? '+animals' : '')); }
     }
 
@@ -8838,17 +9246,36 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           var ncEff = _effData[myHand[_ncj]];
           if (ncEff && ncEff[nc.f] > 0) ncTotal += ncEff[nc.f];
         }
-        if (ncTotal > (nc.fM || 0)) {
-          bonus += Math.min(ncTotal * nc.fc, nc.fC);
-          descs.push(ncTotal + ' ' + nc.fd);
+        var ncUsableTotal = ncTotal;
+        if (nc.n === 'Arctic Algae' && nc.f === 'oc' && ctx && ctx.globalParams) {
+          var aaHandOceansRemaining = Math.max(0, SC.oceansMax - (ctx.globalParams.oceans || 0));
+          ncUsableTotal = Math.min(ncTotal, aaHandOceansRemaining);
+        }
+        if (ncUsableTotal > (nc.fM || 0)) {
+          bonus += Math.min(ncUsableTotal * nc.fc, nc.fC);
+          descs.push((ncUsableTotal < ncTotal ? (ncUsableTotal + '/' + ncTotal) : ncUsableTotal) + ' ' + nc.fd);
+        }
+        if (nc.n === 'Arctic Algae' && nc.f === 'oc' && ncTotal > ncUsableTotal) {
+          var aaHandOceanOverflow = ncTotal - ncUsableTotal;
+          var aaHandOceanCapPenalty = Math.min(aaHandOceanOverflow * 1.5, 4);
+          if (aaHandOceanCapPenalty > 0) {
+            bonus -= aaHandOceanCapPenalty;
+            descs.push('ocean cap ' + ncUsableTotal + '/' + ncTotal + ' −' + aaHandOceanCapPenalty);
+          }
         }
       }
       if (handSet.has(nc.n) && cardName !== nc.n && cardEff[nc.f] && cardEff[nc.f] > 0) {
+        var ncReverseSteps = cardEff[nc.f];
+        if (nc.n === 'Arctic Algae' && nc.f === 'oc' && ctx && ctx.globalParams) {
+          var aaReverseOceansRemaining = Math.max(0, SC.oceansMax - (ctx.globalParams.oceans || 0));
+          ncReverseSteps = Math.min(ncReverseSteps, aaReverseOceansRemaining);
+        }
+        if (ncReverseSteps <= 0) continue;
         if (nc.rf > 0) {
           bonus += nc.rf; descs.push(nc.rd);
         } else if (nc.rc > 0) {
-          bonus += Math.min(cardEff[nc.f] * nc.rc, nc.rC);
-          descs.push(nc.rd + (nc.rm ? ' +' + (cardEff[nc.f] * nc.rm) + 'pl' : ''));
+          bonus += Math.min(ncReverseSteps * nc.rc, nc.rC);
+          descs.push(nc.rd + (nc.rm ? ' +' + (ncReverseSteps * nc.rm) + 'pl' + (ncReverseSteps < cardEff[nc.f] ? ' cap ' + ncReverseSteps + '/' + cardEff[nc.f] : '') : ''));
         }
       }
     }
@@ -9401,7 +9828,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         // Multiple animal targets = opponent can only hit one per turn, but still devalues all
         var oppAnimalPenalty = Math.min(animalBuddies * 0.4, 1.5);
         bonus -= oppAnimalPenalty;
-        descs.push('opp Pred/Ants ×' + (animalBuddies + 1) + ' animals −' + oppAnimalPenalty);
+        descs.push('opp Pred/Ants ×' + (animalBuddies + 1) + ' animals −' + formatReasonNumber(oppAnimalPenalty));
       }
     }
     // If opponent has plant attacks and I'm investing in plant prod, discount stacking
@@ -9415,7 +9842,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (ppBuddies >= 2) {
         var oppPlantPenalty = Math.min(ppBuddies * 0.3, 1);
         bonus -= oppPlantPenalty;
-        descs.push('opp plant atk risky −' + oppPlantPenalty);
+        descs.push('opp plant atk risky −' + formatReasonNumber(oppPlantPenalty));
       }
     }
 
@@ -9756,7 +10183,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (missedSources >= 1) {
         var noTagPenalty = Math.min(missedSources * 0.6, 2);
         bonus -= noTagPenalty;
-        descs.push('no tag: miss ' + missedSources + ' trigger/disc −' + noTagPenalty);
+        descs.push('no tag: miss ' + missedSources + ' trigger/disc −' + formatReasonNumber(noTagPenalty));
       }
     }
 
@@ -10323,6 +10750,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         for (var _tri = 0; _tri < myHand.length; _tri++) {
           if (myHand[_tri] === cardName) continue;
           var trTags = getCardTagsLocal(myHand[_tri]);
+          if (trTags.indexOf('event') >= 0) continue;
           var tagCopies = countCardTagCopies(trTags, trTag);
           if (!tagCopies) continue;
           var forwardKey = 'tag-forward:' + cardName + ':' + myHand[_tri] + ':' + trTag;
@@ -11178,7 +11606,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (isVenusTag101) {
       for (var _v101 = 0; _v101 < myHand.length; _v101++) {
         var v101Tags = getCardTagsLocal(myHand[_v101]);
-        if (v101Tags.indexOf('venus') >= 0) venusTagCount101++;
+        if (v101Tags.indexOf('venus') >= 0 && v101Tags.indexOf('event') < 0) venusTagCount101++;
         var v101Eff = _effData[myHand[_v101]];
         if (v101Eff && v101Eff.vn > 0) venusRaisers101++;
       }
@@ -11409,6 +11837,15 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   function scoreComboPotential(cardName, eLower, allMyCardsSet, ctx) {
     var bonus = 0;
     var reasons = [];
+    function isProductionCopyProviderName(name) {
+      return name === 'Robotic Workforce' ||
+        name === 'Mining Robots Manuf. Center' ||
+        name === 'Cyberia Systems';
+    }
+    function isProductionCopyTargetCombo(combo) {
+      if (!combo || !Array.isArray(combo.cards) || isProductionCopyProviderName(cardName)) return false;
+      return combo.cards.some(isProductionCopyProviderName);
+    }
     var comboIdx = getComboIndex();
     if (comboIdx[cardName]) {
       let bestComboBonus = 0;
@@ -11430,6 +11867,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
           }
         }
         if (_hasMissingCorp) continue; // combo requires a corp we don't have — skip
+        if (isProductionCopyTargetCombo(combo)) continue; // score the copy provider, not its production target
 
         // Penalize combo if partner cards have unmet global requirements
         var _gReqs = typeof TM_CARD_GLOBAL_REQS !== 'undefined' ? TM_CARD_GLOBAL_REQS : {};
@@ -11550,11 +11988,20 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (cardTags.size > 0 && ctx.tagTriggers.length > 0) {
       var triggerTotal = 0;
       var triggerDescs = [];
+      var seenTriggerKeys = new Set();
       for (var ti = 0; ti < ctx.tagTriggers.length; ti++) {
         var trigger = ctx.tagTriggers[ti];
         for (var tti = 0; tti < trigger.tags.length; tti++) {
           if (cardTags.has(trigger.tags[tti])) {
             if (trigger.eventOnly && cardType !== 'red') break; // e.g. Optimal Aerobraking: space events only
+            var triggerKey = [
+              trigger.desc || '',
+              trigger.value || 0,
+              (trigger.tags || []).slice().sort().join(','),
+              trigger.eventOnly ? 'event' : 'any'
+            ].join('|');
+            if (seenTriggerKeys.has(triggerKey)) break;
+            seenTriggerKeys.add(triggerKey);
             triggerTotal += trigger.value;
             triggerDescs.push(trigger.desc);
             break;
@@ -11585,6 +12032,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var isSlowGame = ctx.terraformRate <= SC.terraformSlowThreshold;
     var isProd = eLower.includes('prod') || eLower.includes('прод');
     var isVP = eLower.includes('vp') || eLower.includes('вп');
+    var isConditionalVP =
+      /\bvp\s*(?:\/|per\b|for each|each\b|за\b|кажд)/i.test(eLower) ||
+      /victory points?\s+(?:per|for each|for every)/i.test(eLower) ||
+      /победн[а-я\s]*очк[а-я\s]*(?:за|кажд)/i.test(eLower);
 
     if (isFastGame && isProd && !isVP) {
       bonus -= SC.terraformFastProdPenalty;
@@ -11594,7 +12045,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       bonus += SC.terraformSlowProdBonus;
       pushStructuredReason(reasons, reasonRows, 'Медл. игра +' + SC.terraformSlowProdBonus, SC.terraformSlowProdBonus);
     }
-    if (isFastGame && isVP) {
+    if (isFastGame && isVP && !isConditionalVP) {
       bonus += SC.terraformFastVPBonus;
       pushStructuredReason(reasons, reasonRows, 'Быстр. → VP +' + SC.terraformFastVPBonus, SC.terraformFastVPBonus);
     }
@@ -11602,7 +12053,367 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
   }
 
+  function openingPolicyScoreFromMC(mcDelta, maxAbsScore) {
+    var absMc = Math.abs(mcDelta || 0);
+    if (absMc < 1.5) return 0;
+    var absScore = Math.max(1, Math.round(absMc / 2));
+    if (maxAbsScore != null) absScore = Math.min(absScore, maxAbsScore);
+    return mcDelta < 0 ? -absScore : absScore;
+  }
+
+  function pushOpeningPolicyReason(reasons, reasonRows, label, mcDelta, maxAbsScore, detailText, scoreOverride) {
+    var scoreDelta = scoreOverride != null ? scoreOverride : openingPolicyScoreFromMC(mcDelta, maxAbsScore);
+    if (!scoreDelta) return 0;
+    var shownMc = Math.max(1, Math.round(Math.abs(mcDelta || 0)));
+    var scoreText = scoreDelta > 0 ? '+' + scoreDelta : String(scoreDelta);
+    var detail = detailText ? ', ' + detailText : '';
+    pushStructuredReason(reasons, reasonRows, label + ' ' + scoreText + ' (~' + shownMc + ' MC' + detail + ')', scoreDelta);
+    return scoreDelta;
+  }
+
+  function getOpeningContextGameOptions(ctx) {
+    if (ctx && ctx._gameOptions && Object.keys(ctx._gameOptions).length > 0) return ctx._gameOptions;
+    if (ctx && ctx.gameOptions && Object.keys(ctx.gameOptions).length > 0) return ctx.gameOptions;
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    return (pv && pv.game && pv.game.gameOptions) || {};
+  }
+
+  function getOpeningPlayerCount(ctx) {
+    if (ctx && ctx._playerCount) return ctx._playerCount;
+    if (ctx && ctx.playerCount) return ctx.playerCount;
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    return (pv && pv.game && pv.game.players && pv.game.players.length) || 3;
+  }
+
+  function getOpeningVisibleColoniesForTiming(ctx) {
+    if (ctx && Array.isArray(ctx.visibleColonies)) return ctx.visibleColonies;
+    var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
+    if (!pv || !pv.game || !Array.isArray(pv.game.colonies)) return [];
+    var names = [];
+    for (var i = 0; i < pv.game.colonies.length; i++) {
+      if (pv.game.colonies[i] && pv.game.colonies[i].name) names.push(pv.game.colonies[i].name);
+    }
+    return names;
+  }
+
+  function estimateOpeningAverageGameLength(ctx, opts, players) {
+    opts = opts || {};
+    players = players || 3;
+
+    if (typeof TM_BRAIN_CORE !== 'undefined' &&
+        TM_BRAIN_CORE &&
+        typeof TM_BRAIN_CORE.estimateAverageGameLengthFromState === 'function') {
+      return TM_BRAIN_CORE.estimateAverageGameLengthFromState({
+        game: {
+          generation: ctx && ctx.gen ? ctx.gen : 1,
+          gameOptions: opts
+        }
+      }, { playerCount: players });
+    }
+
+    var expected = players <= 2 ? 11.5 : (players === 3 ? 9 : (players === 4 ? 8.5 : 8));
+    var hasSolarPhase = !!(opts.solarPhaseOption || opts.worldGovernmentTerraforming);
+    var noSolarPhase = opts.solarPhaseOption === false || opts.worldGovernmentTerraforming === false;
+    if (noSolarPhase && !hasSolarPhase) expected += players <= 2 ? 1.5 : (players === 3 ? 1 : 0.5);
+    if (opts.preludeExtension === false) expected += 1.0;
+    if (opts.requiresVenusTrackCompletion) expected += 0.5;
+    if (hasSolarPhase && players >= 4) expected -= 0.2;
+    return Math.max(7.5, Math.min(13.5, expected));
+  }
+
+  function openingExpectedEndGen(ctx) {
+    var opts = getOpeningContextGameOptions(ctx);
+    var players = getOpeningPlayerCount(ctx);
+    var expected = estimateOpeningAverageGameLength(ctx, opts, players);
+
+    if (ctx && ctx.terraformRate > 0 && ctx.gen > 1) {
+      var expectedMarsRate = 42 / Math.max(1, expected - 1);
+      var rateRatio = ctx.terraformRate / expectedMarsRate;
+      if (rateRatio >= 1.25) expected -= 0.6;
+      else if (rateRatio <= 0.75) expected += 0.6;
+    }
+
+    if (ctx && ctx.gen && expected < ctx.gen + 1) expected = ctx.gen + 1;
+    return Math.max(7.5, Math.min(13.5, expected));
+  }
+
+  function openingRemainingStepsForParam(reqParam, ctx) {
+    var gp = (ctx && ctx.globalParams) || {};
+    if (reqParam === 'temperature') {
+      var temp = typeof gp.temp === 'number' ? gp.temp : (typeof gp.temperature === 'number' ? gp.temperature : -30);
+      return Math.max(0, Math.ceil(((SC.tempMax || 8) - temp) / (SC.tempStep || 2)));
+    }
+    if (reqParam === 'oxygen') return Math.max(0, (SC.oxyMax || 14) - (gp.oxy || 0));
+    if (reqParam === 'oceans') return Math.max(0, (SC.oceansMax || 9) - (gp.oceans || 0));
+    if (reqParam === 'venus') return Math.max(0, Math.ceil(((SC.venusMax || 30) - (gp.venus || 0)) / 2));
+    return 0;
+  }
+
+  function openingRequirementRouteFactor(reqParam, ctx) {
+    var factor = 1.0;
+    var colonies = getOpeningVisibleColoniesForTiming(ctx).map(function(name) { return String(name || '').toLowerCase(); });
+    function hasColony(name) {
+      name = String(name || '').toLowerCase();
+      return colonies.some(function(colonyName) { return colonyName === name || colonyName.indexOf(name) >= 0; });
+    }
+
+    if (reqParam === 'temperature') {
+      if (hasColony('io')) factor -= 0.14;
+      if (ctx && ctx.prod && ctx.prod.heat >= 4) factor -= 0.08;
+    } else if (reqParam === 'oceans') {
+      if (hasColony('europa')) factor -= 0.14;
+    } else if (reqParam === 'oxygen') {
+      if (hasColony('ganymede')) factor -= 0.10;
+      if (ctx && ctx.prod && ctx.prod.plants >= 4) factor -= 0.08;
+    } else if (reqParam === 'venus') {
+      if (hasColony('venus')) factor -= 0.10;
+    }
+
+    return Math.max(0.75, Math.min(1.15, factor));
+  }
+
+  function openingHandRequirementSteps(reqParam, openingHand, cardName) {
+    if (!Array.isArray(openingHand) || typeof TM_CARD_EFFECTS === 'undefined') return 0;
+    var routeSteps = 0;
+    for (var i = 0; i < openingHand.length; i++) {
+      var handName = openingHand[i];
+      if (!handName || handName === cardName) continue;
+      var fx = TM_CARD_EFFECTS[handName];
+      if (!fx) continue;
+      if (reqParam === 'temperature') routeSteps += Math.max(0, fx.tmp || 0);
+      else if (reqParam === 'oxygen') routeSteps += Math.max(0, fx.o2 || 0) + Math.max(0, fx.grn || 0);
+      else if (reqParam === 'oceans') routeSteps += Math.max(0, fx.oc || 0);
+      else if (reqParam === 'venus') routeSteps += Math.max(0, fx.vn || 0);
+    }
+    return routeSteps;
+  }
+
+  function openingRequirementRateScale(ctx) {
+    var observedTotalRate = ctx && ctx.terraformRate > 0 ? ctx.terraformRate : 0;
+    if (!observedTotalRate) return 1;
+    return Math.max(0.55, Math.min(1.55, observedTotalRate / 4.0));
+  }
+
+  function openingRequirementStepsPerGen(reqParam, ctx) {
+    var baseByParam = {
+      temperature: 1.7,
+      oxygen: 1.3,
+      oceans: 0.9,
+      venus: 0.7
+    };
+    var base = baseByParam[reqParam] || 1.0;
+    return Math.max(0.35, base * openingRequirementRateScale(ctx));
+  }
+
+  function estimateOpeningRequirementDelayProfile(reqParam, stepsNeeded, ctx, routeSteps) {
+    var profile = { mcLoss: 0, gensToPlayable: 0, playableGen: 0 };
+    if (!stepsNeeded || stepsNeeded <= 0) return profile;
+
+    var currentGen = ctx && ctx.gen ? ctx.gen : 1;
+    var expectedEndGen = openingExpectedEndGen(ctx);
+    var remainingGenSpan = Math.max(1, expectedEndGen - currentGen);
+    var effectiveStepsNeeded = Math.max(0, stepsNeeded - Math.max(0, routeSteps || 0) * 0.7);
+    var totalStepsToClose = Math.max(effectiveStepsNeeded, openingRemainingStepsForParam(reqParam, ctx) || effectiveStepsNeeded || 1);
+    var routeFactor = openingRequirementRouteFactor(reqParam, ctx);
+    var futureTransitions = Math.max(0, Math.ceil((effectiveStepsNeeded / totalStepsToClose) * remainingGenSpan * routeFactor));
+    var playableGen = Math.max(currentGen, Math.ceil(currentGen + futureTransitions));
+    var deadGens = Math.max(0, playableGen - currentGen);
+    var expectedGensLeft = Math.max(1, expectedEndGen - currentGen);
+
+    var draftCarryCost = deadGens >= 3 ? 3 : deadGens;
+    var deadSlotCost = Math.max(0, deadGens - 2) * 1.4;
+    var endgameRisk = 0;
+    if (deadGens >= Math.max(5, Math.ceil(expectedGensLeft * 0.65))) endgameRisk += 3;
+    if (deadGens >= Math.max(1, Math.floor(expectedGensLeft) - 1)) endgameRisk += 2;
+
+    profile.mcLoss = Math.min(16, draftCarryCost + deadSlotCost + endgameRisk);
+    profile.gensToPlayable = deadGens;
+    profile.playableGen = playableGen;
+    return profile;
+  }
+
+  function openingLatePayoffScoreFromDelay(delayProfile, ctx) {
+    var mcScore = openingPolicyScoreFromMC(-(delayProfile && delayProfile.mcLoss || 0), 12);
+    if (!delayProfile || !delayProfile.gensToPlayable) return mcScore;
+
+    var currentGen = ctx && ctx.gen ? ctx.gen : 1;
+    var expectedEndGen = openingExpectedEndGen(ctx);
+    var expectedGensLeft = Math.max(1, expectedEndGen - currentGen);
+    var lateShare = delayProfile.gensToPlayable / expectedGensLeft;
+    var genScore = 0;
+    if (delayProfile.playableGen >= Math.ceil(expectedEndGen)) genScore = 12;
+    else if (lateShare >= 0.85) genScore = 10;
+    else if (lateShare >= 0.70) genScore = 8;
+    else if (lateShare >= 0.55) genScore = 6;
+
+    if (!genScore) return mcScore;
+    return -Math.max(Math.abs(mcScore), genScore);
+  }
+
+  function scoreOpeningDraftPolicy(cardName, cardTags, cardType, cardCost, eLower, data, ctx, myHand) {
+    var bonus = 0;
+    var reasons = [];
+    var reasonRows = [];
+    if (!cardName || !ctx || !isOpeningHandContext(ctx) || isPreludeOrCorpName(cardName)) {
+      return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
+    }
+
+    cardTags = cardTags || new Set();
+    eLower = (eLower || (data && data.e) || '').toLowerCase();
+    var fx = getFx(cardName) || {};
+    var cost = cardCost != null ? cardCost : (fx.c != null ? fx.c : 0);
+    var openingHand = Array.isArray(myHand) ? myHand : [];
+    var handSet = new Set(openingHand);
+    var globalReqs = (typeof TM_CARD_GLOBAL_REQS !== 'undefined')
+      ? (_lookupCardData ? _lookupCardData(TM_CARD_GLOBAL_REQS, cardName) : TM_CARD_GLOBAL_REQS[cardName])
+      : null;
+    var tagReqs = (typeof TM_CARD_TAG_REQS !== 'undefined')
+      ? (_lookupCardData ? _lookupCardData(TM_CARD_TAG_REQS, cardName) : TM_CARD_TAG_REQS[cardName])
+      : null;
+    var gp = ctx.globalParams || {};
+    var reqFlexCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
+    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
+    var paramMap = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
+    var farMinReqSteps = 0;
+    var farMinReqParam = '';
+
+    if (globalReqs) {
+      for (var reqParam in paramMap) {
+        var reqObj = globalReqs[reqParam];
+        if (!reqObj || reqObj.min == null) continue;
+        var curVal = gp[paramMap[reqParam]] || 0;
+        var step = reqParam === 'temperature' ? 2 : (reqParam === 'venus' ? 2 : 1);
+        var flexSteps = reqFlex.any + (reqParam === 'venus' ? reqFlex.venus : 0);
+        var effectiveMin = reqObj.min - flexSteps * step;
+        if (curVal >= effectiveMin) continue;
+        var stepsNeeded = Math.ceil((effectiveMin - curVal) / step);
+        if (stepsNeeded > farMinReqSteps) {
+          farMinReqSteps = stepsNeeded;
+          farMinReqParam = reqParam;
+        }
+      }
+    }
+
+    var routedTagReq = false;
+    var missingTagRoute = false;
+    if (tagReqs) {
+      var myTags = ctx.tags || {};
+      var directOpeningHandTags = getCardTagCountsForNames(myHand, cardName, {persistentOnly: true});
+      var hasDirectOpeningHandTags = Object.keys(directOpeningHandTags).length > 0;
+      var handTags = hasDirectOpeningHandTags
+        ? directOpeningHandTags
+        : (Object.prototype.hasOwnProperty.call(ctx, '_persistentHandTagCounts')
+        ? (ctx._persistentHandTagCounts || {})
+        : (ctx._handTagCounts || {}));
+      var projectedTags = Object.prototype.hasOwnProperty.call(ctx, 'tagsWithPersistentHand')
+        ? ctx.tagsWithPersistentHand
+        : ctx.tagsWithHand;
+      for (var reqTag in tagReqs) {
+        if (typeof tagReqs[reqTag] === 'object') continue;
+        var need = tagReqs[reqTag];
+        var haveNow = countRequirementTags(myTags, reqTag, 0);
+        var projectedHave = haveNow + countRequirementTags(handTags, reqTag, 0);
+        if (!hasDirectOpeningHandTags && projectedTags) projectedHave = Math.max(projectedHave, countRequirementTags(projectedTags, reqTag, 0));
+        if (haveNow < need && projectedHave >= need) routedTagReq = true;
+        if (projectedHave < need) missingTagRoute = true;
+      }
+    }
+
+    var isDraw = (fx.cd || 0) > 0 ||
+      /\bdraw\b|\bcard\b|добер|карт|рисов/i.test(eLower);
+    var mcProd = fx.mp || 0;
+    var positiveProd =
+      Math.max(0, fx.mp || 0) +
+      Math.max(0, fx.sp || 0) +
+      Math.max(0, fx.tp || 0) +
+      Math.max(0, fx.pp || 0) +
+      Math.max(0, fx.ep || 0) +
+      Math.max(0, fx.hp || 0);
+    var instantEconomy = (fx.mc || 0) + (fx.st || 0) * 2 + (fx.ti || 0) * 3;
+    var hasEarlyAnchor = cost <= 14 && farMinReqSteps === 0 && !routedTagReq && !missingTagRoute && (
+      isDraw ||
+      mcProd > 0 ||
+      (positiveProd > 0 && instantEconomy >= 6)
+    );
+    if (hasEarlyAnchor) {
+      var anchorMc = isDraw
+        ? Math.min(6, Math.max(3, (fx.cd || 1) * 3))
+        : Math.min(5, Math.max(0, mcProd) * 2 + Math.max(0, positiveProd - Math.max(0, mcProd)) * 1.2 + Math.max(0, instantEconomy) * 0.15);
+      bonus += pushOpeningPolicyReason(reasons, reasonRows, 'Opening anchor', anchorMc, 3);
+    }
+
+    var usefulSetupTags = 0;
+    var directSetupHandTags = getCardTagCountsForNames(myHand, cardName, {persistentOnly: true});
+    var hasDirectSetupHandTags = Object.keys(directSetupHandTags).length > 0;
+    var setupHandTags = hasDirectSetupHandTags
+      ? directSetupHandTags
+      : (Object.prototype.hasOwnProperty.call(ctx, '_persistentHandTagCounts')
+      ? (ctx._persistentHandTagCounts || {})
+      : (ctx._handTagCounts || {}));
+    var setupTagsWithHand = Object.prototype.hasOwnProperty.call(ctx, 'tagsWithPersistentHand')
+      ? ctx.tagsWithPersistentHand
+      : ctx.tagsWithHand;
+    cardTags.forEach(function(tag) {
+      if (tag === 'event') return;
+      var visibleCount = (setupHandTags && setupHandTags[tag]) || (!hasDirectSetupHandTags && setupTagsWithHand && setupTagsWithHand[tag]) || 0;
+      if (visibleCount >= 2 || tag === 'earth' || tag === 'science') usefulSetupTags++;
+    });
+    if (!hasEarlyAnchor && farMinReqSteps === 0 && !missingTagRoute && cost <= 10 && usefulSetupTags > 0) {
+      var setupMc = Math.min(5, usefulSetupTags * 1.5 + (routedTagReq ? 1.5 : 0));
+      bonus += pushOpeningPolicyReason(reasons, reasonRows, 'Opening setup', setupMc, 3);
+    }
+
+    if (farMinReqSteps >= 8) {
+      var delayProfile = estimateOpeningRequirementDelayProfile(farMinReqParam, farMinReqSteps, ctx);
+      var latePayoffScore = openingLatePayoffScoreFromDelay(delayProfile, ctx);
+      bonus += pushOpeningPolicyReason(
+        reasons,
+        reasonRows,
+        'Opening late payoff ' + farMinReqParam,
+        -delayProfile.mcLoss,
+        8,
+        '~gen ' + delayProfile.playableGen,
+        latePayoffScore
+      );
+    }
+
+    var materialRoute = 0;
+    if (cardTags.has('space')) materialRoute += (ctx.titanium || 0) * (ctx.tiVal || 3);
+    if (cardTags.has('building')) materialRoute += (ctx.steel || 0) * (ctx.steelVal || 2);
+    for (var hi = 0; hi < openingHand.length; hi++) {
+      var hName = openingHand[hi];
+      if (!hName || hName === cardName) continue;
+      var hfx = typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS[hName] : null;
+      if (!hfx || hfx.c !== 0) continue;
+      if (cardTags.has('space')) materialRoute += (hfx.ti || 0) * (ctx.tiVal || 3);
+      if (cardTags.has('building')) materialRoute += (hfx.st || 0) * (ctx.steelVal || 2);
+      materialRoute += hfx.mc || 0;
+    }
+    var netOpeningCost = Math.max(0, cost - materialRoute);
+    var isExpensivePayoff = cost >= 24 && netOpeningCost >= 10 && (
+      (fx.vp || 0) > 0 ||
+      (fx.tp || 0) > 0 ||
+      (fx.tr || 0) > 0 ||
+      /\bvp\b|по\b|victory/i.test(eLower)
+    );
+    if (isExpensivePayoff && !isDraw && !handSet.has('Earth Catapult')) {
+      var expensiveMcLoss = Math.min(14, Math.max(0, cost - 18) * 0.6 + Math.max(0, netOpeningCost - 8) * 0.6);
+      bonus += pushOpeningPolicyReason(reasons, reasonRows, 'Opening expensive payoff', -expensiveMcLoss, 7);
+    }
+
+    if (mcProd < 0 && !isDraw && (fx.tr || 0) <= 0 && (fx.vp || 0) <= 0 && farMinReqSteps === 0) {
+      var weakEconomyMcLoss = Math.min(12,
+        Math.abs(mcProd) * Math.min(ctx.gensLeft || 8, 8) * 0.8 +
+        Math.max(0, fx.pOpp || 0) * 2
+      );
+      bonus += pushOpeningPolicyReason(reasons, reasonRows, 'Opening weak economy', -weakEconomyMcLoss, 6);
+    }
+
+    return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
+  }
+
   function scoreDraftCard(cardName, myTableau, myHand, myCorp, cardEl, ctx) {
+    if (ctx) syncCtxForScoringHand(ctx, myTableau, myHand);
     if (TM_CONTENT_PLAY_PRIORITY && TM_CONTENT_PLAY_PRIORITY.scoreDraftCard) {
       return TM_CONTENT_PLAY_PRIORITY.scoreDraftCard({
         cardName: cardName,
@@ -11624,6 +12435,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         getCachedCardTags: getCachedCardTags,
         getCardCost: getCardCost,
         cardEffects: typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : null,
+        cardTagsData: typeof TM_CARD_TAGS !== 'undefined' ? TM_CARD_TAGS : null,
+        cardGlobalReqs: typeof TM_CARD_GLOBAL_REQS !== 'undefined' ? TM_CARD_GLOBAL_REQS : null,
+        cardTagReqs: typeof TM_CARD_TAG_REQS !== 'undefined' ? TM_CARD_TAG_REQS : null,
         scoreCardRequirements: scoreCardRequirements,
         isPreludeOrCorpCard: isPreludeOrCorpCard,
         scoreDiscountsAndPayments: scoreDiscountsAndPayments,
@@ -11645,6 +12459,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         scoreBoardStateModifiers: scoreBoardStateModifiers,
         scoreSynergyRules: _scoreSynergyRules,
         scorePrelude: _scorePrelude,
+        scoreOpeningDraftPolicy: scoreOpeningDraftPolicy,
         scoreBreakEvenTiming: scoreBreakEvenTiming,
         checkDenyDraft: checkDenyDraft,
         checkHateDraft: checkHateDraft,
@@ -11867,6 +12682,9 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     // Prelude-specific scoring — extracted to _scorePrelude()
     var preResult = _scorePrelude(cardName, data, cardEl, myCorp, ctx, SC);
     bonus = applyResult(preResult, bonus, reasons, reasonRows);
+
+    var openingPolicy = scoreOpeningDraftPolicy(cardName, cardTags, cardType, cardCost, eLower, data, ctx, myHand);
+    bonus = applyResult(openingPolicy, bonus, reasons, reasonRows);
 
     // Smart vs SP: compare card with RELEVANT standard project only
     if (ctx && ctx.allSP && typeof TM_CARD_EFFECTS !== 'undefined') {
@@ -12545,6 +13363,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (cardName === 'Arctic Algae' && ctx && ctx.globalParams) {
       var draftOceansRemaining = Math.max(0, 9 - (ctx.globalParams.oceans || 0));
       if (draftOceansRemaining <= 1) adj -= 6;
+      else if (draftOceansRemaining <= 2) adj -= 4;
+      else if (draftOceansRemaining <= 3) adj -= 2;
     }
 
     var reqHardBlockDraft = result.reasons.some(function(r) { return isHardRequirementReasonText(r); });
@@ -13208,11 +14028,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
 
   // Blue card actions from tableau — returns scored items array
-  function scoreBlueActions(tableauCards, pv, paramMaxed) {
+  function scoreBlueActions(tableauCards, pv, paramMaxed, ctxOverride, scOverride) {
     if (TM_CONTENT_PLAY_PRIORITY && TM_CONTENT_PLAY_PRIORITY.scoreBlueActions) {
       return TM_CONTENT_PLAY_PRIORITY.scoreBlueActions({
         tableauCards: tableauCards,
         pv: pv,
+        ctx: ctxOverride,
+        sc: scOverride || SC,
         paramMaxed: paramMaxed,
         ratings: typeof TM_RATINGS !== 'undefined' ? TM_RATINGS : null,
         getFx: getFx
@@ -13868,7 +14690,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         getInitialDraftRatingScore: getInitialDraftRatingScore,
         ruName: TM_UTILS.ruName,
         getVisibleColonyNames: getVisibleColonyNames,
-        getPlayerVueData: getPlayerVueData
+        getPlayerVueData: getPlayerVueData,
+        cardEffects: typeof TM_CARD_EFFECTS !== 'undefined' ? TM_CARD_EFFECTS : null,
+        cardGlobalReqs: typeof TM_CARD_GLOBAL_REQS !== 'undefined' ? TM_CARD_GLOBAL_REQS : null,
+        cardTagReqs: typeof TM_CARD_TAG_REQS !== 'undefined' ? TM_CARD_TAG_REQS : null
       });
     }
     var bonus = 0;
@@ -14596,9 +15421,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var treq = TM_CARD_TAG_REQS[cardName];
         if (treq) {
           var myTags = (ctx && ctx.tags) ? ctx.tags : {};
+          var xavierWildReq = getXavierRequirementWildCount(ctx);
           for (var tk in treq) {
             if (typeof treq[tk] === 'object') continue;
-            if ((myTags[tk] || 0) < treq[tk]) { reqMet = false; break; }
+            if (countRequirementTags(myTags, tk, xavierWildReq) < treq[tk]) { reqMet = false; break; }
           }
         }
       }
@@ -15047,6 +15873,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (enabled) {
       updateGenTimer();
       checkGameEnd();
+      updateGameSignals();
       updateVPOverlays();
       removeEloBadges();
     }

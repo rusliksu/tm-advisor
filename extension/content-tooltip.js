@@ -230,6 +230,7 @@
   function buildHeaderHtml(input) {
     if (!input) return '';
     var html = '<div class="tm-tip-header">';
+    html += '<button type="button" class="tm-tooltip-copy" data-tm-tooltip-copy="1" title="Скопировать tooltip" aria-label="Скопировать tooltip" style="float:left;margin-right:6px;border:1px solid #555;background:#252542;color:#ddd;border-radius:4px;padding:1px 6px;font-size:12px;line-height:18px;cursor:pointer">⧉</button>';
 
     if (input.isOppCard) {
       html += '<span class="tm-tip-opp">Для: ' + input.escHtml(input.opponentName || '?') + '</span>';
@@ -293,7 +294,25 @@
 
   function buildRequirementHtml(input) {
     if (!input || !input.checks || input.checks.length === 0) return '';
-    return '<div class="tm-tip-row tm-tip-row--error">\u2717 ' + input.checks.join(' | ') + '</div>';
+    var checks = input.checks;
+    var tone = 'muted';
+    var parts = [];
+    for (var i = 0; i < checks.length; i++) {
+      var check = checks[i];
+      var checkTone = check && typeof check === 'object' && check.tone ? check.tone : 'error';
+      if (checkTone === 'error') tone = 'error';
+      else if (tone !== 'error' && checkTone === 'warning') tone = 'warning';
+      parts.push(input.escHtml ? input.escHtml(requirementCheckText(check)) : requirementCheckText(check));
+    }
+    var cls = tone === 'error' ? 'tm-tip-row--error' : (tone === 'warning' ? 'tm-tip-row--warning' : 'tm-tip-row--muted');
+    var prefix = tone === 'error' ? '\u2717 ' : '';
+    return '<div class="tm-tip-row ' + cls + '">' + prefix + parts.join(' | ') + '</div>';
+  }
+
+  function requirementCheckText(check) {
+    if (typeof check === 'string') return check;
+    if (check && typeof check.text === 'string') return check.text;
+    return '';
   }
 
   function buildTakeThatHtml(input) {
@@ -409,7 +428,68 @@
     tooltipEl.addEventListener('mouseleave', function() {
       if (typeof onLeave === 'function') onLeave();
     });
+    tooltipEl.addEventListener('click', function(event) {
+      var target = event && event.target && event.target.closest
+        ? event.target.closest('[data-tm-tooltip-copy]')
+        : null;
+      if (!target) return;
+      event.preventDefault();
+      event.stopPropagation();
+      copyTooltipText(tooltipEl, target);
+    });
     return tooltipEl;
+  }
+
+  function getTooltipPlainText(tooltipEl) {
+    if (!tooltipEl) return '';
+    var clone = tooltipEl.cloneNode(true);
+    var buttons = clone.querySelectorAll ? clone.querySelectorAll('[data-tm-tooltip-copy]') : [];
+    for (var i = 0; i < buttons.length; i++) {
+      if (buttons[i] && buttons[i].parentNode) buttons[i].parentNode.removeChild(buttons[i]);
+    }
+    return (clone.innerText || clone.textContent || '').replace(/\n{3,}/g, '\n\n').trim();
+  }
+
+  function writeClipboardText(text) {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text);
+    }
+    var textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', 'readonly');
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return null;
+  }
+
+  function setCopyButtonState(button, label) {
+    if (!button) return;
+    var original = button.getAttribute('data-tm-copy-label') || button.textContent || '⧉';
+    button.setAttribute('data-tm-copy-label', original);
+    button.textContent = label;
+    setTimeout(function() {
+      button.textContent = original;
+    }, 900);
+  }
+
+  function copyTooltipText(tooltipEl, button) {
+    var text = getTooltipPlainText(tooltipEl);
+    if (!text) return;
+    try {
+      var result = writeClipboardText(text);
+      if (result && typeof result.then === 'function') {
+        result.then(function() { setCopyButtonState(button, '✓'); })
+          .catch(function() { setCopyButtonState(button, '!'); });
+      } else {
+        setCopyButtonState(button, '✓');
+      }
+    } catch (e) {
+      setCopyButtonState(button, '!');
+    }
   }
 
   function positionTooltip(tip, srcEl) {

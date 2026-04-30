@@ -7,6 +7,7 @@
   var visiblePreludeNamesCache = { documentObj: null, at: 0, names: null };
   var OFFERED_CORPS_CACHE_MS = 300;
   var VISIBLE_PRELUDE_NAMES_CACHE_MS = 300;
+  var routeValidators = global.TM_CONTENT_ROUTE_VALIDATORS || {};
 
   function formatCorpBoostReason(corpName, cardName, boost) {
     var sign = boost > 0 ? '+' : '';
@@ -270,6 +271,73 @@
     });
   }
 
+  function suppressGlobalRequirementCheatRouteSynergy(cardName, result) {
+    if (cardName !== 'Ecology Experts' || !result || !Array.isArray(result.reasons)) return result;
+    var hasRouteReason = result.reasons.some(function(reason) {
+      var text = String(reason || '').toLowerCase();
+      return text.indexOf('combo') >= 0 ||
+        text.indexOf('комбо') >= 0 ||
+        text.indexOf('ecology') >= 0 ||
+        text.indexOf('cheat') >= 0 ||
+        text.indexOf('ignore global') >= 0 ||
+        text.indexOf('global req') >= 0;
+    });
+    if (!hasRouteReason) return result;
+    return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+  }
+
+  function isProductionCopyEnabler(cardName) {
+    return cardName === 'Robotic Workforce' ||
+      cardName === 'Robotic Workforce (P2)' ||
+      cardName === 'Mining Robots Manuf. Center' ||
+      cardName === 'Cyberia Systems';
+  }
+
+  function suppressProductionCopyRouteSynergy(cardName, result) {
+    if (!isProductionCopyEnabler(cardName) || !result || !Array.isArray(result.reasons)) return result;
+    var hasCopyReason = result.reasons.some(function(reason) {
+      var text = String(reason || '').toLowerCase();
+      return text.indexOf('copy') >= 0 ||
+        text.indexOf('robowork') >= 0 ||
+        text.indexOf('robotic workforce') >= 0 ||
+        text.indexOf('копи') >= 0;
+    });
+    if (!hasCopyReason) return result;
+    return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+  }
+
+  function getTagGateRouteTags(routeResults) {
+    var tags = [];
+    if (!Array.isArray(routeResults)) return tags;
+    for (var i = 0; i < routeResults.length; i++) {
+      var route = routeResults[i];
+      var routeReasons = route && Array.isArray(route.reasons) ? route.reasons : [];
+      for (var ri = 0; ri < routeReasons.length; ri++) {
+        var m = String(routeReasons[ri] || '').match(/^Tag gate ([A-Za-z]+):/);
+        if (!m) continue;
+        var tag = m[1].toLowerCase();
+        if (tags.indexOf(tag) === -1) tags.push(tag);
+      }
+    }
+    return tags;
+  }
+
+  function suppressTagGateRouteSynergy(result, routeResults) {
+    if (!result || !Array.isArray(result.reasons)) return result;
+    var gatedTags = getTagGateRouteTags(routeResults);
+    if (gatedTags.length === 0) return result;
+    var hasGenericHandMassReason = result.reasons.some(function(reason) {
+      var text = String(reason || '').toLowerCase();
+      if (text.indexOf('рука') < 0 && text.indexOf('hand') < 0) return false;
+      for (var i = 0; i < gatedTags.length; i++) {
+        if (text.indexOf(gatedTags[i]) >= 0) return true;
+      }
+      return false;
+    });
+    if (!hasGenericHandMassReason) return result;
+    return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+  }
+
   function getCorpReasonAliases(name) {
     if (!name) return [];
     var aliases = [];
@@ -464,6 +532,8 @@
   function scoreBlueActions(input) {
     var tableauCards = input && input.tableauCards;
     var pv = input && input.pv;
+    var ctx = input && input.ctx;
+    var sc = input && input.sc;
     var paramMaxed = input && input.paramMaxed;
     var ratings = input && input.ratings;
     var getFx = input && input.getFx;
@@ -511,11 +581,140 @@
         aReasons.push('Нет титана');
       }
 
+      var actionGuards = getGlobalFinishAssistGuards(tp, pv, ctx, sc || {}, fx);
+      for (var agi = 0; agi < actionGuards.length; agi++) {
+        aPriority -= actionGuards[agi].penalty;
+        aMCValue = Math.max(0, aMCValue - actionGuards[agi].penalty * 0.5);
+        aReasons.push(actionGuards[agi].reason);
+      }
+
       aPriority += Math.min(20, Math.round(aMCValue * 1.5));
       scored.push({ name: '⚡ ' + tName, priority: aPriority, reasons: aReasons, tier: tData.t || '?', score: tData.s || 0, type: 'action', mcValue: aMCValue });
     }
 
     return scored;
+  }
+
+  function getPlayerVpForPriority(player) {
+    if (!player) return 0;
+    if (player.victoryPointsBreakdown && typeof player.victoryPointsBreakdown.total === 'number') return player.victoryPointsBreakdown.total;
+    if (typeof player.victoryPoints === 'number') return player.victoryPoints;
+    if (typeof player.terraformRating === 'number') return player.terraformRating;
+    return 0;
+  }
+
+  function getVpGapToLeader(tp, pv) {
+    if (!tp || !pv || !pv.game || !Array.isArray(pv.game.players)) return 0;
+    var myColor = tp.color;
+    var myVp = getPlayerVpForPriority(tp);
+    var bestOpp = 0;
+    for (var i = 0; i < pv.game.players.length; i++) {
+      var player = pv.game.players[i];
+      if (!player || player.color === myColor) continue;
+      bestOpp = Math.max(bestOpp, getPlayerVpForPriority(player));
+    }
+    return bestOpp - myVp;
+  }
+
+  function getGlobalValueForPriority(pv, ctx, key) {
+    var gp = ctx && ctx.globalParams ? ctx.globalParams : {};
+    if (key === 'oxy') {
+      if (typeof gp.oxy === 'number') return gp.oxy;
+      if (pv && pv.game && typeof pv.game.oxygenLevel === 'number') return pv.game.oxygenLevel;
+      return 0;
+    }
+    if (key === 'temp') {
+      if (typeof gp.temp === 'number') return gp.temp;
+      if (typeof gp.temperature === 'number') return gp.temperature;
+      if (pv && pv.game && typeof pv.game.temperature === 'number') return pv.game.temperature;
+      return -30;
+    }
+    if (key === 'oceans') {
+      if (typeof gp.oceans === 'number') return gp.oceans;
+      if (pv && pv.game && typeof pv.game.oceans === 'number') return pv.game.oceans;
+      return 0;
+    }
+    if (key === 'venus') {
+      if (typeof gp.venus === 'number') return gp.venus;
+      if (pv && pv.game && typeof pv.game.venusScaleLevel === 'number') return pv.game.venusScaleLevel;
+      return 0;
+    }
+    return 0;
+  }
+
+  function getMarsGlobalStepsLeft(pv, ctx, sc) {
+    sc = sc || {};
+    var tempMax = sc.tempMax || 8;
+    var tempStep = sc.tempStep || 2;
+    return {
+      oxygen: Math.max(0, (sc.oxyMax || 14) - getGlobalValueForPriority(pv, ctx, 'oxy')),
+      temperature: Math.max(0, Math.ceil((tempMax - getGlobalValueForPriority(pv, ctx, 'temp')) / tempStep)),
+      oceans: Math.max(0, (sc.oceansMax || 9) - getGlobalValueForPriority(pv, ctx, 'oceans')),
+      venus: Math.max(0, Math.ceil(((sc.venusMax || 30) - getGlobalValueForPriority(pv, ctx, 'venus')) / 2)),
+    };
+  }
+
+  function isVenusRequiredForPriority(pv) {
+    var opts = pv && pv.game && pv.game.gameOptions ? pv.game.gameOptions : {};
+    return !!opts.requiresVenusTrackCompletion;
+  }
+
+  function isNearEndgameGlobalState(pv, ctx, sc) {
+    var left = getMarsGlobalStepsLeft(pv, ctx, sc);
+    var venusRequired = isVenusRequiredForPriority(pv);
+    var total = left.oxygen + left.temperature + left.oceans + (venusRequired ? left.venus : 0);
+    return (ctx && ctx.gensLeft <= 1) || total <= 5 || left.oxygen <= 1 || left.oceans <= 1 || left.temperature <= 2 || (venusRequired && left.venus <= 1);
+  }
+
+  function getFinishAssistGuard(tp, pv, ctx, sc, param) {
+    if (param === 'venus' && !isVenusRequiredForPriority(pv)) return null;
+
+    var vpGap = getVpGapToLeader(tp, pv);
+    if (vpGap < 25) return null;
+
+    var left = getMarsGlobalStepsLeft(pv, ctx, sc);
+    var closesLastStep =
+      (param === 'oxygen' && left.oxygen <= 1) ||
+      (param === 'temperature' && left.temperature <= 1) ||
+      (param === 'oceans' && left.oceans <= 1) ||
+      (param === 'venus' && left.venus <= 1);
+    var nearEnd = isNearEndgameGlobalState(pv, ctx, sc);
+    if (!nearEnd && !closesLastStep) return null;
+
+    var penalty = vpGap >= 45 ? 14 : 10;
+    if (closesLastStep) penalty += 2;
+    if (param === 'temperature' && left.temperature > 2) penalty = Math.max(6, penalty - 4);
+    if (param === 'oxygen') return { penalty: penalty, reason: 'Не закрывай O2 лидеру −' + penalty };
+    if (param === 'temperature') return { penalty: penalty, reason: 'Не грей финиш лидеру −' + penalty };
+    if (param === 'oceans') return { penalty: penalty, reason: 'Не закрывай океаны лидеру −' + penalty };
+    if (param === 'venus') return { penalty: penalty, reason: 'Не закрывай Venus лидеру −' + penalty };
+    return null;
+  }
+
+  function getGlobalFinishAssistGuards(tp, pv, ctx, sc, fx) {
+    var guards = [];
+    var seen = {};
+    if (!fx) return guards;
+
+    function addGuard(param) {
+      if (seen[param]) return;
+      seen[param] = true;
+      var guard = getFinishAssistGuard(tp, pv, ctx, sc || {}, param);
+      if (guard) guards.push(guard);
+    }
+
+    if ((fx.o2 || 0) > 0 || (fx.grn || 0) > 0 || (fx.actO2 || 0) > 0 || (fx.actGrn || 0) > 0) addGuard('oxygen');
+    if ((fx.oc || 0) > 0 || (fx.actOc || 0) > 0) addGuard('oceans');
+    if ((fx.tmp || 0) > 0 || (fx.actTmp || 0) > 0 || (fx.actTemp || 0) > 0) addGuard('temperature');
+    if ((fx.vn || 0) > 0 || (fx.actVN || 0) > 0 || (fx.actVenus || 0) > 0) addGuard('venus');
+    return guards;
+  }
+
+  function getEndgameAwardTimingBoost(tp, pv, ctx, sc, awardLead) {
+    if (!isNearEndgameGlobalState(pv, ctx, sc)) return 0;
+    if (awardLead > 0) return awardLead >= 5 ? 20 : 15;
+    if (awardLead === 0) return 10;
+    return 0;
   }
 
   function scoreStandardActions(input) {
@@ -540,13 +739,30 @@
     if (myHeat >= sc.heatPerTR && !sat.temp) {
       var heatConvs = Math.floor(myHeat / sc.heatPerTR);
       var heatReasons = heatConvs > 1 ? [myHeat + ' heat (' + heatConvs + 'x)'] : [myHeat + ' heat'];
-      items.push({ name: '🔥 Тепло → Темп', priority: 35, reasons: heatReasons, tier: '-', score: 0, type: 'standard', mcValue: 7.2 });
+      var heatPrio = 35;
+      var heatMCValue = 7.2;
+      var heatGuard = getFinishAssistGuard(tp, pv, ctx, sc, 'temperature');
+      if (heatGuard) {
+        heatPrio -= heatGuard.penalty;
+        heatMCValue = Math.max(0, heatMCValue - heatGuard.penalty * 0.5);
+        heatReasons.push(heatGuard.reason);
+      }
+      items.push({ name: '🔥 Тепло → Темп', priority: heatPrio, reasons: heatReasons, tier: '-', score: 0, type: 'standard', mcValue: heatMCValue });
     }
 
     if (myPlants >= plantCost) {
       var greenMC = sat.oxy ? 4 : 11;
       var greenPrio = sat.oxy ? 20 : 25;
-      items.push({ name: '🌿 Озеленение', priority: greenPrio, reasons: [myPlants + ' растений' + (sat.oxy ? ', O₂ max' : '')], tier: '-', score: 0, type: 'standard', mcValue: greenMC });
+      var greenReasons = [myPlants + ' растений' + (sat.oxy ? ', O₂ max' : '')];
+      if (!sat.oxy) {
+        var greenGuard = getFinishAssistGuard(tp, pv, ctx, sc, 'oxygen');
+        if (greenGuard) {
+          greenPrio -= greenGuard.penalty;
+          greenMC = Math.max(0, greenMC - greenGuard.penalty * 0.5);
+          greenReasons.push(greenGuard.reason);
+        }
+      }
+      items.push({ name: '🌿 Озеленение', priority: greenPrio, reasons: greenReasons, tier: '-', score: 0, type: 'standard', mcValue: greenMC });
     }
 
     if (ctx && ctx.tradesLeft > 0 && pv && pv.game && pv.game.colonies) {
@@ -618,6 +834,11 @@
               var prio = lead > 0 ? 30 : 20;
               var awReasons = [myScore + ' vs ' + bestOpp + (lead > 0 ? ' лидер' : lead === 0 ? ' равны' : ' −' + Math.abs(lead))];
               awReasons.push(fundCost + ' MC, EV ' + Math.round(ev) + ' MC');
+              var timingBoost = getEndgameAwardTimingBoost(tp, pv, ctx, sc, lead);
+              if (timingBoost > 0) {
+                prio += timingBoost;
+                awReasons.push('Финиш awards +' + timingBoost);
+              }
               items.push({ name: '🏆 ' + aw.name, priority: prio, reasons: awReasons, tier: '-', score: 0, type: 'standard', mcValue: ev });
             }
           });
@@ -688,6 +909,9 @@
     var ruName = input && input.ruName;
     var getVisibleColonyNames = input && input.getVisibleColonyNames;
     var getPlayerVueData = input && input.getPlayerVueData;
+    var cardEffects = input && input.cardEffects;
+    var cardGlobalReqs = input && input.cardGlobalReqs;
+    var cardTagReqs = input && input.cardTagReqs;
 
     var bonus = 0;
     var reasons = [];
@@ -715,6 +939,7 @@
     var preludeEntries = [];
     var projectBoostTotal = 0;
     var projectHitCount = 0;
+    var projectNames = [];
     var spliceMicrobeCards = 0;
     var splicePlacers = 0;
 
@@ -722,6 +947,7 @@
       var el = visibleCardEls[i];
       var cardName = el.getAttribute('data-tm-card');
       if (!cardName || known.has(cardName) || known.has(typeof resolveCorpName === 'function' ? resolveCorpName(cardName) : cardName)) continue;
+      projectNames.push(cardName);
 
       var rawBonus = 0;
       if (synergySet.has(cardName) || synergySet.has(toBaseCardName(cardName))) rawBonus += 3;
@@ -778,6 +1004,25 @@
           var secondPreludeName = formatShortReasonName((typeof ruName === 'function' ? ruName(secondPrelude.name) : secondPrelude.name) || secondPrelude.name);
           reasons.push('2-я прел. ' + secondPreludeName + ' ' + (secondShown >= 0 ? '+' : '') + secondShown);
         }
+      }
+    }
+
+    var corpRouteResults = typeof routeValidators.scoreCorpRouteValidators === 'function'
+      ? routeValidators.scoreCorpRouteValidators({
+        corpName: corpName,
+        projectNames: projectNames,
+        ctx: ctx,
+        ratingsRaw: rawRatings,
+        cardEffects: cardEffects,
+        cardGlobalReqs: cardGlobalReqs,
+        cardTagReqs: cardTagReqs
+      })
+      : [];
+    for (var cri = 0; cri < corpRouteResults.length; cri++) {
+      var corpRoute = corpRouteResults[cri];
+      bonus += corpRoute.adj || corpRoute.bonus || 0;
+      if (corpRoute.reasons && corpRoute.reasons.length > 0) {
+        for (var crr = 0; crr < corpRoute.reasons.length; crr++) reasons.push(corpRoute.reasons[crr]);
       }
     }
 
@@ -976,6 +1221,9 @@
     var getCachedCardTags = input && input.getCachedCardTags;
     var getCardCost = input && input.getCardCost;
     var cardEffects = input && input.cardEffects;
+    var cardTagsData = input && input.cardTagsData;
+    var cardGlobalReqs = input && input.cardGlobalReqs;
+    var cardTagReqs = input && input.cardTagReqs;
     var scoreCardRequirements = input && input.scoreCardRequirements;
     var isPreludeOrCorpCard = input && input.isPreludeOrCorpCard;
     var scoreDiscountsAndPayments = input && input.scoreDiscountsAndPayments;
@@ -997,6 +1245,7 @@
     var scoreBoardStateModifiers = input && input.scoreBoardStateModifiers;
     var scoreSynergyRules = input && input.scoreSynergyRules;
     var scorePrelude = input && input.scorePrelude;
+    var scoreOpeningDraftPolicy = input && input.scoreOpeningDraftPolicy;
     var scoreBreakEvenTiming = input && input.scoreBreakEvenTiming;
     var checkDenyDraft = input && input.checkDenyDraft;
     var checkHateDraft = input && input.checkHateDraft;
@@ -1044,10 +1293,28 @@
     }
     var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
     var isPreludeOrCorpEarly = typeof isPreludeOrCorpCard === 'function' ? isPreludeOrCorpCard(cardEl) : false;
+    var routeResults = typeof routeValidators.scoreDraftRouteValidators === 'function'
+      ? routeValidators.scoreDraftRouteValidators({
+        cardName: cardName,
+        myTableau: myTableau,
+        myHand: myHand,
+        ctx: ctx,
+        ratings: ratings,
+        cardEffects: cardEffects,
+        cardTagsData: cardTagsData,
+        cardGlobalReqs: cardGlobalReqs,
+        cardTagReqs: cardTagReqs
+      })
+      : [];
     bonus = typeof applyResult === 'function' ? applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents), bonus, reasons) : bonus;
-    bonus = typeof applyResult === 'function' ? applyResult(scoreComboPotential(cardName, eLower, allMyCardsSet, ctx), bonus, reasons) : bonus;
+    var comboPotentialResult = typeof scoreComboPotential === 'function' ? scoreComboPotential(cardName, eLower, allMyCardsSet, ctx) : null;
+    comboPotentialResult = suppressGlobalRequirementCheatRouteSynergy(cardName, comboPotentialResult);
+    bonus = typeof applyResult === 'function' ? applyResult(suppressProductionCopyRouteSynergy(cardName, comboPotentialResult), bonus, reasons) : bonus;
     if (!isPreludeOrCorpEarly) {
-      bonus = typeof applyResult === 'function' ? applyResult(scoreHandSynergy(cardName, myHand, ctx), bonus, reasons) : bonus;
+      var handSynergyResult = typeof scoreHandSynergy === 'function' ? scoreHandSynergy(cardName, myHand, ctx) : null;
+      handSynergyResult = suppressProductionCopyRouteSynergy(cardName, handSynergyResult);
+      handSynergyResult = suppressTagGateRouteSynergy(handSynergyResult, routeResults);
+      bonus = typeof applyResult === 'function' ? applyResult(handSynergyResult, bonus, reasons) : bonus;
     }
 
     var cardTags = new Set();
@@ -1057,6 +1324,11 @@
     if (cardCost == null && cardEffects) {
       var fxCost = cardEffects[cardName];
       if (fxCost && fxCost.c != null) cardCost = fxCost.c;
+    }
+    if (typeof applyResult === 'function') {
+      for (var rvi = 0; rvi < routeResults.length; rvi++) {
+        bonus = applyResult(routeResults[rvi], bonus, reasons);
+      }
     }
 
     if (ctx) {
@@ -1205,6 +1477,9 @@
     if (typeof applyResult === 'function') bonus = applyResult(scoreBoardStateModifiers(cardName, data, eLower, ctx), bonus, reasons);
     if (typeof applyResult === 'function') bonus = applyResult(scoreSynergyRules(cardName, allMyCards, ctx, sc), bonus, reasons);
     if (typeof applyResult === 'function') bonus = applyResult(scorePrelude(cardName, data, cardEl, myCorp, ctx, sc), bonus, reasons);
+    if (typeof applyResult === 'function' && typeof scoreOpeningDraftPolicy === 'function') {
+      bonus = applyResult(scoreOpeningDraftPolicy(cardName, cardTags, cardType, cardCost, eLower, data, ctx, myHand), bonus, reasons);
+    }
 
     if (ctx && ctx.allSP && cardEffects) {
       var cfx = cardEffects[cardName];
@@ -1317,6 +1592,7 @@
     var gensLeft = typeof estimateGensLeft === 'function' ? estimateGensLeft(pv) : 0;
     var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
     var myMC = (pv && pv.thisPlayer) ? (pv.thisPlayer.megaCredits || 0) : 0;
+    var tpForPriority = (pv && pv.thisPlayer) ? pv.thisPlayer : null;
     var myTableau = typeof getMyTableauNames === 'function' ? getMyTableauNames() : [];
 
     var handElMap = new Map();
@@ -1446,6 +1722,14 @@
       priority += maPriority.bonus || 0;
       for (var mai = 0; mai < (maPriority.reasons || []).length; mai++) reasons.push(maPriority.reasons[mai]);
 
+      var projectFx = cardEffects ? cardEffects[name] : null;
+      var projectGuards = getGlobalFinishAssistGuards(tpForPriority, pv, ctx, sc, projectFx);
+      for (var pgi = 0; pgi < projectGuards.length; pgi++) {
+        priority -= projectGuards[pgi].penalty;
+        cardMCValue = Math.max(0, cardMCValue - projectGuards[pgi].penalty * 0.5);
+        reasons.push(projectGuards[pgi].reason);
+      }
+
       scored.push({
         name: name,
         priority: priority,
@@ -1472,7 +1756,7 @@
     var tableauCards = typeof getMyTableauNames === 'function' ? getMyTableauNames() : [];
     var tp = (pv && pv.thisPlayer) ? pv.thisPlayer : null;
     var saturation = { temp: tempMaxed, oxy: oxyMaxed, venus: venusMaxed, oceans: oceansMaxed };
-    var blueActions = typeof scoreBlueActions === 'function' ? scoreBlueActions(tableauCards, pv, saturation) : [];
+    var blueActions = typeof scoreBlueActions === 'function' ? scoreBlueActions(tableauCards, pv, saturation, ctx, sc) : [];
     for (var bai = 0; bai < blueActions.length; bai++) scored.push(blueActions[bai]);
 
     if (tp && typeof scoreStandardActions === 'function') {
