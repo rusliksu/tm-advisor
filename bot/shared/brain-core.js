@@ -1360,6 +1360,75 @@
     return gen <= 3 ? 10 : Math.round(5 * Math.max(0, 1 - urgency * 1.5));
   }
 
+  function scoreCardTimingShapeValue(options) {
+    var opts = options || {};
+    var name = opts.name || '';
+    var beh = opts.beh || {};
+    var cd = opts.cd || {};
+    var cost = typeof opts.cost === 'number' ? opts.cost : 0;
+    var steps = typeof opts.steps === 'number' ? opts.steps : 0;
+    var urgency = steps > 0 ? Math.max(0, Math.min(1, 1 - (steps - 2) / 14)) : 0;
+    var isVPCard = opts.isVPCard || function() { return false; };
+    var isDynamicVPCard = opts.isDynamicVPCard || function() { return false; };
+    var weakPseudoVPActionCards = {'Search For Life': true, 'Security Fleet': true};
+    var isWeakPseudoVPActionCard = opts.isWeakPseudoVPActionCard || function(cardName) {
+      return !!weakPseudoVPActionCards[cardName];
+    };
+    var hasVpCard = !!opts.vpInfo || isVPCard(name) || isDynamicVPCard(name);
+    var hasProd = !!beh.production;
+    var hasAction = !!beh.action || !!cd.action;
+    var delta = 0;
+    if (hasVpCard && !hasProd && !hasAction && urgency < 0.3 && cost >= 15) {
+      delta -= 3;
+    }
+    if (hasVpCard && hasAction && urgency < 0.5 && !isWeakPseudoVPActionCard(name)) {
+      delta += 4;
+    }
+    return delta;
+  }
+
+  var ACTION_RESOURCE_REQ = {
+    'Water Splitting Plant': 'energy',
+    'Steelworks': 'energy',
+    'Ironworks': 'energy',
+    'Ore Processor': 'energy',
+    'Physics Complex': 'energy',
+    'Development Center': 'energy',
+    'Hi-Tech Lab': 'energy',
+    'Venus Magnetizer': 'energy',
+    'Hydrogen Processing Plant': 'energy',
+    'Power Infrastructure': 'energy',
+    'Caretaker Contract': 'heat',
+    'GHG Factories': 'heat',
+    'Directed Heat Usage': 'heat',
+    'Security Fleet': 'titanium',
+    'Jovian Lanterns': 'titanium',
+    'Jet Stream Microscrappers': 'titanium',
+    'Rotator Impacts': 'titanium',
+    'Electro Catapult': 'plants_or_steel',
+  };
+
+  function scoreAcquiredCompanyTimingValue(options) {
+    var opts = options || {};
+    if (opts.name !== 'Acquired Company') return 0;
+    var gen = typeof opts.gen === 'number' ? opts.gen : 1;
+    var gensLeft = typeof opts.gensLeft === 'number' ? opts.gensLeft : 1;
+    var corp = opts.corp || '';
+    var tableauNames = opts.tableauNames || new Set();
+    var handCards = opts.handCards;
+    var penalty = 0;
+    if (gen >= 6 || gensLeft <= 4) penalty = 14;
+    else if (gen >= 5 || gensLeft <= 5) penalty = 10;
+    else if (gen >= 4) penalty = 6;
+    else if (gen >= 3) penalty = 3;
+
+    var hasLiveEarthPayoff = corp === 'Point Luna' || corp === 'Teractor' ||
+      tableauNames.has('Earth Office') || tableauNames.has('Cartel') || tableauNames.has('Luna Governor');
+    var isHandStarved = Array.isArray(handCards) && handCards.length === 0;
+    if (hasLiveEarthPayoff || isHandStarved) penalty = Math.max(0, penalty - 6);
+    return -penalty;
+  }
+
   function scoreCardDisruptionValue(options) {
     var opts = options || {};
     var beh = opts.beh || {};
@@ -1432,7 +1501,7 @@
     var name = opts.name || '';
     var manual = opts.manual || null;
     if (!manual) return 0;
-    var actionResourceReq = opts.actionResourceReq || {};
+    var actionResourceReq = opts.actionResourceReq || ACTION_RESOURCE_REQ;
     var tp = opts.tp || {};
     var gensLeft = opts.gensLeft || 1;
     var estimateTriggersPerGenFn = opts.estimateTriggersPerGen || function() { return 0; };
@@ -1538,9 +1607,12 @@
     scoreHandDiscountValue: scoreHandDiscountValue,
     scoreCityTimingValue: scoreCityTimingValue,
     scoreProductionTimingValue: scoreProductionTimingValue,
+    scoreCardTimingShapeValue: scoreCardTimingShapeValue,
+    scoreAcquiredCompanyTimingValue: scoreAcquiredCompanyTimingValue,
     scoreCardDisruptionValue: scoreCardDisruptionValue,
     scoreGlobalTileValue: scoreGlobalTileValue,
     applyManualEVAdjustments: applyManualEVAdjustments,
+    ACTION_RESOURCE_REQ: ACTION_RESOURCE_REQ,
   };
 
   if (typeof module !== 'undefined' && module.exports) {

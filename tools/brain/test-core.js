@@ -388,6 +388,77 @@ function testCoreHelpers() {
     0,
     'production timing should not boost tag-gated cards before requirements are ready'
   );
+  assert.strictEqual(
+    core.ACTION_RESOURCE_REQ['Hi-Tech Lab'],
+    'energy',
+    'manual per-gen action prerequisites should be shared between bot and extension'
+  );
+  assert.strictEqual(
+    core.scoreCardTimingShapeValue({
+      name: 'Hi-Tech Lab',
+      cost: 17,
+      steps: 20,
+      vpInfo: {type: 'static', vp: 1},
+      beh: {},
+      cd: {},
+      isVPCard: () => false,
+      isDynamicVPCard: () => false,
+      isWeakPseudoVPActionCard: () => false,
+    }),
+    -3,
+    'late expensive VP cards without direct action should use shared timing-shape adjustment'
+  );
+  assert.strictEqual(
+    core.scoreCardTimingShapeValue({
+      name: 'Physics Complex',
+      cost: 12,
+      steps: 20,
+      vpInfo: {type: 'per_resource', per: 0.5},
+      beh: {},
+      cd: {action: {stock: {energy: -6}}},
+      isVPCard: () => false,
+      isDynamicVPCard: () => false,
+      isWeakPseudoVPActionCard: () => false,
+    }),
+    4,
+    'VP cards with real actions should keep the shared action timing uplift'
+  );
+  assert.strictEqual(
+    core.scoreAcquiredCompanyTimingValue({
+      name: 'Acquired Company',
+      gen: 6,
+      gensLeft: 4,
+      corp: '',
+      tableauNames: new Set(),
+      handCards: [{name: 'Other Card'}],
+    }),
+    -14,
+    'late Acquired Company penalty should live in shared brain, not extension-only scoring'
+  );
+  assert.strictEqual(
+    core.scoreAcquiredCompanyTimingValue({
+      name: 'Acquired Company',
+      gen: 6,
+      gensLeft: 4,
+      corp: 'Point Luna',
+      tableauNames: new Set(),
+      handCards: [{name: 'Other Card'}],
+    }),
+    -8,
+    'live Earth payoff should soften late Acquired Company penalty'
+  );
+  assert.strictEqual(
+    core.scoreAcquiredCompanyTimingValue({
+      name: 'Acquired Company',
+      gen: 6,
+      gensLeft: 4,
+      corp: '',
+      tableauNames: new Set(),
+      handCards: [],
+    }),
+    -8,
+    'empty hand should soften late Acquired Company penalty for buy-phase hand starvation'
+  );
   assert.strictEqual(core.scoreCardDisruptionValue({beh: {decreaseAnyProduction: {count: 2}, removeAnyPlants: 4}}), 5);
 
   const manualDelta = core.applyManualEVAdjustments({

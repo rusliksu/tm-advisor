@@ -44,6 +44,8 @@
   var sharedScoreHandDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreHandDiscountValue;
   var sharedScoreCityTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCityTimingValue;
   var sharedScoreProductionTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreProductionTimingValue;
+  var sharedScoreCardTimingShapeValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardTimingShapeValue;
+  var sharedScoreAcquiredCompanyTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreAcquiredCompanyTimingValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
   var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
   var sharedScoreRequirementPenalty = (TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty) || localScoreRequirementPenalty;
@@ -1268,7 +1270,7 @@
     city: 1, moon: 1, mars: 0.5, event: 1, wild: 2
   };
 
-  var ACTION_RESOURCE_REQ = {
+  var ACTION_RESOURCE_REQ = (TM_BRAIN_CORE && TM_BRAIN_CORE.ACTION_RESOURCE_REQ) || {
     'Water Splitting Plant': 'energy',
     'Steelworks': 'energy',
     'Ironworks': 'energy',
@@ -1736,6 +1738,18 @@
         isProdCard: function(cardName) { return PROD_CARDS.has(cardName); },
       });
     }
+    if (sharedScoreCardTimingShapeValue) {
+      ev += sharedScoreCardTimingShapeValue({
+        name: name,
+        cost: cost,
+        steps: steps,
+        vpInfo: vpInfo,
+        beh: beh,
+        cd: cd,
+        isVPCard: function(cardName) { return VP_CARDS.has(cardName); },
+        isDynamicVPCard: function(cardName) { return DYNAMIC_VP_CARDS.has(cardName); },
+      });
+    }
 
     // ── DECREASE ANY PRODUCTION (opponent harm) ──
     // In 3P: hurting 1 opponent helps the 3rd for free → halve value
@@ -1894,17 +1908,15 @@
       ev += nutrientResourceValue.value;
     }
 
-    if (name === 'Acquired Company') {
-      var acquiredCompanyPenalty = 0;
-      if (gen >= 6 || gensLeft <= 4) acquiredCompanyPenalty = 14;
-      else if (gen >= 5 || gensLeft <= 5) acquiredCompanyPenalty = 10;
-      else if (gen >= 4) acquiredCompanyPenalty = 6;
-      else if (gen >= 3) acquiredCompanyPenalty = 3;
-
-      var hasLiveEarthPayoff = corp === 'Point Luna' || corp === 'Teractor' ||
-        tableauNames.has('Earth Office') || tableauNames.has('Cartel') || tableauNames.has('Luna Governor');
-      if (hasLiveEarthPayoff) acquiredCompanyPenalty = Math.max(0, acquiredCompanyPenalty - 6);
-      ev -= acquiredCompanyPenalty;
+    if (sharedScoreAcquiredCompanyTimingValue) {
+      ev += sharedScoreAcquiredCompanyTimingValue({
+        name: name,
+        gen: gen,
+        gensLeft: gensLeft,
+        corp: corp,
+        tableauNames: tableauNames,
+        handCards: handCards,
+      });
     }
 
     if (name === 'Space Station') {

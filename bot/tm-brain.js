@@ -33,6 +33,8 @@
   var sharedScoreHandDiscountValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreHandDiscountValue;
   var sharedScoreCityTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCityTimingValue;
   var sharedScoreProductionTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreProductionTimingValue;
+  var sharedScoreCardTimingShapeValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardTimingShapeValue;
+  var sharedScoreAcquiredCompanyTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreAcquiredCompanyTimingValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
   var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
   var sharedScoreRequirementPenalty = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty;
@@ -941,13 +943,14 @@
     city: 1, moon: 1, mars: 0.5, event: 1, wild: 2
   };
 
-  var ACTION_RESOURCE_REQ = {
+  var ACTION_RESOURCE_REQ = (TM_BRAIN_CORE && TM_BRAIN_CORE.ACTION_RESOURCE_REQ) || {
     'Water Splitting Plant': 'energy',
     'Steelworks': 'energy',
     'Ironworks': 'energy',
     'Ore Processor': 'energy',
     'Physics Complex': 'energy',
     'Development Center': 'energy',
+    'Hi-Tech Lab': 'energy',
     'Venus Magnetizer': 'energy',
     'Hydrogen Processing Plant': 'energy',
     'Power Infrastructure': 'energy',
@@ -1425,17 +1428,17 @@
         isProdCard: function(cardName) { return PROD_CARDS.has(cardName); },
       });
     }
-    {
-      var hasVpCard = (vpInfo || VP_CARDS.has(name) || DYNAMIC_VP_CARDS.has(name));
-      var hasWeakPseudoVpAction = WEAK_PSEUDO_VP_ACTION_CARDS.has(name);
-      var hasProd = !!beh.production;
-      var hasAction = !!beh.action || !!cd.action;
-      if (hasVpCard && !hasProd && !hasAction && urgency < 0.3 && cost >= 15) {
-        ev -= 3;
-      }
-      if (hasVpCard && hasAction && urgency < 0.5 && !hasWeakPseudoVpAction) {
-        ev += 4;
-      }
+    if (sharedScoreCardTimingShapeValue) {
+      ev += sharedScoreCardTimingShapeValue({
+        name: name,
+        cost: cost,
+        steps: steps,
+        vpInfo: vpInfo,
+        beh: beh,
+        cd: cd,
+        isVPCard: function(cardName) { return VP_CARDS.has(cardName); },
+        isDynamicVPCard: function(cardName) { return DYNAMIC_VP_CARDS.has(cardName); },
+      });
     }
     if (sharedScoreCityTimingValue) {
       ev += sharedScoreCityTimingValue({
@@ -1604,6 +1607,17 @@
     if (name === 'Imported Nutrients') {
       var nutrientResourceValue = scoreAddedResourcesToBestVpCard('microbe', 4, state, 8);
       ev += nutrientResourceValue.value;
+    }
+
+    if (sharedScoreAcquiredCompanyTimingValue) {
+      ev += sharedScoreAcquiredCompanyTimingValue({
+        name: name,
+        gen: gen,
+        gensLeft: gensLeft,
+        corp: corp,
+        tableauNames: tableauNames,
+        handCards: handCards,
+      });
     }
 
     // Cards that raise globals can be materially worse if they accelerate the wrong opponent engine.

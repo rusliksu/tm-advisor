@@ -136,6 +136,41 @@ function makeOpeningEngineShellState() {
   };
 }
 
+function makeMidgameParityState() {
+  const handNames = [
+    'Acquired Company',
+    'Hi-Tech Lab',
+    'Development Center',
+    'Physics Complex',
+    'Earth Office',
+  ];
+  return {
+    game: {
+      generation: 6,
+      temperature: -6,
+      oxygenLevel: 8,
+      oceans: 6,
+      venusScaleLevel: 12,
+      gameOptions: {solarPhaseOption: true, preludeExtension: true, coloniesExtension: true},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    thisPlayer: {
+      color: 'red',
+      megacredits: 34,
+      megaCredits: 34,
+      steel: 2,
+      titanium: 0,
+      steelValue: 2,
+      titaniumValue: 3,
+      energy: 0,
+      energyProduction: 0,
+      cardsInHand: handNames.map(cardWithCost),
+      tableau: [],
+      tags: {},
+    },
+  };
+}
+
 function assertParityForCards(cardNames, state, message) {
   delete global.TM_BRAIN_CORE;
   delete global.TM_RATINGS;
@@ -152,6 +187,18 @@ function assertParityForCards(cardNames, state, message) {
       `${message}: ${name} should score identically in bot and extension brain`,
     );
   }
+}
+
+function testScoreCardParityOnMidgameSharedPolicy() {
+  assertParityForCards(
+    [
+      'Acquired Company',
+      'Hi-Tech Lab',
+      'Physics Complex',
+    ],
+    makeMidgameParityState(),
+    'midgame shared policy parity',
+  );
 }
 
 function testScoreCardParityOnEndgameDiscardHand() {
@@ -214,6 +261,7 @@ function testManualEVParity() {
 
 testScoreCardParityOnEndgameDiscardHand();
 testScoreCardParityOnOpeningEngineShell();
+testScoreCardParityOnMidgameSharedPolicy();
 testManualEVParity();
 
 console.log('brain scorecard parity checks: OK');
