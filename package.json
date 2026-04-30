@@ -111,6 +111,7 @@
     "extension:syntax": "node apps/tm-extension/tests/syntax_check.js",
     "extension:test-advisor-endgame-scoring": "node apps/tm-extension/tests/advisor_endgame_scoring_check.js",
     "extension:test-advisor-panel": "node apps/tm-extension/tests/advisor_panel_bot_hint_check.js",
+    "extension:test-brain-scorecard-parity": "node apps/tm-extension/tests/brain_scorecard_parity_check.js",
     "extension:test-colony-trade": "node apps/tm-extension/tests/colony_trade_pipeline_check.js",
     "extension:test-content-action-recommendation": "node apps/tm-extension/tests/content_action_recommendation_check.js",
     "extension:test-content-discard-recommendations": "node apps/tm-extension/tests/content_discard_recommendations_check.js",
