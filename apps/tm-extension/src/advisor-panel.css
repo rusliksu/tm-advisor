@@ -215,6 +215,27 @@
   margin-top: 1px;
 }
 
+.tm-advisor-action-target {
+  position: relative;
+  border-radius: 4px;
+}
+
+.tm-advisor-action-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #60d394;
+  color: #07130d;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0;
+  pointer-events: none;
+  vertical-align: middle;
+}
+
 /* Pass indicator */
 .tm-advisor-pass {
   margin-top: 8px;

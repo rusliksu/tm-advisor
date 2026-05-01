@@ -10,27 +10,90 @@ const sourcePath = path.resolve(__dirname, '..', 'src', 'advisor-panel.js');
 const source = fs.readFileSync(sourcePath, 'utf8');
 
 let analyzeCalls = 0;
-function makeElement() {
+function makeElement(tagName = 'div') {
   const attrs = Object.create(null);
-  return {
-    classList: {add() {}, remove() {}, toggle() {}},
+  const el = {
+    tagName,
+    children: [],
+    parentNode: null,
+    className: '',
+    _textContent: '',
+    innerHTML: '',
+    style: {},
+    get textContent() { return el._textContent; },
+    set textContent(value) {
+      el._textContent = String(value || '');
+      el.innerHTML = el._textContent
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    },
+    classList: {
+      add(cls) {
+        const parts = new Set(String(el.className).split(/\s+/).filter(Boolean));
+        parts.add(cls);
+        el.className = Array.from(parts).join(' ');
+      },
+      remove(cls) {
+        el.className = String(el.className).split(/\s+/).filter((part) => part && part !== cls).join(' ');
+      },
+      toggle(cls, force) {
+        if (force === false) this.remove(cls);
+        else this.add(cls);
+      },
+    },
     getAttribute(name) { return attrs[name] || ''; },
     setAttribute(name, value) { attrs[name] = String(value); },
-    appendChild() {},
-    querySelector() { return null; },
-    querySelectorAll() { return []; },
-    style: {},
+    removeAttribute(name) { delete attrs[name]; },
+    appendChild(child) {
+      child.parentNode = el;
+      el.children.push(child);
+      return child;
+    },
+    removeChild(child) {
+      const idx = el.children.indexOf(child);
+      if (idx >= 0) el.children.splice(idx, 1);
+      child.parentNode = null;
+      return child;
+    },
+    remove() {
+      if (el.parentNode) el.parentNode.removeChild(el);
+    },
+    querySelector(selector) {
+      return el.querySelectorAll(selector)[0] || null;
+    },
+    querySelectorAll(selector) {
+      const result = [];
+      const hasClass = (node, cls) => String(node.className).split(/\s+/).includes(cls);
+      const matches = (node) => {
+        if (selector.charAt(0) === '.') return hasClass(node, selector.slice(1));
+        if (selector === '#actions') return node.getAttribute('id') === 'actions';
+        if (selector === '[data-tm-game-anchor="actions"]') return node.getAttribute('data-tm-game-anchor') === 'actions';
+        if (selector === 'label.form-radio') return node.tagName === 'label' && hasClass(node, 'form-radio');
+        if (selector === '.wf-component button') return node.tagName === 'button' && node.parentNode && hasClass(node.parentNode, 'wf-component');
+        if (selector === 'button') return node.tagName === 'button';
+        return false;
+      };
+      const walk = (node) => {
+        if (matches(node)) result.push(node);
+        node.children.forEach(walk);
+      };
+      walk(el);
+      return result;
+    },
   };
+  return el;
 }
 
 const documentObj = {
   body: null,
   hidden: false,
   addEventListener() {},
-  createElement() { return makeElement(); },
+  createElement(tagName) { return makeElement(tagName); },
   getElementById() { return null; },
-  querySelector() { return null; },
-  querySelectorAll() { return []; },
+  querySelector(selector) { return this.body.querySelector(selector); },
+  querySelectorAll(selector) { return this.body.querySelectorAll(selector); },
 };
 documentObj.body = makeElement();
 
@@ -62,6 +125,7 @@ vm.runInNewContext(source, {
 const hooks = windowObj.__TM_ADVISOR_PANEL_TEST__;
 assert(hooks, 'advisor panel test hooks should be exposed');
 assert.strictEqual(typeof hooks.buildBotActionHint, 'function');
+assert.strictEqual(typeof hooks.markBotActionTarget, 'function');
 assert.strictEqual(typeof hooks.panelIsMyActionTurn, 'function');
 
 function makeState(overrides = {}) {
@@ -83,6 +147,8 @@ analyzeCalls = 0;
 const onTurnHint = hooks.buildBotActionHint(makeState());
 assert(onTurnHint, 'bot hint should render on our active action turn');
 assert.strictEqual(onTurnHint.title, 'Play project card');
+assert.strictEqual(onTurnHint.optionTitle, 'Play project card');
+assert.strictEqual(onTurnHint.optionIndex, 0);
 assert.strictEqual(analyzeCalls, 1, 'on-turn hints should call action analysis');
 
 analyzeCalls = 0;
@@ -98,6 +164,20 @@ assert.strictEqual(
 );
 assert.strictEqual(analyzeCalls, 0, 'off-turn hints should not call action analysis');
 
+const offTurnPlan = hooks.renderOffTurnPlan(makeState({
+  players: [
+    {color: 'red', isActive: false},
+    {color: 'blue', isActive: true, name: 'Blue'},
+  ],
+  thisPlayer: {
+    color: 'red',
+    cardsInHand: [{name: 'Kelp Farming', cost: 17}],
+  },
+}));
+assert(offTurnPlan.includes('Next action'), offTurnPlan);
+assert(offTurnPlan.includes('Kelp Farming'), offTurnPlan);
+assert(offTurnPlan.includes('ход Blue'), offTurnPlan);
+
 assert.strictEqual(
   hooks.panelIsMyActionTurn(makeState({
     activePlayerColor: 'blue',
@@ -109,5 +189,36 @@ assert.strictEqual(
   false,
   'activePlayerColor mismatch should suppress action-turn state'
 );
+
+const actionDocument = {
+  body: makeElement('body'),
+  createElement: (tagName) => makeElement(tagName),
+  querySelector(selector) { return this.body.querySelector(selector); },
+  querySelectorAll(selector) { return this.body.querySelectorAll(selector); },
+};
+const actionsRoot = makeElement('div');
+actionsRoot.className = 'player_home_block--actions';
+const wfOptions = makeElement('div');
+wfOptions.className = 'wf-options';
+const playOption = makeElement('label');
+playOption.className = 'form-radio';
+playOption.textContent = 'Play project card';
+const passOption = makeElement('label');
+passOption.className = 'form-radio';
+passOption.textContent = 'Pass for this generation';
+wfOptions.appendChild(playOption);
+wfOptions.appendChild(passOption);
+actionsRoot.appendChild(wfOptions);
+actionDocument.body.appendChild(actionsRoot);
+
+const marked = hooks.markBotActionTarget(onTurnHint, actionDocument);
+assert.strictEqual(marked, playOption, 'best action target should be the matching option node');
+assert(playOption.className.includes('tm-advisor-action-target'), 'target option should receive highlight class');
+assert.strictEqual(playOption.querySelectorAll('.tm-advisor-action-badge').length, 1, 'target option should receive BEST badge');
+assert(playOption.getAttribute('title').includes('best available action'), 'target tooltip should include reason');
+
+hooks.clearBotActionTarget(actionDocument);
+assert(!playOption.className.includes('tm-advisor-action-target'), 'clear should remove highlight class');
+assert.strictEqual(playOption.querySelectorAll('.tm-advisor-action-badge').length, 0, 'clear should remove BEST badge');
 
 console.log('advisor panel bot hint checks: OK');
