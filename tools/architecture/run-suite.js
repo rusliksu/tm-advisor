@@ -50,6 +50,7 @@ const suites = {
     'extension:test-content-play-priority',
     'extension:test-content-synergy',
     'extension:test-vue-bridge',
+    'extension:check-live-advisor-bundle',
     'test:bot',
     'test:bot-choice-debt',
     'test:syntax',

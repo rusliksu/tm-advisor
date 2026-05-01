@@ -66,6 +66,7 @@
     "extension:check-content": "node tools/extension/sync-content.js --check",
     "extension:check-gamelog": "node tools/extension/sync-gamelog.js --check",
     "extension:check-game-watcher": "node tools/extension/sync-game-watcher.js --check",
+    "extension:check-live-advisor-bundle": "node tools/extension/check-live-advisor-bundle.js",
     "extension:check-manifest": "node tools/extension/sync-manifest.js --check",
     "extension:check-popup": "node tools/extension/sync-popup.js --check",
     "extension:check-presets": "node tools/extension/sync-presets.js --check",
