@@ -141,7 +141,7 @@ function run() {
     for (const error of errors) {
       console.error(`- ${error}`);
     }
-    console.error(`Restore command: git checkout ${LIVE_REF} -- extension`);
+    console.error(`Restore command: git restore --source=${LIVE_REF} --worktree -- extension`);
     return false;
   }
 
