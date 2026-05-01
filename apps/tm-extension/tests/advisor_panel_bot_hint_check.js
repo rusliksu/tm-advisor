@@ -68,7 +68,7 @@ function makeElement(tagName = 'div') {
       const hasClass = (node, cls) => String(node.className).split(/\s+/).includes(cls);
       const matches = (node) => {
         if (selector.charAt(0) === '.') return hasClass(node, selector.slice(1));
-        if (selector === '#actions') return node.getAttribute('id') === 'actions';
+        if (selector.charAt(0) === '#') return node.getAttribute('id') === selector.slice(1);
         if (selector === '[data-tm-game-anchor="actions"]') return node.getAttribute('data-tm-game-anchor') === 'actions';
         if (selector === 'label.form-radio') return node.tagName === 'label' && hasClass(node, 'form-radio');
         if (selector === '.wf-component button') return node.tagName === 'button' && node.parentNode && hasClass(node.parentNode, 'wf-component');
@@ -91,7 +91,7 @@ const documentObj = {
   hidden: false,
   addEventListener() {},
   createElement(tagName) { return makeElement(tagName); },
-  getElementById() { return null; },
+  getElementById(id) { return this.body.querySelector('#' + id); },
   querySelector(selector) { return this.body.querySelector(selector); },
   querySelectorAll(selector) { return this.body.querySelectorAll(selector); },
 };
@@ -127,6 +127,8 @@ assert(hooks, 'advisor panel test hooks should be exposed');
 assert.strictEqual(typeof hooks.buildBotActionHint, 'function');
 assert.strictEqual(typeof hooks.markBotActionTarget, 'function');
 assert.strictEqual(typeof hooks.panelIsMyActionTurn, 'function');
+assert.strictEqual(typeof hooks.renderActions, 'function');
+assert.strictEqual(typeof hooks.renderOffTurnPlan, 'function');
 
 function makeState(overrides = {}) {
   return Object.assign({
@@ -177,6 +179,27 @@ const offTurnPlan = hooks.renderOffTurnPlan(makeState({
 assert(offTurnPlan.includes('Next action'), offTurnPlan);
 assert(offTurnPlan.includes('Kelp Farming'), offTurnPlan);
 assert(offTurnPlan.includes('ход Blue'), offTurnPlan);
+assert(offTurnPlan.includes('tm-advisor-next-main'), offTurnPlan);
+assert(offTurnPlan.includes('tm-advisor-next-more'), offTurnPlan);
+
+const panelActionsEl = makeElement('div');
+panelActionsEl.setAttribute('id', 'tm-advisor-actions');
+documentObj.body.appendChild(panelActionsEl);
+analyzeCalls = 0;
+hooks.renderActions(makeState({
+  players: [
+    {color: 'red', isActive: false},
+    {color: 'blue', isActive: true, name: 'Blue'},
+  ],
+  thisPlayer: {
+    color: 'red',
+    cardsInHand: [{name: 'Kelp Farming', cost: 17}],
+  },
+}));
+assert(panelActionsEl.innerHTML.includes('Next action'), panelActionsEl.innerHTML);
+assert(panelActionsEl.innerHTML.includes('Kelp Farming'), panelActionsEl.innerHTML);
+assert.strictEqual(analyzeCalls, 0, 'off-turn renderActions should not analyze stale action options');
+documentObj.body.removeChild(panelActionsEl);
 
 assert.strictEqual(
   hooks.panelIsMyActionTurn(makeState({

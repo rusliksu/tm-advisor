@@ -554,12 +554,29 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     if (sections.length === 0) return '';
 
+    var primary = '';
+    if (ranked.length > 0) {
+      var topCard = ranked[0];
+      primary = '\uD83C\uDCCF <b>' + _esc(topCard.name) + '</b>' +
+        (typeof topCard.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(topCard.score) + ')</span>' : '') +
+        (topCard.reason ? ' <span class="tm-advisor-next-muted">— ' + _esc(topCard.reason) + '</span>' : '');
+    } else if (spHints.length > 0) {
+      var topSp = spHints[0];
+      primary = '\uD83C\uDFD7 <b>' + _esc(topSp.name) + '</b> ' +
+        '<span class="tm-advisor-bot-score">(' + (topSp.net >= 0 ? '+' : '') + Math.round(topSp.net) + ')</span>' +
+        (topSp.reason ? ' <span class="tm-advisor-next-muted">— ' + _esc(topSp.reason) + '</span>' : '');
+    }
+
     return '' +
-      '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:4px;padding-top:3px">' +
-        '<div style="font-size:11px;font-weight:bold;margin-bottom:2px">⏭ Next action' +
-          (activePlayer ? ' <span style="font-weight:normal;color:#9fb8d1">· ход ' + _esc(activePlayer.name || activePlayer.color || '?') + '</span>' : '') +
+      '<div class="tm-advisor-next-plan">' +
+        '<div class="tm-advisor-next-title">⏭ Next action' +
+          (activePlayer ? ' <span>· ход ' + _esc(activePlayer.name || activePlayer.color || '?') + '</span>' : '') +
         '</div>' +
-        sections.join('') +
+        (primary ? '<div class="tm-advisor-next-main">' + primary + '</div>' : '') +
+        '<details class="tm-advisor-next-more">' +
+          '<summary>ещё варианты</summary>' +
+          sections.join('') +
+        '</details>' +
       '</div>';
   }
 
@@ -578,9 +595,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   function getPanelBodyShellHtml() {
     return '' +
       '<div id="tm-advisor-timing"></div>' +
+      '<div id="tm-advisor-actions"></div>' +
       '<div id="tm-advisor-variance"></div>' +
       '<div id="tm-advisor-alerts"></div>' +
-      '<div id="tm-advisor-actions"></div>' +
       '<div id="tm-advisor-pass"></div>' +
       '<div id="tm-advisor-pace"></div>' +
       '<div id="tm-advisor-turmoil"></div>' +
@@ -593,6 +610,12 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (!bodyEl) return null;
     if (!document.getElementById('tm-advisor-timing')) {
       bodyEl.innerHTML = getPanelBodyShellHtml();
+    } else {
+      var actionsEl = document.getElementById('tm-advisor-actions');
+      var varianceEl = document.getElementById('tm-advisor-variance');
+      if (actionsEl && varianceEl && actionsEl.nextSibling !== varianceEl) {
+        bodyEl.insertBefore(actionsEl, varianceEl);
+      }
     }
     return bodyEl;
   }
@@ -1653,9 +1676,24 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   function renderAlerts(state) {
     var el = document.getElementById("tm-advisor-" + "alerts");
     if (!el) return;
-    var warnings = opponentIntentWarnings(state, 5);
+    var offTurn = state && state.thisPlayer && !panelIsMyActionTurn(state);
+    var warnings = opponentIntentWarnings(state, offTurn ? 4 : 5);
     if (!warnings.length) {
       el.innerHTML = '';
+      return;
+    }
+    if (offTurn) {
+      var first = warnings[0] || '';
+      var rest = warnings.slice(1);
+      el.innerHTML =
+        '<details class="tm-advisor-fold tm-advisor-opp-fold">' +
+          '<summary><span>Opponent intent</span> ' + _esc(first) +
+            (rest.length ? ' <span class="tm-advisor-next-muted">+' + rest.length + '</span>' : '') +
+          '</summary>' +
+          rest.map(function(w) {
+            return '<div style="font-size:10px;line-height:1.3;padding:1px 0">' + _esc(w) + '</div>';
+          }).join('') +
+        '</details>';
       return;
     }
     var html = '<div class="tm-alert-section">Opponent intent</div>';
@@ -2917,7 +2955,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       'Draft 4: S+A ' + (analysis.draftP.sa * 100).toFixed(0) + '% | ' +
       'B+ ' + (analysis.draftP.bPlus * 100).toFixed(0) + '%</span>';
 
-    el.innerHTML =
+    var offTurn = state && state.thisPlayer && !panelIsMyActionTurn(state);
+    var deckDetailHtml =
       '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:6px;padding-top:4px">' +
         '<div style="font-size:12px;font-weight:bold;margin-bottom:3px">' +
           '\uD83C\uDCCF Deck: ' + analysis.deckSize +
@@ -2934,6 +2973,20 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         (keyHtml ? '<div style="margin-top:3px;line-height:20px">' + keyHtml + '</div>' : '') +
         (synHtml ? '<div style="margin-top:3px;border-top:1px solid rgba(255,255,255,0.06);padding-top:2px">' + synHtml + '</div>' : '') +
       '</div>';
+
+    if (offTurn) {
+      el.innerHTML =
+        '<details class="tm-advisor-fold tm-advisor-deck-fold">' +
+          '<summary>\uD83C\uDCCF Deck ' + analysis.deckSize +
+            ' <span class="tm-advisor-next-muted">SA ' +
+            (deckSize > 0 ? ((tcScaled.S + tcScaled.A) / deckSize * 100).toFixed(0) : 0) +
+            '% · P=' + pDeck + '% · Draft B+ ' + (analysis.draftP.bPlus * 100).toFixed(0) + '%</span></summary>' +
+          deckDetailHtml +
+        '</details>';
+      return;
+    }
+
+    el.innerHTML = deckDetailHtml;
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -2979,6 +3032,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       clearBotActionTarget: clearBotActionTarget,
       markBotActionTarget: markBotActionTarget,
       panelIsMyActionTurn: panelIsMyActionTurn,
+      renderActions: renderActions,
       renderOffTurnPlan: renderOffTurnPlan
     };
   }
