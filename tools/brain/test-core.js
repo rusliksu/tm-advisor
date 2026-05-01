@@ -269,6 +269,20 @@ function testCoreHelpers() {
   assert.strictEqual(actions[0].action, 'Convert plants to greenery');
   assert(actions.some((item) => item.action === 'Do nothing' && item.score === 20));
 
+  const objectTitleActions = core.analyzeActions({
+    type: 'or',
+    options: [
+      {title: {text: 'Fund award'}},
+      {buttonLabel: {text: 'Do nothing'}},
+    ],
+  }, state, {
+    remainingSteps: () => 5,
+    isRedsRuling: () => false,
+    analyzePass: () => ({shouldPass: false, reason: 'Есть доступные действия'}),
+  });
+  assert.strictEqual(objectTitleActions[0].action, 'Fund award');
+  assert(objectTitleActions.some((item) => item.action === 'Do nothing' && item.score === 20));
+
   assert.strictEqual(
     core.countTagsInHand('science', [{name: 'Self'}, {name: 'Other'}, {name: 'Third'}], 'Self', (cardName) => {
       if (cardName === 'Other') return ['science', 'space'];
