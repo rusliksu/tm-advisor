@@ -40,6 +40,7 @@ const suites = {
     'test',
     'test:brain-core',
     'test:advisor-opening',
+    'extension:test-vue-bridge',
     'test:bot',
     'test:syntax',
     'extension:test-advisor-panel-bot-hint',

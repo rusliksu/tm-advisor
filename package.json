@@ -98,6 +98,7 @@
     "extension:test-advisor-panel-bot-hint": "node apps/tm-extension/tests/advisor_panel_bot_hint_check.js",
     "extension:test-content-hand-ui": "node apps/tm-extension/tests/content_hand_ui_check.js",
     "extension:syntax": "node apps/tm-extension/tests/syntax_check.js",
+    "extension:test-vue-bridge": "node apps/tm-extension/tests/vue_bridge_waiting_for_check.js",
     "test": "node tools/data/test-synergy-rules.js && node tools/data/test-build-ratings-data.js",
     "test:bot": "node apps/tm-smartbot/tests/regressions.js",
     "test:brain-core": "node tools/brain/test-core.js",
