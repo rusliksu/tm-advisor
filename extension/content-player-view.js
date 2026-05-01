@@ -95,6 +95,8 @@
           target.setAttribute('data-tm-vue-bridge', JSON.stringify(stamped));
           if (stamped._waitingFor) {
             target.setAttribute('data-tm-vue-wf', JSON.stringify(stamped._waitingFor));
+          } else if (target.removeAttribute) {
+            target.removeAttribute('data-tm-vue-wf');
           }
           target.setAttribute('data-tm-bridge-status', 'ok:api-fallback:' + new Date().toLocaleTimeString());
         } catch (e) {}

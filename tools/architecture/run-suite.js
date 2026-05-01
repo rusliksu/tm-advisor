@@ -49,6 +49,7 @@ const suites = {
     'extension:test-advisor-endgame-scoring',
     'extension:test-content-play-priority',
     'extension:test-content-synergy',
+    'extension:test-vue-bridge',
     'test:bot',
     'test:syntax',
   ],

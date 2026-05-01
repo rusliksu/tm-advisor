@@ -408,6 +408,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
             target.setAttribute('data-tm-vue-bridge', JSON.stringify(stamped));
             if (stamped._waitingFor) {
               target.setAttribute('data-tm-vue-wf', JSON.stringify(stamped._waitingFor));
+            } else if (target.removeAttribute) {
+              target.removeAttribute('data-tm-vue-wf');
             }
             target.setAttribute('data-tm-bridge-status', 'ok:api-fallback:' + new Date().toLocaleTimeString());
           }
