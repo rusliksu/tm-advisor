@@ -42,6 +42,7 @@ const suites = {
     'test:advisor-opening',
     'extension:test-vue-bridge',
     'test:bot',
+    'test:bot-choice-debt',
     'test:syntax',
     'extension:test-advisor-panel-bot-hint',
     'extension:test-content-hand-ui',
