@@ -1853,8 +1853,58 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return raw || 'Action';
   }
 
+  function panelColorOf(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    return value.color || value.playerColor || value.activePlayer || '';
+  }
+
+  function panelSameColor(a, b) {
+    return !!a && !!b && String(a).toLowerCase() === String(b).toLowerCase();
+  }
+
+  function panelMyPlayerRow(state) {
+    var myColor = panelColorOf(state && state.thisPlayer);
+    var players = (state && (state.players || (state.game && state.game.players))) || [];
+    if (!Array.isArray(players)) return state && state.thisPlayer;
+    for (var i = 0; i < players.length; i++) {
+      if (panelSameColor(panelColorOf(players[i]), myColor)) return players[i];
+    }
+    return state && state.thisPlayer;
+  }
+
+  function panelActivePlayerRow(state) {
+    var players = (state && (state.players || (state.game && state.game.players))) || [];
+    if (!Array.isArray(players)) return null;
+    for (var i = 0; i < players.length; i++) {
+      if (players[i] && players[i].isActive === true) return players[i];
+    }
+    return null;
+  }
+
+  function panelActiveColor(state) {
+    var game = (state && state.game) || {};
+    return panelColorOf(state && (state.activePlayerColor || state.activePlayer || state.currentPlayerColor || state.currentPlayer)) ||
+      panelColorOf(game.activePlayerColor || game.activePlayer || game.currentPlayerColor || game.currentPlayer);
+  }
+
+  function panelIsMyActionTurn(state) {
+    if (!state || !state.thisPlayer) return false;
+    var myColor = panelColorOf(state.thisPlayer);
+    var myRow = panelMyPlayerRow(state);
+    if (myRow && (myRow.isActive === false || myRow.active === false)) return false;
+
+    var activeRow = panelActivePlayerRow(state);
+    if (activeRow) return panelSameColor(panelColorOf(activeRow), myColor);
+
+    var activeColor = panelActiveColor(state);
+    if (activeColor && myColor) return panelSameColor(activeColor, myColor);
+
+    return true;
+  }
+
   function buildBotActionHint(state) {
-    if (!state || !state._waitingFor || !state.thisPlayer || typeof TM_ADVISOR.analyzeActions !== 'function') return null;
+    if (!state || !state._waitingFor || !state.thisPlayer || !panelIsMyActionTurn(state) || typeof TM_ADVISOR.analyzeActions !== 'function') return null;
     var wf = state._waitingFor;
     if (wf.type !== 'or' || !wf.options || wf.options.length === 0) return null;
 
@@ -2005,7 +2055,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var el = document.getElementById("tm-advisor-" + "pass");
     if (!el) return;
     // Only show when it's our turn (waitingFor exists)
-    if (!state || !state._waitingFor || !state.thisPlayer) { el.innerHTML = ''; return; }
+    if (!state || !state._waitingFor || !state.thisPlayer || !panelIsMyActionTurn(state)) { el.innerHTML = ''; return; }
 
     var tp = state.thisPlayer;
     var html = '';
@@ -2744,6 +2794,13 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         });
       } catch (e) {}
     }
+  }
+
+  if (typeof window !== 'undefined' && window.__TM_ADVISOR_PANEL_TEST_HOOKS__) {
+    window.__TM_ADVISOR_PANEL_TEST__ = {
+      buildBotActionHint: buildBotActionHint,
+      panelIsMyActionTurn: panelIsMyActionTurn
+    };
   }
 
   // ══════════════════════════════════════════════════════════════
