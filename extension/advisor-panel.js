@@ -66,6 +66,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   var _projectVariantMap = null;
   var _storedSeenCardsByGame = Object.create(null);
   var _storedSeenLoadStateByGame = Object.create(null);
+  var _actionTargetClass = 'tm-advisor-action-target';
+  var _actionBadgeClass = 'tm-advisor-action-badge';
 
   function hasBridgeData() {
     var targets = [
@@ -554,7 +556,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     return '' +
       '<div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:4px;padding-top:3px">' +
-        '<div style="font-size:11px;font-weight:bold;margin-bottom:2px">⏭ Off-turn plan' +
+        '<div style="font-size:11px;font-weight:bold;margin-bottom:2px">⏭ Next action' +
           (activePlayer ? ' <span style="font-weight:normal;color:#9fb8d1">· ход ' + _esc(activePlayer.name || activePlayer.color || '?') + '</span>' : '') +
         '</div>' +
         sections.join('') +
@@ -1853,6 +1855,32 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return raw || 'Action';
   }
 
+  function botLabelText(value) {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+    if (Array.isArray(value)) {
+      var parts = [];
+      for (var i = 0; i < value.length; i++) {
+        var part = botLabelText(value[i]);
+        if (part) parts.push(part);
+      }
+      return parts.join(' ');
+    }
+    if (typeof value === 'object') {
+      return botLabelText(value.text || value.message || value.title || value.label || value.buttonLabel || value.name);
+    }
+    return '';
+  }
+
+  function optionBotLabel(option) {
+    return botLabelText(option && option.title) || botLabelText(option && option.buttonLabel);
+  }
+
+  function compactBotTargetText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
   function panelColorOf(value) {
     if (!value) return '';
     if (typeof value === 'string') return value;
@@ -1914,6 +1942,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var best = rankedActions[0];
     var alt = rankedActions.length > 1 ? rankedActions[1] : null;
     var opt = wf.options[best.index] || null;
+    var optTitle = optionBotLabel(opt);
     var title = best.action || '';
     var titleLow = String(title || '').toLowerCase();
     var detail = normalizeBotActionLabel(title);
@@ -1937,19 +1966,167 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
     return {
       title: detail,
+      optionTitle: optTitle,
+      optionIndex: best.index,
       reason: reason || 'Action',
       alt: alt ? normalizeBotActionLabel(alt.action || '') : '',
       score: best.score
     };
   }
 
+  function queryFirstIn(root, selectors) {
+    if (!root || typeof root.querySelector !== 'function') return null;
+    for (var i = 0; i < selectors.length; i++) {
+      try {
+        var found = root.querySelector(selectors[i]);
+        if (found) return found;
+      } catch (e) {}
+    }
+    return null;
+  }
+
+  function findActionRoot(documentObj) {
+    return queryFirstIn(documentObj, [
+      '.player_home_block--actions',
+      '[data-tm-game-anchor="actions"]',
+      '#actions',
+      '.wf-options',
+      '.wf-component'
+    ]);
+  }
+
+  function collectActionOptionNodes(root) {
+    if (!root || typeof root.querySelectorAll !== 'function') return [];
+    var selectors = [
+      'label.form-radio',
+      '.wf-action',
+      '.wf-component button',
+      '.wf-component--select-option',
+      '.card-standard-project',
+      'button'
+    ];
+    var out = [];
+    for (var si = 0; si < selectors.length; si++) {
+      try {
+        var nodes = root.querySelectorAll(selectors[si]);
+        for (var ni = 0; ni < nodes.length; ni++) {
+          if (out.indexOf(nodes[ni]) < 0) out.push(nodes[ni]);
+        }
+      } catch (e) {}
+    }
+    return out;
+  }
+
+  function actionNodeText(node) {
+    return compactBotTargetText(node && node.textContent);
+  }
+
+  function scoreActionNode(node, botHint, ordinal) {
+    var text = actionNodeText(node);
+    if (!text) return 0;
+    var optionTitle = compactBotTargetText(botHint && botHint.optionTitle);
+    var title = compactBotTargetText(botHint && botHint.title);
+    var score = 0;
+    if (optionTitle && text.indexOf(optionTitle) >= 0) score += 70;
+    if (title && text.indexOf(title) >= 0) score += 45;
+    if (typeof botHint.optionIndex === 'number' && ordinal === botHint.optionIndex) score += 20;
+    return score;
+  }
+
+  function botHintTooltip(botHint) {
+    if (!botHint) return '';
+    var rows = ['Best: ' + (botHint.title || 'Action')];
+    if (typeof botHint.score === 'number') rows[0] += ' (' + Math.round(botHint.score) + ')';
+    if (botHint.reason) rows.push('Why: ' + botHint.reason);
+    if (botHint.alt) rows.push('Alt: ' + botHint.alt);
+    return rows.join('\n');
+  }
+
+  function restoreActionTarget(node) {
+    if (!node) return;
+    if (node.classList && typeof node.classList.remove === 'function') node.classList.remove(_actionTargetClass);
+    if (node.style) {
+      var prevOutline = node.getAttribute && node.getAttribute('data-tm-action-prev-outline');
+      var prevShadow = node.getAttribute && node.getAttribute('data-tm-action-prev-box-shadow');
+      node.style.outline = prevOutline || '';
+      node.style.boxShadow = prevShadow || '';
+    }
+    if (node.getAttribute && node.setAttribute && node.removeAttribute) {
+      var prevTitle = node.getAttribute('data-tm-action-prev-title');
+      if (prevTitle !== null) node.setAttribute('title', prevTitle);
+      else node.removeAttribute('title');
+      node.removeAttribute('data-tm-action-prev-outline');
+      node.removeAttribute('data-tm-action-prev-box-shadow');
+      node.removeAttribute('data-tm-action-prev-title');
+    }
+  }
+
+  function clearBotActionTarget(documentObj) {
+    documentObj = documentObj || document;
+    if (!documentObj || typeof documentObj.querySelectorAll !== 'function') return;
+    var badges = documentObj.querySelectorAll('.' + _actionBadgeClass);
+    for (var bi = 0; bi < badges.length; bi++) {
+      var badge = badges[bi];
+      if (badge && typeof badge.remove === 'function') badge.remove();
+      else if (badge && badge.parentNode && typeof badge.parentNode.removeChild === 'function') badge.parentNode.removeChild(badge);
+    }
+    var targets = documentObj.querySelectorAll('.' + _actionTargetClass);
+    for (var ti = 0; ti < targets.length; ti++) restoreActionTarget(targets[ti]);
+  }
+
+  function markBotActionTarget(botHint, documentObj) {
+    documentObj = documentObj || document;
+    clearBotActionTarget(documentObj);
+    if (!botHint || !documentObj || typeof documentObj.createElement !== 'function') return null;
+    var root = findActionRoot(documentObj);
+    if (!root) return null;
+    var candidates = collectActionOptionNodes(root);
+    var best = null;
+    var bestScore = 0;
+    for (var i = 0; i < candidates.length; i++) {
+      var score = scoreActionNode(candidates[i], botHint, i);
+      if (score > bestScore) {
+        best = candidates[i];
+        bestScore = score;
+      }
+    }
+    if (!best || bestScore <= 0) return null;
+
+    if (best.classList && typeof best.classList.add === 'function') best.classList.add(_actionTargetClass);
+    if (best.style) {
+      if (best.getAttribute && best.setAttribute && !best.getAttribute('data-tm-action-prev-outline')) {
+        best.setAttribute('data-tm-action-prev-outline', best.style.outline || '');
+        best.setAttribute('data-tm-action-prev-box-shadow', best.style.boxShadow || '');
+      }
+      best.style.outline = '2px solid #60d394';
+      best.style.boxShadow = '0 0 0 3px rgba(96,211,148,0.24)';
+    }
+    var tooltip = botHintTooltip(botHint);
+    if (best.getAttribute && best.setAttribute) {
+      if (!best.getAttribute('data-tm-action-prev-title')) {
+        best.setAttribute('data-tm-action-prev-title', best.getAttribute('title') || '');
+      }
+      best.setAttribute('title', tooltip);
+    }
+    if (typeof best.appendChild === 'function') {
+      var badge = documentObj.createElement('span');
+      badge.className = _actionBadgeClass;
+      badge.textContent = 'BEST';
+      if (tooltip && badge.setAttribute) badge.setAttribute('title', tooltip);
+      best.appendChild(badge);
+    }
+    return best;
+  }
+
   function renderActions(state) {
     var el = document.getElementById('tm-advisor-actions');
-    if (!el) return;
-    if (!state || !state.thisPlayer) { el.innerHTML = ''; return; }
+    if (!el) { clearBotActionTarget(document); return; }
+    if (!state || !state.thisPlayer) { clearBotActionTarget(document); el.innerHTML = ''; return; }
 
     var html = '';
-    var botHint = buildBotActionHint(state);
+    var isMyActionTurn = panelIsMyActionTurn(state);
+    var botHint = isMyActionTurn ? buildBotActionHint(state) : null;
+    markBotActionTarget(botHint, document);
     if (botHint) {
       html += '<div class="tm-advisor-bot-hint">' +
         '<div class="tm-advisor-bot-title">\uD83E\uDD16 Bot hint</div>' +
@@ -1959,7 +2136,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason) + '</div>' +
         (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
       '</div>';
-    } else if (!state._waitingFor) {
+    } else if (!isMyActionTurn || !state._waitingFor) {
       html += renderOffTurnPlan(state);
     }
 
@@ -2799,7 +2976,10 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   if (typeof window !== 'undefined' && window.__TM_ADVISOR_PANEL_TEST_HOOKS__) {
     window.__TM_ADVISOR_PANEL_TEST__ = {
       buildBotActionHint: buildBotActionHint,
-      panelIsMyActionTurn: panelIsMyActionTurn
+      clearBotActionTarget: clearBotActionTarget,
+      markBotActionTarget: markBotActionTarget,
+      panelIsMyActionTurn: panelIsMyActionTurn,
+      renderOffTurnPlan: renderOffTurnPlan
     };
   }
 
