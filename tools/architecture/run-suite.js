@@ -51,6 +51,7 @@ const suites = {
     'extension:test-content-synergy',
     'extension:test-vue-bridge',
     'test:bot',
+    'test:bot-choice-debt',
     'test:syntax',
   ],
 };
