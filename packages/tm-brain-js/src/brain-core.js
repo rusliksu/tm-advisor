@@ -656,6 +656,28 @@
     return results;
   }
 
+  function actionLabelText(value) {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+    if (Array.isArray(value)) {
+      var parts = [];
+      for (var i = 0; i < value.length; i++) {
+        var part = actionLabelText(value[i]);
+        if (part) parts.push(part);
+      }
+      return parts.join(' ');
+    }
+    if (typeof value === 'object') {
+      return actionLabelText(value.text || value.message || value.title || value.label || value.buttonLabel || value.name);
+    }
+    return '';
+  }
+
+  function optionActionLabel(opt, fallback) {
+    return actionLabelText(opt && opt.title) || actionLabelText(opt && opt.buttonLabel) || fallback || '';
+  }
+
   function analyzeActions(waitingFor, state, options) {
     if (!waitingFor) return [];
     var opts = options || {};
@@ -677,7 +699,7 @@
 
     for (var i = 0; i < optionsList.length; i++) {
       var opt = optionsList[i];
-      var title = (opt.title || opt.buttonLabel || '');
+      var title = optionActionLabel(opt, 'Option ' + (i + 1));
       var titleLow = title.toLowerCase();
       var score = 50;
       var reason = '';
@@ -763,7 +785,7 @@
       }
 
       results.push({
-        action: opt.title || opt.buttonLabel || 'Option ' + (i + 1),
+        action: title,
         score: score,
         reason: reason || 'Действие',
         emoji: emoji,
