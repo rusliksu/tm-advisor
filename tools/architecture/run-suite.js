@@ -42,6 +42,7 @@ const suites = {
     'test:advisor-opening',
     'test:bot',
     'test:syntax',
+    'extension:test-advisor-panel-bot-hint',
   ],
 };
 
