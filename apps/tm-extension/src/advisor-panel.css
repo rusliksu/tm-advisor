@@ -215,6 +215,85 @@
   margin-top: 1px;
 }
 
+.tm-advisor-next-plan {
+  padding: 2px 0 3px;
+}
+
+.tm-advisor-next-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #d6e9ff;
+  margin-bottom: 2px;
+}
+
+.tm-advisor-next-title span,
+.tm-advisor-next-muted {
+  color: #9fb8d1;
+  font-weight: 400;
+}
+
+.tm-advisor-next-main {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #f3f8ff;
+}
+
+.tm-advisor-next-main b {
+  color: #ffffff;
+}
+
+.tm-advisor-next-more,
+.tm-advisor-fold {
+  margin-top: 3px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-next-more summary,
+.tm-advisor-fold summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #9fb8d1;
+}
+
+.tm-advisor-next-more summary::-webkit-details-marker,
+.tm-advisor-fold summary::-webkit-details-marker {
+  display: none;
+}
+
+.tm-advisor-next-more summary::before,
+.tm-advisor-fold summary::before {
+  content: '>';
+  display: inline-block;
+  width: 10px;
+  color: #7fc8ff;
+}
+
+.tm-advisor-next-more[open] summary::before,
+.tm-advisor-fold[open] summary::before {
+  content: 'v';
+}
+
+.tm-advisor-opp-fold,
+.tm-advisor-deck-fold {
+  margin-top: 5px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tm-advisor-opp-fold summary,
+.tm-advisor-deck-fold summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tm-advisor-opp-fold summary span:first-child {
+  color: #c8d2df;
+  font-weight: 700;
+}
+
 .tm-advisor-action-target {
   position: relative;
   border-radius: 4px;
