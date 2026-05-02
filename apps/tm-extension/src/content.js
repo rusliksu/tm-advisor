@@ -287,14 +287,16 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return parts.join(' ');
   }
   function getColonyBehaviorByName(name) {
-    if (typeof TM_CARD_DATA === 'undefined') return null;
-    var data = _lookupCardData(TM_CARD_DATA, name);
+    var data = typeof TM_CARD_DATA !== 'undefined' ? _lookupCardData(TM_CARD_DATA, name) : null;
     var behavior = data && data.behavior ? data.behavior : null;
-    if (!behavior) return null;
-    if (behavior.colonies) return behavior.colonies;
     var legacy = {};
-    if (behavior.colony) legacy.buildColony = behavior.colony;
-    if (typeof behavior.tradeFleet === 'number') legacy.addTradeFleet = behavior.tradeFleet;
+    if (behavior) {
+      if (behavior.colonies) return behavior.colonies;
+      if (behavior.colony) legacy.buildColony = behavior.colony;
+      if (typeof behavior.tradeFleet === 'number') legacy.addTradeFleet = behavior.tradeFleet;
+    }
+    var fx = getFx(name);
+    if (fx && fx.colony && !legacy.buildColony) legacy.buildColony = fx.colony;
     return Object.keys(legacy).length > 0 ? legacy : null;
   }
   function cardBuildsColonyByName(name) {
@@ -3953,9 +3955,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
-    if (!data.e) return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
-    var playableNow = isCardPlayableNowByStaticRequirements(cardName, ctx);
+    eLower = eLower || '';
     var colonyBehavior = getColonyBehaviorByName(cardName);
+    if (!data.e && !colonyBehavior) return { bonus: bonus, reasons: reasons, reasonRows: reasonRows };
+    var playableNow = isCardPlayableNowByStaticRequirements(cardName, ctx);
     var hasBuildColony = !!(colonyBehavior && colonyBehavior.buildColony);
     var hasTradeEngine = !!(colonyBehavior && (
       (colonyBehavior.addTradeFleet || 0) > 0 ||
@@ -7923,6 +7926,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     }
 
     // 48b. Accumulator → placers in tableau
+    var competitionRes48 = fx48.res || (cardName === 'St. Joseph of Cupertino Mission' ? 'fighter' : '');
     if (fx48.res) {
       var placerCount = 0;
       for (var m = 0; m < allMyCards.length; m++) {
@@ -7937,15 +7941,18 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         synRulesBonus += accumBonus;
         reasons.push(placerCount + ' placer для ' + fx48.res);
       }
+    }
+    if (competitionRes48) {
       // 48c. Accumulator competition
       var competitorCount = 0;
       for (var mc = 0; mc < allMyCards.length; mc++) {
         var mfxc = TM_CARD_EFFECTS[allMyCards[mc]];
-        if (mfxc && mfxc.res === fx48.res && allMyCards[mc] !== cardName) competitorCount++;
+        if (mfxc && mfxc.res === competitionRes48 && allMyCards[mc] !== cardName) competitorCount++;
       }
-      if (competitorCount >= 2) {
+      var competitionThreshold48 = cardName === 'St. Joseph of Cupertino Mission' ? 1 : 2;
+      if (competitorCount >= competitionThreshold48) {
         synRulesBonus -= SC.accumCompete;
-        reasons.push('конкуренция ' + fx48.res + ' (' + (competitorCount + 1) + ' шт)');
+        reasons.push('конкуренция ' + competitionRes48 + ' (' + (competitorCount + 1) + ' шт)');
       }
     }
 
@@ -10366,12 +10373,14 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
     // Immediate titanium + space cards
-    if (cardEff.ti && cardEff.ti > 0) {
+    var immediateTi = cardEff.ti || 0;
+    if (!immediateTi && cardName === 'Asteroid Rights') immediateTi = 2;
+    if (immediateTi > 0) {
       var spcForTi = (handTagMap['space'] || []).filter(function(n) { return n !== cardName; }).length;
       if (spcForTi > 0) {
-        var tiUseBonus = Math.round(Math.min(cardEff.ti * 0.7, 3) * 10) / 10;
+        var tiUseBonus = Math.round(Math.min(immediateTi * 0.7, 3) * 10) / 10;
         bonus += tiUseBonus;
-        descs.push(cardEff.ti + ' ti avail +' + tiUseBonus + ' (' + spcForTi + ' spc)');
+        descs.push(immediateTi + ' ti avail +' + tiUseBonus + ' (' + spcForTi + ' spc)');
       }
     }
     // Space card + cards giving immediate titanium in hand
