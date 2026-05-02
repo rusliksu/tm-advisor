@@ -44,6 +44,7 @@ const {
   testDelaysFirstAwardForStrongPlayableCard,
   testDelaysSecondAwardForVeryStrongPlayableCard,
   testStillFundsAwardWhenVisibleCardsAreWeak,
+  testScoreCardMartianRailsScalesWithTableCitiesAndMode,
 } = require(path.resolve(__dirname, '..', '..', '..', 'bot', 'smartbot-liquidity.test'));
 
 function buildDraftProjectCard(name) {
@@ -800,6 +801,7 @@ function run() {
   testDelaysFirstAwardForStrongPlayableCard();
   testDelaysSecondAwardForVeryStrongPlayableCard();
   testStillFundsAwardWhenVisibleCardsAreWeak();
+  testScoreCardMartianRailsScalesWithTableCitiesAndMode();
   console.log('smartbot regression checks: OK');
 }
 

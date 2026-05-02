@@ -2384,6 +2384,7 @@
       ev += sharedApplyManualEVAdjustments({
         name: name,
         manual: manual,
+        state: state,
         actionResourceReq: ACTION_RESOURCE_REQ,
         tp: tp,
         myTags: myTags,
