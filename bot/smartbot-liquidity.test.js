@@ -353,6 +353,39 @@ function testScoreCardValuesGreenhousesWhenCitiesExist() {
   assert.ok(highScore > lowScore);
 }
 
+function testScoreCardMartianRailsScalesWithTableCitiesAndMode() {
+  const card = makeCard('Martian Rails');
+  const sparse2p = makeState({
+    mc: 30,
+    gen: 4,
+    hand: [card],
+    players: [
+      {color: 'red', megacreditProduction: 6, terraformRating: 24, citiesCount: 0},
+      {color: 'blue', megacreditProduction: 10, terraformRating: 22, citiesCount: 0},
+    ],
+  });
+  sparse2p.thisPlayer.energyProduction = 0;
+
+  const cityHeavy4p = makeState({
+    mc: 30,
+    gen: 4,
+    hand: [card],
+    players: [
+      {color: 'red', megacreditProduction: 6, terraformRating: 24, citiesCount: 2},
+      {color: 'blue', megacreditProduction: 10, terraformRating: 22, citiesCount: 2},
+      {color: 'green', megacreditProduction: 9, terraformRating: 21, citiesCount: 2},
+      {color: 'yellow', megacreditProduction: 8, terraformRating: 21, citiesCount: 2},
+    ],
+  });
+  cityHeavy4p.thisPlayer.energyProduction = 1;
+
+  const sparseScore = BOT.TM_BRAIN.scoreCard(card, sparse2p);
+  const cityScore = BOT.TM_BRAIN.scoreCard(card, cityHeavy4p);
+  assert.ok(sparseScore < -15);
+  assert.ok(cityScore > 0);
+  assert.ok(cityScore > sparseScore + 25);
+}
+
 function testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport() {
   const hand = [
     makeCard('Optimal Aerobraking'),
@@ -1940,6 +1973,7 @@ function main() {
   testStillPlaysSetupDrawCardWhenLowOnCash();
   testScoreCardPenalizesGlobalRaiseThatHelpsOpponents();
   testScoreCardValuesGreenhousesWhenCitiesExist();
+  testScoreCardMartianRailsScalesWithTableCitiesAndMode();
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport();
   testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport();
   testScoreCardValuesDiscountCardMoreWithMatchingHand();
@@ -2066,6 +2100,7 @@ module.exports = {
   testStillPlaysSetupDrawCardWhenLowOnCash,
   testScoreCardPenalizesGlobalRaiseThatHelpsOpponents,
   testScoreCardValuesGreenhousesWhenCitiesExist,
+  testScoreCardMartianRailsScalesWithTableCitiesAndMode,
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport,
   testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport,
   testScoreCardValuesDiscountCardMoreWithMatchingHand,

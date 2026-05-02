@@ -1518,6 +1518,68 @@
     return delta;
   }
 
+  function countMarsCitiesForActionValue(state, tp) {
+    var players = state && state.players;
+    if (Array.isArray(players) && players.length > 0) {
+      var total = 0;
+      for (var pi = 0; pi < players.length; pi++) {
+        total += Math.max(0, Number(players[pi] && players[pi].citiesCount) || 0);
+      }
+      return total;
+    }
+    return Math.max(0, Number(tp && tp.citiesCount) || 0);
+  }
+
+  function scoreMartianRailsManualValue(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var tp = opts.tp || {};
+    var gensLeft = Math.max(1, Number(opts.gensLeft) || 1);
+    var players = Array.isArray(state.players) ? state.players : [];
+    var playerCount = players.length || Number(opts.playerCount) || 3;
+    var cityCount = countMarsCitiesForActionValue(state, tp);
+
+    if (cityCount <= 0 && players.length === 0) {
+      return ((opts.manual && opts.manual.perGen) || 0.5) * gensLeft * 0.3;
+    }
+
+    var growthPerGen = playerCount <= 2 ? 0.25 : (playerCount === 3 ? 0.45 : (playerCount === 4 ? 0.65 : 0.8));
+    var growthWindow = Math.min(4, Math.max(0, gensLeft - 1));
+    var projectedCities = cityCount + growthPerGen * growthWindow;
+    var effectiveCities = cityCount * 0.65 + projectedCities * 0.35;
+    if (cityCount <= 1) {
+      effectiveCities = cityCount + Math.min(1, growthPerGen * growthWindow * 0.5);
+    }
+
+    var energyProduction = Math.max(0, Number(tp.energyProduction) || 0);
+    var energyStock = Math.max(0, Number(tp.energy) || 0);
+    var energyMultiplier = 0.25;
+    var energyOpportunityCost = 3;
+    if (energyProduction >= 2) {
+      energyMultiplier = 1;
+      energyOpportunityCost = 0.7;
+    } else if (energyProduction === 1) {
+      energyMultiplier = 0.8;
+      energyOpportunityCost = 1.2;
+    } else if (energyStock >= 3) {
+      energyMultiplier = 0.55;
+      energyOpportunityCost = 1.8;
+    }
+
+    var activations = Math.min(6, Math.max(1, gensLeft));
+    var value = (effectiveCities - energyOpportunityCost) * activations * energyMultiplier;
+
+    if (playerCount <= 2) value -= 3;
+    else if (playerCount >= 4) value += Math.min(3, Math.max(0, cityCount - 5) * 0.5);
+
+    if (cityCount <= 2) value -= 5;
+    else if (cityCount <= 4) value -= playerCount <= 2 ? 4 : 2;
+    if (gensLeft <= 2 && cityCount < 8) value -= 3;
+    if (energyProduction <= 0 && energyStock < 3) value -= 4;
+
+    return Math.max(-12, Math.min(30, value));
+  }
+
   function applyManualEVAdjustments(options) {
     var opts = options || {};
     var name = opts.name || '';
@@ -1565,6 +1627,10 @@
       var redsTax = opts.redsTax || 0;
       var jovianCount = countEffectivePlayedTagTotal(myTags, selfTags, 'jovian');
       return jovianCount * trMCFn(gensLeft, redsTax);
+    }
+
+    if (name === 'Martian Rails') {
+      return scoreMartianRailsManualValue(opts);
     }
 
     var perGenMult = 1;

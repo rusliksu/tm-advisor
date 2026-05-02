@@ -21,6 +21,7 @@ const {
   testStillPlaysSetupDrawCardWhenLowOnCash,
   testScoreCardPenalizesGlobalRaiseThatHelpsOpponents,
   testScoreCardValuesGreenhousesWhenCitiesExist,
+  testScoreCardMartianRailsScalesWithTableCitiesAndMode,
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport,
   testScoreCardValuesDiscountCardMoreWithMatchingHand,
   testScoreCardGivesProductionCardsMoreRunwayEarly,
@@ -1097,6 +1098,7 @@ function run() {
   testStillPlaysSetupDrawCardWhenLowOnCash();
   testScoreCardPenalizesGlobalRaiseThatHelpsOpponents();
   testScoreCardValuesGreenhousesWhenCitiesExist();
+  testScoreCardMartianRailsScalesWithTableCitiesAndMode();
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport();
   testScoreCardValuesDiscountCardMoreWithMatchingHand();
   testScoreCardGivesProductionCardsMoreRunwayEarly();

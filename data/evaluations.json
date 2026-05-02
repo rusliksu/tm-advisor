@@ -2975,17 +2975,22 @@
   },
   "Field-Capped City": {
     "name": "Field-Capped City",
-    "score": 74,
+    "score": 70,
     "tier": "B",
     "type": "project",
-    "economy": "29 MC (steel payable) + 3 MC card = 32 MC cost. Returns: 2 MC-prod (~10 MC gen1), 1 energy-prod (~7.5 MC), 3 plants (~6 MC), city tile (~10-16 MC), City+Building+Power tags (~5 MC). Total ~38-44 MC.",
-    "reasoning": "One of the best city cards in the game because it GIVES energy production instead of costing it. Per benbever, compared to Cupola (which costs energy), this effectively costs 15 MC for the city component. No requirements means playable any time. 3 tags are excellent for milestones. The 3 plants enable greenery conversion. Steel payable with Building tag. Expensive in absolute terms but very good value per MC.",
+    "economy": "29+3=32 MC, steel-payable. The bundle is +2 MC-prod, +1 energy-prod, a city tile, 3 plants, and City+Building+Power tags, so raw accounting can look efficient when paid with steel. In cash terms it is still a very large upfront spend for production that decays quickly after the early game.",
+    "reasoning": "COTD reads more like good value in the right shell than a must-play. The card is mostly attractive as an answer to excess steel, especially for Mining Guild/IC/Ceres lines or when you specifically want a city that gives energy instead of consuming it. Without steel or corp support, the 32 MC tempo hit is painful early, awkward midgame once premium city spots are contested, and too slow late when MC production and energy production have little runway. Low-B rather than a high-priority city.",
     "synergies": [
-      "Rover Construction",
-      "Capital",
-      "Productive Outpost"
+      "Mining Guild",
+      "Interplanetary Cinematics",
+      "CrediCor",
+      "Thorgate",
+      "Cheung Shing Mars",
+      "Manutech",
+      "Advanced Alloys",
+      "Ceres"
     ],
-    "when_to_pick": "Early-mid game with steel resources. One of few cities that doesn't hurt your energy economy."
+    "when_to_pick": "When you can pay a meaningful part in steel, need a city without spending energy production, or have Mining Guild/IC/Ceres-style incentives. Stronger in 4P and ground games; downgrade heavily if paying pure cash, if city spots are mediocre, or if the game is near the end."
   },
   "Fish": {
     "name": "Fish",
@@ -6886,20 +6891,20 @@
   },
   "Wave Power": {
     "name": "Wave Power",
-    "score": 57,
+    "score": 58,
     "tier": "C",
     "type": "project",
-    "economy": "8+3=11 MC for 1 energy-prod (7.5 MC) + 1 VP (5 MC) + Power tag (~1 MC). Req 3 oceans. Total ~13.5 MC. Slight value gain. Steel-payable helps.",
-    "reasoning": "Per COTD: 'its a card' — community underwhelmed. 'Not particularly cheap early or impactful later'. Опытные игроки: Power tag + 1 VP спасают, но 1 energy-prod за 11 MC total — посредственно. 3 ocean req обычно gen 3-4. 'Under the right circumstances hits the sweet spot'. Community consensus: mediocre. C-tier справедлив.",
+    "economy": "8+3=11 MC for 1 energy-prod (~7-8 MC) + 1 VP (~5 MC) + Power tag/requirement utility (~1 MC). Req 3 oceans, usually midgame but sometimes gen 2-3 in higher player counts. Not steel-payable.",
+    "reasoning": "Latest COTD keeps the same consensus: playable filler, low draft priority. It is essentially Standard Project Power Plant after card cost, but the 1 VP and occasional Power tag / VP-card / requirement utility make it modestly better when you already need energy. Weak in the starting hand unless oceans arrive early; fine when drawn or discounted midgame.",
     "synergies": [
-      "Protected Habitats",
-      "Power Infrastructure",
-      "AI Central"
+      "Vitor",
+      "Thorgate",
+      "Cutting Edge Technology",
+      "AI Central",
+      "Power Infrastructure"
     ],
-    "when_to_pick": "When you need energy production and 3 oceans are down. Fine filler. Better with Colonies.",
-    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1jsr15f/cotd_wave_power_6_apr_2025/",
-    "opening_hand_bias": -5,
-    "opening_hand_note": "The 3-ocean gate makes it a bad blind opener unless oceans are clearly accelerating and energy has a job."
+    "when_to_pick": "When 3 oceans are down and you need energy for cities, colonies, AI Central, or another energy-consuming card. Better with Vitor/discounts or tag/milestone incentives; low priority if you just want generic economy.",
+    "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1jsr15f/cotd_wave_power_6_apr_2025/"
   },
   "Supermarkets": {
     "name": "Supermarkets",
@@ -7201,18 +7206,20 @@
   },
   "Directed Impactors": {
     "name": "Directed Impactors",
-    "score": 55,
+    "score": 56,
     "tier": "C",
     "type": "project",
-    "economy": "8 MC + 3 MC card = 11 MC cost. Action: 6 MC (ti payable) → 1 asteroid → spend for 1 temp raise. Effective: ~17 MC per TR (11 initial + 6 per use). With ti: cheaper.",
-    "reasoning": "A mediocre terraforming engine. 6 MC + 2 actions per TR is slow and expensive compared to standard projects. Per FieldMouse007, needs to raise temperature at least 2-3 times to be playable. Per icehawk84, asteroid cards tend to eat titanium needed for better things. The Space tag and ti payability help somewhat. Only worth it if rushing temperature early with titanium to spare.",
+    "economy": "8+3=11 MC upfront. Each temperature raise costs one 6 MC/titanium-payable asteroid action plus a later remove-asteroid action: 1 raise = 17 MC, 2 = 11.5 MC/TR, 3 = 9.67 MC/TR, 4 = 8.75 MC/TR before action/opportunity cost. Space tag and titanium payment matter.",
+    "reasoning": "COTD consensus: acceptable early terraforming/titanium sink, but asteroid support remains narrow and timing-sensitive. It needs 3+ uses to look efficient, becomes close to dead once temperature is advanced, and loses flexibility compared with simply waiting on standard projects or better heat cards. Combos can push it up, but default draft priority stays low-mid C.",
     "synergies": [
-      "Advanced Alloys",
-      "Asteroid Mining Consortium",
-      "Titanium Mine",
-      "Asteroid Mining"
+      "Asteroid Rights",
+      "Astrodrill",
+      "Main Belt Asteroids",
+      "Applied Science",
+      "Viron",
+      "Advanced Alloys"
     ],
-    "when_to_pick": "Gen 1-2 if rushing temperature with excess titanium. Skip if mid-game or later.",
+    "when_to_pick": "Gen 1-2 when rushing temperature, with spare titanium/space discounts, or with asteroid-resource support. Skip after early game unless you already have a clear asteroid combo and enough temperature track remaining.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1ii75i1/cotd_directed_impactors_5_feb_2025/"
   },
   "Greenhouses": {
@@ -8519,17 +8526,19 @@
   },
   "Martian Rails": {
     "name": "Martian Rails",
-    "score": 40,
+    "score": 42,
     "tier": "D",
     "type": "project",
-    "economy": "Cost 13+3=16 MC (steel-payable). Action: spend 1 energy for X MC (X = cities on Mars). At 3 cities = 3 MC/action. Break-even at ~6 cities = gen 5+ typically. Energy cost = ~2 MC.",
-    "reasoning": "Too expensive, too slow. In 3P games, experienced players don't build many cities, so this rarely reaches 4-5 MC/action. The energy cost is real. COTD experts (shai_aus, ad_hocNC, Krazyguy75) all rate it poorly. It breaks even at 6 cities which rarely happens early enough to matter.",
+    "economy": "13+3=16 MC, steel-payable. Action spends 1 energy for MC equal to cities on Mars. Needs many on-Mars cities and repeated activations; at 3 cities the payoff is small, at 6+ cities it can finally act like strong MC production if spare energy is available.",
+    "reasoning": "Latest COTD reinforces the polarized read. It can be a bag of MC in 4P/base-game/city-heavy tables with 8-12 Mars cities, especially if paid with spare steel and spare energy. Against stronger 2P or expansion-heavy tables, city density is usually too low and the card is too slow. Niche upside, poor baseline.",
     "synergies": [
+      "Tharsis Republic",
+      "Rover Construction",
       "Open City",
       "Capital",
-      "Stanford Torus"
+      "Energy Market"
     ],
-    "when_to_pick": "Almost never. Only if the table is city-heavy and you have excess energy. Even then there are better options.",
+    "when_to_pick": "Only when the board is already city-heavy or clearly heading there, you have spare steel/energy, and there are enough generations left to activate it repeatedly. Avoid in 1v1 or low-city expansion games.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1dl0ec8/cotd_martian_rails_21_jun_2024/"
   },
   "Pioneer Settlement": {
@@ -9960,17 +9969,17 @@
   },
   "Ceres Spaceport": {
     "name": "Ceres Spaceport",
-    "score": 84,
+    "score": 80,
     "tier": "A",
     "type": "project",
-    "economy": "39 MC total (36+3), ti payable. +2 MC-prod (~10-12 MC) + 1 ti-prod per 2 Jovian tags, including the 2 tags on this card (minimum +1 ti-prod, often +2). Also draw 1 card, place an ocean, place the reserved city, and score 1 VP. Quad tag (Jovian x2, City, Space).",
-    "reasoning": "Old text undercounted the payload by omitting the printed card draw, ocean, and reserved city placement. Ceres Spaceport is expensive, but the floor is already strong: production package + ocean TR + city + card + VP, with titanium payment and two Jovian tags. In a Jovian plan it becomes one of the best payoff cards in Pathfinders.",
+    "economy": "39 MC total (36+3), ti payable. +2 MC-prod (~10-12 MC early) + 1 ti-prod per 2 Jovian tags, including the 2 tags on this card (minimum +1 ti-prod, often +2). Also draw 1 card, place an ocean, place a reserved-area city, and score 1 VP. Quad tag (Jovian x2, City, Space).",
+    "reasoning": "Old text undercounted the payload by omitting the printed card draw, ocean, and reserved city placement, so 77 was low. But 84 overstates the floor: the city is on a reserved area, not a normal Mars city with adjacency value, and 39 MC is a huge tempo commitment if you are not already using titanium or Jovian tags. Low-A is a better default: strong package, premium in Jovian/titanium lines, but not an automatic top-A card from an empty Jovian start.",
     "synergies": [
       "Io Mining Industries",
       "Ganymede Colony",
       "Jupiter Floating Station"
     ],
-    "when_to_pick": "При 0-2 Jovian тегах уже playable because it counts itself; при 2+ Jovian before play becomes premium. Strong with titanium income/discounts, Phobolog, Unity, and city/ocean incentives."
+    "when_to_pick": "Best with titanium income/discounts, Phobolog/Unity, city/ocean incentives, or 1-2 Jovian tags already in play. Still playable from zero Jovians if you can afford the tempo hit, but do not treat the reserved city like a normal Mars city spot."
   },
   "Charity Donation": {
     "name": "Charity Donation",
@@ -10322,15 +10331,15 @@
   },
   "Museum of Early Colonisation": {
     "name": "Museum of Early Colonisation",
-    "score": 72,
-    "tier": "B",
+    "score": 66,
+    "tier": "C",
     "type": "project",
-    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Effect: -1 energy-prod, +1 steel-prod, +1 titanium-prod, +1 plant-prod, +1 TR. Raw production/TR package is ~25-30 MC before tags and steel payment.",
-    "reasoning": "Old entry was based on a truncated description. With the full text this is a compact production package: three relevant productions plus a TR for the cost of one energy production and a strict board requirement. Timing is the limiter, not raw value. Strong if you can spare energy and pay some steel; awkward if energy is already at 0.",
+    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Effect: -1 energy-prod, +1 steel-prod, +1 titanium-prod, +1 plant-prod, +1 TR, and 2 VP. Raw payoff is real, but the production part needs runway and the energy hit is a real cost.",
+    "reasoning": "The 72/B bump overvalued raw output and underweighted the requirement. Needing an ocean, city, and greenery on Mars is a serious timing gate: if you meet it naturally the game is often already in midgame, and if you chase it just to unlock this card you spend too much tempo. The card is playable when the board state and spare energy already line up, especially with steel payment, but it is a narrow high-C payoff rather than a general B-tier production card.",
     "synergies": [
       "Gordon"
     ],
-    "when_to_pick": "Когда уже есть ocean + city + greenery on Mars and you can afford the -1 energy-prod. Better with steel payment, production engines, Manutech-style bonuses, or TR-rush."
+    "when_to_pick": "Only when the ocean + city + greenery requirement is already naturally met or trivially met, you can afford the -1 energy-prod, and there are enough generations left for the production. Do not draft it early as a plan by itself."
   },
   "New Venice": {
     "name": "New Venice",
@@ -10447,15 +10456,15 @@
   },
   "Red City": {
     "name": "Red City",
-    "score": 68,
+    "score": 60,
     "tier": "C",
     "type": "project",
-    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. Effect: -1 energy-prod, +2 MC-prod, special no-greenery city tile, and 1 VP per empty/hazard adjacent space. City+Building tags.",
-    "reasoning": "Old entry missed the concrete production and VP text. The card is still situational because Reds timing and tile placement matter, but the ceiling is real: +2 MC-prod plus a high-VP blocker city can repay the energy hit. It is not a generic city card; it wants an open placement with many empty/hazard adjacencies and a board where blocking greeneries matters.",
+    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. Effect: -1 energy-prod, +2 MC-prod, special no-greenery city tile, and 1 VP per empty/hazard adjacent space. City+Building tags. The +2 MC-prod is often near-blank because the card usually comes online late.",
+    "reasoning": "Old entry missed the concrete production and exact VP text, but the old low score was directionally right. In practice this is usually a late-game VP snipe, not an economy city: Reds timing/2 delegates delays it, +2 MC-prod has little runway, and the -1 energy-prod still needs to be available. The card is good only when a high-empty/hazard adjacency spot exists; otherwise you pay a lot for a mediocre special city that also blocks future greeneries around it.",
     "synergies": [
       "Gordon"
     ],
-    "when_to_pick": "При Reds influence/2 delegates, available high-adjacency spot, and spare energy production. Better with steel payment, Gordon/city incentives, and games where greenery blocking is relevant."
+    "when_to_pick": "Late game when Reds/2 delegates are already available, you have spare energy, and there is a real 5+ VP empty/hazard spot. Prefer steel payment or Gordon/city incentives. Do not buy early as an economy plan, and skip if the best spot is only medium."
   },
   "Return to Abandoned Technology": {
     "name": "Return to Abandoned Technology",
