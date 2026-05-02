@@ -648,6 +648,47 @@ def _build_summary_block(
             return _format_allocation_summary_line(entry)
         return None
 
+    def _finish_now_allocation_move(plan: dict | None) -> str | None:
+        allocations = list((plan or {}).get("allocations") or [])
+        if not allocations:
+            return None
+        game = result.get("game") or {}
+        if str(game.get("phase", "") or "") != "endgame":
+            return None
+
+        try:
+            temp = float(game.get("temperature", -30))
+        except (TypeError, ValueError):
+            temp = -30
+        try:
+            oxygen = float(game.get("oxygen", 0))
+        except (TypeError, ValueError):
+            oxygen = 0
+        try:
+            oceans = float(game.get("oceans", 0))
+        except (TypeError, ValueError):
+            oceans = 0
+
+        def closes_global(entry: dict) -> bool:
+            action = str(entry.get("action", "") or "")
+            low = action.lower()
+            if "city" in low:
+                return False
+            if "temperature" in low or "asteroid" in low:
+                return temp >= 6
+            if "greenery" in low:
+                return oxygen >= 13
+            if "ocean" in low:
+                return oceans >= 8
+            return False
+
+        for entry in allocations:
+            if "❌нет MC" in str(entry.get("action", "") or ""):
+                continue
+            if closes_global(entry):
+                return _format_allocation_summary_line(entry)
+        return None
+
     summary = {
         "focus": f"{result['game']['phase']} / gen {result['game']['generation']}",
         "best_move": result.get("current_prompt"),
@@ -694,9 +735,11 @@ def _build_summary_block(
             summary["best_move"] = alert_move
             summary["lines"].append(alert_move)
         else:
-            allocation_move = _priority_allocation_move(
-                allocation_plan, best_play
-            )
+            allocation_move = _finish_now_allocation_move(allocation_plan)
+            if not allocation_move:
+                allocation_move = _priority_allocation_move(
+                    allocation_plan, best_play
+                )
             if allocation_move:
                 summary["best_move"] = allocation_move
                 summary["lines"].append(allocation_move)

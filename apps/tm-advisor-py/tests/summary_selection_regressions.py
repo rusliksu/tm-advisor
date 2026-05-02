@@ -255,6 +255,95 @@ def main():
     assert budget_card_allocation_summary["best_move"].startswith("Play Virus"), budget_card_allocation_summary
     assert "Giant Ice Asteroid" not in budget_card_allocation_summary["best_move"], budget_card_allocation_summary
 
+    finish_now_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {
+                "phase": "endgame",
+                "generation": 9,
+                "temperature": 6,
+                "oxygen": 14,
+                "oceans": 9,
+            },
+            "trade": {},
+            "alerts": [],
+        },
+        [
+            {
+                "name": "Interstellar Colony Ship",
+                "action": "PLAY",
+                "reason": "4 VP dump",
+                "play_value_now": 31.0,
+                "priority": 1,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Play Interstellar Colony Ship",
+                    "cost": 24,
+                    "value_mc": 31,
+                    "priority": 1,
+                    "type": "card",
+                },
+                {
+                    "action": "Temperature (heat)",
+                    "cost": 0,
+                    "value_mc": 7,
+                    "priority": 3,
+                    "type": "conversion",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert finish_now_summary["best_move"].startswith("🔥 Temperature"), finish_now_summary
+    assert "Interstellar Colony Ship" not in finish_now_summary["best_move"], finish_now_summary
+
+    city_not_finish_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {
+                "phase": "endgame",
+                "generation": 9,
+                "temperature": 4,
+                "oxygen": 14,
+                "oceans": 9,
+            },
+            "trade": {},
+            "alerts": [],
+        },
+        [
+            {
+                "name": "Interstellar Colony Ship",
+                "action": "PLAY",
+                "reason": "4 VP dump",
+                "play_value_now": 31.0,
+                "priority": 1,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Play City",
+                    "cost": 21,
+                    "value_mc": 24,
+                    "priority": 1,
+                    "type": "standard_project",
+                },
+                {
+                    "action": "Play Interstellar Colony Ship",
+                    "cost": 24,
+                    "value_mc": 31,
+                    "priority": 2,
+                    "type": "card",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert not city_not_finish_summary["best_move"].startswith("🏁"), city_not_finish_summary
+
     early_award_summary = advisor_snapshot._build_summary_block(
         result,
         [

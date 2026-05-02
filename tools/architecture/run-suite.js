@@ -40,6 +40,7 @@ const suites = {
     'test',
     'test:brain-core',
     'test:advisor-opening',
+    'test:advisor-summary-selection',
     'extension:test-brain-scorecard-parity',
     'extension:test-colony-trade',
     'extension:test-content-action-recommendation',

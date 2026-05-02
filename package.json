@@ -128,6 +128,7 @@
     "test:brain-core": "node tools/brain/test-core.js",
     "test:advisor": "node apps/tm-advisor-py/tests/advisor_regressions.js",
     "test:advisor-opening": "python apps/tm-advisor-py/tests/opening_regressions.py",
+    "test:advisor-summary-selection": "python apps/tm-advisor-py/tests/summary_selection_regressions.py",
     "test:architecture": "node tools/architecture/check-modules.js",
     "test:e2e": "node apps/tm-extension/tests/e2e_synergy_tooltips.mjs",
     "test:tierlist-network": "node tools/site/test-tierlist-network.mjs",
