@@ -11,7 +11,9 @@
     "bot/card_data.js",
     "bot/card_global_reqs.js",
     "bot/card_tags.js",
-    "bot/card_vp.js"
+    "bot/card_vp.js",
+    "tools/bot/analyze-choice-debt.js",
+    "tools/bot/analyze-choice-debt.test.js"
   ],
   "shared_dependencies": [
     "packages/tm-brain-js/src/brain-core.js",
@@ -46,7 +48,9 @@
     {
       "path": "package.json",
       "contains": [
-        "\"test:bot\": \"node apps/tm-smartbot/tests/regressions.js\""
+        "\"test:bot\": \"node apps/tm-smartbot/tests/regressions.js\"",
+        "\"test:bot-choice-debt\": \"node tools/bot/analyze-choice-debt.test.js\"",
+        "\"bot:analyze-choice-debt\": \"node tools/bot/analyze-choice-debt.js\""
       ]
     },
     {
@@ -77,7 +81,8 @@
     {
       "roots": [
         "apps/tm-smartbot/tests",
-        "bot"
+        "bot",
+        "tools/bot"
       ],
       "extensions": [
         ".js",
