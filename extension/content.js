@@ -6005,6 +6005,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         updateHandScores: updateHandScores,
         checkPreludePackage: checkPreludePackage,
         injectDiscardHints: injectDiscardHints,
+        injectHandPriorityBadges: injectHandPriorityBadges,
         injectPlayPriorityBadges: injectPlayPriorityBadges,
         trackDraftHistory: trackDraftHistory,
         rateStandardProjects: rateStandardProjects,
@@ -6065,6 +6066,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       enhanceGameLog();
       // Playable card highlight (throttled to 2s internally)
       highlightPlayable();
+      injectHandPriorityBadges();
     } finally {
       _processingNow = false;
       // Restore scroll if it jumped during DOM manipulation
@@ -6181,20 +6183,24 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       return;
     }
     // Remove injected elements
-    document.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score').forEach((el) => el.remove());
+    document.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score, .tm-hand-priority-badge').forEach((el) => el.remove());
     // Strip combo classes
     document.querySelectorAll('.tm-combo-highlight, .tm-combo-godmode, .tm-combo-great, .tm-combo-good, .tm-combo-decent, .tm-combo-niche').forEach((el) => {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche');
     });
     // Strip single-class markers (8 selectors → 1 querySelectorAll)
-    document.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-playable, .tm-unplayable').forEach((el) => {
-      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-playable', 'tm-unplayable');
+    document.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-playable, .tm-unplayable, .tm-hand-priority-card, .tm-hand-priority-card-1, .tm-hand-priority-card-2, .tm-hand-priority-card-3, .tm-hand-priority-card-hold, .tm-hand-priority-card-engine, .tm-hand-priority-card-late').forEach((el) => {
+      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-playable', 'tm-unplayable', 'tm-hand-priority-card', 'tm-hand-priority-card-1', 'tm-hand-priority-card-2', 'tm-hand-priority-card-3', 'tm-hand-priority-card-hold', 'tm-hand-priority-card-engine', 'tm-hand-priority-card-late');
     });
     // Clear data attributes
     document.querySelectorAll('[data-tm-processed]').forEach((el) => {
       el.removeAttribute('data-tm-processed');
       el.removeAttribute('data-tm-card');
       el.removeAttribute('data-tm-tier');
+      el.removeAttribute('data-tm-hand-priority');
+      el.removeAttribute('data-tm-hand-priority-score');
+      el.removeAttribute('data-tm-hand-priority-kind');
+      el.removeAttribute('data-tm-hand-priority-lock');
     });
     document.querySelectorAll('[data-tm-reasons], [data-tm-reason-rows]').forEach((el) => clearReasonPayload(el));
     hideTooltip();
@@ -14013,6 +14019,33 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         el.classList.add('tm-unplayable');
       }
     });
+  }
+
+  function injectHandPriorityBadges() {
+    if (TM_CONTENT_HAND_UI && TM_CONTENT_HAND_UI.injectHandPriorityBadges) {
+      var advisor = (typeof TM_ADVISOR !== 'undefined' && TM_ADVISOR)
+        ? TM_ADVISOR
+        : ((typeof TM_BRAIN !== 'undefined' && TM_BRAIN) ? TM_BRAIN : null);
+      TM_CONTENT_HAND_UI.injectHandPriorityBadges({
+        enabled: enabled,
+        advisor: advisor,
+        tmBrain: (typeof TM_BRAIN !== 'undefined') ? TM_BRAIN : null,
+        documentObj: document,
+        getPlayerVueData: getPlayerVueData,
+        getCachedPlayerContext: getCachedPlayerContext,
+        estimateGensLeft: estimateGensLeft,
+        getCardCost: getCardCost,
+        getCardTags: getCardTags,
+        getEffectiveCost: getEffectiveCost,
+        cardGlobalReqs: (typeof TM_CARD_GLOBAL_REQS !== 'undefined') ? TM_CARD_GLOBAL_REQS : null,
+        cardTagReqs: (typeof TM_CARD_TAG_REQS !== 'undefined') ? TM_CARD_TAG_REQS : null,
+        getRequirementFlexSteps: getRequirementFlexSteps,
+        detectMyCorps: detectMyCorps,
+        evaluateBoardRequirements: evaluateBoardRequirements,
+        getProductionFloorStatus: getProductionFloorStatus,
+        selHand: SEL_HAND
+      });
+    }
   }
 
   // ── VP Breakdown (used by post-game insights, card stats) ──

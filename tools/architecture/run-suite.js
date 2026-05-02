@@ -43,6 +43,7 @@ const suites = {
     'test:bot',
     'test:syntax',
     'extension:test-advisor-panel-bot-hint',
+    'extension:test-content-hand-ui',
   ],
 };
 
