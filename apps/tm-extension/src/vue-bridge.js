@@ -109,6 +109,7 @@
   var _actionLog = [];
   var _actionLogSeq = 0;
   var _maxActionLogSize = 50; // keep last N events in DOM attr to avoid megabyte attrs
+  var _lastWaitingForSig = '';
 
   // Compact waitingFor: strip card descriptions, keep only names/titles
   function compactWaitingFor(wf) {
@@ -133,6 +134,10 @@
     return compact;
   }
 
+  function waitingForSignature(wf) {
+    try { return JSON.stringify(wf || null); } catch(e) { return String(Date.now()); }
+  }
+
   function pushActionEvent(evt) {
     evt.seq = ++_actionLogSeq;
     evt.timestamp = Date.now();
@@ -153,6 +158,36 @@
     dlog('Action event #' + evt.seq + ' type=' + evt.type);
   }
 
+  function latestWaitingForEventType() {
+    for (var i = _actionLog.length - 1; i >= 0; i--) {
+      if (_actionLog[i].type === 'waitingFor' || _actionLog[i].type === 'waitingForClear') return _actionLog[i].type;
+    }
+    return '';
+  }
+
+  function pushWaitingFor(wf, status) {
+    var compact = compactWaitingFor(wf);
+    if (!compact) return;
+    var sig = waitingForSignature(compact);
+    if (sig === _lastWaitingForSig && latestWaitingForEventType() === 'waitingFor') return;
+    _lastWaitingForSig = sig;
+    pushActionEvent({ type: 'waitingFor', status: status || '', waitingFor: compact });
+  }
+
+  function clearWaitingFor(status) {
+    if (!_lastWaitingForSig && latestWaitingForEventType() !== 'waitingFor') return;
+    _lastWaitingForSig = '';
+    pushActionEvent({ type: 'waitingForClear', status: status || 'clear' });
+  }
+
+  function latestWaitingForFromLog() {
+    for (var i = _actionLog.length - 1; i >= 0; i--) {
+      if (_actionLog[i].type === 'waitingForClear') return null;
+      if (_actionLog[i].type === 'waitingFor' && _actionLog[i].waitingFor) return _actionLog[i].waitingFor;
+    }
+    return null;
+  }
+
   // Hook fetch to capture API responses AND player input POSTs
   var origFetch = window.fetch;
   window.fetch = function() {
@@ -165,6 +200,7 @@
         var bodyStr = typeof opts.body === 'string' ? opts.body : null;
         if (bodyStr) {
           var bodyJson = JSON.parse(bodyStr);
+          clearWaitingFor('playerInput');
           pushActionEvent({ type: 'playerInput', url: url.split('?')[0], body: bodyJson });
         }
       } catch(e) { dlog('playerInput parse error: ' + e.message); }
@@ -184,7 +220,7 @@
             dlog('API data captured from ' + url.split('?')[0]);
             // Capture waitingFor prompt if present (compacted to save space)
             if (json.waitingFor) {
-              pushActionEvent({ type: 'waitingFor', waitingFor: compactWaitingFor(json.waitingFor) });
+              pushWaitingFor(json.waitingFor, 'player');
             }
           }
         }).catch(function(e) { dlog('fetch hook error: ' + e.message); });
@@ -195,7 +231,9 @@
           return resp.clone().json();
         }).then(function(json) {
           if (json && json.result === 'GO' && json.waitingFor) {
-            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: compactWaitingFor(json.waitingFor) });
+            pushWaitingFor(json.waitingFor, 'GO');
+          } else {
+            clearWaitingFor(json && json.result ? json.result : 'waitingfor');
           }
         }).catch(function(e) { dlog('fetch hook error: ' + e.message); });
       }
@@ -219,6 +257,7 @@
       try {
         if (typeof body === 'string') {
           var bodyJson = JSON.parse(body);
+          clearWaitingFor('playerInput');
           pushActionEvent({ type: 'playerInput', url: self._tmUrl.split('?')[0], body: bodyJson });
         }
       } catch(e) { dlog('playerInput XHR parse: ' + e.message); }
@@ -233,7 +272,7 @@
             _apiTimestamp = Date.now();
             dlog('XHR data captured from ' + self._tmUrl.split('?')[0]);
             if (json.waitingFor) {
-              pushActionEvent({ type: 'waitingFor', waitingFor: compactWaitingFor(json.waitingFor) });
+              pushWaitingFor(json.waitingFor, 'player');
             }
           }
         } catch(e) { dlog('XHR player parse: ' + e.message); }
@@ -246,7 +285,9 @@
         try {
           var json = JSON.parse(self.responseText);
           if (json && json.result === 'GO' && json.waitingFor) {
-            pushActionEvent({ type: 'waitingFor', status: 'GO', waitingFor: compactWaitingFor(json.waitingFor) });
+            pushWaitingFor(json.waitingFor, 'GO');
+          } else {
+            clearWaitingFor(json && json.result ? json.result : 'waitingfor');
           }
         } catch(e) { dlog('XHR waitingfor parse: ' + e.message); }
       });
@@ -480,6 +521,12 @@
       }
     }
 
+    var directWaitingFor = pv._waitingFor || pv.waitingFor || (pv.thisPlayer && (pv.thisPlayer._waitingFor || pv.thisPlayer.waitingFor));
+    if (directWaitingFor) {
+      data._waitingFor = compactWaitingFor(directWaitingFor);
+      data.waitingFor = data._waitingFor;
+    }
+
     // All players (for opponent tracking, M/A racing)
     if (pv.players) {
       data.players = [];
@@ -543,17 +590,13 @@
       if (data) {
         target.setAttribute('data-tm-vue-bridge', JSON.stringify(data));
         target.setAttribute('data-tm-bridge-status', 'ok:' + (data._source || 'vue') + ':' + new Date().toLocaleTimeString());
-        // Serialize waitingFor for advisor panel (from last captured action log)
+        // Serialize only the current waitingFor for advisor panel.
         try {
-          var lastWf = null;
-          for (var ai = _actionLog.length - 1; ai >= 0; ai--) {
-            if (_actionLog[ai].type === 'waitingFor' && _actionLog[ai].waitingFor) {
-              lastWf = _actionLog[ai].waitingFor;
-              break;
-            }
-          }
-          if (lastWf) {
-            target.setAttribute('data-tm-vue-wf', JSON.stringify(lastWf));
+          var latestWf = data._waitingFor || data.waitingFor || latestWaitingForFromLog();
+          if (latestWf) {
+            target.setAttribute('data-tm-vue-wf', JSON.stringify(latestWf));
+          } else {
+            target.removeAttribute('data-tm-vue-wf');
           }
         } catch(e) {}
       } else {
