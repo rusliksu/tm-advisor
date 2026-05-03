@@ -18,6 +18,8 @@ from tm_advisor.combo import ComboDetector  # noqa: E402
 from tm_advisor.synergy import SynergyEngine  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 from tm_advisor.shared_data import resolve_data_path  # noqa: E402
+from tm_advisor.draft_play_advisor import mc_allocation_advice  # noqa: E402
+from tm_advisor.requirements import RequirementsChecker  # noqa: E402
 
 
 def build_state(*, generation: int, temperature: int, oxygen: int, oceans: int) -> GameState:
@@ -88,6 +90,7 @@ def main() -> None:
     parser = CardEffectParser(db)
     combo = ComboDetector(parser, db)
     engine = SynergyEngine(db, combo)
+    req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
 
     early = build_state(generation=3, temperature=-20, oxygen=3, oceans=2)
     late = build_state(generation=10, temperature=4, oxygen=12, oceans=9)
@@ -109,6 +112,24 @@ def main() -> None:
     port_late = adjusted_score(engine, db, late, "Space Port Colony")
     assert port_late <= port_early - 4, (port_early, port_late)
     assert port_late <= 86, port_late
+
+    energy_trade_state = build_state(generation=7, temperature=8, oxygen=14, oceans=9)
+    energy_trade_state.me.mc = 9
+    energy_trade_state.me.energy = 3
+    energy_trade_state.me.fleet_size = 1
+    energy_trade_state.me.trades_this_gen = 0
+    energy_trade_alloc = mc_allocation_advice(
+        energy_trade_state,
+        engine,
+        req_checker,
+    )
+    trade_alloc = next(
+        a for a in energy_trade_alloc["allocations"]
+        if a["type"] == "trade"
+    )
+    assert trade_alloc["cost"] == 0, trade_alloc
+    assert "energy" in trade_alloc["cost_desc"], trade_alloc
+    assert trade_alloc["opportunity_cost_mc"] > 0, trade_alloc
 
     print("advisor late-colony regression checks: OK")
 

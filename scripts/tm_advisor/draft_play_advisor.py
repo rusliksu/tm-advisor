@@ -777,13 +777,20 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
         if trade_result["trades"]:
             best = trade_result["trades"][0]
             if best["net_profit"] > 0:
-                trade_cost = 9
-                for method in trade_result.get("methods", []):
-                    if method.get("cost_mc", 99) < trade_cost:
-                        trade_cost = method["cost_mc"]
+                methods = trade_result.get("methods", []) or []
+                cheapest = min(
+                    methods,
+                    key=lambda method: method.get("cost_mc", 99),
+                    default={"method": "mc", "cost_mc": 9.0, "cost_desc": "9 MC"},
+                )
+                method_name = str(cheapest.get("method", "mc") or "mc")
+                opportunity_cost = float(cheapest.get("cost_mc", 9.0) or 0)
+                trade_cost = int(opportunity_cost) if method_name == "mc" else 0
                 allocations.append({
                     "action": f"Trade {best['name']}",
                     "cost": trade_cost,
+                    "cost_desc": cheapest.get("cost_desc", f"{opportunity_cost:g} MC"),
+                    "opportunity_cost_mc": round(opportunity_cost, 1),
                     "value_mc": best["total_mc"],
                     "priority": 3, "type": "trade",
                 })
@@ -1031,7 +1038,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     # Sort by priority, then value/cost ratio
     allocations.sort(key=lambda a: (
         a["priority"],
-        -(a["value_mc"] / max(1, a["cost"])),
+        -(a["value_mc"] / max(1, a.get("opportunity_cost_mc", a["cost"]))),
     ))
 
     # ── MC sequence feasibility check ──

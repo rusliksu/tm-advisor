@@ -88,6 +88,7 @@ function run() {
   testCollectWorkflowCardNamesIgnoresEmptyNodes();
   runPythonScript('opening_regressions.py');
   runPythonScript('action_ordering_regressions.py');
+  runPythonScript('requirements_regressions.py');
   runPythonScript('late_scoring_regressions.py');
   runPythonScript('late_colony_regressions.py');
   runPythonScript('late_draw_regressions.py');
