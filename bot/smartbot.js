@@ -492,7 +492,8 @@ function scoreVisibleStandardProject(spCard, state, context) {
 }
 
 function getBestVisibleStandardProject(spCards, state, context) {
-  const available = (spCards || []).filter((card) => card && !card.isDisabled);
+  const available = (spCards || []).filter((card) =>
+    card && !card.isDisabled && isVisibleStandardProjectAffordable(card, state, context));
   if (available.length === 0) return null;
   let best = null;
   for (const card of available) {
@@ -511,6 +512,30 @@ function getBestVisibleStandardProject(spCards, state, context) {
     }
   }
   return best;
+}
+
+function getVisibleStandardProjectCost(spCard) {
+  const explicitCost = spCard?.calculatedCost ?? spCard?.cost;
+  if (Number.isFinite(explicitCost)) return explicitCost;
+  const lower = String(spCard?.name || spCard || '').toLowerCase();
+  if (lower.includes('power plant')) return 11;
+  if (lower.includes('asteroid')) return 14;
+  if (lower.includes('air scrapping')) return 15;
+  if (lower.includes('colony')) return 17;
+  if (lower.includes('aquifer')) return 18;
+  if (lower.includes('greenery')) return 23;
+  if (lower.includes('city')) return 25;
+  return null;
+}
+
+function isVisibleStandardProjectAffordable(spCard, state, context) {
+  const cost = getVisibleStandardProjectCost(spCard);
+  if (!Number.isFinite(cost)) return true;
+  const tp = state?.thisPlayer || {};
+  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
+  const redsTax = context?.redsTax ?? (isRedsRuling(state) ? 3 : 0);
+  const terraformTax = isTerraformingStandardProject(spCard?.name || spCard) ? redsTax : 0;
+  return mc >= cost + terraformTax;
 }
 
 function getBestVisibleTerraformingStandardProject(spCards, state, context) {
@@ -2073,8 +2098,11 @@ function handleInput(wf, state, depth = 0) {
     // 14. Pass as absolute last resort
     if (passIdx >= 0) return pick(passIdx);
 
-    // Avoid picking "Play project card" as fallback — causes loop if no affordable cards
-    const safeFallback = titles.findIndex(x => isPickableIndex(x.i) && !x.t.includes('play project card'));
+    // Avoid picking project branches as fallback: they can be visible while containing no legal choice.
+    const safeFallback = titles.findIndex(x =>
+      isPickableIndex(x.i) &&
+      !x.t.includes('play project card') &&
+      !x.t.includes('standard project'));
     return pick(safeFallback >= 0 ? safeFallback : 0);
   }
 
