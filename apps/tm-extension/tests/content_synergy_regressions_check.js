@@ -48,6 +48,8 @@ const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTablea
 const scoreTableauSynergySource = extractFunctionSource(source, 'scoreTableauSynergy');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
+const getColonyBehaviorByNameSource = extractFunctionSource(source, 'getColonyBehaviorByName');
+const scoreSynergyRulesSource = extractFunctionSource(source, '_scoreSynergyRules');
 
 const positionalScoring = new Proxy({
   drawEarlyBonus: 5,
@@ -130,6 +132,8 @@ vm.runInNewContext(
     scoreTableauSynergySource,
     getNamedRequirementDelayProfileSource,
     scorePositionalFactorsSource,
+    getColonyBehaviorByNameSource,
+    scoreSynergyRulesSource,
     'globalThis.__tm_test_getCorpBoost = getCorpBoost;',
     'globalThis.__tm_test_getCardCost = getCardCost;',
     'globalThis.__tm_test_isPlantEngineCardByFx = isPlantEngineCardByFx;',
@@ -138,6 +142,8 @@ vm.runInNewContext(
     'globalThis.__tm_test_scoreTableauSynergy = scoreTableauSynergy;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
     'globalThis.__tm_test_scorePositionalFactors = scorePositionalFactors;',
+    'globalThis.__tm_test_getColonyBehaviorByName = getColonyBehaviorByName;',
+    'globalThis.__tm_test_scoreSynergyRules = _scoreSynergyRules;',
   ].join('\n\n'),
   sandbox,
   {filename: sourcePath}
@@ -151,6 +157,8 @@ const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
 const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
 const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
+const getColonyBehaviorByName = sandbox.__tm_test_getColonyBehaviorByName;
+const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
 
 assert.strictEqual(typeof getCorpBoost, 'function', 'getCorpBoost should be exposed');
 assert.strictEqual(typeof getCardCost, 'function', 'getCardCost should be exposed');
@@ -158,6 +166,8 @@ assert.strictEqual(typeof isPlantEngineCardByFx, 'function', 'isPlantEngineCardB
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
+assert.strictEqual(typeof getColonyBehaviorByName, 'function', 'getColonyBehaviorByName should be exposed');
+assert.strictEqual(typeof scoreSynergyRules, 'function', 'scoreSynergyRules should be exposed');
 
 function corpBoost(corpName, opts) {
   return getCorpBoost(corpName, Object.assign({
@@ -325,6 +335,34 @@ const researchLikeScore = scorePositionalFactors(
 assert(
   researchLikeScore.reasons.some((reason) => reason.includes('Рисовка рано +5')),
   'regular draw cards should keep the early draw bonus'
+);
+
+sandbox.TM_CARD_DATA['Colony Fallback'] = {};
+sandbox.TM_CARD_EFFECTS['Colony Fallback'] = {colony: 1};
+const colonyFallback = getColonyBehaviorByName('Colony Fallback');
+assert.strictEqual(
+  colonyFallback && colonyFallback.buildColony,
+  1,
+  'colony behavior should fall back to generated effect facts when behavior data is missing'
+);
+
+sandbox.TM_CARD_EFFECTS['St. Joseph of Cupertino Mission'] = {vpAcc: 1};
+sandbox.TM_CARD_EFFECTS['Fighter Training Camp'] = {res: 'fighter'};
+const fighterCompetition = scoreSynergyRules(
+  'St. Joseph of Cupertino Mission',
+  ['Fighter Training Camp'],
+  {},
+  {accumCompete: 4, synRulesCap: 10}
+);
+assert.strictEqual(fighterCompetition.bonus, -4, fighterCompetition);
+assert(
+  fighterCompetition.reasons.some((reason) => reason.includes('конкуренция fighter')),
+  'St. Joseph should show fighter competition when another fighter sink exists'
+);
+
+assert(
+  source.includes("if (!immediateTi && cardName === 'Asteroid Rights') immediateTi = 2;"),
+  'Asteroid Rights should be treated as an immediate titanium source in hand synergy'
 );
 
 const newPartnerScore = scorePositionalFactors(
