@@ -459,7 +459,9 @@ class ClaudeOutput:
                 a("| # | Действие | Cost | Value | Тип |")
                 a("|---|----------|------|-------|-----|")
                 for i, al in enumerate(alloc["allocations"][:8], 1):
-                    cost_str = f"{al['cost']} MC" if al["cost"] > 0 else "free"
+                    cost_str = al.get("cost_desc") or (
+                        f"{al['cost']} MC" if al["cost"] > 0 else "free"
+                    )
                     a(f"| {i} | {al['action']} | {cost_str} | "
                       f"~{al['value_mc']} MC | {al['type']} |")
                 if alloc["mc_reserve"] > 0:

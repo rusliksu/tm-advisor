@@ -213,7 +213,7 @@ class RequirementsChecker:
         if ttm:
             tag_need = int(ttm.group(1))
             tag_name = ttm.group(2).lower()
-            have_t = (state.tags or {}).get(tag_name, 0)
+            have_t = self._count_requirement_tags_for_state(state, tag_name)
             tag_gap = tag_need - have_t
             if req_ok:
                 delta += 5 if tag_need >= 3 else 3 if tag_need >= 2 else 0
@@ -245,6 +245,31 @@ class RequirementsChecker:
             delta += 3 if oc_need <= 3 else 1 if oc_need <= 5 else 0
 
         return delta
+
+    @staticmethod
+    def _count_requirement_tags(tags: dict, tag_name: str) -> int:
+        """Count tags for a requirement; wild tags satisfy any non-wild tag req."""
+        tag_key = str(tag_name or "").lower()
+        counts = {str(k).lower(): int(v or 0) for k, v in (tags or {}).items()}
+        total = int(counts.get(tag_key, 0) or 0)
+        if tag_key != "wild":
+            total += int(counts.get("wild", 0) or 0)
+        return total
+
+    @staticmethod
+    def _xavier_requirement_wild_tags(state) -> int:
+        """Xavier's OPG gives 2 wild tags for this generation, usable for tag requirements."""
+        me = getattr(state, "me", None)
+        for card in getattr(me, "tableau", []) or []:
+            name = card.get("name", "") if isinstance(card, dict) else str(card)
+            is_disabled = bool(card.get("isDisabled", False)) if isinstance(card, dict) else False
+            if name == "Xavier" and not is_disabled:
+                return 2
+        return 0
+
+    def _count_requirement_tags_for_state(self, state, tag_name: str) -> int:
+        tags = state.tags if hasattr(state, "tags") else {}
+        return self._count_requirement_tags(tags, tag_name) + self._xavier_requirement_wild_tags(state)
 
     def _check_single(self, r: str, state, req_offset: int = 0, venus_req_offset: int = 0) -> tuple[bool, str]:
         """Check a single requirement condition. req_offset = Inventrix bonus, venus_req_offset = Morning Star bonus."""
@@ -335,8 +360,7 @@ class RequirementsChecker:
         if m:
             need = int(m.group(1))
             tag_name = m.group(2).lower()
-            tags = state.tags if hasattr(state, 'tags') else {}
-            have = tags.get(tag_name, 0)
+            have = self._count_requirement_tags_for_state(state, tag_name)
             if have < need:
                 return False, f"Нужно {need} {tag_name} tag (есть {have})"
             return True, ""
