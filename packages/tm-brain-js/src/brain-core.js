@@ -728,6 +728,94 @@
     return listOf(game.colonies || (state && state.colonies) || game.coloniesModel || (state && state.coloniesModel));
   }
 
+  function colonySlotCount(colony) {
+    return listOf(colony && (colony.colonies || colony.settlers || colony.slots)).length;
+  }
+
+  function countAvailableColonySlots(state) {
+    var colonies = coloniesFromState(state);
+    var total = 0;
+    var premium = 0;
+    var premiumNames = {
+      Luna: true,
+      Pluto: true,
+      Ceres: true,
+      Triton: true,
+      Miranda: true,
+      Titan: true,
+      Enceladus: true,
+      Europa: true,
+      Ganymede: true
+    };
+    for (var i = 0; i < colonies.length; i++) {
+      var colony = colonies[i] || {};
+      if (colony.isActive === false) continue;
+      var cap = num(colony.maxColonies != null ? colony.maxColonies : colony.colonySlots, 3);
+      var open = Math.max(0, cap - colonySlotCount(colony));
+      total += open;
+      if (premiumNames[colony.name]) premium += open;
+    }
+    return { total: total, premium: premium, worlds: colonies.length };
+  }
+
+  function isCityTile(tileType) {
+    var type = String(tileType || '').toLowerCase();
+    return type === 'city' || type.indexOf('city') >= 0;
+  }
+
+  function countCitiesAndColoniesInPlay(state) {
+    var cities = 0;
+    var players = Array.isArray(state && state.players)
+      ? state.players
+      : (Array.isArray(state && state.game && state.game.players) ? state.game.players : []);
+    for (var pi = 0; pi < players.length; pi++) {
+      cities += Math.max(0, num(players[pi] && players[pi].citiesCount, 0));
+    }
+
+    var coloniesInPlay = 0;
+    var colonies = coloniesFromState(state);
+    for (var ci = 0; ci < colonies.length; ci++) {
+      coloniesInPlay += colonySlotCount(colonies[ci]);
+    }
+    return cities + coloniesInPlay;
+  }
+
+  function countCitiesInPlay(state) {
+    var totalCities = 0;
+    var players = Array.isArray(state && state.players)
+      ? state.players
+      : (Array.isArray(state && state.game && state.game.players) ? state.game.players : []);
+    for (var pi = 0; pi < players.length; pi++) {
+      totalCities += Math.max(0, num(players[pi] && players[pi].citiesCount, 0));
+    }
+
+    var boardCities = 0;
+    var spaces = state && state.game && state.game.spaces;
+    if (Array.isArray(spaces)) {
+      for (var si = 0; si < spaces.length; si++) {
+        if (spaces[si] && isCityTile(spaces[si].tileType)) boardCities++;
+      }
+    }
+    return Math.max(totalCities, boardCities);
+  }
+
+  function tableauHasCard(tableau, cardName) {
+    if (!Array.isArray(tableau) || !cardName) return false;
+    var target = String(cardName).toLowerCase();
+    for (var i = 0; i < tableau.length; i++) {
+      var name = cardNameOf(tableau[i]);
+      if (String(name || '').toLowerCase() === target) return true;
+    }
+    return false;
+  }
+
+  function greeneryPlantCost(state) {
+    var tp = (state && state.thisPlayer) || {};
+    var corp = String(tp.corporation || tp.corp || '').toLowerCase();
+    if (corp === 'ecoline' || tableauHasCard(tp.tableau, 'Ecoline') || tableauHasCard(tp.tableau, 'EcoLine')) return 7;
+    return 8;
+  }
+
   function availableMirandaColony(state) {
     var colonies = coloniesFromState(state);
     for (var i = 0; i < colonies.length; i++) {
@@ -1343,6 +1431,162 @@
     return delta;
   }
 
+  function scoreGreenhousesRuntimeAdjustment(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var totalCities = countCitiesInPlay(state);
+    if (totalCities <= 0) return 0;
+
+    var tp = state.thisPlayer || {};
+    var plants = Math.max(0, num(tp.plants, 0));
+    var plantCost = greeneryPlantCost(state);
+    var greeneriesBefore = Math.floor(plants / plantCost);
+    var greeneriesAfter = Math.floor((plants + totalCities) / plantCost);
+    var convertsNow = greeneriesAfter > greeneriesBefore;
+    var gensLeft = (typeof opts.gensLeft === 'number' && isFinite(opts.gensLeft))
+      ? opts.gensLeft
+      : estimateGensLeftFromState(state);
+    if (typeof gensLeft !== 'number' || !isFinite(gensLeft) || gensLeft <= 0) gensLeft = 3;
+
+    if (convertsNow || gensLeft <= 1) return Math.min(18, totalCities * 2);
+    if (totalCities < 5) return 0;
+    return Math.min(6, Math.max(0, Math.round((totalCities - 4) * 1.25)));
+  }
+
+  function scoreOptimalAerobrakingRuntimeAdjustment(options) {
+    var opts = options || {};
+    var g = (opts.state && opts.state.game) || {};
+    var temp = typeof g.temperature === 'number' ? g.temperature : -30;
+    var tempStepsLeft = Math.max(0, Math.round((8 - temp) / 2));
+    var penalty = 0;
+    if (tempStepsLeft <= 0) penalty = 8;
+    else if (tempStepsLeft <= 1) penalty = 6;
+    else if (tempStepsLeft <= 2) penalty = 4;
+    else if (tempStepsLeft <= 3) penalty = 2;
+    return 5 - penalty;
+  }
+
+  function cardHasTag(card, tag, getCardTags, state) {
+    var name = cardNameOf(card);
+    var fallback = (card && Array.isArray(card.tags)) ? card.tags : [];
+    var tags = getCardTags ? getCardTags(name, fallback, state) : fallback;
+    if (!Array.isArray(tags)) return false;
+    var target = String(tag || '').toLowerCase();
+    for (var i = 0; i < tags.length; i++) {
+      if (String(tags[i] || '').toLowerCase() === target) return true;
+    }
+    return false;
+  }
+
+  function countFutureEventCards(handCards, selfName, getCardTags, state) {
+    if (!Array.isArray(handCards)) return 0;
+    var count = 0;
+    for (var i = 0; i < handCards.length; i++) {
+      var name = cardNameOf(handCards[i]);
+      if (!name || name === selfName) continue;
+      if (cardHasTag(handCards[i], 'event', getCardTags, state)) count++;
+    }
+    return count;
+  }
+
+  function scoreMediaGroupRuntimeAdjustment(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var tp = state.thisPlayer || {};
+    var handCards = opts.handCards || tp.cardsInHand || state.cardsInHand || [];
+    var eventCount = countFutureEventCards(handCards, 'Media Group', opts.getCardTags, state);
+    var gensLeft = (typeof opts.gensLeft === 'number' && isFinite(opts.gensLeft))
+      ? opts.gensLeft
+      : estimateGensLeftFromState(state);
+    if (typeof gensLeft !== 'number' || !isFinite(gensLeft) || gensLeft <= 0) gensLeft = 3;
+
+    if (eventCount <= 0) {
+      if (gensLeft <= 2) return -10;
+      if (gensLeft <= 4) return -6;
+      return -3;
+    }
+
+    var mcRaw = tp.megaCredits;
+    if (mcRaw == null) mcRaw = tp.megacredits;
+    var mc = Math.max(0, num(mcRaw, 0));
+    var bonus = 5 + eventCount * 3;
+    if (gensLeft <= 2) bonus += 2;
+    if (mc > 0 && mc < 18) bonus += 2;
+    return Math.min(14, bonus);
+  }
+
+  function scoreFieldCappedCityRuntimeAdjustment(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var tp = opts.tp || (state && state.thisPlayer) || {};
+    var gensLeft = Math.max(1, num(opts.gensLeft, estimateGensLeftFromState(state) || 1));
+    var myTags = opts.myTags || tp.tags || {};
+    var handCards = opts.handCards || [];
+    var getCardTags = opts.getCardTags || function() { return []; };
+
+    var steel = Math.max(0, num(tp.steel, 0));
+    var steelValue = Math.max(2, num(tp.steelValue, 2));
+    var steelProd = Math.max(0, num(tp.steelProduction, 0));
+    var steelCover = steel * steelValue;
+    var hasSteelPlan = steelCover >= 10 || steelProd >= 2 || (steelCover >= 6 && steelProd >= 1);
+
+    var plantTagSupport = Math.max(0, num(myTags.plant, 0)) + Math.max(0, num(myTags.wild, 0));
+    for (var i = 0; i < handCards.length; i++) {
+      var cardName = cardNameOf(handCards[i]);
+      if (!cardName || cardName === 'Field-Capped City') continue;
+      var tags = getCardTags(cardName) || [];
+      for (var ti = 0; ti < tags.length; ti++) {
+        if (tags[ti] === 'plant' || tags[ti] === 'wild') plantTagSupport++;
+      }
+    }
+
+    var greenerySupport = Math.max(0, num(tp.plantProduction, 0)) >= 3 ||
+      Math.max(0, num(tp.plants, 0)) >= 6 ||
+      plantTagSupport >= 2 ||
+      Math.max(0, num(tp.greeneriesCount, 0)) >= 1;
+
+    var penalty = 0;
+    if (!hasSteelPlan) penalty += gensLeft <= 2 ? 8 : (gensLeft <= 4 ? 6 : 3);
+    if (!greenerySupport) penalty += gensLeft <= 2 ? 5 : (gensLeft <= 4 ? 3 : 0);
+    if (!hasSteelPlan && !greenerySupport) penalty += 10;
+    return -penalty;
+  }
+
+  function scoreIceMoonColonyRuntimeAdjustment(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var game = (state && state.game) || {};
+    var gensLeft = Math.max(1, num(opts.gensLeft, estimateGensLeftFromState(state) || 1));
+    var oceans = num(game.oceans != null ? game.oceans : game.oceanTiles, 0);
+    var oceansLeft = Math.max(0, 9 - oceans);
+    var slots = countAvailableColonySlots(state);
+
+    var penalty = 0;
+    if (oceansLeft <= 0) penalty += 30;
+    else if (oceansLeft === 1) penalty += 8;
+    else if (oceansLeft === 2) penalty += 4;
+
+    if (slots.worlds > 0) {
+      if (slots.total <= 0) penalty += 30;
+      else if (slots.premium <= 0) penalty += 5;
+      else if (slots.total <= 1 && gensLeft <= 3) penalty += 3;
+    }
+    if (gensLeft <= 2) penalty += 4;
+    return -penalty;
+  }
+
+  function scoreNamedCardRuntimeAdjustments(options) {
+    var name = (options && options.name) || '';
+    var delta = 0;
+    if (name === 'Greenhouses') delta += scoreGreenhousesRuntimeAdjustment(options);
+    if (name === 'Optimal Aerobraking') delta += scoreOptimalAerobrakingRuntimeAdjustment(options);
+    if (name === 'Media Group') delta += scoreMediaGroupRuntimeAdjustment(options);
+    if (name === 'Molecular Printing') delta += countCitiesAndColoniesInPlay(options && options.state);
+    if (name === 'Field-Capped City') delta += scoreFieldCappedCityRuntimeAdjustment(options);
+    if (name === 'Ice Moon Colony') delta += scoreIceMoonColonyRuntimeAdjustment(options);
+    return delta;
+  }
+
   function countMarsCitiesForActionValue(state, tp) {
     var players = state && state.players;
     if (Array.isArray(players) && players.length > 0) {
@@ -1409,7 +1653,8 @@
     var opts = options || {};
     var name = opts.name || '';
     var manual = opts.manual || null;
-    if (!manual) return 0;
+    var delta = scoreNamedCardRuntimeAdjustments(opts);
+    if (!manual) return delta;
     var actionResourceReq = opts.actionResourceReq || {};
     var tp = opts.tp || {};
     var gensLeft = opts.gensLeft || 1;
@@ -1420,7 +1665,6 @@
     var getCardTags = opts.getCardTags || function() { return []; };
     var selfTags = getCardTags(selfName) || [];
 
-    var delta = 0;
     var timingGens = Math.min(gensLeft, 6);
 
     if (name === 'Insects') {
@@ -1517,6 +1761,7 @@
     scoreRecurringActionValue: scoreRecurringActionValue,
     scoreCardDiscountValue: scoreCardDiscountValue,
     scoreCardDisruptionValue: scoreCardDisruptionValue,
+    scoreNamedCardRuntimeAdjustments: scoreNamedCardRuntimeAdjustments,
     applyManualEVAdjustments: applyManualEVAdjustments,
   };
 

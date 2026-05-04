@@ -275,6 +275,121 @@ function testCoreHelpers() {
   assert.strictEqual(core.scoreCardDiscountValue({discount: {tag: 'science', amount: 2}, gensLeft: 4}), 8);
   assert.strictEqual(core.scoreCardDisruptionValue({beh: {decreaseAnyProduction: {count: 2}, removeAnyPlants: 4}}), 5);
 
+  const greenhousesBaseState = {
+    game: {},
+    players: [{citiesCount: 3}],
+    thisPlayer: {plants: 4, tableau: []},
+  };
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: greenhousesBaseState, gensLeft: 4}),
+    0,
+    'Greenhouses should not get a small-city bonus when plants do not convert'
+  );
+  const greenhousesConvertState = JSON.parse(JSON.stringify(greenhousesBaseState));
+  greenhousesConvertState.thisPlayer.plants = 5;
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: greenhousesConvertState, gensLeft: 4}),
+    6,
+    'Greenhouses should value cities when gained plants convert into greenery'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: greenhousesBaseState, gensLeft: 2}),
+    0,
+    'Greenhouses should stay neutral with no conversion before final cashout'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: greenhousesBaseState, gensLeft: 1}),
+    6,
+    'Greenhouses should value final plant cashout'
+  );
+
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Optimal Aerobraking', state: {game: {temperature: -10}}}),
+    5
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Optimal Aerobraking', state: {game: {temperature: 6}}}),
+    -1
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Optimal Aerobraking', state: {game: {temperature: 8}}}),
+    -3
+  );
+
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Media Group',
+      state: {thisPlayer: {megaCredits: 10}},
+      handCards: [{name: 'Media Group'}, {name: 'Asteroid'}, {name: 'Comet'}],
+      getCardTags: (cardName) => cardName === 'Asteroid' || cardName === 'Comet' ? ['event'] : [],
+      gensLeft: 3,
+    }),
+    13,
+    'Media Group should reward future events and low MC'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Media Group',
+      state: {thisPlayer: {megaCredits: 30}},
+      handCards: [{name: 'Media Group'}, {name: 'Research'}],
+      getCardTags: () => [],
+      gensLeft: 2,
+    }),
+    -10,
+    'Media Group should be penalized late with no future events'
+  );
+
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Molecular Printing',
+      state: {
+        players: [{citiesCount: 2}, {citiesCount: 1}],
+        game: {colonies: [{colonies: [{}, {}]}, {settlers: [{}]}]},
+      },
+    }),
+    6,
+    'Molecular Printing should count cities and colonies already in play'
+  );
+
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Field-Capped City',
+      state: {thisPlayer: {steel: 0, plants: 0, plantProduction: 0, tags: {}, cardsInHand: []}},
+      handCards: [],
+      gensLeft: 3,
+    }),
+    -19,
+    'Field-Capped City should be penalized without steel or greenery support'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Field-Capped City',
+      state: {thisPlayer: {steel: 5, steelValue: 2, plants: 0, plantProduction: 3, tags: {}, cardsInHand: []}},
+      handCards: [],
+      gensLeft: 3,
+    }),
+    0,
+    'Field-Capped City should stay neutral when support exists'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Ice Moon Colony',
+      state: {game: {oceans: 9, colonies: [{name: 'Luna', colonies: []}]}},
+      gensLeft: 3,
+    }),
+    -30,
+    'Ice Moon Colony should be heavily penalized when oceans are gone'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Ice Moon Colony',
+      state: {game: {oceans: 7, colonies: [{name: 'Luna', colonies: [{}, {}, {}]}]}},
+      gensLeft: 3,
+    }),
+    -34,
+    'Ice Moon Colony should account for scarce oceans and full colony slots'
+  );
+
   const manualDelta = core.applyManualEVAdjustments({
     name: 'Manual Card',
     manual: {perGen: 2, once: 3, perTrigger: 1.5, triggerTag: 'science'},
@@ -284,6 +399,90 @@ function testCoreHelpers() {
     estimateTriggersPerGen: () => 2,
   });
   assert.strictEqual(manualDelta, 17.4);
+
+  const lateFieldState = {
+    game: {generation: 8, oxygenLevel: 12, oceans: 7},
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    thisPlayer: {
+      color: 'red',
+      steel: 0,
+      steelValue: 2,
+      steelProduction: 0,
+      plants: 0,
+      plantProduction: 0,
+      cardsInHand: [],
+      tags: {plant: 0, wild: 0},
+    },
+  };
+  const lateFieldDelta = core.scoreNamedCardRuntimeAdjustments({
+    name: 'Field-Capped City',
+    state: lateFieldState,
+    tp: lateFieldState.thisPlayer,
+    myTags: lateFieldState.thisPlayer.tags,
+    gensLeft: 2,
+    handCards: [],
+    getCardTags: () => [],
+  });
+  assert(lateFieldDelta <= -16, 'late Field-Capped City without steel/greenery support should be penalized');
+  assert.strictEqual(
+    core.applyManualEVAdjustments({
+      name: 'Field-Capped City',
+      manual: null,
+      state: lateFieldState,
+      tp: lateFieldState.thisPlayer,
+      myTags: lateFieldState.thisPlayer.tags,
+      gensLeft: 2,
+      handCards: [],
+      getCardTags: () => [],
+    }),
+    lateFieldDelta,
+    'runtime adjustment must also apply when a card has no MANUAL_EV entry'
+  );
+
+  const steelFieldState = JSON.parse(JSON.stringify(lateFieldState));
+  steelFieldState.game.generation = 5;
+  steelFieldState.thisPlayer.steel = 12;
+  steelFieldState.thisPlayer.steelProduction = 4;
+  const steelFieldDelta = core.scoreNamedCardRuntimeAdjustments({
+    name: 'Field-Capped City',
+    state: steelFieldState,
+    tp: steelFieldState.thisPlayer,
+    myTags: steelFieldState.thisPlayer.tags,
+    gensLeft: 4,
+    handCards: [],
+    getCardTags: () => [],
+  });
+  assert(steelFieldDelta > lateFieldDelta + 10, 'excess steel should preserve Field-Capped City as a steel outlet');
+
+  const blockedIceState = {
+    game: {
+      generation: 9,
+      oceans: 9,
+      colonies: [
+        {name: 'Luna', colonies: ['red', 'blue', 'green']},
+        {name: 'Ceres', colonies: ['red', 'blue', 'green']},
+        {name: 'Pluto', colonies: ['red', 'blue', 'green']},
+      ],
+    },
+    thisPlayer: {color: 'red', titanium: 0, titaniumProduction: 0, tags: {space: 2}},
+  };
+  const blockedIceDelta = core.scoreNamedCardRuntimeAdjustments({
+    name: 'Ice Moon Colony',
+    state: blockedIceState,
+    tp: blockedIceState.thisPlayer,
+    gensLeft: 1,
+  });
+  assert(blockedIceDelta <= -60, 'Ice Moon Colony should be crushed when oceans and colony slots are closed');
+  assert(
+    core.applyManualEVAdjustments({
+      name: 'Ice Moon Colony',
+      manual: {once: 18},
+      state: blockedIceState,
+      tp: blockedIceState.thisPlayer,
+      gensLeft: 1,
+    }) < -35,
+    'Ice Moon runtime penalty should apply in addition to its manual ocean/colony value'
+  );
 
   const deckAnalysis = core.analyzeDeck({
     game: {deckSize: 12, discardPileSize: 3, generation: 6, gameOptions: {}},
