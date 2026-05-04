@@ -8,9 +8,11 @@ const ROOT = path.resolve(__dirname, '..', '..');
 const LIVE_REF = 'codex/advisor-live-fixes-20260421';
 
 const REQUIRED_FILES = [
+  'extension/content.js',
   'extension/content-game-signals.js',
   'extension/content-game-overlays.js',
   'extension/content-action-recommendation.js',
+  'extension/content-hand-ui.js',
   'extension/content-route-validators.js',
   'extension/shared/manual-ev.js',
   'extension/advisor-panel.js',
@@ -23,9 +25,11 @@ const REQUIRED_MANIFEST_JS = [
   'content-game-signals.js',
   'content-game-overlays.js',
   'content-action-recommendation.js',
+  'content-hand-ui.js',
   'content-route-validators.js',
   'content-play-priority.js',
   'content-runtime-status.js',
+  'content.js',
   'advisor-panel.js',
 ];
 
@@ -33,6 +37,8 @@ const ORDERED_MANIFEST_PAIRS = [
   ['shared/manual-ev.js', 'tm-brain.js'],
   ['content-game-signals.js', 'content-game-overlays.js'],
   ['content-game-overlays.js', 'content-action-recommendation.js'],
+  ['content-action-recommendation.js', 'content-hand-ui.js'],
+  ['content-hand-ui.js', 'content.js'],
   ['content-action-recommendation.js', 'advisor-panel.js'],
 ];
 
@@ -56,6 +62,22 @@ const REQUIRED_SNIPPETS = [
     contains: [
       'function clearWaitingFor(status)',
       "pushActionEvent({ type: 'waitingForClear'",
+    ],
+  },
+  {
+    path: 'extension/content.js',
+    contains: [
+      'function injectHandPriorityBadges()',
+      'injectHandPriorityBadges();',
+      'cardPlacesColonyByText(eLow)',
+    ],
+  },
+  {
+    path: 'extension/content-hand-ui.js',
+    contains: [
+      'function requirementBlockReason',
+      'data-tm-hand-priority-lock',
+      'Req locked:',
     ],
   },
 ];

@@ -69,6 +69,21 @@
     reasonRows.push(row);
   }
 
+  function getMegaCredits(player) {
+    if (!player) return 0;
+    var raw = player.megaCredits;
+    if (raw == null) raw = player.megacredits;
+    return Math.max(0, Number(raw) || 0);
+  }
+
+  function getMegaCreditProduction(player) {
+    if (!player) return 0;
+    var raw = player.megaCreditProduction;
+    if (raw == null) raw = player.megacreditProduction;
+    if (raw == null) raw = player.megaCreditsProduction;
+    return Math.max(0, Number(raw) || 0);
+  }
+
   function setReasonPayload(el, source, externalSetter) {
     if (!el) return;
     if (typeof externalSetter === 'function') {
@@ -153,7 +168,7 @@
 
           if (spType === 'power') {
             if (msName === 'Specialist') {
-              var maxProd = Math.max(p.megaCreditProduction || 0, p.steelProduction || 0, p.titaniumProduction || 0, p.plantProduction || 0, p.energyProduction || 0, p.heatProduction || 0);
+              var maxProd = Math.max(getMegaCreditProduction(p), p.steelProduction || 0, p.titaniumProduction || 0, p.plantProduction || 0, p.energyProduction || 0, p.heatProduction || 0);
               var epAfter = (p.energyProduction || 0) + 1;
               if (epAfter >= 10 && maxProd < 10) { bonus += sc.spMilestoneReach; pushStructuredReason(reasons, reasonRows, '→ Specialist!', sc.spMilestoneReach); }
             }
@@ -289,7 +304,7 @@
     var modifiers = getTradeModifiers(player);
     var energyCost = Math.max(1, 3 - modifiers.energyDiscount);
     if ((player.energy || 0) >= energyCost) return true;
-    if ((player.megaCredits || 0) >= 9) return true;
+    if (getMegaCredits(player) >= 9) return true;
     var tableau = player.tableau || [];
     for (var i = 0; i < tableau.length; i++) {
       if (FREE_TRADE_TABLEAU_CARDS[normalizeLookupCardName(tableau[i] && tableau[i].name)] && (tableau[i].resources || 0) > 0) return true;
@@ -484,7 +499,7 @@
         label: 'Лимит 3',
         cls: 'tm-sp-bad',
         net: -4,
-        canAfford: (p.megaCredits || 0) >= COLONY_BUILD_COST,
+        canAfford: getMegaCredits(p) >= COLONY_BUILD_COST,
         reasonRows: [{ text: 'Build Colony: лимит 3 колонии', tone: 'negative', value: -4 }],
       };
     }
@@ -503,7 +518,7 @@
         label: 'Нет слотов',
         cls: 'tm-sp-bad',
         net: -4,
-        canAfford: (p.megaCredits || 0) >= COLONY_BUILD_COST,
+        canAfford: getMegaCredits(p) >= COLONY_BUILD_COST,
         reasonRows: [{ text: 'Build Colony: нет свободных слотов', tone: 'negative', value: -4 }],
       };
     }
@@ -579,7 +594,7 @@
           label: target.name + ' ' + (total >= 0 ? '+' : '') + Math.round(total),
           cls: total >= 2 ? 'tm-sp-good' : total >= -3 ? 'tm-sp-ok' : 'tm-sp-bad',
           net: total,
-          canAfford: (p.megaCredits || 0) >= COLONY_BUILD_COST,
+          canAfford: getMegaCredits(p) >= COLONY_BUILD_COST,
           reasonRows: rows,
         };
       }
@@ -669,7 +684,7 @@
 
     var p = pv.thisPlayer;
     var g = pv.game;
-    var mc = p.megaCredits || 0;
+    var mc = getMegaCredits(p);
     var heat = p.heat || 0;
     var steel = p.steel || 0;
     var stVal = p.steelValue || sc.defaultSteelVal;

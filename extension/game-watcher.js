@@ -61,6 +61,15 @@
     });
   }
 
+  function firstNumber(obj, keys, fallback) {
+    for (const key of keys) {
+      if (!obj || obj[key] == null) continue;
+      const num = Number(obj[key]);
+      return Number.isFinite(num) ? num : obj[key];
+    }
+    return fallback;
+  }
+
   // ══════════════════════════════════════════════════════════════
   // §3. STATE
   // ══════════════════════════════════════════════════════════════
@@ -447,8 +456,8 @@
       playersSnap[pl.color] = {
         name: pl.name,
         tr: pl.terraformRating || 0,
-        mc: pl.megaCredits || 0,
-        mcProd: pl.megaCreditProduction || 0,
+        mc: firstNumber(pl, ['megaCredits', 'megacredits'], 0),
+        mcProd: firstNumber(pl, ['megaCreditProduction', 'megacreditProduction', 'megaCreditsProduction'], 0),
         steel: pl.steel || 0,
         steelProd: pl.steelProduction || 0,
         ti: pl.titanium || 0,

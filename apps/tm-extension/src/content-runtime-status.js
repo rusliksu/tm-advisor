@@ -35,6 +35,13 @@
     el.appendChild(hint);
   }
 
+  function getMegaCredits(player) {
+    if (!player) return 0;
+    var raw = player.megaCredits;
+    if (raw == null) raw = player.megacredits;
+    return Math.max(0, Number(raw) || 0);
+  }
+
   function injectSellIndicators(input) {
     var enabled = input && input.enabled;
     var documentObj = input && input.documentObj;
@@ -56,7 +63,7 @@
     }
 
     var pv = typeof getPlayerVueData === 'function' ? getPlayerVueData() : null;
-    var myMC = (pv && pv.thisPlayer) ? (pv.thisPlayer.megaCredits || 0) : 0;
+    var myMC = (pv && pv.thisPlayer) ? getMegaCredits(pv.thisPlayer) : 0;
     var handEls = documentObj.querySelectorAll(selHand || '');
     if (handEls.length === 0) return;
 

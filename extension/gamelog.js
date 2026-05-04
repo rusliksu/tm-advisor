@@ -46,6 +46,15 @@
     });
   }
 
+  function firstNumber(obj, keys, fallback) {
+    for (const key of keys) {
+      if (!obj || obj[key] == null) continue;
+      const num = Number(obj[key]);
+      return Number.isFinite(num) ? num : obj[key];
+    }
+    return fallback;
+  }
+
   var getGameId = TM_UTILS.parseGameId;
   var getPlayerId = TM_UTILS.parsePlayerId;
 
@@ -303,14 +312,14 @@
       for (const p of bridgeData.players) {
         const pd = {
           name: p.name,
-          mc: p.megaCredits,
+          mc: firstNumber(p, ['megaCredits', 'megacredits'], 0),
           steel: p.steel,
           titanium: p.titanium,
           heat: p.heat,
           plants: p.plants,
           energy: p.energy,
           tr: p.terraformRating,
-          mcProd: p.megaCreditProduction,
+          mcProd: firstNumber(p, ['megaCreditProduction', 'megacreditProduction', 'megaCreditsProduction'], 0),
           steelProd: p.steelProduction,
           tiProd: p.titaniumProduction,
           plantProd: p.plantProduction,

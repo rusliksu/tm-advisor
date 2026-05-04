@@ -6,6 +6,13 @@
   var lastTrackedGen = 0;
   var genTimes = [];
 
+  function getMegaCredits(player) {
+    if (!player) return 0;
+    var raw = player.megaCredits;
+    if (raw == null) raw = player.megacredits;
+    return Math.max(0, Number(raw) || 0);
+  }
+
   function updateGenTimer(input) {
     var detectGeneration = input && input.detectGeneration;
     var canShowToast = input && input.canShowToast;
@@ -30,7 +37,7 @@
           var p = pvGen.thisPlayer;
           var tr = p.terraformRating || 0;
           var cards = p.playedCards ? p.playedCards.length : 0;
-          var mc = p.megaCredits || 0;
+          var mc = getMegaCredits(p);
           showToast('Gen ' + gen + ' | TR ' + tr + ' | ' + cards + ' карт | ' + mc + ' MC', 'gen');
         }
       }

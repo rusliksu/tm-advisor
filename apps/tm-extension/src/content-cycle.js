@@ -24,6 +24,7 @@
     var updateHandScores = input && input.updateHandScores;
     var checkPreludePackage = input && input.checkPreludePackage;
     var injectDiscardHints = input && input.injectDiscardHints;
+    var injectHandPriorityBadges = input && input.injectHandPriorityBadges;
     var injectPlayPriorityBadges = input && input.injectPlayPriorityBadges;
     var trackDraftHistory = input && input.trackDraftHistory;
     var rateStandardProjects = input && input.rateStandardProjects;
@@ -79,6 +80,7 @@
       if (typeof rateStandardProjects === 'function') rateStandardProjects();
       if (typeof enhanceGameLog === 'function') enhanceGameLog();
       if (typeof highlightPlayable === 'function') highlightPlayable();
+      if (typeof injectHandPriorityBadges === 'function') injectHandPriorityBadges();
       if (typeof updateGameSignals === 'function') updateGameSignals();
       if (typeof updateActionRecommendation === 'function') updateActionRecommendation();
     } finally {
@@ -106,14 +108,14 @@
 
     if (typeof clearGameSignals === 'function') clearGameSignals();
     if (typeof clearActionRecommendation === 'function') clearActionRecommendation();
-    documentObj.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score').forEach(function(el) {
+    documentObj.querySelectorAll('.tm-tier-badge, .tm-combo-tooltip, .tm-anti-combo-tooltip, .tm-hand-combo, .tm-log-card-score, .tm-hand-priority-badge').forEach(function(el) {
       el.remove();
     });
     documentObj.querySelectorAll('.tm-combo-highlight, .tm-combo-godmode, .tm-combo-great, .tm-combo-good, .tm-combo-decent, .tm-combo-niche').forEach(function(el) {
       el.classList.remove('tm-combo-highlight', 'tm-combo-godmode', 'tm-combo-great', 'tm-combo-good', 'tm-combo-decent', 'tm-combo-niche');
     });
-    documentObj.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-rec-discard, .tm-playable, .tm-unplayable').forEach(function(el) {
-      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-rec-discard', 'tm-playable', 'tm-unplayable');
+    documentObj.querySelectorAll('.tm-dim, .tm-corp-synergy, .tm-tag-synergy, .tm-combo-hint, .tm-anti-combo, .tm-rec-best, .tm-rec-discard, .tm-playable, .tm-unplayable, .tm-hand-priority-card, .tm-hand-priority-card-1, .tm-hand-priority-card-2, .tm-hand-priority-card-3, .tm-hand-priority-card-hold, .tm-hand-priority-card-engine, .tm-hand-priority-card-late').forEach(function(el) {
+      el.classList.remove('tm-dim', 'tm-corp-synergy', 'tm-tag-synergy', 'tm-combo-hint', 'tm-anti-combo', 'tm-rec-best', 'tm-rec-discard', 'tm-playable', 'tm-unplayable', 'tm-hand-priority-card', 'tm-hand-priority-card-1', 'tm-hand-priority-card-2', 'tm-hand-priority-card-3', 'tm-hand-priority-card-hold', 'tm-hand-priority-card-engine', 'tm-hand-priority-card-late');
       if (el.getAttribute('data-tm-discard-style') === '1') {
         el.style.boxShadow = '';
         el.removeAttribute('data-tm-discard-style');
@@ -123,6 +125,8 @@
       el.removeAttribute('data-tm-processed');
       el.removeAttribute('data-tm-card');
       el.removeAttribute('data-tm-tier');
+      el.removeAttribute('data-tm-hand-priority');
+      el.removeAttribute('data-tm-hand-priority-score');
     });
     documentObj.querySelectorAll('[data-tm-reasons], [data-tm-reason-rows]').forEach(function(el) {
       if (typeof clearReasonPayload === 'function') clearReasonPayload(el);
