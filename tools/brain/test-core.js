@@ -389,6 +389,15 @@ function testCoreHelpers() {
     -34,
     'Ice Moon Colony should account for scarce oceans and full colony slots'
   );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Ice Moon Colony',
+      state: {game: {oceans: 7, colonies: [{name: 'Leavitt', colonies: []}]}},
+      gensLeft: 3,
+    }),
+    -4,
+    'Ice Moon Colony should treat Leavitt as a premium open colony slot'
+  );
 
   const manualDelta = core.applyManualEVAdjustments({
     name: 'Manual Card',
