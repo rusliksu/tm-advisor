@@ -48,6 +48,8 @@
   var sharedScoreAcquiredCompanyTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreAcquiredCompanyTimingValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
   var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
+  var sharedEstimateAresPlacementDelta = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateAresPlacementDelta;
+  var sharedScoreNamedCardRuntimeAdjustments = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreNamedCardRuntimeAdjustments;
   var sharedScoreRequirementPenalty = (TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty) || localScoreRequirementPenalty;
   var sharedApplyManualEVAdjustments = TM_BRAIN_CORE && TM_BRAIN_CORE.applyManualEVAdjustments;
   var sharedEstimateScoreCardTimingInterpolated = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateScoreCardTimingInterpolated;
@@ -566,12 +568,18 @@
     return count;
   }
 
+  function getMegaCredits(player) {
+    return player && player.megaCredits != null
+      ? player.megaCredits
+      : (player && player.megacredits != null ? player.megacredits : 0);
+  }
+
   function adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName) {
     var tp = (state && state.thisPlayer) || {};
     var payRes = pay || {};
     var selectedCardName = cardName || (wfOrOpts && wfOrOpts.card) || '';
     var mcKey = Object.prototype.hasOwnProperty.call(payRes, 'megaCredits') ? 'megaCredits' : 'megacredits';
-    var availableMC = tp.megaCredits || tp.megacredits || 0;
+    var availableMC = getMegaCredits(tp);
     var wfRes = wfOrOpts || {};
     var adjustSpendAll = function(resourceKey, resourceType, unitValue) {
       if ((payRes[resourceKey] || 0) <= 0) return;
@@ -667,7 +675,7 @@
       remaining = Math.max(0, remaining - use * alt.val);
     }
 
-    pay.megacredits = Math.max(0, Math.min(remaining, tp.megacredits || 0));
+    pay.megacredits = Math.max(0, Math.min(remaining, getMegaCredits(tp)));
     return adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName);
   };
 
@@ -1610,7 +1618,9 @@
     // ── CITY TILE ──
     // City = ~2 VP avg (1 from adjacent greenery early, 2-3 late) + MC from Mayor award
     if (beh.city && !isOffBoardCityCard(name)) ev += vpMC(gensLeft) * 2 + 2; // VP from adj greeneries + positional value
-    ev += estimateAresPlacementDelta(name, state, gensLeft);
+    ev += sharedEstimateAresPlacementDelta
+      ? sharedEstimateAresPlacementDelta(name, state, gensLeft)
+      : estimateAresPlacementDelta(name, state, gensLeft);
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
@@ -2250,7 +2260,7 @@
       var precipSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
       if (precipSupport <= 1) ev -= 8;
       else if (precipSupport === 2) ev -= 4;
-      if ((tp.megacredits || 0) < 10 && (tp.megaCredits || 0) < 10 && (tp.mc || 0) < 10) ev -= 2;
+      if (getMegaCredits(tp) < 10 && (tp.mc || 0) < 10) ev -= 2;
       if (precipSteps <= 1) ev -= 10;
       else if (precipSteps <= 3) ev -= 4;
       if (gensLeft <= 2) ev -= 8;
@@ -2364,7 +2374,18 @@
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
-    var manual = MANUAL_EV[name];
+    if (sharedScoreNamedCardRuntimeAdjustments) {
+      ev += sharedScoreNamedCardRuntimeAdjustments({
+        name: name,
+        state: state,
+        gensLeft: gensLeft,
+        handCards: handCards,
+        getCardTags: function(cardName, fallbackTags) {
+          return getCardTagsByName(cardName, fallbackTags || [], state);
+        },
+      });
+    }
+    var manual = name === 'Molecular Printing' ? null : MANUAL_EV[name];
     if (sharedApplyManualEVAdjustments) {
       ev += sharedApplyManualEVAdjustments({
         name: name,
@@ -2509,7 +2530,7 @@
     }
     if (!cards || cards.length === 0) return [];
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megacredits || 0;
+    var mc = getMegaCredits(tp);
     var steel = tp.steel || 0;
     var titanium = tp.titanium || 0;
     var steps = remainingSteps(state);
@@ -2564,7 +2585,7 @@
       return sharedAnalyzePass(state, { remainingSteps: remainingSteps });
     }
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megacredits || 0;
+    var mc = getMegaCredits(tp);
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var steps = remainingSteps(state);
@@ -2605,7 +2626,7 @@
     if (!waitingFor) return [];
 
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megacredits || 0;
+    var mc = getMegaCredits(tp);
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var steps = remainingSteps(state);
@@ -2866,6 +2887,159 @@
    * @param {Object} state - {thisPlayer, game, players}
    * @returns {Object|null} {canClaim, myScore, threshold, distance}
    */
+  function milestoneNumber(value) {
+    var n = Number(value);
+    return isFinite(n) ? n : 0;
+  }
+
+  function milestoneMaData() {
+    if (typeof TM_MA_DATA !== 'undefined') return TM_MA_DATA;
+    return (root && root.TM_MA_DATA) || {};
+  }
+
+  function playerProductionForMilestone(player, resource) {
+    var p = player || {};
+    if (resource === 'megacredits' || resource === 'megaCredits' || resource === 'mc') {
+      return milestoneNumber(
+        p.megaCreditProduction != null ? p.megaCreditProduction :
+        p.megacreditProduction != null ? p.megacreditProduction :
+        p.megacreditsProduction != null ? p.megacreditsProduction :
+        p.mcProduction
+      );
+    }
+    if (resource === 'plants') return milestoneNumber(p.plantProduction);
+    if (resource === 'energy+heat') return milestoneNumber(p.energyProduction) + milestoneNumber(p.heatProduction);
+    if (resource === 'steel+titanium') return milestoneNumber(p.steelProduction) + milestoneNumber(p.titaniumProduction);
+    return milestoneNumber(p[resource + 'Production']);
+  }
+
+  function milestoneCountValue(value) {
+    if (Array.isArray(value)) return value.length;
+    if (value != null) return milestoneNumber(value);
+    return null;
+  }
+
+  function playerMilestoneCount(player, keys) {
+    var p = player || {};
+    for (var i = 0; i < keys.length; i++) {
+      if (p[keys[i]] != null) return milestoneCountValue(p[keys[i]]);
+    }
+    return null;
+  }
+
+  function milestoneProductionValues(player) {
+    var resources = ['megacredits', 'steel', 'titanium', 'plants', 'energy', 'heat'];
+    var values = [];
+    for (var i = 0; i < resources.length; i++) {
+      values.push(Math.max(0, playerProductionForMilestone(player, resources[i])));
+    }
+    return values;
+  }
+
+  function countUniqueMilestoneTags(tags) {
+    var count = 0;
+    var seen = {};
+    var source = tags || {};
+    for (var key in source) {
+      if (!Object.prototype.hasOwnProperty.call(source, key)) continue;
+      if (key === 'event' || key === 'wild') continue;
+      if (milestoneNumber(source[key]) <= 0 || seen[key]) continue;
+      seen[key] = true;
+      count++;
+    }
+    return count;
+  }
+
+  function milestoneCardName(card) {
+    if (!card) return '';
+    return typeof card === 'string' ? card : (card.name || '');
+  }
+
+  function hasMilestoneRequirementObject(value) {
+    if (!value) return false;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'object') return Object.keys(value).length > 0;
+    return !!value;
+  }
+
+  function milestoneCardHasRequirement(card, state) {
+    var name = milestoneCardName(card);
+    if (hasMilestoneRequirementObject(card && card.requirements)) return true;
+    if (hasMilestoneRequirementObject(card && card.globalRequirements)) return true;
+    if (hasMilestoneRequirementObject(card && card.tagRequirements)) return true;
+    if (!name) return false;
+    return hasMilestoneRequirementObject(_cardGlobalReqs[name] || _cardGlobalReqs[baseCardName(name)]) ||
+      hasMilestoneRequirementObject(_cardTagReqs[name] || _cardTagReqs[baseCardName(name)]) ||
+      hasMilestoneRequirementObject(getCardDataByName(name, state).requirements);
+  }
+
+  function milestoneCardCost(card, state) {
+    if (!card) return 0;
+    if (typeof card === 'object' && card.cost != null) return milestoneNumber(card.cost);
+    var name = milestoneCardName(card);
+    var effects = getCardEffectsByName(name, state);
+    var data = getCardDataByName(name, state);
+    if (effects && effects.c != null) return milestoneNumber(effects.c);
+    if (data && data.cost != null) return milestoneNumber(data.cost);
+    if (typeof card === 'object' && card.calculatedCost != null) return milestoneNumber(card.calculatedCost);
+    return 0;
+  }
+
+  function milestoneCardHasPositiveVp(card, state) {
+    if (!card) return false;
+    if (typeof card === 'object') {
+      if (milestoneNumber(card.victoryPoints) > 0) return true;
+      if (typeof card.vp === 'number' && card.vp > 0) return true;
+      if (milestoneNumber(card.points) > 0) return true;
+    }
+    var name = milestoneCardName(card);
+    var vpDef = name ? getCardVPByName(name, state) : null;
+    if (!vpDef) return false;
+    if (vpDef.type === 'static') return milestoneNumber(vpDef.vp) > 0;
+    return true;
+  }
+
+  function countMilestoneTableauCards(state, predicate) {
+    var tableau = (state && state.thisPlayer && state.thisPlayer.tableau) || [];
+    var count = 0;
+    for (var i = 0; i < tableau.length; i++) {
+      if (predicate(tableau[i], state)) count++;
+    }
+    return count;
+  }
+
+  function milestoneScoreFromPlayer(maDef, state) {
+    if (!maDef || !state || !state.thisPlayer) return null;
+    var tp = state.thisPlayer;
+    if (maDef.check === 'tr') return milestoneNumber(tp.terraformRating);
+    if (maDef.check === 'prod') return playerProductionForMilestone(tp, maDef.resource);
+    if (maDef.check === 'events') return milestoneNumber(tp.tags && tp.tags.event);
+    if (maDef.check === 'tags') return milestoneNumber(tp.tags && tp.tags[maDef.tag]);
+    if (maDef.check === 'cities') return playerMilestoneCount(tp, ['citiesCount', 'cityCount', 'cities']);
+    if (maDef.check === 'tableau') return playerMilestoneCount(tp, ['tableauCount', 'tableau']);
+    if (maDef.check === 'colonies') return countOwnColonies(state, tp);
+    if (maDef.check === 'greeneries') return playerMilestoneCount(tp, ['greeneriesCount', 'greeneryCount', 'greeneries', 'greeneryTiles']);
+    if (maDef.check === 'hand') return playerMilestoneCount(tp, ['cardsInHandCount', 'cardsInHand', 'hand']);
+    if (maDef.check === 'maxProd') return Math.max.apply(Math, milestoneProductionValues(tp));
+    if (maDef.check === 'totalProd') {
+      var prodValues = milestoneProductionValues(tp);
+      var total = 0;
+      for (var pi = 0; pi < prodValues.length; pi++) total += prodValues[pi];
+      return total;
+    }
+    if (maDef.check === 'uniqueTags') return countUniqueMilestoneTags(tp.tags);
+    if (maDef.check === 'bioTags') {
+      var tags = tp.tags || {};
+      return milestoneNumber(tags.plant) + milestoneNumber(tags.microbe) + milestoneNumber(tags.animal);
+    }
+    if (maDef.check === 'reqCards') return countMilestoneTableauCards(state, milestoneCardHasRequirement);
+    if (maDef.check === 'expensiveCards') return countMilestoneTableauCards(state, function(card, cardState) {
+      return milestoneCardCost(card, cardState) >= 20;
+    });
+    if (maDef.check === 'vpCards') return countMilestoneTableauCards(state, milestoneCardHasPositiveVp);
+    return null;
+  }
+
   function evaluateMilestone(msName, state) {
     if (!state || !state.game || !state.thisPlayer) return null;
     var milestones = state.game.milestones || [];
@@ -2873,26 +3047,31 @@
     for (var i = 0; i < milestones.length; i++) {
       if (milestones[i].name === msName) { ms = milestones[i]; break; }
     }
-    if (!ms || !ms.scores) return null;
+    if (!ms) return null;
 
     // Get threshold from TM_MA_DATA or ms.threshold (API sometimes provides it)
-    var maData = (typeof TM_MA_DATA !== 'undefined') ? TM_MA_DATA : {};
+    var maData = milestoneMaData();
     var maDef = maData[msName];
-    var threshold = (ms.threshold > 0) ? ms.threshold : (maDef && maDef.target > 0 ? maDef.target : 0);
+    var threshold = milestoneNumber(ms.threshold) > 0 ? milestoneNumber(ms.threshold) : (maDef && milestoneNumber(maDef.target) > 0 ? milestoneNumber(maDef.target) : 0);
     if (threshold <= 0) return null; // unknown milestone, can't evaluate
 
     // Find thisPlayer's score
     var myColor = state.thisPlayer.color;
-    var myScore = 0;
-    for (var si = 0; si < ms.scores.length; si++) {
-      if (ms.scores[si].playerColor === myColor || ms.scores[si].color === myColor) {
-        myScore = ms.scores[si].score || 0;
-        break;
+    var myScore = null;
+    if (ms.scores) {
+      for (var si = 0; si < ms.scores.length; si++) {
+        if (ms.scores[si].playerColor === myColor || ms.scores[si].color === myColor) {
+          myScore = milestoneNumber(ms.scores[si].score);
+          break;
+        }
       }
     }
+    if (myScore === null) myScore = milestoneScoreFromPlayer(maDef, state);
+    if (myScore === null) return null;
 
-    var canClaim = myScore >= threshold;
-    return { canClaim: canClaim, myScore: myScore, threshold: threshold, distance: threshold - myScore };
+    var atMost = maDef && maDef.thresholdDirection === 'atMost';
+    var canClaim = atMost ? myScore <= threshold : myScore >= threshold;
+    return { canClaim: canClaim, myScore: myScore, threshold: threshold, distance: atMost ? myScore - threshold : threshold - myScore };
   }
 
   /**

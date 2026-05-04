@@ -269,6 +269,23 @@ function testCoreHelpers() {
   assert.strictEqual(actions[0].action, 'Convert plants to greenery');
   assert(actions.some((item) => item.action === 'Do nothing' && item.score === 20));
 
+  const playedCardActions = core.analyzeActions({
+    type: 'or',
+    options: [
+      {title: 'Perform an action from a played card'},
+      {title: 'Play project card'},
+    ],
+  }, state, {
+    remainingSteps: () => 12,
+    isRedsRuling: () => false,
+    analyzePass: () => ({shouldPass: false, reason: 'Есть доступные действия'}),
+  });
+  const playedCardAction = playedCardActions.find((item) => item.action === 'Perform an action from a played card');
+  const playProjectCard = playedCardActions.find((item) => item.action === 'Play project card');
+  assert.strictEqual(playedCardAction.score, 65, 'played-card action should not be scored as project-card play');
+  assert.strictEqual(playedCardAction.reason, 'Действие карты');
+  assert.strictEqual(playProjectCard.score, 70);
+
   const objectTitleActions = core.analyzeActions({
     type: 'or',
     options: [
@@ -474,6 +491,51 @@ function testCoreHelpers() {
     'empty hand should soften late Acquired Company penalty for buy-phase hand starvation'
   );
   assert.strictEqual(core.scoreCardDisruptionValue({beh: {decreaseAnyProduction: {count: 2}, removeAnyPlants: 4}}), 5);
+
+  const earlyGreenhousesState = {
+    game: {generation: 5, temperature: -10, oxygenLevel: 7, oceans: 4, venusScaleLevel: 14},
+    players: [{citiesCount: 1}, {citiesCount: 1}, {citiesCount: 1}],
+    thisPlayer: {plants: 0},
+  };
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: earlyGreenhousesState, gensLeft: 4}),
+    0,
+    'Greenhouses should not get a play-now city boost while it is still a delayed plant cashout'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({
+      name: 'Greenhouses',
+      state: Object.assign({}, earlyGreenhousesState, {thisPlayer: {plants: 5}}),
+      gensLeft: 4,
+    }),
+    6,
+    'Greenhouses should get the city boost when it immediately creates a greenery'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: earlyGreenhousesState, gensLeft: 2}),
+    0,
+    'Greenhouses should still wait at two gens left if it does not make a greenery now'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Greenhouses', state: earlyGreenhousesState, gensLeft: 1}),
+    6,
+    'Greenhouses should get the city boost in the final cashout window'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Optimal Aerobraking', state: {game: {temperature: -10}}}),
+    5,
+    'Optimal Aerobraking should keep its baseline runtime boost while temperature has room'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Optimal Aerobraking', state: {game: {temperature: 6}}}),
+    -1,
+    'Optimal Aerobraking should be penalized when only one temperature step remains'
+  );
+  assert.strictEqual(
+    core.scoreNamedCardRuntimeAdjustments({name: 'Optimal Aerobraking', state: {game: {temperature: 8}}}),
+    -3,
+    'Optimal Aerobraking should lose most trigger value after temperature is maxed'
+  );
 
   const manualDelta = core.applyManualEVAdjustments({
     name: 'Manual Card',

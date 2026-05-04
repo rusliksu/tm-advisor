@@ -37,6 +37,8 @@
   var sharedScoreAcquiredCompanyTimingValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreAcquiredCompanyTimingValue;
   var sharedScoreCardDisruptionValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreCardDisruptionValue;
   var sharedScoreGlobalTileValue = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreGlobalTileValue;
+  var sharedEstimateAresPlacementDelta = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateAresPlacementDelta;
+  var sharedScoreNamedCardRuntimeAdjustments = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreNamedCardRuntimeAdjustments;
   var sharedScoreRequirementPenalty = TM_BRAIN_CORE && TM_BRAIN_CORE.scoreRequirementPenalty;
   var sharedApplyManualEVAdjustments = TM_BRAIN_CORE && TM_BRAIN_CORE.applyManualEVAdjustments;
   var sharedEstimateScoreCardTimingInterpolated = TM_BRAIN_CORE && TM_BRAIN_CORE.estimateScoreCardTimingInterpolated;
@@ -438,12 +440,18 @@
     return normalized;
   }
 
+  function getMegaCredits(player) {
+    return player && player.megaCredits != null
+      ? player.megaCredits
+      : (player && player.megacredits != null ? player.megacredits : 0);
+  }
+
   function adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName) {
     var tp = (state && state.thisPlayer) || {};
     var payRes = normalizePaymentShape(pay);
     var selectedCardName = cardName || (wfOrOpts && wfOrOpts.card) || '';
     var mcKey = 'megacredits';
-    var availableMC = tp.megaCredits || tp.megacredits || 0;
+    var availableMC = getMegaCredits(tp);
     var wfRes = wfOrOpts || {};
     var adjustSpendAll = function(resourceKey, resourceType, unitValue) {
       if ((payRes[resourceKey] || 0) <= 0) return;
@@ -539,7 +547,7 @@
       remaining = Math.max(0, remaining - use * alt.val);
     }
 
-    pay.megacredits = Math.max(0, Math.min(remaining, tp.megacredits || 0));
+    pay.megacredits = Math.max(0, Math.min(remaining, getMegaCredits(tp)));
     return adjustSpecialCardPayment(pay, amount, state, wfOrOpts, cardName);
   };
 
@@ -1294,6 +1302,9 @@
     if (beh.city && !isOffBoardCityCard(name)) {
       ev += vpMC(gensLeft) * 2 + 2;
     }
+    if (sharedEstimateAresPlacementDelta) {
+      ev += sharedEstimateAresPlacementDelta(name, state, gensLeft);
+    }
 
     // ── COLONY ──
     if (beh.colony) ev += 7; // colony slot ≈ 7 MC (prod bonus + trade target)
@@ -1641,17 +1652,31 @@
       if (beh.ocean && oppPlantEngine) ev -= 2;
     }
 
-    if (name === 'Greenhouses') {
+    if (!sharedScoreNamedCardRuntimeAdjustments && name === 'Greenhouses') {
       var totalCities = 0;
       var cityPlayers = Array.isArray(state && state.players) ? state.players : [];
       for (var cpi = 0; cpi < cityPlayers.length; cpi++) {
         totalCities += cityPlayers[cpi].citiesCount || 0;
       }
-      if (totalCities >= 3) ev += totalCities * 2;
+      if (totalCities > 0) {
+        var greenhousePlantCost = corp === 'Ecoline' ? 7 : 8;
+        var greenhousePlants = Math.max(0, Number(tp.plants) || 0);
+        var greenhouseConvertsNow = Math.floor((greenhousePlants + totalCities) / greenhousePlantCost) > Math.floor(greenhousePlants / greenhousePlantCost);
+        if (greenhouseConvertsNow || gensLeft <= 1) ev += Math.min(18, totalCities * 2);
+        else if (totalCities >= 5) ev += Math.min(6, Math.max(0, Math.round((totalCities - 4) * 1.25)));
+      }
     }
 
-    if (name === 'Optimal Aerobraking') {
-      ev += 5;
+    if (!sharedScoreNamedCardRuntimeAdjustments && name === 'Optimal Aerobraking') {
+      var oaGame = (state && state.game) || {};
+      var oaTemp = typeof oaGame.temperature === 'number' ? oaGame.temperature : -30;
+      var oaTempStepsLeft = Math.max(0, Math.round((8 - oaTemp) / 2));
+      var oaTempPenalty = 0;
+      if (oaTempStepsLeft <= 0) oaTempPenalty = 8;
+      else if (oaTempStepsLeft <= 1) oaTempPenalty = 6;
+      else if (oaTempStepsLeft <= 2) oaTempPenalty = 4;
+      else if (oaTempStepsLeft <= 3) oaTempPenalty = 2;
+      ev += 5 - oaTempPenalty;
     }
 
     if (name === 'Space Station') {
@@ -1985,7 +2010,7 @@
       var precipSteps = Math.max(0, Math.round((30 - (typeof g2.venusScaleLevel === 'number' ? g2.venusScaleLevel : 30)) / 2));
       if (precipSupport <= 1) ev -= 8;
       else if (precipSupport === 2) ev -= 4;
-      if ((tp.megacredits || 0) < 10 && (tp.mc || 0) < 10) ev -= 2;
+      if (getMegaCredits(tp) < 10 && (tp.mc || 0) < 10) ev -= 2;
       if (precipSteps <= 1) ev -= 10;
       else if (precipSteps <= 3) ev -= 4;
       if (gensLeft <= 2) ev -= 8;
@@ -2099,7 +2124,17 @@
     }
 
     // ── MANUAL EV OVERRIDES (effects not captured by parser) ──
-    if (name === 'Molecular Printing') {
+    if (sharedScoreNamedCardRuntimeAdjustments) {
+      ev += sharedScoreNamedCardRuntimeAdjustments({
+        name: name,
+        state: state,
+        gensLeft: gensLeft,
+        handCards: handCards,
+        getCardTags: function(cardName, fallbackTags) {
+          return getCardTagsByName(cardName, fallbackTags || [], state);
+        },
+      });
+    } else if (name === 'Molecular Printing') {
       ev += countCitiesAndColoniesInPlay(state);
     }
     var manual = name === 'Molecular Printing' ? null : MANUAL_EV[name];
@@ -2245,7 +2280,7 @@
     }
     if (!cards || cards.length === 0) return [];
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megacredits || 0;
+    var mc = getMegaCredits(tp);
     var steel = tp.steel || 0;
     var titanium = tp.titanium || 0;
     var steps = remainingSteps(state);
@@ -2299,7 +2334,7 @@
       return sharedAnalyzePass(state, { remainingSteps: remainingSteps });
     }
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megacredits || 0;
+    var mc = getMegaCredits(tp);
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var steps = remainingSteps(state);
@@ -2340,7 +2375,7 @@
     if (!waitingFor) return [];
 
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megacredits || 0;
+    var mc = getMegaCredits(tp);
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var steps = remainingSteps(state);

@@ -23,6 +23,7 @@ const {
   testScoreCardValuesGreenhousesWhenCitiesExist,
   testScoreCardMartianRailsScalesWithTableCitiesAndMode,
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport,
+  testScoreCardValuesMediaGroupBeforeKnownEvents,
   testScoreCardValuesDiscountCardMoreWithMatchingHand,
   testScoreCardGivesProductionCardsMoreRunwayEarly,
   testScoreCardDelaysExpensivePureVpCardsEarly,
@@ -59,6 +60,8 @@ const {
   testCollusionStandardProjectPassesEvenWithCorruption,
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
   testWeakEndgameStandardProjectsDoNotBeatBlueAction,
+  testFinalClosedGlobalsUsesScoringBlueActionOverEngineCard,
+  testFinalClosedGlobalsUsesScoringBlueActionBeforeCeoPoke,
   testProfitableLunaTradeBeatsWeakCardAction,
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions,
   testOnlyVenusOpenPrefersBestBlueActionOverAirScrapping,
@@ -150,6 +153,250 @@ function testKeepPassDraftUsesDraftRatingNotPlayEv() {
 
   const input = SMARTBOT.handleInput(wf, state);
   assert.deepStrictEqual(input, {type: 'card', cards: ['Viral Enhancers']});
+}
+
+function testKeepPassDraftPrefersMolecularPrintingOverGenericPlantProduction() {
+  const wf = {
+    type: 'card',
+    title: {message: 'Select a card to keep and pass the rest to ${0}', data: []},
+    buttonLabel: 'Keep',
+    min: 1,
+    max: 1,
+    cards: [
+      buildDraftProjectCard('Plantation'),
+      buildDraftProjectCard('Molecular Printing'),
+      buildDraftProjectCard('Snow Algae'),
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      name: 'Паша',
+      color: 'orange',
+      megaCredits: 0,
+      megacredits: 0,
+      terraformRating: 20,
+      tableau: [],
+      tags: {},
+    },
+    cardsInHand: [],
+    draftedCards: [],
+    players: [{color: 'orange'}, {color: 'red'}, {color: 'gold'}],
+    game: {
+      generation: 1,
+      phase: 'initial_drafting',
+      oxygenLevel: 0,
+      temperature: -30,
+      oceans: 0,
+      venusScaleLevel: 0,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, {type: 'card', cards: ['Molecular Printing']});
+}
+
+function testResearchBuyCarriesHighPriorityDraftPickThroughPurchase() {
+  const wf = {
+    type: 'card',
+    title: 'Select card(s) to buy',
+    min: 0,
+    max: 4,
+    cards: [
+      buildDraftProjectCard('Viral Enhancers'),
+      buildDraftProjectCard('Deepnuking'),
+      buildDraftProjectCard('Earth Elevator'),
+      buildDraftProjectCard('Private Investigator'),
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'blue',
+      megaCredits: 40,
+      megacredits: 40,
+      megacreditProduction: 5,
+      terraformRating: 22,
+      tableau: [],
+      tags: {},
+      cardsInHand: [buildDraftProjectCard('Colonial Representation')],
+    },
+    cardsInHand: [buildDraftProjectCard('Colonial Representation')],
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    game: {
+      generation: 4,
+      phase: 'research',
+      oxygenLevel: 2,
+      temperature: -22,
+      oceans: 2,
+      venusScaleLevel: 4,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'card');
+  assert(input.cards.includes('Earth Elevator'));
+  assert(input.cards.includes('Viral Enhancers'));
+  assert(!input.cards.includes('Deepnuking'));
+}
+
+function testOpeningColonyPrefersTritonOverEuropaWhenTitaniumScarce() {
+  const wf = {
+    type: 'colony',
+    title: 'Select where to build a colony',
+    coloniesModel: [
+      {name: 'Europa', colonies: []},
+      {name: 'Titan', colonies: []},
+      {name: 'Triton', colonies: []},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'red',
+      megaCredits: 20,
+      megacredits: 20,
+      titanium: 0,
+      steel: 0,
+      tableau: [],
+      cardsInHand: [],
+    },
+    cardsInHand: [],
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    game: {
+      generation: 1,
+      phase: 'action',
+      oxygenLevel: 0,
+      temperature: -30,
+      oceans: 0,
+      venusScaleLevel: 0,
+    },
+  };
+
+  assert.deepStrictEqual(SMARTBOT.handleInput(wf, state), {
+    type: 'colony',
+    colonyName: 'Triton',
+  });
+}
+
+function testOpeningColonyPrefersTritonOverOccupiedEuropaTie() {
+  const wf = {
+    type: 'colony',
+    title: 'Select where to build a colony',
+    coloniesModel: [
+      {name: 'Ceres', colonies: []},
+      {name: 'Europa', colonies: [{color: 'red'}, {color: 'blue'}]},
+      {name: 'Ganymede', colonies: []},
+      {name: 'Triton', colonies: []},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'green',
+      megaCredits: 23,
+      megacredits: 23,
+      titanium: 0,
+      titaniumProduction: 0,
+      steel: 4,
+      tableau: [],
+      cardsInHand: [],
+    },
+    cardsInHand: [],
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    game: {
+      generation: 1,
+      phase: 'action',
+      oxygenLevel: 1,
+      temperature: -30,
+      oceans: 3,
+      venusScaleLevel: 2,
+    },
+  };
+
+  assert.deepStrictEqual(SMARTBOT.handleInput(wf, state), {
+    type: 'colony',
+    colonyName: 'Triton',
+  });
+}
+
+function testPlutoDiscardDoesNotUseDraftKeepPriority() {
+  const wf = {
+    type: 'card',
+    title: 'Pluto colony bonus. Select a card to discard',
+    min: 1,
+    max: 1,
+    cards: [
+      buildDraftProjectCard('Fusion Power'),
+      buildDraftProjectCard('Molecular Printing'),
+      buildDraftProjectCard('Air-Scrapping Expedition'),
+      buildDraftProjectCard('New Holland'),
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'red',
+      megaCredits: 10,
+      megacredits: 10,
+      terraformRating: 25,
+      tableau: [],
+      tags: {},
+      cardsInHand: [],
+    },
+    cardsInHand: [],
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    game: {
+      generation: 9,
+      phase: 'action',
+      oxygenLevel: 8,
+      temperature: -6,
+      oceans: 2,
+      venusScaleLevel: 30,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'card');
+  assert.notStrictEqual(input.cards[0], 'Molecular Printing');
+}
+
+function testPlutoDiscardProtectsHighPriorityDraftPick() {
+  const wf = {
+    type: 'card',
+    title: 'Pluto colony bonus. Select a card to discard',
+    min: 1,
+    max: 1,
+    cards: [
+      buildDraftProjectCard('Molecular Printing'),
+      buildDraftProjectCard('GMO Contract'),
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'red',
+      megaCredits: 2,
+      megacredits: 2,
+      terraformRating: 27,
+      tableau: [],
+      tags: {},
+      cardsInHand: [
+        buildDraftProjectCard('Molecular Printing'),
+        buildDraftProjectCard('GMO Contract'),
+      ],
+    },
+    cardsInHand: [
+      buildDraftProjectCard('Molecular Printing'),
+      buildDraftProjectCard('GMO Contract'),
+    ],
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    game: {
+      generation: 3,
+      phase: 'action',
+      oxygenLevel: 1,
+      temperature: -22,
+      oceans: 1,
+      venusScaleLevel: 10,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, {type: 'card', cards: ['GMO Contract']});
 }
 
 function testJovianLanternsKeepsImmediateFloaters() {
@@ -961,11 +1208,11 @@ function testAwardFundingBranchDoesNotUseStepsBeforeInit() {
 }
 
 function testMegaCreditsNormalizationCamelCase() {
-  // Our fork API returns megaCredits (camelCase), smartbot reads megacredits (lowercase).
+  // Our fork API can return megaCredits (camelCase) without the lowercase alias.
   // Verify smartPay still reads state aliases, but emits server-compatible payment.
   const state = {
     thisPlayer: {
-      megaCredits: 30, megacredits: 30,
+      megaCredits: 30,
       steel: 2, titanium: 1, heat: 5,
       steelValue: 2, titaniumValue: 3,
       tableau: [], cardsInHand: [],
@@ -977,7 +1224,33 @@ function testMegaCreditsNormalizationCamelCase() {
   assert.ok(payment.hasOwnProperty('megacredits'), 'payment must have megacredits (lowercase)');
   assert.ok(!payment.hasOwnProperty('megaCredits'), 'payment must not leak legacy megaCredits');
   assert.ok(typeof payment.megacredits === 'number', 'megacredits must be a number');
+  assert.strictEqual(payment.megacredits, 14, 'smartPay must spend camelCase MC when lowercase alias is absent');
   assert.ok(payment.hasOwnProperty('steel'), 'payment must include all server payment keys');
+}
+
+function testMoneyNormalizationCoversMcProductionBothWays() {
+  const wf = { type: 'option' };
+  const camelState = {
+    thisPlayer: { megaCredits: 30, megaCreditProduction: 12 },
+    players: [{ color: 'red', megaCredits: 20, megaCreditProduction: 4 }],
+    game: { generation: 3 },
+  };
+  SMARTBOT.handleInput(wf, camelState);
+  assert.strictEqual(camelState.thisPlayer.megacredits, 30);
+  assert.strictEqual(camelState.thisPlayer.megacreditProduction, 12);
+  assert.strictEqual(camelState.players[0].megacredits, 20);
+  assert.strictEqual(camelState.players[0].megacreditProduction, 4);
+
+  const lowerState = {
+    thisPlayer: { megacredits: 21, megacreditProduction: 7 },
+    players: [{ color: 'blue', megacredits: 11, megacreditProduction: 2 }],
+    game: { generation: 3 },
+  };
+  SMARTBOT.handleInput(wf, lowerState);
+  assert.strictEqual(lowerState.thisPlayer.megaCredits, 21);
+  assert.strictEqual(lowerState.thisPlayer.megaCreditProduction, 7);
+  assert.strictEqual(lowerState.players[0].megaCredits, 11);
+  assert.strictEqual(lowerState.players[0].megaCreditProduction, 2);
 }
 
 function testCardPlaySeesMegaCreditsFromState() {
@@ -1051,6 +1324,12 @@ function testUnaffordableStandardProjectFallbackDoesNotPickPowerPlant() {
 
 function run() {
   testKeepPassDraftUsesDraftRatingNotPlayEv();
+  testKeepPassDraftPrefersMolecularPrintingOverGenericPlantProduction();
+  testResearchBuyCarriesHighPriorityDraftPickThroughPurchase();
+  testOpeningColonyPrefersTritonOverEuropaWhenTitaniumScarce();
+  testOpeningColonyPrefersTritonOverOccupiedEuropaTie();
+  testPlutoDiscardDoesNotUseDraftKeepPriority();
+  testPlutoDiscardProtectsHighPriorityDraftPick();
   testJovianLanternsKeepsImmediateFloaters();
   testFloaterTargetPrefersVpAccumulator();
   testEnergyMarketLowMcTakesMegacredits();
@@ -1081,6 +1360,7 @@ function run() {
   testClaimedUndergroundTokenReturnsSelectedIndexes();
   testAwardFundingBranchDoesNotUseStepsBeforeInit();
   testMegaCreditsNormalizationCamelCase();
+  testMoneyNormalizationCoversMcProductionBothWays();
   testCardPlaySeesMegaCreditsFromState();
   testUnaffordableStandardProjectFallbackDoesNotPickPowerPlant();
   testSmartPayLeavesOneFloaterForStratosphericBirdsWhenSingleSource();
@@ -1100,6 +1380,7 @@ function run() {
   testScoreCardValuesGreenhousesWhenCitiesExist();
   testScoreCardMartianRailsScalesWithTableCitiesAndMode();
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport();
+  testScoreCardValuesMediaGroupBeforeKnownEvents();
   testScoreCardValuesDiscountCardMoreWithMatchingHand();
   testScoreCardGivesProductionCardsMoreRunwayEarly();
   testScoreCardDelaysExpensivePureVpCardsEarly();
@@ -1136,6 +1417,8 @@ function run() {
   testCollusionStandardProjectPassesEvenWithCorruption();
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
   testWeakEndgameStandardProjectsDoNotBeatBlueAction();
+  testFinalClosedGlobalsUsesScoringBlueActionOverEngineCard();
+  testFinalClosedGlobalsUsesScoringBlueActionBeforeCeoPoke();
   testProfitableLunaTradeBeatsWeakCardAction();
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions();
   testOnlyVenusOpenPrefersBestBlueActionOverAirScrapping();

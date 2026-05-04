@@ -71,7 +71,7 @@
       remaining = Math.max(0, remaining - use * alt.val);
     }
 
-    pay.megacredits = Math.max(0, Math.min(remaining, tp.megaCredits || tp.megacredits || 0));
+    pay.megacredits = Math.max(0, Math.min(remaining, tp.megaCredits ?? tp.megacredits ?? 0));
     return pay;
   }
 
@@ -722,7 +722,7 @@
     var remainingStepsFn = opts.remainingSteps;
     var steps = remainingStepsFn ? remainingStepsFn(state) : 0;
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megaCredits || tp.megacredits || 0;
+    var mc = tp.megaCredits ?? tp.megacredits ?? 0;
     var heat = tp.heat || 0;
     var plants = tp.plants || 0;
     var gen = (state && state.game && state.game.generation) || 5;
@@ -759,7 +759,7 @@
     var isCityCard = opts.isCityCard || function() { return false; };
 
     var tp = (state && state.thisPlayer) || {};
-    var mc = tp.megaCredits || tp.megacredits || 0;
+    var mc = tp.megaCredits ?? tp.megacredits ?? 0;
     var steel = tp.steel || 0;
     var titanium = tp.titanium || 0;
 
@@ -820,6 +820,18 @@
     return actionLabelText(opt && opt.title) || actionLabelText(opt && opt.buttonLabel) || fallback || '';
   }
 
+  function isPlayedCardActionLabel(label) {
+    var low = String(label || '').toLowerCase();
+    return (low.indexOf('played') >= 0 && low.indexOf('action') >= 0) ||
+      low.indexOf('perform an action') >= 0;
+  }
+
+  function isPlayProjectCardLabel(label) {
+    var low = String(label || '').toLowerCase();
+    if (isPlayedCardActionLabel(low)) return false;
+    return low.indexOf('project card') >= 0 || (/\bplay\b/.test(low) && low.indexOf('card') >= 0);
+  }
+
   function analyzeActions(waitingFor, state, options) {
     if (!waitingFor) return [];
     var opts = options || {};
@@ -843,6 +855,8 @@
       var opt = optionsList[i];
       var title = optionActionLabel(opt, 'Option ' + (i + 1));
       var titleLow = title.toLowerCase();
+      var isPlayedCardAction = isPlayedCardActionLabel(titleLow);
+      var isPlayProjectCard = isPlayProjectCardLabel(titleLow);
       var score = 50;
       var reason = '';
       var emoji = '📊';
@@ -874,12 +888,12 @@
         emoji = '🏗️';
         reason = 'Стандартный проект';
       }
-      else if ((titleLow.indexOf('play') >= 0 && titleLow.indexOf('card') >= 0) || titleLow.indexOf('project card') >= 0) {
+      else if (isPlayProjectCard) {
         score = endgame ? 55 : 70;
         emoji = '🃏';
         reason = endgame ? 'Карта (поздно)' : 'Карта';
       }
-      else if (titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) {
+      else if (isPlayedCardAction || titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) {
         score = endgame ? 70 : 65;
         emoji = '⚡';
         reason = 'Действие карты';
@@ -1518,6 +1532,361 @@
     return delta;
   }
 
+  function isCityTile(t) {
+    return t === 0 || t === 2 || t === 3 || t === 5 || t === 20 || t === 37 || t === 43 ||
+      t === 'city' || t === 'capital' || t === 'ocean city' || t === 'red city';
+  }
+
+  function isOceanTile(t) {
+    return t === 1 || t === 2 || t === 20 || t === 21 || t === 22 || t === 36 || t === 43 ||
+      t === 'ocean' || t === 'ocean city' || t === 'ocean farm' || t === 'ocean sanctuary' || t === 'wetlands';
+  }
+
+  function isHazardTile(t) {
+    return t === 23 || t === 24 || t === 25 || t === 26 ||
+      t === 'Mild Dust Storm' || t === 'Severe Dust Storm' || t === 'Mild Erosion' || t === 'Severe Erosion';
+  }
+
+  function hasSpaceBonus(space, bonusId) {
+    var bonus = space && space.bonus;
+    if (!bonus || !bonus.length) return false;
+    for (var i = 0; i < bonus.length; i++) {
+      if (bonus[i] === bonusId) return true;
+    }
+    return false;
+  }
+
+  function hasAdjacencyBonus(space) {
+    return !!(space && space.adjacency && space.adjacency.bonus && space.adjacency.bonus.length);
+  }
+
+  function getAdjacencyCost(space) {
+    return (space && space.adjacency && space.adjacency.cost) || 0;
+  }
+
+  function getAdjacentSpaces(space, coordMap) {
+    if (!space || space.x === undefined || space.y === undefined) return [];
+    var deltas = [
+      [-1, 0], [1, 0],
+      [space.y % 2 === 0 ? -1 : 0, -1], [space.y % 2 === 0 ? 0 : 1, -1],
+      [space.y % 2 === 0 ? -1 : 0, 1], [space.y % 2 === 0 ? 0 : 1, 1]
+    ];
+    var out = [];
+    for (var i = 0; i < deltas.length; i++) {
+      var adj = coordMap[(space.x + deltas[i][0]) + ',' + (space.y + deltas[i][1])];
+      if (adj) out.push(adj);
+    }
+    return out;
+  }
+
+  function getBoardMetrics(state) {
+    var spaces = (state && state.game && state.game.spaces) || [];
+    var myColor = state && state.thisPlayer && state.thisPlayer.color;
+    var coordMap = {};
+    var m = {
+      emptyLand: 0,
+      occupiedLand: 0,
+      myTiles: 0,
+      oceans: 0,
+      hazards: 0,
+      emptyMiningBonus: 0,
+      emptyMiningBonusRichness: 0,
+      emptyAdjacentToAnyTile: 0,
+      emptyAdjacentToOcean: 0,
+      emptyAdjacentToCity: 0,
+      emptyAdjacentToOwn: 0,
+      emptyAdjacentToOwnMiningBonus: 0,
+      emptyAdjacentToOwnMiningBonusRichness: 0,
+      emptyAdjacentToAdjacencyBonus: 0,
+      emptyAdjacentToAdjacencyCost: 0,
+      protectedHazards: 0,
+      isolatedEmpty: 0,
+      noCityAdjacent: 0,
+    };
+    for (var i = 0; i < spaces.length; i++) {
+      var sp = spaces[i];
+      if (sp.x !== undefined && sp.y !== undefined) coordMap[sp.x + ',' + sp.y] = sp;
+      if (sp.tileType != null) {
+        if (sp.spaceType === 'land' || sp.spaceType === 'ocean') m.occupiedLand++;
+        if (isOceanTile(sp.tileType)) m.oceans++;
+        if (isHazardTile(sp.tileType)) m.hazards++;
+        if (sp.protectedHazard === true) m.protectedHazards++;
+        if (myColor && sp.color === myColor) m.myTiles++;
+      } else if (sp.spaceType === 'land') {
+        m.emptyLand++;
+      }
+    }
+    for (var j = 0; j < spaces.length; j++) {
+      var empty = spaces[j];
+      if (empty.tileType != null || empty.spaceType !== 'land') continue;
+      var miningRichness = (hasSpaceBonus(empty, 0) ? 1 : 0) + (hasSpaceBonus(empty, 1) ? 1 : 0);
+      var adjs = getAdjacentSpaces(empty, coordMap);
+      var hasAnyTile = false;
+      var hasOcean = false;
+      var hasCity = false;
+      var hasOwn = false;
+      var hasAdjBonus = false;
+      var hasAdjCost = false;
+      for (var ai = 0; ai < adjs.length; ai++) {
+        var adj = adjs[ai];
+        if (adj.tileType != null) {
+          hasAnyTile = true;
+          if (isOceanTile(adj.tileType)) hasOcean = true;
+          if (isCityTile(adj.tileType)) hasCity = true;
+          if (myColor && adj.color === myColor) hasOwn = true;
+          if (hasAdjacencyBonus(adj)) hasAdjBonus = true;
+          if (getAdjacencyCost(adj) > 0) hasAdjCost = true;
+        }
+      }
+      if (miningRichness > 0) {
+        m.emptyMiningBonus++;
+        m.emptyMiningBonusRichness += miningRichness;
+      }
+      if (hasAnyTile) m.emptyAdjacentToAnyTile++;
+      if (hasOcean) m.emptyAdjacentToOcean++;
+      if (hasCity) m.emptyAdjacentToCity++;
+      if (hasOwn) m.emptyAdjacentToOwn++;
+      if (hasOwn && miningRichness > 0) {
+        m.emptyAdjacentToOwnMiningBonus++;
+        m.emptyAdjacentToOwnMiningBonusRichness += miningRichness;
+      }
+      if (hasAdjBonus) m.emptyAdjacentToAdjacencyBonus++;
+      if (hasAdjCost) m.emptyAdjacentToAdjacencyCost++;
+      if (!hasAnyTile) m.isolatedEmpty++;
+      if (!hasCity) m.noCityAdjacent++;
+    }
+    m.boardFullness = (m.emptyLand + m.occupiedLand) > 0 ? m.occupiedLand / (m.emptyLand + m.occupiedLand) : 0;
+    return m;
+  }
+
+  function estimateAresPlacementDelta(name, state, gensLeft) {
+    if (!/:ares$/.test(name || '')) return 0;
+    var m = getBoardMetrics(state);
+    var early = gensLeft >= 6 ? 1.15 : (gensLeft >= 3 ? 1.0 : 0.8);
+    var openFactor = Math.max(0.6, 1 - m.boardFullness * 0.35);
+    var base = 0;
+
+    switch (name) {
+      case 'Capital:ares':
+        base = 4.5 + Math.min(2.5, m.emptyAdjacentToOcean * 0.12) + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        break;
+      case 'Commercial District:ares':
+        base = 4.2
+          + Math.min(2, m.emptyAdjacentToCity * 0.18)
+          + Math.min(1.6, m.emptyAdjacentToAnyTile * 0.05)
+          + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        break;
+      case 'Great Dam:ares':
+        base = 4.8
+          + Math.min(2.5, m.emptyAdjacentToOcean * 0.14)
+          + Math.min(1.2, m.emptyAdjacentToAnyTile * 0.035)
+          + Math.min(0.8, m.emptyAdjacentToAdjacencyBonus * 0.03);
+        break;
+      case 'Deimos Down:ares':
+        base = 5 + Math.min(1.5, m.noCityAdjacent * 0.04);
+        break;
+      case 'Ecological Zone:ares':
+        base = 4 + Math.min(1.5, m.emptyAdjacentToOwn * 0.1);
+        break;
+      case 'Natural Preserve:ares':
+        base = 2.5 + Math.min(1.5, m.isolatedEmpty * 0.06);
+        break;
+      case 'Restricted Area:ares':
+        base = 3.5 + (gensLeft >= 5 ? 1 : 0);
+        break;
+      case 'Magnetic Field Generators:ares':
+        base = 3.5;
+        break;
+      case 'Mining Area:ares':
+        base = 2.8
+          + Math.min(4.5, m.emptyAdjacentToOwnMiningBonus * 0.8)
+          + Math.min(2, m.emptyAdjacentToOwnMiningBonusRichness * 0.45)
+          + Math.min(0.8, m.emptyAdjacentToOwn * 0.06);
+        break;
+      case 'Mining Rights:ares':
+        base = 3
+          + Math.min(4.5, m.emptyMiningBonus * 0.45)
+          + Math.min(2.5, m.emptyMiningBonusRichness * 0.35)
+          + Math.min(1.2, m.emptyAdjacentToOwnMiningBonus * 0.2);
+        break;
+      case 'Industrial Center:ares':
+        base = 3 + Math.min(1.5, m.emptyAdjacentToOwn * 0.12);
+        break;
+      case 'Mohole Area:ares':
+        base = 3.5;
+        break;
+      case 'Nuclear Zone:ares':
+        base = 5 + Math.min(1, m.noCityAdjacent * 0.03) + Math.min(1.2, m.emptyAdjacentToAdjacencyCost * 0.08);
+        break;
+      case 'Lava Flows:ares':
+        base = 3;
+        break;
+      default:
+        base = 2.5;
+    }
+
+    if (m.hazards > 0 && (name === 'Mining Area:ares' || name === 'Mining Rights:ares' || name === 'Commercial District:ares' || name === 'Capital:ares')) {
+      base -= Math.min(1.5, m.hazards * 0.2);
+    }
+    if (m.protectedHazards > 0 && (name === 'Deimos Down:ares' || name === 'Natural Preserve:ares')) {
+      base -= Math.min(0.8, m.protectedHazards * 0.25);
+    }
+    return base * early * openFactor;
+  }
+
+  function countCitiesAndColoniesInPlay(state) {
+    var cities = 0;
+    var players = Array.isArray(state && state.players)
+      ? state.players
+      : (Array.isArray(state && state.game && state.game.players) ? state.game.players : []);
+    if (Array.isArray(players)) {
+      for (var pi = 0; pi < players.length; pi++) {
+        cities += (players[pi] && players[pi].citiesCount) || 0;
+      }
+    }
+    var coloniesInPlay = 0;
+    var colonies = state && state.game && state.game.colonies;
+    if (Array.isArray(colonies)) {
+      for (var ci = 0; ci < colonies.length; ci++) {
+        var slots = colonies[ci] && colonies[ci].colonies;
+        if (Array.isArray(slots)) coloniesInPlay += slots.length;
+      }
+    }
+    return cities + coloniesInPlay;
+  }
+
+  function countCitiesInPlay(state) {
+    var totalCities = 0;
+    var players = Array.isArray(state && state.players)
+      ? state.players
+      : (Array.isArray(state && state.game && state.game.players) ? state.game.players : []);
+    for (var pi = 0; pi < players.length; pi++) {
+      totalCities += (players[pi] && players[pi].citiesCount) || 0;
+    }
+    var boardCities = 0;
+    var spaces = state && state.game && state.game.spaces;
+    if (Array.isArray(spaces)) {
+      for (var si = 0; si < spaces.length; si++) {
+        if (spaces[si] && isCityTile(spaces[si].tileType)) boardCities++;
+      }
+    }
+    return Math.max(totalCities, boardCities);
+  }
+
+  function tableauHasCard(tableau, cardName) {
+    if (!Array.isArray(tableau) || !cardName) return false;
+    var target = String(cardName).toLowerCase();
+    for (var i = 0; i < tableau.length; i++) {
+      var name = tableau[i] && (tableau[i].name || tableau[i]);
+      if (String(name || '').toLowerCase() === target) return true;
+    }
+    return false;
+  }
+
+  function greeneryPlantCost(state) {
+    var tp = (state && state.thisPlayer) || {};
+    var corp = String(tp.corporation || tp.corp || '').toLowerCase();
+    if (corp === 'ecoline' || tableauHasCard(tp.tableau, 'Ecoline') || tableauHasCard(tp.tableau, 'EcoLine')) return 7;
+    return 8;
+  }
+
+  function scoreGreenhousesRuntimeAdjustment(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var totalCities = countCitiesInPlay(state);
+    if (totalCities <= 0) return 0;
+
+    var tp = state.thisPlayer || {};
+    var plants = Math.max(0, Number(tp.plants) || 0);
+    var plantCost = greeneryPlantCost(state);
+    var greeneriesBefore = Math.floor(plants / plantCost);
+    var greeneriesAfter = Math.floor((plants + totalCities) / plantCost);
+    var convertsNow = greeneriesAfter > greeneriesBefore;
+    var gensLeft = (typeof opts.gensLeft === 'number' && isFinite(opts.gensLeft))
+      ? opts.gensLeft
+      : estimateGensLeftFromState(state);
+    if (typeof gensLeft !== 'number' || !isFinite(gensLeft) || gensLeft <= 0) gensLeft = 3;
+
+    if (convertsNow || gensLeft <= 1) return Math.min(18, totalCities * 2);
+    if (totalCities < 5) return 0;
+    return Math.min(6, Math.max(0, Math.round((totalCities - 4) * 1.25)));
+  }
+
+  function scoreOptimalAerobrakingRuntimeAdjustment(options) {
+    var opts = options || {};
+    var g = (opts.state && opts.state.game) || {};
+    var temp = typeof g.temperature === 'number' ? g.temperature : -30;
+    var tempStepsLeft = Math.max(0, Math.round((8 - temp) / 2));
+    var penalty = 0;
+    if (tempStepsLeft <= 0) penalty = 8;
+    else if (tempStepsLeft <= 1) penalty = 6;
+    else if (tempStepsLeft <= 2) penalty = 4;
+    else if (tempStepsLeft <= 3) penalty = 2;
+    return 5 - penalty;
+  }
+
+  function getCardName(card) {
+    return card && (card.name || card.cardName || card);
+  }
+
+  function cardHasTag(card, tag, getCardTags, state) {
+    var name = getCardName(card);
+    var fallback = (card && Array.isArray(card.tags)) ? card.tags : [];
+    var tags = getCardTags ? getCardTags(name, fallback, state) : fallback;
+    if (!Array.isArray(tags)) return false;
+    return tags.indexOf(tag) >= 0;
+  }
+
+  function countFutureEventCards(handCards, selfName, getCardTags, state) {
+    if (!Array.isArray(handCards)) return 0;
+    var count = 0;
+    for (var i = 0; i < handCards.length; i++) {
+      var name = getCardName(handCards[i]);
+      if (!name || name === selfName) continue;
+      if (cardHasTag(handCards[i], 'event', getCardTags, state)) count++;
+    }
+    return count;
+  }
+
+  function scoreMediaGroupRuntimeAdjustment(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var tp = state.thisPlayer || {};
+    var handCards = opts.handCards || tp.cardsInHand || state.cardsInHand || [];
+    var eventCount = countFutureEventCards(handCards, 'Media Group', opts.getCardTags, state);
+    var gensLeft = (typeof opts.gensLeft === 'number' && isFinite(opts.gensLeft))
+      ? opts.gensLeft
+      : estimateGensLeftFromState(state);
+    if (typeof gensLeft !== 'number' || !isFinite(gensLeft) || gensLeft <= 0) gensLeft = 3;
+
+    if (eventCount <= 0) {
+      if (gensLeft <= 2) return -10;
+      if (gensLeft <= 4) return -6;
+      return -3;
+    }
+
+    var mcRaw = tp.megaCredits;
+    if (mcRaw == null) mcRaw = tp.megacredits;
+    var mc = Math.max(0, Number(mcRaw) || 0);
+    var bonus = 5 + eventCount * 3;
+    if (gensLeft <= 2) bonus += 2;
+    if (mc > 0 && mc < 18) bonus += 2;
+    return Math.min(14, bonus);
+  }
+
+  function scoreNamedCardRuntimeAdjustments(options) {
+    var opts = options || {};
+    var name = opts.name || '';
+    var delta = 0;
+    if (name === 'Greenhouses') {
+      delta += scoreGreenhousesRuntimeAdjustment(opts);
+    }
+    if (name === 'Optimal Aerobraking') delta += scoreOptimalAerobrakingRuntimeAdjustment(opts);
+    if (name === 'Media Group') delta += scoreMediaGroupRuntimeAdjustment(opts);
+    if (name === 'Molecular Printing') delta += countCitiesAndColoniesInPlay(opts.state);
+    return delta;
+  }
+
   function countMarsCitiesForActionValue(state, tp) {
     var players = state && state.players;
     if (Array.isArray(players) && players.length > 0) {
@@ -1699,6 +2068,8 @@
     scoreAcquiredCompanyTimingValue: scoreAcquiredCompanyTimingValue,
     scoreCardDisruptionValue: scoreCardDisruptionValue,
     scoreGlobalTileValue: scoreGlobalTileValue,
+    estimateAresPlacementDelta: estimateAresPlacementDelta,
+    scoreNamedCardRuntimeAdjustments: scoreNamedCardRuntimeAdjustments,
     applyManualEVAdjustments: applyManualEVAdjustments,
     ACTION_RESOURCE_REQ: ACTION_RESOURCE_REQ,
   };
