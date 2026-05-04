@@ -11,6 +11,7 @@ const {
   parseArgs,
   normalizeLogEntry,
   resolveFiles,
+  filterEntries,
 } = require('./shadow-analyze');
 const {SHADOW_DIR} = require('./shadow-runtime');
 const {MERGED_DIR} = require('./shadow-merge');
@@ -446,9 +447,115 @@ function testAnalyzeCountsExplicitPassOptionAsPass() {
   assert.strictEqual(stats.spVsCard.unknownOptions, 0);
 }
 
+function testAnalyzeCanFilterByPlayerName() {
+  const entries = [
+    ...normalizeLogEntry({
+      type: 'merged_turn',
+      matchStatus: 'matched',
+      generation: 7,
+      player: 'GydRo',
+      playerId: 'p-gydro',
+      color: 'hydro',
+      promptType: 'or',
+      botAction: 'play Sponsors',
+      inputAction: 'play Sponsors',
+      observedAction: 'play Sponsors',
+      shadow: {raw: {mc: 20}},
+    }),
+    ...normalizeLogEntry({
+      type: 'merged_turn',
+      matchStatus: 'matched',
+      generation: 7,
+      player: 'Other',
+      playerId: 'p-other',
+      color: 'pink',
+      promptType: 'or',
+      botAction: 'play Comet',
+      inputAction: 'play Sponsors',
+      observedAction: 'play Sponsors',
+      shadow: {raw: {mc: 20}},
+    }),
+  ];
+
+  const filtered = filterEntries(entries, {player: 'GydRo'});
+  const stats = analyze(filtered);
+  assert.strictEqual(filtered.length, 1);
+  assert.strictEqual(stats.botVsPlayer.comparable, 1);
+  assert.strictEqual(stats.botVsPlayer.matched, 1);
+  assert.strictEqual(stats.botVsPlayer.differed, 0);
+}
+
+function testAnalyzeSeparatesFinishNowOverrideFromMismatch() {
+  const entries = normalizeLogEntry({
+    type: 'merged_turn',
+    matchStatus: 'matched',
+    generation: 9,
+    player: 'GydRo',
+    playerId: 'p-gydro',
+    color: 'hydro',
+    promptType: 'or',
+    botAction: 'play Interstellar Colony Ship',
+    inputAction: 'play Asteroid:SP',
+    observedAction: 'resource delta mc, tr',
+    shadow: {
+      observedChanges: {
+        resources: {
+          mc: {from: 79, to: 65},
+          tr: {from: 39, to: 40},
+        },
+      },
+      raw: {mc: 79},
+    },
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsPlayer.comparable, 1);
+  assert.strictEqual(stats.botVsPlayer.matched, 0);
+  assert.strictEqual(stats.botVsPlayer.differed, 0);
+  assert.strictEqual(stats.botVsPlayer.strategicOverrides.finishNow.count, 1);
+
+  const report = formatReport(stats, ['merged-g.jsonl']);
+  assert.ok(report.includes('Finish-now overrides: 1'));
+  assert.ok(report.includes('not counted as generic mismatch'));
+}
+
+function testAnalyzeDoesNotTreatCityAsFinishNowTerraforming() {
+  const entries = normalizeLogEntry({
+    type: 'merged_turn',
+    matchStatus: 'matched',
+    generation: 9,
+    player: 'GydRo',
+    playerId: 'p-gydro',
+    color: 'hydro',
+    promptType: 'or',
+    botAction: 'play Interstellar Colony Ship',
+    inputAction: 'play City',
+    observedAction: 'resource delta mc',
+    shadow: {
+      observedChanges: {
+        resources: {
+          mc: {from: 42, to: 21},
+        },
+      },
+      raw: {mc: 42},
+    },
+  });
+
+  const stats = analyze(entries);
+  assert.strictEqual(stats.botVsPlayer.comparable, 1);
+  assert.strictEqual(stats.botVsPlayer.differed, 1);
+  assert.strictEqual(stats.botVsPlayer.strategicOverrides.finishNow.count, 0);
+}
+
 function testParseGameIdOption() {
   const args = parseArgs(['node', 'bot/shadow-analyze.js', '--game', 'g123']);
   assert.strictEqual(args.gameId, 'g123');
+  assert.deepStrictEqual(args.files, []);
+}
+
+function testParsePlayerOption() {
+  const args = parseArgs(['node', 'bot/shadow-analyze.js', '--player', 'GydRo']);
+  assert.strictEqual(args.player, 'GydRo');
   assert.deepStrictEqual(args.files, []);
 }
 
@@ -466,6 +573,23 @@ function testResolveGameIdFallsBackToRawShadowWhenOtherMergedLogsExist() {
   } finally {
     fs.rmSync(shadowFile, {force: true});
     fs.rmSync(unrelatedMergedFile, {force: true});
+  }
+}
+
+function testResolveGameIdPrefersMergedOverRawWhenBothExist() {
+  const gameId = 'gtest-merged-preferred-resolve';
+  const shadowFile = path.join(SHADOW_DIR, `shadow-${gameId}.jsonl`);
+  const mergedFile = path.join(MERGED_DIR, `merged-${gameId}.jsonl`);
+  fs.mkdirSync(SHADOW_DIR, {recursive: true});
+  fs.mkdirSync(MERGED_DIR, {recursive: true});
+  fs.writeFileSync(shadowFile, '{"gameId":"gtest-merged-preferred-resolve","botAction":"pass"}\n');
+  fs.writeFileSync(mergedFile, '{"type":"merged_turn","gameId":"gtest-merged-preferred-resolve"}\n');
+  try {
+    const files = resolveFiles(parseArgs(['node', 'bot/shadow-analyze.js', '--game', gameId]));
+    assert.deepStrictEqual(files, [mergedFile]);
+  } finally {
+    fs.rmSync(shadowFile, {force: true});
+    fs.rmSync(mergedFile, {force: true});
   }
 }
 
@@ -493,8 +617,13 @@ function main() {
   testAnalyzeDoesNotCountOpaqueOptionIndexAsPass();
   testAnalyzeSeparatesBelowThresholdProjectCards();
   testAnalyzeCountsExplicitPassOptionAsPass();
+  testAnalyzeCanFilterByPlayerName();
+  testAnalyzeSeparatesFinishNowOverrideFromMismatch();
+  testAnalyzeDoesNotTreatCityAsFinishNowTerraforming();
   testParseGameIdOption();
+  testParsePlayerOption();
   testResolveGameIdFallsBackToRawShadowWhenOtherMergedLogsExist();
+  testResolveGameIdPrefersMergedOverRawWhenBothExist();
   testParseHelpOptionDoesNotBecomeFile();
   console.log('shadow-analyze tests passed');
 }

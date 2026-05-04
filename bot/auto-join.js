@@ -155,12 +155,16 @@ function summarizeChoiceOptions(wf) {
   if (wf.type === 'projectCard' && Array.isArray(wf.cards)) {
     return wf.cards.map((c) => c?.name || c).filter(Boolean);
   }
+  if (wf.type === 'colony') {
+    return summarizeColonies(wf.coloniesModel || wf.colonies || []);
+  }
   if (wf.type === 'or' && Array.isArray(wf.options)) {
     return wf.options.map((o, idx) => ({
       index: idx,
       type: o?.type || '?',
       title: getTitle(o).slice(0, 80),
       cards: Array.isArray(o?.cards) ? o.cards.map((c) => c?.name || c).filter(Boolean).slice(0, 10) : undefined,
+      colonies: o?.type === 'colony' ? summarizeColonies(o.coloniesModel || o.colonies || []) : undefined,
     }));
   }
   if (wf.type === 'space' && Array.isArray(wf.spaces || wf.availableSpaces)) {
@@ -168,6 +172,56 @@ function summarizeChoiceOptions(wf) {
     return spaces.map((s) => s?.id || s).filter(Boolean).slice(0, 50);
   }
   return [];
+}
+
+function summarizeColonies(colonies, limit = 20) {
+  if (!Array.isArray(colonies)) return [];
+  return colonies.slice(0, limit).map((colony) => ({
+    name: colony?.name || colony || '?',
+    colonies: Array.isArray(colony?.colonies) ? colony.colonies.length : null,
+    isActive: colony?.isActive ?? null,
+  }));
+}
+
+function getMegaCredits(player) {
+  return player?.megacredits ?? player?.megaCredits ?? null;
+}
+
+function getMegaCreditProduction(player) {
+  return player?.megacreditProduction ?? player?.megaCreditProduction ?? null;
+}
+
+function normalizePlayerMoneyFields(player) {
+  if (!player) return;
+  if (player.megaCredits != null && player.megacredits == null) player.megacredits = player.megaCredits;
+  if (player.megacredits != null && player.megaCredits == null) player.megaCredits = player.megacredits;
+  if (player.megaCreditProduction != null && player.megacreditProduction == null) player.megacreditProduction = player.megaCreditProduction;
+  if (player.megacreditProduction != null && player.megaCreditProduction == null) player.megaCreditProduction = player.megacreditProduction;
+}
+
+function summarizeStateForChoiceLog(state) {
+  const tp = state?.thisPlayer || {};
+  const gm = state?.game || {};
+  return {
+    mc: getMegaCredits(tp),
+    steel: tp.steel ?? null,
+    titanium: tp.titanium ?? null,
+    mcProd: getMegaCreditProduction(tp),
+    steelProd: tp.steelProduction ?? null,
+    titaniumProd: tp.titaniumProduction ?? null,
+    plantProd: tp.plantProduction ?? tp.plantsProduction ?? null,
+    energyProd: tp.energyProduction ?? null,
+    heatProd: tp.heatProduction ?? null,
+    plants: tp.plants ?? null,
+    heat: tp.heat ?? null,
+    energy: tp.energy ?? null,
+    tr: tp.terraformRating ?? null,
+    handCount: Array.isArray(state?.cardsInHand) ? state.cardsInHand.length : (Array.isArray(tp.cardsInHand) ? tp.cardsInHand.length : null),
+    temperature: typeof gm.temperature === 'number' ? gm.temperature : null,
+    oxygen: typeof gm.oxygenLevel === 'number' ? gm.oxygenLevel : null,
+    oceans: typeof gm.oceans === 'number' ? gm.oceans : null,
+    venus: typeof gm.venusScaleLevel === 'number' ? gm.venusScaleLevel : null,
+  };
 }
 
 function summarizeChoicePicked(input) {
@@ -210,6 +264,7 @@ function appendChoiceLog(playerId, state, wf, input, reasoning) {
       phase: state?.game?.phase || '',
       waitingType: wf?.type || '',
       title: getTitle(wf),
+      stateSummary: summarizeStateForChoiceLog(state),
       options: summarizeChoiceOptions(wf),
       picked: summarizeChoicePicked(input),
     };
@@ -395,14 +450,9 @@ async function makeMove(playerId, state, wf) {
     if (!state.cardsInHand && state.thisPlayer) {
       state.cardsInHand = state.thisPlayer.cardsInHand || [];
     }
-    // Normalize megaCredits → megacredits for smartbot compatibility
-    // Our fork API returns megaCredits (camelCase), smartbot expects megacredits (lowercase)
-    if (state.thisPlayer && state.thisPlayer.megaCredits != null && state.thisPlayer.megacredits == null) {
-      state.thisPlayer.megacredits = state.thisPlayer.megaCredits;
-    }
-    for (const p of (state.players || [])) {
-      if (p.megaCredits != null && p.megacredits == null) p.megacredits = p.megaCredits;
-    }
+    // Normalize MC aliases for smartbot compatibility across fork/live API shapes.
+    normalizePlayerMoneyFields(state.thisPlayer);
+    for (const p of (state.players || [])) normalizePlayerMoneyFields(p);
 
     state._botName = ps.name;
     state._blacklist = BOT.getBlacklist(playerId);

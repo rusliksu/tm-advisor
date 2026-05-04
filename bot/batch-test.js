@@ -66,6 +66,31 @@ function summarizeCardsDetailed(cards, limit = 10) {
   }));
 }
 
+function summarizeColonies(colonies, limit = 20) {
+  if (!Array.isArray(colonies)) return [];
+  return colonies.slice(0, limit).map((colony) => ({
+    name: colony?.name || colony || '?',
+    colonies: Array.isArray(colony?.colonies) ? colony.colonies.length : null,
+    isActive: colony?.isActive ?? null,
+  }));
+}
+
+function getMegaCredits(player) {
+  return player?.megacredits ?? player?.megaCredits ?? null;
+}
+
+function getMegaCreditProduction(player) {
+  return player?.megacreditProduction ?? player?.megaCreditProduction ?? null;
+}
+
+function normalizePlayerMoneyFields(player) {
+  if (!player) return;
+  if (player.megaCredits != null && player.megacredits == null) player.megacredits = player.megaCredits;
+  if (player.megacredits != null && player.megaCredits == null) player.megaCredits = player.megacredits;
+  if (player.megaCreditProduction != null && player.megacreditProduction == null) player.megacreditProduction = player.megaCreditProduction;
+  if (player.megacreditProduction != null && player.megaCreditProduction == null) player.megaCreditProduction = player.megacreditProduction;
+}
+
 function summarizeChoiceOptions(wf) {
   if (!wf) return [];
   if (wf.type === 'card' && Array.isArray(wf.cards)) {
@@ -74,6 +99,9 @@ function summarizeChoiceOptions(wf) {
   if (wf.type === 'projectCard' && Array.isArray(wf.cards)) {
     return wf.cards.map((c) => c?.name || c).filter(Boolean);
   }
+  if (wf.type === 'colony') {
+    return summarizeColonies(wf.coloniesModel || wf.colonies || []);
+  }
   if (wf.type === 'or' && Array.isArray(wf.options)) {
     return wf.options.map((o, idx) => ({
       index: idx,
@@ -81,6 +109,7 @@ function summarizeChoiceOptions(wf) {
       title: getTitle(o).slice(0, 80),
       cards: Array.isArray(o?.cards) ? o.cards.map((c) => c?.name || c).filter(Boolean).slice(0, 10) : undefined,
       cardsDetailed: Array.isArray(o?.cards) ? summarizeCardsDetailed(o.cards) : undefined,
+      colonies: o?.type === 'colony' ? summarizeColonies(o.coloniesModel || o.colonies || []) : undefined,
       disabledCards: Array.isArray(o?.cards) ? o.cards.filter((c) => c?.isDisabled).length : undefined,
     }));
   }
@@ -105,15 +134,23 @@ function summarizeStateForChoiceLog(state) {
   const remainingSteps = [tempSteps, oxygenSteps, oceanSteps, venusSteps].every((v) => typeof v === 'number')
     ? tempSteps + oxygenSteps + oceanSteps + Math.round(venusSteps * 0.5)
     : null;
+  const mc = getMegaCredits(tp);
+  const mcProd = getMegaCreditProduction(tp);
   return {
-    mc: tp.megacredits ?? tp.megaCredits ?? null,
+    mc,
     steel: tp.steel ?? null,
     titanium: tp.titanium ?? null,
+    mcProd,
+    steelProd: tp.steelProduction ?? null,
+    titaniumProd: tp.titaniumProduction ?? null,
+    plantProd: tp.plantProduction ?? tp.plantsProduction ?? null,
+    energyProd: tp.energyProduction ?? null,
+    heatProd: tp.heatProduction ?? null,
     plants: tp.plants ?? null,
     heat: tp.heat ?? null,
     energy: tp.energy ?? null,
     tr: tp.terraformRating ?? null,
-    income: (tp.megacreditProduction ?? 0) + (tp.terraformRating ?? 0),
+    income: (mcProd ?? 0) + (tp.terraformRating ?? 0),
     handCount: Array.isArray(state?.cardsInHand) ? state.cardsInHand.length : (Array.isArray(tp.cardsInHand) ? tp.cardsInHand.length : null),
     temperature: temp,
     oxygen,
@@ -234,13 +271,9 @@ async function runGame(gameId, players) {
         continue;
       }
 
-      // Normalize MC
-      if (state.thisPlayer?.megaCredits != null && state.thisPlayer?.megacredits == null) {
-        state.thisPlayer.megacredits = state.thisPlayer.megaCredits;
-      }
-      for (const pl of (state.players || [])) {
-        if (pl.megaCredits != null && pl.megacredits == null) pl.megacredits = pl.megaCredits;
-      }
+      // Normalize MC aliases for smartbot compatibility across fork/live API shapes.
+      normalizePlayerMoneyFields(state.thisPlayer);
+      for (const pl of (state.players || [])) normalizePlayerMoneyFields(pl);
 
       let input;
       let reasoning = [];

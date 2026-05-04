@@ -4,6 +4,7 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const childProcess = require('child_process');
 
 const BOT = require('./smartbot');
 
@@ -12,6 +13,7 @@ const SHADOW_DIR = path.resolve(__dirname, '..', 'data', 'shadow');
 const MANAGER_DIR = path.join(SHADOW_DIR, 'manager');
 const SIMULTANEOUS_PHASES = new Set(['initialDrafting', 'initial_drafting', 'research', 'drafting', 'prelude']);
 const RESOURCE_FIELDS = ['mc', 'tr', 'heat', 'plants', 'energy', 'steel', 'titanium'];
+const REPO_ROOT = path.resolve(__dirname, '..');
 
 fs.mkdirSync(SHADOW_DIR, {recursive: true});
 fs.mkdirSync(MANAGER_DIR, {recursive: true});
@@ -62,14 +64,26 @@ function namesOf(items) {
   return safeArray(items).map(nameOf).filter(Boolean);
 }
 
+function getMegaCredits(player) {
+  return player?.megacredits ?? player?.megaCredits ?? null;
+}
+
+function getMegaCreditProduction(player) {
+  return player?.megacreditProduction ?? player?.megaCreditProduction ?? null;
+}
+
+function normalizePlayerMoneyFields(player) {
+  if (!player) return;
+  if (player.megaCredits != null && player.megacredits == null) player.megacredits = player.megaCredits;
+  if (player.megacredits != null && player.megaCredits == null) player.megaCredits = player.megacredits;
+  if (player.megaCreditProduction != null && player.megacreditProduction == null) player.megacreditProduction = player.megaCreditProduction;
+  if (player.megacreditProduction != null && player.megaCreditProduction == null) player.megaCreditProduction = player.megacreditProduction;
+}
+
 function normalizeState(state) {
-  if (state?.thisPlayer?.megaCredits != null && state?.thisPlayer?.megacredits == null) {
-    state.thisPlayer.megacredits = state.thisPlayer.megaCredits;
-  }
+  normalizePlayerMoneyFields(state?.thisPlayer);
   for (const player of safeArray(state?.players)) {
-    if (player?.megaCredits != null && player?.megacredits == null) {
-      player.megacredits = player.megaCredits;
-    }
+    normalizePlayerMoneyFields(player);
   }
   if (!state.cardsInHand && state.thisPlayer) {
     state.cardsInHand = state.thisPlayer.cardsInHand || [];
@@ -228,7 +242,8 @@ function buildStateSummary(state, meta = {}) {
     workflowHash: hashWf(wf),
     promptType: wf?.type || null,
     title: getTitle(wf).slice(0, 80),
-    mc: me.megacredits ?? me.megaCredits ?? null,
+    mc: getMegaCredits(me),
+    mcProd: getMegaCreditProduction(me),
     tr: me.terraformRating ?? null,
     heat: me.heat ?? null,
     plants: me.plants ?? null,
@@ -322,6 +337,75 @@ function runBotDecisionSilently(waitingFor, rawState) {
   }
 }
 
+function summarizeAdvisorBestMove(bestMove) {
+  const text = String(bestMove || '').trim();
+  if (!text) return null;
+  let match = text.match(/^PLAY\s+(.+?)(?:\s+[—|-]\s+|\s+\| |$)/i);
+  if (match) return `play ${match[1].trim()}`;
+  match = text.match(/^Play\s+(.+?)(?:\s+\(|$)/i);
+  if (match) return `play ${match[1].trim()}`;
+  return text;
+}
+
+function runAdvisorSnapshotSilently(rawState) {
+  if (process.env.SHADOW_ADVISOR_SNAPSHOT === '0') return null;
+  const code = `
+import json
+import sys
+from pathlib import Path
+
+root = Path.cwd()
+entrypoints = root / "apps" / "tm-advisor-py" / "entrypoints"
+scripts = root / "scripts"
+sys.path.insert(0, str(entrypoints))
+sys.path.insert(0, str(scripts))
+
+import advisor_snapshot
+
+raw = json.load(sys.stdin)
+snap = advisor_snapshot.snapshot_from_raw(raw)
+summary = snap.get("summary") or {}
+plays = [
+    {
+        "name": row.get("name"),
+        "play_value_now": row.get("play_value_now"),
+        "priority": row.get("priority"),
+        "reason": row.get("reason"),
+    }
+    for row in (snap.get("hand_advice") or [])
+    if row.get("action") == "PLAY"
+][:5]
+print(json.dumps({
+    "bestMove": summary.get("best_move"),
+    "summaryLines": (summary.get("lines") or [])[:4],
+    "topOptions": plays,
+}, ensure_ascii=False))
+`;
+  const python = process.env.PYTHON || 'python';
+  const result = childProcess.spawnSync(python, ['-c', code], {
+    cwd: REPO_ROOT,
+    input: JSON.stringify(rawState),
+    encoding: 'utf8',
+    timeout: 15000,
+    maxBuffer: 5 * 1024 * 1024,
+    env: {
+      ...process.env,
+      PYTHONIOENCODING: 'utf-8',
+    },
+  });
+  if (result.error) {
+    return {error: result.error.message};
+  }
+  if (result.status !== 0) {
+    return {error: String(result.stderr || result.stdout || `exit ${result.status}`).trim()};
+  }
+  try {
+    return JSON.parse(result.stdout);
+  } catch (err) {
+    return {error: err.message};
+  }
+}
+
 function buildPredictionEntry(session, playerMeta, rawState, summary) {
   let botInput;
   let reasoning;
@@ -331,6 +415,11 @@ function buildPredictionEntry(session, playerMeta, rawState, summary) {
     botInput = {type: 'error', message: err.message};
     reasoning = null;
   }
+  const smartbotAction = summarizeAction(botInput, rawState.waitingFor);
+  const advisorSnapshot = runAdvisorSnapshotSilently(rawState);
+  const advisorAction = advisorSnapshot && !advisorSnapshot.error
+    ? summarizeAdvisorBestMove(advisorSnapshot.bestMove)
+    : null;
   return {
     ts: new Date().toISOString(),
     gameId: session.gameId,
@@ -344,7 +433,14 @@ function buildPredictionEntry(session, playerMeta, rawState, summary) {
     promptInputSeq: summary.inputSeq ?? null,
     inputSeq: null,
     mc: summary.mc,
-    botAction: summarizeAction(botInput, rawState.waitingFor),
+    decisionSource: advisorAction ? 'tm-advisor-py' : 'smartbot-js',
+    botAction: advisorAction || smartbotAction,
+    advisorAction,
+    advisorBestMove: advisorSnapshot && !advisorSnapshot.error ? advisorSnapshot.bestMove : null,
+    advisorSummaryLines: advisorSnapshot && !advisorSnapshot.error ? advisorSnapshot.summaryLines : [],
+    advisorTopOptions: advisorSnapshot && !advisorSnapshot.error ? advisorSnapshot.topOptions : [],
+    advisorError: advisorSnapshot && advisorSnapshot.error ? advisorSnapshot.error : null,
+    smartbotAction,
     botReasoning: reasoning,
     playerActed: false,
     observedAction: null,

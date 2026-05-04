@@ -25,6 +25,7 @@ function parseArgs(argv) {
     all: args.includes('--all'),
     last: null,
     gameId: null,
+    player: null,
     help: args.includes('--help') || args.includes('-h'),
     shadowOnly: args.includes('--shadow-only'),
     mergedOnly: args.includes('--merged-only'),
@@ -36,6 +37,11 @@ function parseArgs(argv) {
     if (arg === '--all' || arg === '--shadow-only' || arg === '--merged-only' || arg === '--help' || arg === '-h') continue;
     if (arg === '--game') {
       result.gameId = args[i + 1] || null;
+      i++;
+      continue;
+    }
+    if (arg === '--player') {
+      result.player = args[i + 1] || null;
       i++;
       continue;
     }
@@ -79,10 +85,12 @@ function resolveFiles(options) {
 
   const baseDir = resolveDefaultLogDir(options);
   if (options.gameId) {
-    const candidates = [];
-    if (!options.shadowOnly) candidates.push(path.join(MERGED_DIR, `merged-${options.gameId}.jsonl`));
-    if (!options.mergedOnly) candidates.push(path.join(SHADOW_DIR, `shadow-${options.gameId}.jsonl`));
-    return candidates.filter((file) => fs.existsSync(file));
+    const mergedFile = path.join(MERGED_DIR, `merged-${options.gameId}.jsonl`);
+    const shadowFile = path.join(SHADOW_DIR, `shadow-${options.gameId}.jsonl`);
+    if (options.shadowOnly) return fs.existsSync(shadowFile) ? [shadowFile] : [];
+    if (options.mergedOnly) return fs.existsSync(mergedFile) ? [mergedFile] : [];
+    if (fs.existsSync(mergedFile)) return [mergedFile];
+    return fs.existsSync(shadowFile) ? [shadowFile] : [];
   }
 
   const candidates = listJsonlFiles(baseDir);
@@ -97,6 +105,7 @@ function formatUsage() {
     '  node bot/shadow-analyze.js [data/shadow/merged/merged-*.jsonl]',
     '  node bot/shadow-analyze.js --all',
     '  node bot/shadow-analyze.js --game <gameId>',
+    '  node bot/shadow-analyze.js --player <name|id|color>',
     '  node bot/shadow-analyze.js --last N',
     '  node bot/shadow-analyze.js --shadow-only',
   ].join('\n');
@@ -176,6 +185,20 @@ function parseLog(file) {
   return readJsonl(file).flatMap(normalizeLogEntry);
 }
 
+function normalizeFilterText(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
+function filterEntries(entries, options = {}) {
+  const player = normalizeFilterText(options.player);
+  if (!player) return entries;
+  return entries.filter((entry) => {
+    return normalizeFilterText(entry.player) === player ||
+      normalizeFilterText(entry.playerId) === player ||
+      normalizeFilterText(entry.color) === player;
+  });
+}
+
 function canonicalizeAction(action) {
   const normalized = normalizeActionSummaryText(action);
   if (!normalized) return null;
@@ -198,6 +221,63 @@ function isExplicitPassAction(action) {
 
 function isOpaqueOptionIndex(action) {
   return /^option\[\d+\]$/.test(String(action || '').trim());
+}
+
+const RAW_VP_DUMP_CARDS = new Set([
+  'Interstellar Colony Ship',
+]);
+
+function isRawVpDumpAction(action) {
+  const value = String(action || '').trim();
+  const match = value.match(/^play\s+(.+)$/i);
+  if (!match) return false;
+  return RAW_VP_DUMP_CARDS.has(match[1].trim());
+}
+
+function hasResourceDelta(entry, key) {
+  const resources = entry?.observedChanges?.resources || {};
+  return Object.prototype.hasOwnProperty.call(resources, key);
+}
+
+function isCityAction(action) {
+  const value = canonicalizeAction(action) || '';
+  return value === 'play city' ||
+    value === 'city' ||
+    value.includes('city:sp') ||
+    value.includes('standard project city');
+}
+
+function isFinishNowTerraformingAction(entry) {
+  const input = canonicalizeAction(entry.inputAction) || '';
+  const observed = String(entry.observedAction || '').toLowerCase();
+  if (isCityAction(input)) return false;
+  if (
+    input.includes('asteroid:sp') ||
+    input.includes('temperature') ||
+    input.includes('greenery') ||
+    input.includes('ocean')
+  ) {
+    return true;
+  }
+  if (input.startsWith('space ') && hasResourceDelta(entry, 'tr')) {
+    return true;
+  }
+  if (observed.includes('resource delta') && hasResourceDelta(entry, 'tr')) {
+    return hasResourceDelta(entry, 'heat') ||
+      hasResourceDelta(entry, 'plants') ||
+      hasResourceDelta(entry, 'mc');
+  }
+  return false;
+}
+
+function classifyStrategicOverride(entry) {
+  if (isRawVpDumpAction(entry.botAction) && isFinishNowTerraformingAction(entry)) {
+    return {
+      type: 'finishNow',
+      reason: 'player spent tempo on TR/global progress to end this generation',
+    };
+  }
+  return null;
 }
 
 function classifyNoCardNoSpAction(action) {
@@ -355,6 +435,9 @@ function analyze(entries) {
       comparable: 0,
       matched: 0,
       differed: 0,
+      strategicOverrides: {
+        finishNow: {count: 0, examples: []},
+      },
       examples: [],
       byPromptType: {},
       mismatchPatterns: {},
@@ -389,13 +472,33 @@ function analyze(entries) {
       stats.botVsPlayer.comparable++;
       const promptKey = e.promptType || '?';
       if (!stats.botVsPlayer.byPromptType[promptKey]) {
-        stats.botVsPlayer.byPromptType[promptKey] = {comparable: 0, matched: 0, differed: 0};
+        stats.botVsPlayer.byPromptType[promptKey] = {comparable: 0, matched: 0, differed: 0, strategic: 0};
       }
       stats.botVsPlayer.byPromptType[promptKey].comparable++;
       if (comparableBot === comparableInput) {
         stats.botVsPlayer.matched++;
         stats.botVsPlayer.byPromptType[promptKey].matched++;
       } else {
+        const strategicOverride = classifyStrategicOverride(e);
+        if (strategicOverride) {
+          stats.botVsPlayer.byPromptType[promptKey].strategic++;
+          const bucket = stats.botVsPlayer.strategicOverrides[strategicOverride.type];
+          if (bucket) {
+            bucket.count++;
+            if (bucket.examples.length < 5) {
+              bucket.examples.push({
+                gen: e.gen,
+                player: e.player,
+                promptType: e.promptType,
+                botAction: e.botAction,
+                inputAction: e.inputAction,
+                observedAction: e.observedAction,
+                reason: strategicOverride.reason,
+              });
+            }
+          }
+          continue;
+        }
         stats.botVsPlayer.differed++;
         stats.botVsPlayer.byPromptType[promptKey].differed++;
         const patternKey = [promptKey, comparableBot, comparableInput].join('||');
@@ -585,6 +688,13 @@ function formatReport(stats, files) {
     lines.push('## Bot vs Exact Player Input');
     lines.push(`  Comparable turns: ${stats.botVsPlayer.comparable}`);
     lines.push(`  Matched:          ${stats.botVsPlayer.matched} (${(stats.botVsPlayer.matched / stats.botVsPlayer.comparable * 100).toFixed(0)}%)`);
+    const finishNowOverrides = stats.botVsPlayer.strategicOverrides.finishNow.count;
+    if (finishNowOverrides > 0) {
+      lines.push(`  Finish-now overrides: ${finishNowOverrides} (not counted as generic mismatch)`);
+      for (const example of stats.botVsPlayer.strategicOverrides.finishNow.examples) {
+        lines.push(`    Gen ${example.gen ?? '?'} ${example.player || '?'}: bot=${example.botAction} | input=${example.inputAction} | ${example.reason}`);
+      }
+    }
     lines.push(`  Differed:         ${stats.botVsPlayer.differed} (${(stats.botVsPlayer.differed / stats.botVsPlayer.comparable * 100).toFixed(0)}%)`);
     for (const example of stats.botVsPlayer.examples) {
       lines.push(`  Mismatch gen ${example.gen ?? '?'} ${example.player || '?'} [${example.promptType || '?'}]: bot=${example.botAction} | input=${example.inputAction} | observed=${example.observedAction || '?'}`);
@@ -601,7 +711,8 @@ function formatReport(stats, files) {
       lines.push('## Mismatch Breakdown By Prompt');
       for (const [promptType, promptStats] of promptBreakdown) {
         const mismatchRate = promptStats.comparable > 0 ? (promptStats.differed / promptStats.comparable * 100) : 0;
-        lines.push(`  ${promptType}: differed ${promptStats.differed}/${promptStats.comparable} (${mismatchRate.toFixed(0)}%)`);
+        const strategicSuffix = promptStats.strategic ? `, strategic ${promptStats.strategic}` : '';
+        lines.push(`  ${promptType}: differed ${promptStats.differed}/${promptStats.comparable} (${mismatchRate.toFixed(0)}%)${strategicSuffix}`);
       }
       lines.push('');
     }
@@ -803,7 +914,12 @@ function main(argv = process.argv) {
     console.error(`Loaded ${entries.length} entries from ${path.basename(file)}`);
   }
 
-  const stats = analyze(allEntries);
+  const filteredEntries = filterEntries(allEntries, options);
+  if (options.player) {
+    console.error(`Filtered ${filteredEntries.length}/${allEntries.length} entries for player ${options.player}`);
+  }
+
+  const stats = analyze(filteredEntries);
   console.log(formatReport(stats, files));
   return 0;
 }
@@ -816,6 +932,7 @@ module.exports = {
   analyze,
   canonicalizeAction,
   formatReport,
+  filterEntries,
   main,
   normalizeLogEntry,
   parseArgs,
