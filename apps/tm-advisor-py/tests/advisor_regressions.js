@@ -81,6 +81,19 @@ function runPythonScript(scriptName) {
   throw lastFailure || new Error('Failed to run advisor opening regressions');
 }
 
+function runNodeScript(scriptPath) {
+  const script = path.join(REPO_ROOT, scriptPath);
+  const result = spawnSync(process.execPath, [script], {
+    cwd: REPO_ROOT,
+    encoding: 'utf8',
+  });
+  if (result.stdout) process.stdout.write(result.stdout);
+  if (result.stderr) process.stderr.write(result.stderr);
+  if (result.status !== 0) {
+    throw new Error(`${scriptPath} failed with ${result.status}`);
+  }
+}
+
 function run() {
   testCollectWorkflowCardNamesTraversesNestedOptions();
   testCollectWorkflowCardNamesIgnoresEmptyNodes();
@@ -97,6 +110,7 @@ function run() {
   runPythonScript('late_draw_regressions.py');
   runPythonScript('astra_consistency_regressions.py');
   runPythonScript('watch_live_logging_regressions.py');
+  runNodeScript(path.join('tools', 'advisor', 'decision-sequence-parity.test.js'));
   console.log('advisor regression checks: OK');
 }
 

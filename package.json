@@ -17,6 +17,7 @@
     "advisor:finish-live-logging": "node tools/advisor/finish-live-logging.js",
     "advisor:start-live-logging": "node tools/advisor/start-live-logging.js",
     "advisor:test-backfill-db": "python tools/advisor/backfill-db-decisions.test.py",
+    "advisor:test-decision-sequence-parity": "node tools/advisor/decision-sequence-parity.test.js",
     "advisor:test-start-live-logging": "node tools/advisor/start-live-logging.test.js",
     "advisor:check-workflow": "node tools/advisor/sync-workflow.js --check",
     "advisor:sync-workflow": "node tools/advisor/sync-workflow.js",
