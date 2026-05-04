@@ -25,6 +25,11 @@ function loadConst(relPath, names) {
 function loadBrain(relPath) {
   const fullPath = path.join(ROOT, relPath);
   delete require.cache[require.resolve(fullPath)];
+  if (relPath.startsWith('extension/')) {
+    const sharedPath = path.join(ROOT, 'extension', 'shared', 'brain-core.js');
+    delete require.cache[require.resolve(sharedPath)];
+    global.TM_BRAIN_CORE = require(sharedPath);
+  }
   const brain = require(fullPath);
   const data = loadConst('packages/tm-data/generated/extension/card_data.js', ['TM_CARD_DATA']);
   const tags = loadConst('packages/tm-data/generated/extension/card_tags.js', ['TM_CARD_TAGS']);
@@ -139,7 +144,113 @@ function testRepresentativeManualEVParity() {
   }
 }
 
+function makeRuntimeAdjustmentState(overrides = {}) {
+  return Object.assign({
+    _botName: 'Beta',
+    game: {
+      generation: 8,
+      temperature: 0,
+      oxygenLevel: 12,
+      oceans: 7,
+      venusScaleLevel: 20,
+      gameOptions: {},
+    },
+    players: [{color: 'red'}, {color: 'blue'}, {color: 'green'}],
+    thisPlayer: {
+      color: 'red',
+      megacredits: 40,
+      megaCredits: 40,
+      steel: 0,
+      steelValue: 2,
+      steelProduction: 0,
+      titanium: 0,
+      titaniumValue: 3,
+      cardsInHand: [],
+      tableau: [],
+      tags: {building: 0, city: 0, plant: 0, power: 0, space: 0, science: 0},
+    },
+  }, overrides);
+}
+
+function testRuntimeAdjustmentBehavior() {
+  delete global.TM_BRAIN_CORE;
+  delete global.TM_RATINGS;
+  const bot = loadBrain('bot/tm-brain.js');
+  const extension = loadBrain('extension/tm-brain.js');
+
+  const lateNoSteel = makeRuntimeAdjustmentState();
+  const botFieldLate = bot.scoreCard({name: 'Field-Capped City', calculatedCost: 29}, lateNoSteel);
+  const extFieldLate = extension.scoreCard({name: 'Field-Capped City', calculatedCost: 29}, lateNoSteel);
+  const botResearchLate = bot.scoreCard({name: 'Research Colony', calculatedCost: 20}, lateNoSteel);
+  const extResearchLate = extension.scoreCard({name: 'Research Colony', calculatedCost: 20}, lateNoSteel);
+  assert(botFieldLate < botResearchLate, 'bot should not prefer late no-steel Field-Capped City over Research Colony');
+  assert(extFieldLate < extResearchLate, 'extension should not prefer late no-steel Field-Capped City over Research Colony');
+
+  const steelState = makeRuntimeAdjustmentState({
+    game: {generation: 5, temperature: -10, oxygenLevel: 6, oceans: 4, venusScaleLevel: 12, gameOptions: {}},
+    thisPlayer: {
+      color: 'red',
+      megacredits: 40,
+      megaCredits: 40,
+      steel: 12,
+      steelValue: 2,
+      steelProduction: 4,
+      titanium: 0,
+      titaniumValue: 3,
+      cardsInHand: [],
+      tableau: [{name: 'Mining Guild'}],
+      tags: {building: 4, city: 1, plant: 1, power: 1, space: 0, science: 0},
+    },
+  });
+  assert(
+    bot.scoreCard({name: 'Field-Capped City', calculatedCost: 29}, steelState) > botFieldLate + 25,
+    'bot should still keep Field-Capped City strong as an excess-steel outlet'
+  );
+  assert(
+    extension.scoreCard({name: 'Field-Capped City', calculatedCost: 29}, steelState) > extFieldLate + 25,
+    'extension should still keep Field-Capped City strong as an excess-steel outlet'
+  );
+
+  const blockedIce = makeRuntimeAdjustmentState({
+    game: {
+      generation: 9,
+      temperature: 6,
+      oxygenLevel: 14,
+      oceans: 9,
+      venusScaleLevel: 30,
+      gameOptions: {},
+      colonies: [
+        {name: 'Luna', colonies: ['red', 'blue', 'green']},
+        {name: 'Ceres', colonies: ['red', 'blue', 'green']},
+        {name: 'Pluto', colonies: ['red', 'blue', 'green']},
+      ],
+    },
+    thisPlayer: {
+      color: 'red',
+      megacredits: 40,
+      megaCredits: 40,
+      steel: 0,
+      steelValue: 2,
+      titanium: 0,
+      titaniumValue: 3,
+      cardsInHand: [],
+      tableau: [],
+      tags: {space: 2, science: 1},
+    },
+  });
+  assert.strictEqual(
+    extension.scoreCard({name: 'Ice Moon Colony', calculatedCost: 23}, blockedIce),
+    bot.scoreCard({name: 'Ice Moon Colony', calculatedCost: 23}, blockedIce),
+    'Ice Moon Colony runtime penalty should be shared exactly'
+  );
+  assert(
+    bot.scoreCard({name: 'Ice Moon Colony', calculatedCost: 23}, blockedIce) < -40,
+    'Ice Moon Colony should be heavily penalized when oceans and colony slots are closed'
+  );
+}
+
 testScoreCardParityOrKnownDebtOnEndgameDiscardHand();
 testRepresentativeManualEVParity();
+testRuntimeAdjustmentBehavior();
 
 console.log('brain scorecard parity/debt checks: OK');
