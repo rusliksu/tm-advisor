@@ -4,6 +4,10 @@ These templates and the sync script keep `tm-auto-watcher.service` and
 `tm-shadow-watch.service` aligned with the live `tm-server.service`
 `SERVER_ID`.
 
+Telegram turn notifications are now handled by the integrated TM server
+notifier. The legacy external `tm-turn-notifier` poller must stay disabled
+and is no longer shipped as a versioned systemd template.
+
 ## Sync on VPS
 
 Run from Windows:
@@ -29,6 +33,7 @@ What it does:
 - reads `SERVER_ID` from `tm-server.service` on the VPS
 - renders both watcher unit files from versioned templates
 - installs them into `~/.config/systemd/user/`
+- removes any stale `tm-turn-notifier.service` user unit from previous setups
 - removes the old `tm-auto-watcher.service.d/server-id.conf` drop-in
 - reloads systemd
 - by default restarts both watcher services; `-NoRestart` skips that

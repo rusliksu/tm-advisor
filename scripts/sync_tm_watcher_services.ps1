@@ -84,7 +84,12 @@ if dropin_file.exists():
     dropin_file.unlink()
 if dropin_dir.exists() and not any(dropin_dir.iterdir()):
     dropin_dir.rmdir()
+
+legacy_unit = Path.home() / ".config/systemd/user/tm-turn-notifier.service"
+if legacy_unit.exists():
+    legacy_unit.unlink()
 PY
+systemctl --user disable --now tm-turn-notifier.service >/dev/null 2>&1 || true
 systemctl --user daemon-reload
 echo '--- auto-watcher env'
 systemctl --user show -p Environment $AutoWatcherService
