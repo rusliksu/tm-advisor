@@ -19,6 +19,7 @@
   var sharedAnalyzePass = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzePass;
   var sharedRankHandCards = TM_BRAIN_CORE && TM_BRAIN_CORE.rankHandCards;
   var sharedAnalyzeActions = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeActions;
+  var sharedAnalyzeMinorityRefugeMirandaSequence = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeMinorityRefugeMirandaSequence;
   var sharedAnalyzeDeck = TM_BRAIN_CORE && TM_BRAIN_CORE.analyzeDeck;
   var sharedCountTagsInHand = TM_BRAIN_CORE && TM_BRAIN_CORE.countTagsInHand;
   var sharedCountEffectivePlayedTagTotal = TM_BRAIN_CORE && TM_BRAIN_CORE.countEffectivePlayedTagTotal;
@@ -2464,6 +2465,7 @@
     rankHandCards: rankHandCards,
     analyzePass: analyzePass,
     analyzeActions: analyzeActions,
+    analyzeMinorityRefugeMirandaSequence: sharedAnalyzeMinorityRefugeMirandaSequence || function() { return null; },
 
     // Deck analyzer
     analyzeDeck: analyzeDeck,
