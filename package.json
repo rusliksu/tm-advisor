@@ -119,6 +119,7 @@
     "extension:test-content-discard-recommendations": "node apps/tm-extension/tests/content_discard_recommendations_check.js",
     "extension:test-content-game-overlays": "node apps/tm-extension/tests/content_game_overlays_check.js",
     "extension:test-content-game-signals": "node apps/tm-extension/tests/content_game_signals_check.js",
+    "extension:test-content-hand-ui": "node apps/tm-extension/tests/content_hand_ui_check.js",
     "extension:test-content-play-priority": "node apps/tm-extension/tests/content_play_priority_reasons_check.js",
     "extension:test-content-synergy": "node apps/tm-extension/tests/content_synergy_regressions_check.js",
     "extension:test-vue-bridge": "node apps/tm-extension/tests/vue_bridge_waiting_for_check.js",
