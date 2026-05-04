@@ -10,6 +10,7 @@
     "advisor:postgame": "python tools/advisor/postgame-summary.py",
     "advisor:snapshot": "python apps/tm-advisor-py/entrypoints/advisor_snapshot.py",
     "advisor:live-audit": "python scripts/advisor_live_audit.py",
+    "advisor:test-decision-sequence-parity": "node tools/advisor/decision-sequence-parity.test.js",
     "advisor:check-workflow": "node tools/advisor/sync-workflow.js --check",
     "advisor:sync-workflow": "node tools/advisor/sync-workflow.js",
     "check:all": "node tools/architecture/run-suite.js check:all",
