@@ -395,8 +395,8 @@ function testCoreHelpers() {
       state: {game: {oceans: 7, colonies: [{name: 'Leavitt', colonies: []}]}},
       gensLeft: 3,
     }),
-    -4,
-    'Ice Moon Colony should treat Leavitt as a premium open colony slot'
+    -9,
+    'Ice Moon Colony should not treat Leavitt as a premium colony placement slot'
   );
 
   const manualDelta = core.applyManualEVAdjustments({
