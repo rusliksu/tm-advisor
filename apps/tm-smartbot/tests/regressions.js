@@ -2,9 +2,11 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 
 const SMARTBOT = require(path.resolve(__dirname, '..', '..', '..', 'bot', 'smartbot'));
+const ROOT = path.resolve(__dirname, '..', '..', '..');
 const {
   testSmartPayLeavesOneFloaterForStratosphericBirdsWhenSingleSource,
   testSmartPayCanSpendAllFloatersForStratosphericBirdsWhenMultipleSources,
@@ -113,6 +115,10 @@ function buildDraftProjectCard(name) {
   const cardData = SMARTBOT.TM_BRAIN.getCardDataByName(name) || {};
   const cost = typeof cardData.cost === 'number' ? cardData.cost : 0;
   return {name, cost, calculatedCost: cost};
+}
+
+function loadSharedFixture(name) {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'test-fixtures', name), 'utf8'));
 }
 
 function testKeepPassDraftUsesDraftRatingNotPlayEv() {
@@ -314,6 +320,65 @@ function testOpeningColonyPrefersTritonOverOccupiedEuropaTie() {
     type: 'colony',
     colonyName: 'Triton',
   });
+}
+
+function makeMinorityRefugeActionState() {
+  const state = loadSharedFixture('minority_refuge_miranda_sequence.json');
+  state.waitingFor = null;
+  return state;
+}
+
+function makePlayProjectOrActionWorkflow(state) {
+  return {
+    type: 'or',
+    options: [
+      {
+        type: 'projectCard',
+        title: 'Play project card',
+        cards: state.cardsInHand,
+      },
+      {
+        type: 'card',
+        title: 'Perform an action from a played card',
+        selectBlueCardAction: true,
+        cards: [{name: 'Development Center'}],
+      },
+    ],
+  };
+}
+
+function testMinorityRefugeSequencePlaysAnimalBeforeColonyCard() {
+  const state = makeMinorityRefugeActionState();
+  const input = SMARTBOT.handleInput(makePlayProjectOrActionWorkflow(state), state);
+
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.strictEqual(input.response.type, 'projectCard');
+  assert.strictEqual(input.response.card, 'Fish');
+}
+
+function testMinorityRefugeSequenceThenPlaysRefugeAndChoosesMiranda() {
+  const state = makeMinorityRefugeActionState();
+  state.cardsInHand = state.cardsInHand.filter((card) => card.name !== 'Fish');
+  state.thisPlayer.cardsInHand = state.cardsInHand;
+  state.thisPlayer.tableau = [...state.thisPlayer.tableau, {name: 'Fish', resources: 0}];
+
+  const playInput = SMARTBOT.handleInput(makePlayProjectOrActionWorkflow(state), state);
+  assert.strictEqual(playInput.type, 'or');
+  assert.strictEqual(playInput.index, 0);
+  assert.strictEqual(playInput.response.type, 'projectCard');
+  assert.strictEqual(playInput.response.card, 'Minority Refuge');
+
+  const colonyInput = SMARTBOT.handleInput({
+    type: 'colony',
+    title: 'Select where to build a colony',
+    coloniesModel: [
+      {name: 'Luna', colonies: []},
+      {name: 'Europa', colonies: []},
+      {name: 'Miranda', colonies: ['red']},
+    ],
+  }, state);
+  assert.deepStrictEqual(colonyInput, {type: 'colony', colonyName: 'Miranda'});
 }
 
 function testPlutoDiscardDoesNotUseDraftKeepPriority() {
@@ -1328,6 +1393,8 @@ function run() {
   testResearchBuyCarriesHighPriorityDraftPickThroughPurchase();
   testOpeningColonyPrefersTritonOverEuropaWhenTitaniumScarce();
   testOpeningColonyPrefersTritonOverOccupiedEuropaTie();
+  testMinorityRefugeSequencePlaysAnimalBeforeColonyCard();
+  testMinorityRefugeSequenceThenPlaysRefugeAndChoosesMiranda();
   testPlutoDiscardDoesNotUseDraftKeepPriority();
   testPlutoDiscardProtectsHighPriorityDraftPick();
   testJovianLanternsKeepsImmediateFloaters();

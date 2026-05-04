@@ -1,10 +1,15 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const core = require(path.join(ROOT, 'packages', 'tm-brain-js', 'src', 'brain-core.js'));
+
+function loadSharedFixture(name) {
+  return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'test-fixtures', name), 'utf8'));
+}
 
 function testCoreHelpers() {
   assert.strictEqual(core.pAtLeastOne(0, 10, 4), 0, 'pAtLeastOne should short-circuit zero target');
@@ -308,6 +313,18 @@ function testCoreHelpers() {
     }),
     2
   );
+
+  const minorityFixture = loadSharedFixture('minority_refuge_miranda_sequence.json');
+  const minoritySequence = core.analyzeMinorityRefugeMirandaSequence({
+    state: minorityFixture,
+    cards: minorityFixture.cardsInHand,
+    rankableCards: minorityFixture.cardsInHand.filter((card) => card.name !== 'Fish' && card.name !== 'Birds'),
+  });
+  assert.strictEqual(minoritySequence.kind, 'minority_refuge_miranda');
+  assert.strictEqual(minoritySequence.cardName, 'Fish');
+  assert.strictEqual(minoritySequence.best.target_colony, 'Miranda');
+  assert.strictEqual(minoritySequence.best.animal_target, 'Fish');
+  assert.strictEqual(minoritySequence.best.setup_card, 'Fish');
 
   const metaBonuses = core.scoreCardMetaBonuses({
     tags: ['earth', 'science'],
@@ -648,6 +665,16 @@ function testWrapperParity() {
     'Project E': {tags: ['Plant']},
   };
   assert.deepStrictEqual(extensionBrain.analyzeDeck(deckState, ratings, cardData, []), botBrain.analyzeDeck(deckState, ratings, cardData, []));
+
+  const minorityFixture = loadSharedFixture('minority_refuge_miranda_sequence.json');
+  const minorityOptions = {
+    state: minorityFixture,
+    cards: minorityFixture.cardsInHand,
+    rankableCards: minorityFixture.cardsInHand.filter((card) => card.name !== 'Fish' && card.name !== 'Birds'),
+  };
+  const coreMinoritySequence = core.analyzeMinorityRefugeMirandaSequence(minorityOptions);
+  assert.deepStrictEqual(botBrain.analyzeMinorityRefugeMirandaSequence(minorityOptions), coreMinoritySequence);
+  assert.deepStrictEqual(extensionBrain.analyzeMinorityRefugeMirandaSequence(minorityOptions), coreMinoritySequence);
 
   const insectsBaseState = {
     _botName: 'Beta',

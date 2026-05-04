@@ -9,6 +9,15 @@
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
 
+  function asArray(value) {
+    return Array.isArray(value) ? value : [];
+  }
+
+  function asNumber(value, fallback) {
+    var n = Number(value);
+    return isFinite(n) ? n : (fallback || 0);
+  }
+
   function smartPay(amount, state, wfOrOpts, tags) {
     var tp = (state && state.thisPlayer) || {};
     var pay = {};
@@ -830,6 +839,164 @@
     var low = String(label || '').toLowerCase();
     if (isPlayedCardActionLabel(low)) return false;
     return low.indexOf('project card') >= 0 || (/\bplay\b/.test(low) && low.indexOf('card') >= 0);
+  }
+
+  var MIRANDA_ANIMAL_TARGET_SCORE = {
+    Fish: 100,
+    Birds: 98,
+    'Venusian Animals': 98,
+    Penguins: 98,
+    Livestock: 94,
+    Predators: 92,
+    'Sub-zero Salt Fish': 90,
+    Herbivores: 70,
+    Pets: 65,
+    'Small Animals': 62
+  };
+
+  var ADAPTATION_ANIMAL_MIN_REQS = {
+    Fish: {track: 'temperature', need: -2},
+    'Small Animals': {track: 'oxygen', need: 4},
+    Livestock: {track: 'oxygen', need: 7},
+    Predators: {track: 'oxygen', need: 9},
+    Birds: {track: 'oxygen', need: 11},
+    'Venusian Animals': {track: 'venus', need: 14}
+  };
+
+  function cardNameOf(card) {
+    if (!card) return '';
+    if (typeof card === 'string') return card;
+    return card.name || card.cardName || card.title || '';
+  }
+
+  function hasNamedCard(cards, name) {
+    cards = cards || [];
+    for (var i = 0; i < cards.length; i++) {
+      if (cardNameOf(cards[i]) === name) return true;
+    }
+    return false;
+  }
+
+  function findNamedCard(cards, name) {
+    cards = cards || [];
+    for (var i = 0; i < cards.length; i++) {
+      if (cardNameOf(cards[i]) === name) return cards[i];
+    }
+    return null;
+  }
+
+  function coloniesFromState(state) {
+    var game = (state && state.game) || {};
+    return asArray(game.colonies || state && state.colonies || game.coloniesModel || state && state.coloniesModel);
+  }
+
+  function availableMirandaColony(state) {
+    var colonies = coloniesFromState(state);
+    for (var i = 0; i < colonies.length; i++) {
+      var colony = colonies[i] || {};
+      if (colony.name !== 'Miranda') continue;
+      if (colony.isActive === false) continue;
+      var settlers = asArray(colony.colonies || colony.settlers);
+      if (settlers.length >= 3) continue;
+      return colony;
+    }
+    return null;
+  }
+
+  function hasTableauCard(state, name) {
+    var tableau = asArray(state && state.thisPlayer && state.thisPlayer.tableau);
+    return !!findNamedCard(tableau, name);
+  }
+
+  function gameTrackValue(state, track) {
+    var game = (state && state.game) || {};
+    if (track === 'temperature') return asNumber(game.temperature, -30);
+    if (track === 'oxygen') return asNumber(game.oxygenLevel != null ? game.oxygenLevel : game.oxygen, 0);
+    if (track === 'venus') return asNumber(game.venusScaleLevel != null ? game.venusScaleLevel : game.venus, 0);
+    return 0;
+  }
+
+  function adaptationOpensAnimal(card, state) {
+    if (!hasTableauCard(state, 'Adaptation Technology')) return false;
+    var req = ADAPTATION_ANIMAL_MIN_REQS[cardNameOf(card)];
+    if (!req) return false;
+    return gameTrackValue(state, req.track) >= req.need;
+  }
+
+  function bestTableauMirandaAnimalTarget(state) {
+    var tableau = asArray(state && state.thisPlayer && state.thisPlayer.tableau);
+    var best = null;
+    for (var i = 0; i < tableau.length; i++) {
+      var name = cardNameOf(tableau[i]);
+      var score = MIRANDA_ANIMAL_TARGET_SCORE[name];
+      if (typeof score !== 'number') continue;
+      score += asNumber(tableau[i] && (tableau[i].resources || tableau[i].resourceCount), 0) * 0.1;
+      if (!best || score > best.score) best = {name: name, score: score, source: 'tableau'};
+    }
+    return best;
+  }
+
+  function bestHandMirandaAnimalSetup(cards, state, rankableCards) {
+    var best = null;
+    cards = asArray(cards);
+    rankableCards = asArray(rankableCards);
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var name = cardNameOf(card);
+      var score = MIRANDA_ANIMAL_TARGET_SCORE[name];
+      if (typeof score !== 'number') continue;
+      if (!hasNamedCard(rankableCards, name) && !adaptationOpensAnimal(card, state)) continue;
+      if (!best || score > best.score) best = {name: name, score: score, source: 'hand'};
+    }
+    return best;
+  }
+
+  function analyzeMinorityRefugeMirandaSequence(options) {
+    var opts = options || {};
+    var state = opts.state || {};
+    var cards = asArray(opts.cards || (state && state.cardsInHand) || (state && state.thisPlayer && state.thisPlayer.cardsInHand));
+    var rankableCards = opts.rankableCards || cards;
+    if (!state || !hasNamedCard(cards, 'Minority Refuge')) return null;
+    if (!availableMirandaColony(state)) return null;
+
+    var target = bestTableauMirandaAnimalTarget(state);
+    var setupName = '';
+    if (!target) {
+      target = bestHandMirandaAnimalSetup(cards, state, rankableCards);
+      if (!target) return null;
+      setupName = target.name;
+    }
+
+    var title = setupName
+      ? 'Play ' + setupName + ' -> Minority Refuge'
+      : 'Play Minority Refuge -> Miranda';
+    var bestMove = setupName
+      ? 'Sequence: Play ' + setupName + ' -> Minority Refuge on Miranda -> animal to ' + target.name + ' (+1 VP now)'
+      : 'Sequence: Play Minority Refuge on Miranda -> animal to ' + target.name + ' (+1 VP now)';
+
+    return {
+      kind: 'minority_refuge_miranda',
+      title: title,
+      subtitle: 'Miranda: animal to ' + target.name,
+      score: setupName ? 95 : 90,
+      cardName: setupName || 'Minority Refuge',
+      best_move: bestMove,
+      best: {
+        target_colony: 'Miranda',
+        animal_target: target.name,
+        setup_card: setupName,
+        card_name: setupName || 'Minority Refuge'
+      },
+      options: [{line: bestMove}],
+      reasonRows: setupName ? [
+        {text: 'First play ' + setupName + '; then place Minority Refuge on Miranda', tone: 'positive'},
+        {text: 'Miranda build bonus adds animal to ' + target.name + ' (+1 VP)', tone: 'positive'},
+        {text: 'Avoid playing Minority Refuge before an animal target exists', tone: 'negative'}
+      ] : [
+        {text: 'Choose Miranda for the colony placement', tone: 'positive'},
+        {text: 'Add Miranda animal to ' + target.name + ' (+1 VP)', tone: 'positive'}
+      ]
+    };
   }
 
   function analyzeActions(waitingFor, state, options) {
@@ -2054,6 +2221,7 @@
     analyzePass: analyzePass,
     rankHandCards: rankHandCards,
     analyzeActions: analyzeActions,
+    analyzeMinorityRefugeMirandaSequence: analyzeMinorityRefugeMirandaSequence,
     analyzeDeck: analyzeDeck,
     countTagsInHand: countTagsInHand,
     countEffectivePlayedTagTotal: countEffectivePlayedTagTotal,

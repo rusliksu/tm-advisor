@@ -37,6 +37,7 @@ const suites = {
   ]),
   'test:fast': [
     'data:check-canonical',
+    'advisor:test-decision-sequence-parity',
     'test',
     'test:brain-core',
     'test:advisor-opening',

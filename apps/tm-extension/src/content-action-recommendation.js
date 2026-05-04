@@ -510,18 +510,33 @@
     return best;
   }
 
+  function sharedMinorityRefugeMirandaSequence(state, cards, rankableCards) {
+    var brain = global.TM_BRAIN_CORE || (global.TM_BRAIN && global.TM_BRAIN.analyzeMinorityRefugeMirandaSequence ? global.TM_BRAIN : null);
+    if (!brain || typeof brain.analyzeMinorityRefugeMirandaSequence !== 'function') return null;
+    return brain.analyzeMinorityRefugeMirandaSequence({
+      state: state,
+      cards: cards,
+      rankableCards: rankableCards
+    });
+  }
+
   function buildMinorityRefugeMirandaSequence(input, optionIndex, optTitle, cards, rankableCards, altTitle) {
     var state = input && input.state;
-    if (!state || !hasNamedCard(cards, 'Minority Refuge')) return null;
-    var miranda = availableMirandaColony(state);
-    if (!miranda) return null;
+    var shared = sharedMinorityRefugeMirandaSequence(state, cards, rankableCards);
+    var target = shared && shared.best ? {name: shared.best.animal_target} : null;
+    var setupName = shared && shared.best ? (shared.best.setup_card || '') : '';
+    if (!shared) {
+      if (!state || !hasNamedCard(cards, 'Minority Refuge')) return null;
+      var miranda = availableMirandaColony(state);
+      if (!miranda) return null;
 
-    var target = bestTableauMirandaAnimalTarget(state);
-    var setupName = '';
-    if (!target) {
-      target = bestHandMirandaAnimalSetup(cards, state, rankableCards);
-      if (!target) return null;
-      setupName = target.name;
+      target = bestTableauMirandaAnimalTarget(state);
+      setupName = '';
+      if (!target) {
+        target = bestHandMirandaAnimalSetup(cards, state, rankableCards);
+        if (!target) return null;
+        setupName = target.name;
+      }
     }
 
     var title = setupName

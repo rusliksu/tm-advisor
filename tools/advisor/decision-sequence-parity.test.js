@@ -54,6 +54,7 @@ function runJsOverlay() {
   };
 
   delete global.TM_CONTENT_ACTION_RECOMMENDATION;
+  global.TM_BRAIN_CORE = require(path.join(ROOT, 'packages', 'tm-brain-js', 'src', 'brain-core.js'));
   require(path.join(ROOT, 'apps', 'tm-extension', 'src', 'content-action-recommendation.js'));
   const actionRec = global.TM_CONTENT_ACTION_RECOMMENDATION;
   assert(actionRec, 'TM_CONTENT_ACTION_RECOMMENDATION should be loaded');
