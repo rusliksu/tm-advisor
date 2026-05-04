@@ -2,6 +2,9 @@
 (function () {
   'use strict';
 
+  const blockedHosts = new Set(['tm.knightbyte.win', 'staging.tm.knightbyte.win']);
+  if (blockedHosts.has(window.location.hostname)) return;
+
   // Official only, no Pluto (Pathfinders colonies auto-added by expansion)
   const COLONIES_NO_PLUTO = [
     'Callisto', 'Ceres', 'Enceladus', 'Europa', 'Ganymede', 'Io',

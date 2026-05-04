@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const {spawnSync} = require('child_process');
@@ -53,6 +54,7 @@ const JS_FILES = [
 
 const JSON_FILES = [
   'extension/manifest.json',
+  'apps/tm-extension/src/manifest.json',
 ];
 
 function checkNodeSyntax(relPath) {
@@ -71,9 +73,30 @@ function checkJsonParse(relPath) {
   JSON.parse(fs.readFileSync(absPath, 'utf8'));
 }
 
+function checkPresetsHostPolicy() {
+  for (const relPath of ['extension/manifest.json', 'apps/tm-extension/src/manifest.json']) {
+    const manifest = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, relPath), 'utf8'));
+    const presetsScripts = (manifest.content_scripts || []).filter((script) => {
+      return (script.js || []).includes('presets.js');
+    });
+    assert.strictEqual(presetsScripts.length, 1, `${relPath}: expected one presets content script`);
+    for (const match of presetsScripts[0].matches || []) {
+      assert(!match.includes('tm.knightbyte.win'), `${relPath}: presets must not inject on tm.knightbyte.win`);
+      assert(!match.includes('staging.tm.knightbyte.win'), `${relPath}: presets must not inject on staging`);
+    }
+  }
+
+  for (const relPath of ['extension/presets.js', 'apps/tm-extension/src/presets.js']) {
+    const source = fs.readFileSync(path.join(REPO_ROOT, relPath), 'utf8');
+    assert(source.includes("'tm.knightbyte.win'"), `${relPath}: missing tm.knightbyte.win host guard`);
+    assert(source.includes("'staging.tm.knightbyte.win'"), `${relPath}: missing staging host guard`);
+  }
+}
+
 function run() {
   for (const relPath of JS_FILES) checkNodeSyntax(relPath);
   for (const relPath of JSON_FILES) checkJsonParse(relPath);
+  checkPresetsHostPolicy();
   console.log('tm-extension syntax checks: OK');
 }
 
