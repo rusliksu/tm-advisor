@@ -1,0 +1,97 @@
+{
+  "id": "p-minority-refuge-miranda",
+  "runId": "test-minority-refuge-miranda",
+  "pickedCorporationCard": [
+    {"name": "Saturn Systems"}
+  ],
+  "thisPlayer": {
+    "id": "p-minority-refuge-miranda",
+    "color": "hydro",
+    "name": "sequence-player",
+    "isActive": true,
+    "megaCredits": 40,
+    "steel": 0,
+    "titanium": 6,
+    "titaniumValue": 4,
+    "plants": 0,
+    "energy": 3,
+    "heat": 0,
+    "megaCreditProduction": 48,
+    "steelProduction": 0,
+    "titaniumProduction": 3,
+    "plantProduction": 0,
+    "energyProduction": 3,
+    "heatProduction": 0,
+    "terraformRating": 28,
+    "cardsInHandNbr": 3,
+    "tableau": [
+      {"name": "Saturn Systems"},
+      {"name": "Adaptation Technology"}
+    ],
+    "tags": {
+      "science": 1,
+      "jovian": 1
+    }
+  },
+  "players": [
+    {
+      "id": "p-minority-refuge-miranda",
+      "color": "hydro",
+      "name": "sequence-player",
+      "isActive": true,
+      "megaCredits": 40,
+      "megaCreditProduction": 48,
+      "terraformRating": 28,
+      "cardsInHandNbr": 3,
+      "tableau": [
+        {"name": "Saturn Systems"},
+        {"name": "Adaptation Technology"}
+      ],
+      "tags": {
+        "science": 1,
+        "jovian": 1
+      }
+    },
+    {
+      "id": "p-opponent",
+      "color": "red",
+      "name": "opponent",
+      "isActive": false,
+      "megaCredits": 20,
+      "megaCreditProduction": 8,
+      "plantProduction": 4,
+      "terraformRating": 28,
+      "cardsInHandNbr": 4,
+      "tableau": [],
+      "tags": {}
+    }
+  ],
+  "cardsInHand": [
+    {"name": "Fish", "calculatedCost": 9, "tags": ["Animal"]},
+    {"name": "Minority Refuge", "calculatedCost": 1, "tags": ["Space"]},
+    {"name": "Birds", "calculatedCost": 10, "tags": ["Animal"]}
+  ],
+  "waitingFor": null,
+  "game": {
+    "id": "g-minority-refuge-miranda",
+    "generation": 8,
+    "phase": "action",
+    "oxygenLevel": 9,
+    "temperature": 0,
+    "oceans": 4,
+    "venusScaleLevel": 12,
+    "milestones": [],
+    "awards": [],
+    "colonies": [
+      {"name": "Miranda", "isActive": true, "trackPosition": 1, "colonies": ["red"]},
+      {"name": "Ceres", "isActive": true, "trackPosition": 3, "colonies": ["green"]}
+    ],
+    "gameOptions": {
+      "expansions": {
+        "prelude": true,
+        "colonies": true,
+        "venusNext": true
+      }
+    }
+  }
+}

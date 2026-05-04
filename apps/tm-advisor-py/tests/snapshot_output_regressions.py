@@ -50,6 +50,11 @@ def load_advisor_entrypoint_module():
     return module
 
 
+def load_shared_fixture(name: str) -> dict:
+    with (ROOT / "data" / "test-fixtures" / name).open(encoding="utf-8") as handle:
+        return json.load(handle)
+
+
 def build_raw_state() -> dict:
     me = {
         "color": "red",
@@ -421,40 +426,7 @@ def build_resource_sequence_raw_state() -> dict:
 
 
 def build_minority_refuge_miranda_sequence_raw_state() -> dict:
-    raw = copy.deepcopy(build_raw_state())
-    raw["game"]["generation"] = 8
-    raw["game"]["phase"] = "action"
-    raw["game"]["temperature"] = 0
-    raw["game"]["oxygenLevel"] = 9
-    raw["game"]["oceans"] = 4
-    raw["waitingFor"] = None
-    raw["game"]["milestones"] = []
-    raw["game"]["awards"] = []
-    raw["game"]["colonies"] = [
-        {"name": "Miranda", "isActive": True, "trackPosition": 1, "colonies": ["red"]},
-        {"name": "Ceres", "isActive": True, "trackPosition": 3, "colonies": ["green"]},
-    ]
-    raw["game"]["gameOptions"]["expansions"]["colonies"] = True
-    raw["thisPlayer"].update({
-        "name": "miranda-seq",
-        "isActive": True,
-        "megaCredits": 40,
-        "titanium": 6,
-        "titaniumValue": 4,
-        "megaCreditProduction": 48,
-        "terraformRating": 28,
-        "tableau": [
-            {"name": "Teractor"},
-            {"name": "Adaptation Technology"},
-        ],
-        "tags": {"science": 1},
-    })
-    raw["cardsInHand"] = [
-        {"name": "Fish", "calculatedCost": 9, "tags": ["Animal"]},
-        {"name": "Minority Refuge", "calculatedCost": 1, "tags": ["Space"]},
-        {"name": "Birds", "calculatedCost": 10, "tags": ["Animal"]},
-    ]
-    return raw
+    return load_shared_fixture("minority_refuge_miranda_sequence.json")
 
 
 def build_saturn_miranda_overpay_raw_state() -> dict:
