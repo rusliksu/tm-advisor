@@ -487,7 +487,8 @@ def assert_decision_top_options_uses_card_prompt() -> None:
     snap = {
         "game": {"generation": 4, "phase": "mid", "live_phase": "action"},
         "live": {"waiting_type": "card", "waiting_label": "Reveal"},
-        "card_prompt": {
+        "decision": {
+            "kind": "reveal_cards",
             "options": [
                 {
                     "name": "Reveal all 3 cards",

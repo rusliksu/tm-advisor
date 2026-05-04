@@ -443,11 +443,19 @@ def build_decision_context(snap: dict, top_options: list[dict] | None = None) ->
         context["best_move"] = summary.get("best_move")
     if summary.get("lines"):
         context["summary_lines"] = list(summary.get("lines")[:4])
+    decision = snap.get("decision") or {}
+    if decision:
+        context["decision"] = {
+            "kind": decision.get("kind"),
+            "best": decision.get("best"),
+        }
     trade_hint = (snap.get("trade") or {}).get("hint")
     if trade_hint:
         context["trade_hint"] = trade_hint
     if top_options is None:
-        if snap.get("current_draft"):
+        if decision.get("options"):
+            top_options = decision_top_options(snap, limit=3)
+        elif snap.get("current_draft"):
             top_options = option_entries_from_cards(snap.get("current_draft", []), draft_score)
         elif snap.get("hand_advice"):
             top_options = ranked_advisor_play_entries(snap, limit=3) or option_entries_from_hand_advice(snap)
@@ -1105,6 +1113,19 @@ def decision_top_options(snap: dict, limit: int = 5) -> list[dict]:
     game = snap.get("game", {}) or {}
     live = snap.get("live", {}) or {}
     live_phase = str(game.get("live_phase") or game.get("phase") or "").lower()
+    decision = snap.get("decision") or {}
+    if decision.get("options"):
+        return [
+            {
+                "name": option.get("name"),
+                "rank": option.get("rank"),
+                "score": option.get("score"),
+                "action": option.get("action"),
+                "reason": option.get("reason"),
+                "cards": option.get("cards"),
+            }
+            for option in decision.get("options", [])[:limit]
+        ]
     colony_prompt = snap.get("colony_prompt") or {}
     if live.get("waiting_type") == "colony" and colony_prompt.get("options"):
         return [

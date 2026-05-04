@@ -1337,18 +1337,21 @@ def main():
 
     colony_prompt_snap = advisor_snapshot.snapshot_from_raw(build_colony_prompt_raw_state())
     colony_prompt = colony_prompt_snap["colony_prompt"]
+    assert colony_prompt_snap["decision"]["kind"] == "colony_prompt", colony_prompt_snap["decision"]
     assert colony_prompt["best"]["name"] == "Ceres", colony_prompt
     assert colony_prompt_snap["summary"]["best_move"].startswith("Colony: Build colony Ceres"), colony_prompt_snap["summary"]
     assert colony_prompt_snap["summary"]["lines"][1].startswith("Ceres"), colony_prompt_snap["summary"]
 
     reveal_prompt_snap = advisor_snapshot.snapshot_from_raw(build_reveal_cards_prompt_raw_state())
     reveal_prompt = reveal_prompt_snap["card_prompt"]
+    assert reveal_prompt_snap["decision"]["kind"] == "reveal_cards", reveal_prompt_snap["decision"]
     assert reveal_prompt["best"]["action"] == "REVEAL_ALL", reveal_prompt
     assert reveal_prompt["best"]["cards"] == ["Sky Docks", "AI Central", "Space Mirrors"], reveal_prompt
     assert reveal_prompt_snap["summary"]["best_move"].startswith("Reveal all 3 cards"), reveal_prompt_snap["summary"]
 
     resource_prompt_snap = advisor_snapshot.snapshot_from_raw(build_add_resources_prompt_raw_state())
     resource_prompt = resource_prompt_snap["card_prompt"]
+    assert resource_prompt_snap["decision"]["kind"] == "add_resources", resource_prompt_snap["decision"]
     assert resource_prompt["best"]["name"] == "Venusian Animals", resource_prompt
     assert resource_prompt["best"]["action"] == "ADD_RESOURCES", resource_prompt
     assert resource_prompt["options"][1]["name"] == "Sulphur-Eating Bacteria", resource_prompt
