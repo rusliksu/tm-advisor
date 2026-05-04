@@ -78,6 +78,48 @@ function runJsOverlay() {
   });
 }
 
+function makeSmartbotActionWorkflow(state) {
+  return {
+    type: 'or',
+    options: [
+      {type: 'projectCard', title: 'Play project card', cards: state.cardsInHand},
+      {
+        type: 'card',
+        title: 'Perform an action from a played card',
+        selectBlueCardAction: true,
+        cards: [{name: 'Development Center'}],
+      },
+    ],
+  };
+}
+
+function runSmartbotSequence() {
+  const smartbot = require(path.join(ROOT, 'bot', 'smartbot.js'));
+
+  const firstState = loadFixture();
+  firstState.waitingFor = null;
+  const first = smartbot.handleInput(makeSmartbotActionWorkflow(firstState), firstState, 1);
+
+  const secondState = loadFixture();
+  secondState.waitingFor = null;
+  secondState.cardsInHand = secondState.cardsInHand.filter((card) => card.name !== 'Fish');
+  secondState.thisPlayer.cardsInHand = secondState.cardsInHand;
+  secondState.thisPlayer.tableau = [...secondState.thisPlayer.tableau, {name: 'Fish', resources: 0}];
+  const second = smartbot.handleInput(makeSmartbotActionWorkflow(secondState), secondState, 1);
+
+  const colony = smartbot.handleInput({
+    type: 'colony',
+    title: 'Select where to build a colony',
+    coloniesModel: [
+      {name: 'Luna', colonies: []},
+      {name: 'Europa', colonies: []},
+      {name: 'Miranda', colonies: ['red']},
+    ],
+  }, secondState, 1);
+
+  return {first, second, colony};
+}
+
 const py = runPythonSnapshot();
 assert.strictEqual(py.decision_kind, 'minority_refuge_miranda');
 assert(py.sequence, 'Python advisor should return a sequence payload');
@@ -98,5 +140,15 @@ assert.strictEqual(js.cardName, py.sequence.best.animal_target);
 assert(py.best_move.includes('Minority Refuge'), py.best_move);
 assert(py.best_move.includes('Miranda'), py.best_move);
 assert(js.title.includes('Minority Refuge'), js.title);
+
+const bot = runSmartbotSequence();
+assert.strictEqual(bot.first.type, 'or');
+assert.strictEqual(bot.first.response.type, 'projectCard');
+assert.strictEqual(bot.first.response.card, 'Fish');
+assert.strictEqual(bot.second.type, 'or');
+assert.strictEqual(bot.second.response.type, 'projectCard');
+assert.strictEqual(bot.second.response.card, 'Minority Refuge');
+assert.deepStrictEqual(bot.colony, {type: 'colony', colonyName: 'Miranda'});
+assert.strictEqual(bot.first.response.card, js.cardName);
 
 console.log('decision sequence parity checks: OK');
