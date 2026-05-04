@@ -742,7 +742,6 @@
       Ceres: true,
       Triton: true,
       Miranda: true,
-      Leavitt: true,
       Titan: true,
       Enceladus: true,
       Europa: true,
