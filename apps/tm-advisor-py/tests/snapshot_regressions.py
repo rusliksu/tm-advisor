@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 from pathlib import Path
 
@@ -106,6 +107,9 @@ def main() -> None:
 
     class FakeClient:
         def get_player_state(self, _player_id):
+            if _player_id == "p-sequence":
+                fixture = ROOT / "data" / "test-fixtures" / "minority_refuge_miranda_sequence.json"
+                return json.loads(fixture.read_text(encoding="utf-8"))
             if _player_id == "p-research":
                 return {
                     "thisPlayer": {
@@ -178,6 +182,7 @@ def main() -> None:
     try:
         terminal = snapshot.snapshot("p-end")
         research = snapshot.snapshot("p-research")
+        sequence = snapshot.snapshot("p-sequence")
     finally:
         snapshot.TMClient = original_client
 
@@ -194,6 +199,10 @@ def main() -> None:
     assert "play_advice" not in research, research.get("play_advice")
     assert "trade" not in research, research.get("trade")
     assert "colony_advice" not in research, research.get("colony_advice")
+    assert sequence["decision"]["kind"] == "minority_refuge_miranda", sequence.get("decision")
+    assert sequence["sequence"]["best"]["target_colony"] == "Miranda", sequence.get("sequence")
+    assert sequence["sequence"]["best"]["animal_target"] == "Fish", sequence.get("sequence")
+    assert sequence["sequence"]["best"]["setup_card"] == "Fish", sequence.get("sequence")
 
     print("advisor snapshot regression checks: OK")
 

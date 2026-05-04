@@ -9,6 +9,7 @@ const {
   STATIC_VP,
   remainingSteps, vpLead, shouldPushGlobe, isRedsRuling,
   scoreColonyTrade, scoreCard, smartPay,
+  analyzeMinorityRefugeMirandaSequence,
 } = TM_BRAIN;
 
 const BASE = 'http://localhost:8081';
@@ -241,6 +242,11 @@ function estimateCardCashCost(card, state) {
 
 function isLiquidityProtectedCard(cardName) {
   return ENGINE_CARDS.has(cardName) || PROD_CARDS.has(cardName) || CITY_CARDS.has(cardName);
+}
+
+function playerSequenceKey(state) {
+  const tp = state?.thisPlayer || {};
+  return tp.id || tp.color || tp.name || '_default';
 }
 
 function computeLowMcPlayFloor(state, urgency, spAvailable) {
@@ -1620,6 +1626,30 @@ function handleInput(wf, state, depth = 0) {
     // Cards and Standard Projects compete on EV. Best action wins.
     const bl = state?._blacklist || new Set();
 
+    if (playCardIdx >= 0 && typeof analyzeMinorityRefugeMirandaSequence === 'function') {
+      const subWf = opts[playCardIdx] || {};
+      const hand = subWf.cards?.length > 0 ? subWf.cards : cardsInHand;
+      const rankableCards = hand.filter(c => c && !c.isDisabled);
+      const sequence = analyzeMinorityRefugeMirandaSequence({state, cards: hand, rankableCards});
+      const sequenceCardName = sequence?.cardName || sequence?.best?.card_name;
+      const sequenceCard = sequenceCardName ? hand.find(c => (c?.name || c) === sequenceCardName && !c.isDisabled) : null;
+      if (sequence && sequenceCard) {
+        if (sequenceCardName === 'Minority Refuge') {
+          pendingMinorityRefugeMiranda.set(playerSequenceKey(state), sequence);
+        }
+        dbg(`sequence: ${sequence.best_move || sequence.title}`);
+        return {
+          type: 'or',
+          index: playCardIdx,
+          response: {
+            type: 'projectCard',
+            card: sequenceCardName,
+            payment: smartPay(sequenceCard.calculatedCost ?? sequenceCard.cost ?? 0, state, subWf, CARD_TAGS[sequenceCardName], sequenceCardName),
+          },
+        };
+      }
+    }
+
     // Calculate best SP EV (if available)
     let bestSpEV = -999;
     let bestSpCard = null;
@@ -2478,6 +2508,12 @@ function handleInput(wf, state, depth = 0) {
   if (t === 'colony') {
     const colonies = wf.coloniesModel || wf.colonies || [];
     if (colonies.length > 0) {
+      const pendingSequence = pendingMinorityRefugeMiranda.get(playerSequenceKey(state));
+      const miranda = colonies.find((colony) => (colony?.name || colony) === 'Miranda');
+      if (pendingSequence && miranda) {
+        pendingMinorityRefugeMiranda.delete(playerSequenceKey(state));
+        return { type: 'colony', colonyName: 'Miranda' };
+      }
       const title = getTitle(wf).toLowerCase();
       const isTrade = title.includes('trade') || title.includes('income');
       let sorted;
@@ -2805,6 +2841,7 @@ const cardPlayCounter = new Map(); // playerId -> count of consecutive card play
 // Track cards that fail to play (unmet requirements)
 const cardBlacklist = new Map(); // playerId -> Set<cardName>
 const spaceBlacklist = new Map(); // playerId -> Set<spaceId>
+const pendingMinorityRefugeMiranda = new Map(); // player key -> sequence payload
 const WEAK_LATE_ACTION_CARDS = new Set([
   'Business Network',
   'Floyd Continuum',

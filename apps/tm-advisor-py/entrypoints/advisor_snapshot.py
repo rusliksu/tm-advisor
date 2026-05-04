@@ -23,6 +23,7 @@ from scripts.tm_advisor.analysis import (  # noqa: E402
 from scripts.tm_advisor.colony_advisor import (  # noqa: E402
     analyze_trade_options, colony_strategy_advice, is_actionable_trade_hint,
 )
+from scripts.tm_advisor.decision_sequences import sequence_decision_advice  # noqa: E402
 from scripts.tm_advisor.draft_play_advisor import play_hold_advice  # noqa: E402
 from scripts.tm_advisor.economy import resource_values, game_phase  # noqa: E402
 from scripts.tm_advisor.opponent_intent import (  # noqa: E402
@@ -283,6 +284,19 @@ def snapshot(player_id: str) -> dict:
     result["hand"] = hand_cards
     if play_advice:
         result["play_advice"] = play_advice
+
+    if action_phase:
+        try:
+            sequence_decision = sequence_decision_advice(
+                state, hand_advice=play_advice, req_checker=req_checker
+            )
+        except Exception as e:
+            result["sequence_error"] = str(e)
+        else:
+            if sequence_decision:
+                sequence_payload = sequence_decision.to_dict()
+                result["decision"] = sequence_payload
+                result[sequence_decision.channel] = sequence_payload
 
     if current_draft:
         draft_cards = []
