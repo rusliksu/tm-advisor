@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 from collections import defaultdict
 from functools import lru_cache
 import json
@@ -26,8 +27,9 @@ from scripts.tm_advisor.analysis import (  # noqa: E402
     is_game_end_triggered,
 )
 from scripts.tm_advisor.colony_advisor import (  # noqa: E402
-    analyze_trade_options, colony_strategy_advice,
+    analyze_settlement, analyze_trade_options, colony_strategy_advice,
 )
+from scripts.tm_advisor.constants import COLONY_TIERS  # noqa: E402
 from scripts.tm_advisor.draft_play_advisor import (  # noqa: E402
     draft_buy_advice, mc_allocation_advice, play_hold_advice,
 )
@@ -303,6 +305,32 @@ def _should_show_trade_hint(state: GameState) -> bool:
     return bool(waiting.get("type"))
 
 
+def _trade_snapshot_payload(trade: dict) -> dict:
+    trades = list(trade.get("trades") or [])
+    direct_best = dict(trades[0]) if trades else None
+    build_before_trade = trade.get("build_before_trade")
+    build_best = dict(build_before_trade) if build_before_trade else None
+    hint = trade.get("best_hint", "")
+
+    if build_best and hint == build_best.get("hint"):
+        best = dict(build_best)
+        best["type"] = "build_then_trade"
+    elif direct_best:
+        best = dict(direct_best)
+        best["type"] = "direct_trade"
+    else:
+        best = None
+
+    payload = {
+        "best": best,
+        "best_direct": direct_best,
+        "hint": hint,
+    }
+    if build_best:
+        payload["build_before_trade"] = build_best
+    return payload
+
+
 def _workflow_title_text(value) -> str:
     if isinstance(value, dict):
         message = value.get("message")
@@ -339,7 +367,14 @@ def _is_main_action_prompt(state: GameState) -> bool:
 
 def _should_build_action_plan(state: GameState) -> bool:
     live_phase = str(state.phase or "").lower()
-    return live_phase == "action" and _is_main_action_prompt(state)
+    if live_phase != "action":
+        return False
+    me = getattr(state, "me", None)
+    raw = getattr(me, "raw", {}) or {}
+    is_active = raw.get("isActive") if isinstance(raw, dict) else None
+    if is_active is False:
+        return False
+    return _is_main_action_prompt(state)
 
 
 def _collect_playable_project_names_from_waiting(node) -> tuple[set[str], bool]:
@@ -380,6 +415,276 @@ def _current_prompt_hint(state: GameState) -> str | None:
     if not prompt_text:
         prompt_text = str(waiting.get("type") or "current prompt")
     return f"Resolve current prompt: {prompt_text}"
+
+
+def _waiting_colony_entries(state: GameState) -> list[dict]:
+    waiting = state.waiting_for or {}
+    if waiting.get("type") != "colony":
+        return []
+    raw_colonies = waiting.get("coloniesModel") or waiting.get("colonies") or []
+    entries = []
+    for colony in raw_colonies:
+        if isinstance(colony, str):
+            name = colony
+            settlers = []
+            track = 0
+            active = True
+        elif isinstance(colony, dict):
+            name = colony.get("name")
+            settlers = list(colony.get("colonies") or colony.get("settlers") or [])
+            track = colony.get("trackPosition", colony.get("track", 0))
+            active = colony.get("isActive", True)
+        else:
+            continue
+        if not name:
+            continue
+        entries.append({
+            "name": str(name),
+            "settlers": settlers,
+            "track": track or 0,
+            "isActive": active,
+        })
+    return entries
+
+
+def _colony_prompt_verb(state: GameState) -> str:
+    waiting = state.waiting_for or {}
+    text = _waiting_prompt_text(waiting).lower()
+    if "add colony tile" in text:
+        return "Add colony tile"
+    return "Build colony"
+
+
+def _colony_prompt_reason(entry: dict) -> str:
+    parts = []
+    build_bonus = (entry.get("build_bonus") or "").strip()
+    if build_bonus:
+        parts.append(build_bonus)
+    if entry.get("future_value") is not None:
+        parts.append(f"owner bonus ~{entry.get('future_value')} MC")
+    if entry.get("tempo_trade_gain", 0) > 0:
+        parts.append(f"trade tempo +{entry.get('tempo_trade_gain')} MC")
+    if abs(entry.get("resource_support_bonus", 0) or 0) >= 0.5 and entry.get("resource_support_reason"):
+        parts.append(entry["resource_support_reason"])
+    if entry.get("contest_risk_penalty", 0) > 0 and entry.get("contest_risk_reason"):
+        parts.append(f"{entry['contest_risk_reason']} (-{entry['contest_risk_penalty']})")
+    return "; ".join(parts)
+
+
+def _fallback_colony_prompt_option(colony: dict) -> dict:
+    tier = COLONY_TIERS.get(colony["name"], {})
+    score = tier.get("score", 50)
+    return {
+        "name": colony["name"],
+        "score": score,
+        "tier": tier.get("tier"),
+        "action": "COLONY",
+        "reason": tier.get("why", "")[:120],
+    }
+
+
+def _colony_prompt_advice(state: GameState) -> dict | None:
+    choices = _waiting_colony_entries(state)
+    if not choices:
+        return None
+
+    temp_state = copy.copy(state)
+    temp_state.colonies_data = choices
+    try:
+        settlements = analyze_settlement(temp_state)
+    except Exception:
+        settlements = []
+
+    by_name = {entry.get("name"): entry for entry in settlements if entry.get("name")}
+    options = []
+    for colony in choices:
+        name = colony["name"]
+        settlement = by_name.get(name)
+        if settlement:
+            score = float(settlement.get("total_value", 0) or 0)
+            tier_score = COLONY_TIERS.get(name, {}).get("score", 50)
+            option = {
+                "name": name,
+                "score": round(score, 1),
+                "tier": settlement.get("tier"),
+                "action": "COLONY",
+                "reason": _colony_prompt_reason(settlement),
+                "total_value": round(score, 1),
+                "tier_score": tier_score,
+                "build_bonus": settlement.get("build_bonus"),
+                "colony_bonus": settlement.get("colony_bonus"),
+                "future_value": settlement.get("future_value"),
+                "slots": settlement.get("slots"),
+            }
+        else:
+            option = _fallback_colony_prompt_option(colony)
+        options.append(option)
+
+    options.sort(
+        key=lambda row: (
+            row.get("score", 0),
+            row.get("tier_score", COLONY_TIERS.get(row.get("name"), {}).get("score", 0)),
+        ),
+        reverse=True,
+    )
+    for idx, option in enumerate(options, start=1):
+        option["rank"] = idx
+        reason = option.get("reason") or ""
+        tier = f" [{option['tier']}]" if option.get("tier") else ""
+        value = option.get("score")
+        option["line"] = f"{option['name']}{tier} — value {value}: {reason}".rstrip()
+
+    best = options[0] if options else None
+    if not best:
+        return None
+    verb = _colony_prompt_verb(state)
+    best_move = f"Colony: {verb} {best['name']} (value {best.get('score')})"
+    if best.get("reason"):
+        best_move += f" — {best['reason']}"
+    return {
+        "verb": verb,
+        "best_move": best_move,
+        "best": best,
+        "options": options,
+    }
+
+
+def _card_prompt_entries(state: GameState) -> list[dict]:
+    waiting = state.waiting_for or {}
+    if waiting.get("type") != "card":
+        return []
+    entries = []
+    for card in waiting.get("cards") or []:
+        resources = 0
+        if isinstance(card, str):
+            name = card
+        elif isinstance(card, dict):
+            name = card.get("name")
+            resources = card.get("resources") or 0
+        else:
+            continue
+        if name:
+            entries.append({"name": str(name), "resources": resources})
+    return entries
+
+
+_RESOURCE_TARGETS = {
+    "Aerial Mappers": {"draw_per": 1.0},
+    "Decomposers": {"vp_every": 3},
+    "Ecological Zone": {"vp_every": 2},
+    "Extremophiles": {"vp_every": 3},
+    "Fish": {"vp_every": 1},
+    "Livestock": {"vp_every": 1},
+    "Pets": {"vp_every": 2},
+    "Predators": {"vp_every": 1},
+    "Security Fleet": {"vp_every": 1},
+    "Small Animals": {"vp_every": 2},
+    "Sulphur-Eating Bacteria": {"mc_per": 3.0},
+    "Venusian Animals": {"vp_every": 1},
+}
+
+
+def _resource_prompt_amount(waiting: dict) -> int:
+    text = _waiting_prompt_text(waiting).lower()
+    match = re.search(r"add\s+(\d+)\s+resources?", text)
+    if match:
+        return int(match.group(1))
+    return 1
+
+
+def _resource_target_option(card: dict, amount: int) -> dict:
+    name = card["name"]
+    current = int(card.get("resources") or 0)
+    profile = _RESOURCE_TARGETS.get(name, {})
+    score = float(amount)
+    reason = f"+{amount} resources"
+    if profile.get("vp_every"):
+        every = int(profile["vp_every"])
+        before = current // every
+        after = (current + amount) // every
+        vp_delta = after - before
+        score = vp_delta * 5 + amount * 0.2
+        if vp_delta:
+            reason = f"+{vp_delta} VP now ({current}->{current + amount} resources)"
+        else:
+            remaining = every - ((current + amount) % every)
+            if remaining == every:
+                remaining = 0
+            reason = f"toward VP threshold; {remaining} more for next VP"
+    elif profile.get("mc_per"):
+        mc = amount * float(profile["mc_per"])
+        score = mc
+        reason = f"cashable for ~{mc:g} MC"
+    elif profile.get("draw_per"):
+        cards = amount * float(profile["draw_per"])
+        score = cards * 3.5
+        reason = f"can convert into ~{cards:g} card draws"
+
+    return {
+        "name": name,
+        "score": round(score, 1),
+        "action": "ADD_RESOURCES",
+        "reason": reason,
+        "resources_before": current,
+        "resources_added": amount,
+    }
+
+
+def _card_prompt_advice(state: GameState) -> dict | None:
+    waiting = state.waiting_for or {}
+    if waiting.get("type") != "card":
+        return None
+    prompt_text = _waiting_prompt_text(waiting).lower()
+    if "select cards to reveal" in prompt_text:
+        cards = _card_prompt_entries(state)
+        count = len(cards)
+        option = {
+            "name": f"Reveal all {count} cards",
+            "rank": 1,
+            "score": count,
+            "action": "REVEAL_ALL",
+            "reason": f"Public Plans pays +{count} MC; only skip cards if hiding information is worth more",
+            "cards": [card["name"] for card in cards],
+            "line": f"Reveal all {count} cards — +{count} MC from Public Plans",
+        }
+        fallback = {
+            "name": "Reveal no cards",
+            "rank": 2,
+            "score": 0,
+            "action": "REVEAL_NONE",
+            "reason": "Only if secrecy is worth more than the refund",
+            "cards": [],
+            "line": "Reveal no cards — keep hand hidden, but give up the refund",
+        }
+        best_move = option["line"]
+        return {
+            "kind": "reveal_cards",
+            "best_move": best_move,
+            "best": option,
+            "options": [option, fallback],
+        }
+
+    if "select card to add" in prompt_text and "resource" in prompt_text:
+        cards = _card_prompt_entries(state)
+        if not cards:
+            return None
+        amount = _resource_prompt_amount(waiting)
+        options = [_resource_target_option(card, amount) for card in cards]
+        options.sort(key=lambda row: row.get("score", 0), reverse=True)
+        for idx, option in enumerate(options, start=1):
+            option["rank"] = idx
+            option["line"] = (
+                f"Add {amount} resources to {option['name']} "
+                f"(value {option['score']}) — {option['reason']}"
+            )
+        best = options[0]
+        return {
+            "kind": "add_resources",
+            "best_move": best["line"],
+            "best": best,
+            "options": options,
+        }
+    return None
 
 
 def _truncate_summary_text(text: str, max_len: int = 96) -> str:
@@ -537,6 +842,22 @@ def _summary_allocation_allowed(result: dict | None, entry: dict) -> bool:
     return _summary_project_play_allowed(result, card_name)
 
 
+def _public_hand_advice(result: dict | None, hand_advice: list[dict] | None) -> list[dict]:
+    public = []
+    for entry in hand_advice or []:
+        if entry.get("action") == "PLAY" and not _summary_hand_advice_allowed(result, entry):
+            downgraded = dict(entry)
+            downgraded["action"] = "HOLD"
+            downgraded["ui_unavailable"] = True
+            reason = str(downgraded.get("reason") or "").strip()
+            prefix = "not present in current UI Play project card selector"
+            downgraded["reason"] = f"{prefix}; {reason}" if reason else prefix
+            public.append(downgraded)
+            continue
+        public.append(entry)
+    return public
+
+
 def _build_summary_block(
     result: dict,
     hand_advice: list[dict],
@@ -594,10 +915,19 @@ def _build_summary_block(
                 continue
             if not _summary_allocation_allowed(result, entry):
                 continue
+            if not _allocation_card_allowed_by_hand_advice(entry):
+                continue
             if "❌нет MC" in str(entry.get("action", "")):
                 continue
             if kind == "award":
                 urgency = str(entry.get("urgency", "") or "").strip()
+                if (
+                    best_play
+                    and urgency == "MEDIUM"
+                    and phase_name in ("early", "mid")
+                    and best_play_value >= 8
+                ):
+                    continue
                 if (
                     best_play
                     and urgency == "MEDIUM"
@@ -685,9 +1015,22 @@ def _build_summary_block(
         for entry in allocations:
             if "❌нет MC" in str(entry.get("action", "") or ""):
                 continue
+            if not _allocation_card_allowed_by_hand_advice(entry):
+                continue
             if closes_global(entry):
                 return _format_allocation_summary_line(entry)
         return None
+
+    def _allocation_card_allowed_by_hand_advice(entry: dict) -> bool:
+        if entry.get("type") != "card":
+            return True
+        card_name = _allocation_play_card_name(str(entry.get("action", "") or ""))
+        if not card_name:
+            return True
+        for advice in hand_advice or []:
+            if advice.get("name") == card_name:
+                return advice.get("action") == "PLAY"
+        return True
 
     summary = {
         "focus": f"{result['game']['phase']} / gen {result['game']['generation']}",
@@ -700,6 +1043,20 @@ def _build_summary_block(
     }
     if summary["best_move"]:
         summary["lines"].append(summary["best_move"])
+
+    colony_prompt = result.get("colony_prompt") or {}
+    if colony_prompt.get("options"):
+        for option in colony_prompt["options"][:3]:
+            line = option.get("line")
+            if line and line not in summary["lines"]:
+                summary["lines"].append(line)
+
+    card_prompt = result.get("card_prompt") or {}
+    if card_prompt.get("options"):
+        for option in card_prompt["options"][:3]:
+            line = option.get("line")
+            if line and line not in summary["lines"]:
+                summary["lines"].append(line)
 
     original_hand_advice = list(hand_advice or [])
     hand_advice = [
@@ -895,9 +1252,19 @@ def snapshot_from_raw(raw: dict) -> dict:
             "playable_project_cards": sorted(playable_project_names),
         },
     }
-    current_prompt = _current_prompt_hint(state)
-    if current_prompt:
-        result["current_prompt"] = current_prompt
+    colony_prompt = _colony_prompt_advice(state)
+    if colony_prompt:
+        result["colony_prompt"] = colony_prompt
+        result["current_prompt"] = colony_prompt["best_move"]
+    else:
+        card_prompt = _card_prompt_advice(state)
+        if card_prompt:
+            result["card_prompt"] = card_prompt
+            result["current_prompt"] = card_prompt["best_move"]
+        else:
+            current_prompt = _current_prompt_hint(state)
+            if current_prompt:
+                result["current_prompt"] = current_prompt
 
     show_initial_draft = (
         state.phase == "initial_drafting"
@@ -971,7 +1338,7 @@ def snapshot_from_raw(raw: dict) -> dict:
             if meta.get("note"):
                 entry["note"] = meta["note"]
             entry["description_first"] = bool(meta.get("description_first"))
-    result["hand_advice"] = hand_advice
+    result["hand_advice"] = _public_hand_advice(result, hand_advice)
 
     if should_build_action_plan:
         try:
@@ -1080,10 +1447,7 @@ def snapshot_from_raw(raw: dict) -> dict:
     if state.colonies_data and _should_show_trade_hint(state):
         try:
             trade = analyze_trade_options(state)
-            result["trade"] = {
-                "best": trade["trades"][0] if trade["trades"] else None,
-                "hint": trade["best_hint"],
-            }
+            result["trade"] = _trade_snapshot_payload(trade)
         except Exception:
             pass
         try:
@@ -1110,7 +1474,7 @@ def snapshot_from_raw(raw: dict) -> dict:
             "tr": opp.tr,
             "mc": opp.mc,
             "production_mc": opp.mc_prod,
-            "hand_count": opp.cards_in_hand_count if hasattr(opp, "cards_in_hand_count") else 0,
+            "hand_count": getattr(opp, "cards_in_hand_n", 0),
             "tableau_count": len(opp.tableau) if opp.tableau else 0,
         })
     result["opponents"] = opponents

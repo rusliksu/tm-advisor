@@ -787,7 +787,7 @@ def build_non_vp_resource_currency_state() -> GameState:
     })
 
 
-def build_colony_card_value_state() -> GameState:
+def build_colony_card_value_state(*, colonies_count: int = 1, energy_prod: int = 3, fleet_size: int = 1) -> GameState:
     me = {
         "color": "red",
         "name": "me",
@@ -802,12 +802,12 @@ def build_colony_card_value_state() -> GameState:
         "steelProduction": 0,
         "titaniumProduction": 2,
         "plantProduction": 0,
-        "energyProduction": 3,
+        "energyProduction": energy_prod,
         "heatProduction": 0,
         "terraformRating": 24,
         "cardsInHandNbr": 2,
-        "coloniesCount": 1,
-        "fleetSize": 1,
+        "coloniesCount": colonies_count,
+        "fleetSize": fleet_size,
         "tradesThisGeneration": 0,
         "tableau": [{"name": "PhoboLog"}],
         "tags": {"space": 2, "science": 1},
@@ -837,6 +837,58 @@ def build_colony_card_value_state() -> GameState:
             "gameOptions": {
                 "expansions": {"prelude": True, "colonies": True},
             },
+        },
+    })
+
+
+def build_special_permit_steal_state() -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 18,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 2,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 4,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 1,
+        "energyProduction": 0,
+        "heatProduction": 0,
+        "terraformRating": 22,
+        "cardsInHandNbr": 2,
+        "tableau": [],
+        "tags": {"plant": 1, "event": 1},
+    }
+    opp = {
+        "color": "blue",
+        "name": "opp",
+        "megaCredits": 20,
+        "plants": 7,
+        "terraformRating": 24,
+        "cardsInHandNbr": 3,
+        "tableau": [],
+        "tags": {},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me, opp],
+        "cardsInHand": [
+            {"name": "Special Permit", "calculatedCost": 5, "tags": ["Plant", "Event"]},
+        ],
+        "game": {
+            "generation": 5,
+            "phase": "action",
+            "oxygenLevel": 4,
+            "temperature": -18,
+            "oceans": 6,
+            "venusScaleLevel": 8,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "turmoil": True}},
         },
     })
 
@@ -958,6 +1010,129 @@ def build_safe_milestone_spend_state() -> GameState:
                 {"name": "Luna", "isActive": True, "trackPosition": 4, "colonies": []},
                 {"name": "Triton", "isActive": True, "trackPosition": 3, "colonies": []},
             ],
+            "gameOptions": {
+                "expansions": {"prelude": True, "colonies": True},
+            },
+        },
+    })
+
+
+def build_pioneer_colony_race_state() -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 40,
+        "steel": 0,
+        "titanium": 2,
+        "plants": 0,
+        "energy": 3,
+        "heat": 0,
+        "megaCreditProduction": 8,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 3,
+        "heatProduction": 0,
+        "terraformRating": 22,
+        "cardsInHandNbr": 1,
+        "coloniesCount": 2,
+        "fleetSize": 1,
+        "tradesThisGeneration": 0,
+        "tableau": [{"name": "Lakefront Resorts"}],
+        "tags": {"space": 1, "earth": 1},
+    }
+    opp = {
+        "color": "blue",
+        "name": "opp",
+        "megaCredits": 20,
+        "terraformRating": 20,
+        "cardsInHandNbr": 0,
+        "coloniesCount": 1,
+        "tableau": [],
+        "tags": {},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me, opp],
+        "pickedCorporationCard": [{"name": "Lakefront Resorts"}],
+        "cardsInHand": [
+            {"name": "Interplanetary Colony Ship", "calculatedCost": 12, "tags": ["Event", "Space", "Earth"]},
+        ],
+        "game": {
+            "generation": 2,
+            "phase": "action",
+            "oxygenLevel": 0,
+            "temperature": -28,
+            "oceans": 0,
+            "venusScaleLevel": 4,
+            "milestones": [
+                {
+                    "name": "Pioneer",
+                    "scores": [
+                        {"color": "red", "score": 2, "claimable": False},
+                        {"color": "blue", "score": 1, "claimable": False},
+                    ],
+                }
+            ],
+            "awards": [],
+            "colonies": [
+                {"name": "Callisto", "isActive": True, "trackPosition": 3, "colonies": ["red"]},
+                {"name": "Ceres", "isActive": True, "trackPosition": 2, "colonies": ["red", "blue"]},
+                {"name": "Titan", "isActive": True, "trackPosition": 4, "colonies": []},
+            ],
+            "gameOptions": {
+                "expansions": {"prelude": True, "colonies": True, "venus": True},
+            },
+        },
+    })
+
+
+def build_kaguya_conversion_state() -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 23,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 7,
+        "energy": 1,
+        "heat": 6,
+        "megaCreditProduction": 20,
+        "steelProduction": 1,
+        "titaniumProduction": 0,
+        "plantProduction": 2,
+        "energyProduction": 1,
+        "heatProduction": 2,
+        "terraformRating": 33,
+        "cardsInHandNbr": 1,
+        "coloniesCount": 3,
+        "fleetSize": 1,
+        "tradesThisGeneration": 0,
+        "tableau": [{"name": "Lakefront Resorts"}],
+        "tags": {"plant": 1, "city": 1},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Lakefront Resorts"}],
+        "cardsInHand": [
+            {"name": "Kaguya Tech", "calculatedCost": 10, "tags": ["City", "Plant"]},
+        ],
+        "game": {
+            "generation": 7,
+            "phase": "action",
+            "oxygenLevel": 6,
+            "temperature": -14,
+            "oceans": 7,
+            "venusScaleLevel": 6,
+            "milestones": [],
+            "awards": [],
+            "spaces": [
+                {"id": "a", "x": 0, "y": 0, "spaceType": "land", "tileType": 0, "color": "red"},
+                {"id": "b", "x": 1, "y": 0, "spaceType": "land", "tileType": 0, "color": "red"},
+                {"id": "c", "x": 0, "y": 1, "spaceType": "land", "tileType": 2, "color": "red"},
+            ],
+            "colonies": [],
             "gameOptions": {
                 "expansions": {"prelude": True, "colonies": True},
             },
@@ -1778,6 +1953,50 @@ def main() -> int:
     assert colony_advice["Research Colony"]["play_value_now"] >= 20, colony_advice["Research Colony"]
     assert colony_advice["Space Port Colony"]["play_value_now"] >= 24, colony_advice["Space Port Colony"]
 
+    full_colony_state = build_colony_card_value_state(colonies_count=3)
+    full_colony_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            full_colony_state.cards_in_hand,
+            full_colony_state,
+            bot.synergy,
+            bot.req_checker,
+        )
+    }
+    assert full_colony_advice["Research Colony"]["play_value_now"] >= 20, full_colony_advice["Research Colony"]
+
+    corona_overflow_value = _estimate_card_value_rich(
+        "Corona Extractor",
+        65,
+        10,
+        ["Space", "Power"],
+        "mid",
+        6,
+        colony_rv,
+        bot.effect_parser,
+        bot.db,
+        corp_name=colony_state.me.corp,
+        me=colony_state.me,
+        state=colony_state,
+    )
+    assert corona_overflow_value < 25, corona_overflow_value
+
+    special_state = build_special_permit_steal_state()
+    special_value = _estimate_card_value_rich(
+        "Special Permit",
+        64,
+        5,
+        ["Plant", "Event"],
+        "mid",
+        6,
+        colony_rv,
+        bot.effect_parser,
+        bot.db,
+        me=special_state.me,
+        state=special_state,
+    )
+    assert special_value >= 16, special_value
+
     crash_site_without_attack = build_crash_site_requirement_state()
     req_ok, req_reason = bot.req_checker.check("Crash Site Cleanup", crash_site_without_attack)
     assert req_ok is False, req_reason
@@ -1816,6 +2035,31 @@ def main() -> int:
     )
     assert pioneer_alloc["priority"] == 3, pioneer_alloc
     assert "⚠" not in pioneer_alloc["action"], pioneer_alloc
+
+    pioneer_colony_state = build_pioneer_colony_race_state()
+    pioneer_colony_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            pioneer_colony_state.cards_in_hand,
+            pioneer_colony_state,
+            bot.synergy,
+            bot.req_checker,
+        )
+    }
+    colony_ship_row = pioneer_colony_advice["Interplanetary Colony Ship"]
+    assert "Pioneer" in colony_ship_row["reason"], colony_ship_row
+
+    kaguya_state = build_kaguya_conversion_state()
+    kaguya_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            kaguya_state.cards_in_hand,
+            kaguya_state,
+            bot.synergy,
+            bot.req_checker,
+        )
+    }
+    assert kaguya_advice["Kaguya Tech"]["play_value_now"] >= 14, kaguya_advice["Kaguya Tech"]
 
     state = build_state()
     advice = {

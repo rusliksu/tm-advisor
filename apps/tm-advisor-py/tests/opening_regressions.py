@@ -15,11 +15,11 @@ if str(SCRIPTS_DIR) not in sys.path:
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
 from tm_advisor.analysis import _generate_alerts, summarize_action_card  # noqa: E402
 from tm_advisor.colony_advisor import analyze_settlement, analyze_trade_options, colony_strategy_advice, format_trade_hints, _get_trade_modifiers  # noqa: E402
-from tm_advisor.draft_play_advisor import _estimate_req_gap  # noqa: E402
+from tm_advisor.draft_play_advisor import _estimate_req_gap, draft_buy_advice  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
-def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_count=3, game_options=None, venus=0, oxygen=0, temperature=-30, generation=1):
+def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_count=3, game_options=None, venus=0, oxygen=0, temperature=-30, generation=1, tags=None, mc=21, mc_prod=0, tr=20):
     ceos = ceos or []
     colonies = colonies or []
     players = [{"color": "red", "name": "me"}]
@@ -40,10 +40,12 @@ def build_state(*, corps, preludes, projects, ceos=None, colonies=None, player_c
         "thisPlayer": {
             "color": "red",
             "name": "me",
-            "megaCredits": 21,
+            "megaCredits": mc,
+            "megaCreditProduction": mc_prod,
+            "terraformRating": tr,
             "cardsInHandNbr": 0,
             "tableau": [],
-            "tags": {},
+            "tags": tags or {},
         },
         "players": players,
         "dealtCorporationCards": [{"name": name, "calculatedCost": 0} for name in corps],
@@ -85,8 +87,53 @@ def best_corp(bot: AdvisorBot, state: GameState) -> str:
     return ranked[0]["corp_name"]
 
 
+def project_card(bot: AdvisorBot, name: str) -> dict:
+    info = bot.db.get_info(name) or {}
+    return {"name": name, "tags": info.get("tags", []) or [], "cost": info.get("cost", 0)}
+
+
 def main():
     bot = AdvisorBot("test", snapshot_mode=True)
+
+    warp_route_state = build_state(
+        corps=["Lakefront Resorts", "CrediCor"],
+        preludes=["Merger", "New Partner"],
+        projects=[
+            "Warp Drive",
+            "Cutting Edge Technology",
+            "Natural Preserve",
+            "Interplanetary Colony Ship",
+        ],
+        colonies=[("Callisto", True), ("Ceres", True), ("Titan", True)],
+    )
+    warp_route_advice = draft_buy_advice(
+        [project_card(bot, name) for name in [
+            "Warp Drive",
+            "Cutting Edge Technology",
+            "Natural Preserve",
+            "Interplanetary Colony Ship",
+        ]],
+        warp_route_state,
+        bot.synergy,
+        bot.req_checker,
+    )
+    assert "Warp Drive" in {row["name"] for row in warp_route_advice["buy_list"]}, warp_route_advice
+
+    mining_quota_no_jovian_state = build_state(
+        corps=["Lakefront Resorts", "CrediCor"],
+        preludes=["Merger", "New Partner"],
+        projects=["Mining Quota"],
+        tags={"venus": 1, "earth": 1, "building": 5},
+        mc=24,
+        mc_prod=10,
+    )
+    mining_quota_advice = draft_buy_advice(
+        [project_card(bot, "Mining Quota")],
+        mining_quota_no_jovian_state,
+        bot.synergy,
+        bot.req_checker,
+    )
+    assert "Mining Quota" in {row["name"] for row in mining_quota_advice["skip_list"]}, mining_quota_advice
 
     ic_state = build_state(
         corps=["Interplanetary Cinematics", "Splice", "Arklight"],

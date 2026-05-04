@@ -321,6 +321,7 @@ class OpponentReactiveAdjuster:
             "Asteroid": self._plant_attack,
             "Big Asteroid": self._plant_attack,
             "Comet": self._plant_attack,
+            "Special Permit": self._plant_steal,
             "Sabotage": self._sabotage,
             "Hired Raiders": self._sabotage,
             "Virus": self._virus,
@@ -414,6 +415,27 @@ class OpponentReactiveAdjuster:
             return 3, f"opp plants={max_plants} (attack target)"
         if player_count >= 3 and max_plants == 0:
             return -5, "3P take-that: no target, feeds third"
+        return 0, ""
+
+    def _plant_steal(self, state) -> tuple[int, str]:
+        """Special Permit: steal plants, so it is both gain and denial."""
+        opps = getattr(state, "opponents", []) or []
+        if not opps:
+            return 0, ""
+        player_count = 1 + len(opps)
+        max_plants = 0
+        for opp in opps:
+            max_plants = max(max_plants, self._to_int(getattr(opp, "plants", 0)))
+        if max_plants >= 7:
+            return 8, f"steal target opp plants={max_plants} (deny greenery)"
+        if max_plants >= 6:
+            return 6, f"steal target opp plants={max_plants}"
+        if max_plants >= 4:
+            return 4, f"steal target opp plants={max_plants}"
+        if max_plants >= 1:
+            return 2, f"steal target opp plants={max_plants}"
+        if player_count >= 3:
+            return -5, "3P take-that: no plant target"
         return 0, ""
 
     def _sabotage(self, state) -> tuple[int, str]:

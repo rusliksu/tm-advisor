@@ -15,6 +15,7 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 
@@ -34,6 +35,7 @@ ADVISOR_MISS_MIN_SCORE_GAP = int(os.environ.get("TM_ADVISOR_MISS_MIN_SCORE_GAP",
 ADVISOR_MISS_STRONG_SCORE_GAP = int(os.environ.get("TM_ADVISOR_MISS_STRONG_SCORE_GAP", "15"))
 ADVISOR_MISS_TOP_CHOICES = int(os.environ.get("TM_ADVISOR_MISS_TOP_CHOICES", "3"))
 ADVISOR_CHECK_VALUE_GAP = float(os.environ.get("TM_ADVISOR_CHECK_VALUE_GAP", "12"))
+LOG_REPLAY_SNAPSHOTS = os.environ.get("TM_LOG_REPLAY_SNAPSHOTS", "1").lower() not in {"0", "false", "no", "off"}
 
 
 def fetch_json(url: str, retries: int = 3, timeout: float = 20.0) -> dict:
@@ -77,6 +79,9 @@ def load_snapshot(base_url: str):
             continue
         snapshot_fn = getattr(module, "snapshot", None)
         if snapshot_fn is not None:
+            snapshot_from_raw = getattr(module, "snapshot_from_raw", None)
+            if snapshot_from_raw is not None:
+                setattr(snapshot_fn, "snapshot_from_raw", snapshot_from_raw)
             return snapshot_fn
         errors.append(f"{entrypoint}: snapshot missing")
     raise RuntimeError(
@@ -95,13 +100,56 @@ def fetch_player_view(base_url: str, player_id: str) -> dict:
     return raw.get("playerView", raw)
 
 
+def parse_game_identifier(identifier: str, base_url: str) -> tuple[str, str]:
+    raw = str(identifier or "").strip()
+    if not raw:
+        raise ValueError("game_id or game URL is required")
+    parsed = urllib.parse.urlparse(raw)
+    if parsed.scheme and parsed.netloc:
+        query = urllib.parse.parse_qs(parsed.query)
+        game_id = (
+            (query.get("id") or [None])[0]
+            or (query.get("gameId") or [None])[0]
+        )
+        if not game_id:
+            raise ValueError(f"Cannot extract id=... from URL: {raw}")
+        return game_id, f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+    return raw, base_url.rstrip("/")
+
+
+def first_present(data: dict, *keys: str):
+    for key in keys:
+        if key in data and data.get(key) is not None:
+            return data.get(key)
+    return None
+
+
+def enrich_game_metadata(game: dict, player_states: dict[str, dict] | None) -> dict:
+    enriched = dict(game or {})
+    for snap in (player_states or {}).values():
+        snap_game = snap.get("game", {}) or {}
+        for key in ("generation", "temperature", "oxygen", "oceans", "venus"):
+            if enriched.get(key) is None and snap_game.get(key) is not None:
+                enriched[key] = snap_game.get(key)
+        if enriched.get("live_phase") is None and snap_game.get("live_phase") is not None:
+            enriched["live_phase"] = snap_game.get("live_phase")
+        if enriched.get("generation") is not None:
+            break
+    return enriched
+
+
 def build_player_state(player_id: str, snapshot_fn, base_url: str) -> dict:
+    captured_at = datetime.now().isoformat(timespec="seconds")
     view = fetch_player_view(base_url, player_id)
     me = view.get("thisPlayer", {})
     waiting_for = view.get("waitingFor") or {}
     snap_error = None
     try:
-        snap = snapshot_fn(player_id)
+        snapshot_from_raw = getattr(snapshot_fn, "snapshot_from_raw", None)
+        if snapshot_from_raw is not None:
+            snap = snapshot_from_raw(view)
+        else:
+            snap = snapshot_fn(player_id)
     except Exception as exc:
         snap = {
             "game": {},
@@ -116,6 +164,13 @@ def build_player_state(player_id: str, snapshot_fn, base_url: str) -> dict:
     me_block.setdefault("name", me.get("name") or player_id)
     me_block.setdefault("corp", "unknown")
     snap["player_id"] = player_id
+    snap["replay_snapshot"] = {
+        "format": "tm-player-view-v1",
+        "captured_at": captured_at,
+        "base_url": base_url.rstrip("/"),
+        "player_id": player_id,
+        "raw_player_view": view,
+    }
     snap["live"] = {
         "is_active": me.get("isActive"),
         "color": me.get("color"),
@@ -123,7 +178,8 @@ def build_player_state(player_id: str, snapshot_fn, base_url: str) -> dict:
         "hand_count": me.get("cardsInHandNbr"),
         "cards_in_hand": [c.get("name") for c in view.get("cardsInHand", []) if isinstance(c, dict)],
         "tr": me.get("terraformRating"),
-        "mc": me.get("megacredits"),
+        "mc": first_present(me, "megacredits", "megaCredits"),
+        "mc_prod": first_present(me, "megacreditProduction", "megaCreditProduction"),
         "heat": me.get("heat"),
         "plants": me.get("plants"),
         "energy": me.get("energy"),
@@ -263,10 +319,10 @@ def option_entries_from_hand_advice(snap: dict, limit: int | None = 3) -> list[d
 
 def recommended_play_card_name(snap: dict) -> str | None:
     best_move = str((snap.get("summary") or {}).get("best_move") or "").strip()
-    if not best_move.startswith("PLAY "):
+    if not best_move.lower().startswith("play "):
         return None
 
-    remainder = best_move.removeprefix("PLAY ").strip()
+    remainder = best_move[5:].strip()
     if not remainder:
         return None
 
@@ -316,7 +372,7 @@ def option_entries_from_names(option_names: list[str], rank_map: dict[str, tuple
 
 def pick_relevant_alerts(alerts: list[str], limit: int = 3) -> list[str]:
     preferred: list[str] = []
-    markers = ("🎯", "VP", "ЗАКРЫВАЙ ИГРУ", "ФОНДИРУЙ", "Trade", "greenery", "tempo")
+    markers = ("🔵 Actions", "🎯", "VP", "ЗАКРЫВАЙ ИГРУ", "ФОНДИРУЙ", "Trade", "greenery", "tempo")
     for marker in markers:
         for alert in alerts or []:
             if marker in alert and alert not in preferred:
@@ -513,6 +569,7 @@ def build_advisor_miss_event(
     best_score: float,
     top_choices: list[dict],
     score_kind: str,
+    same_poll_card_count: int = 1,
 ) -> dict | None:
     if best_name == card_name:
         return None
@@ -536,6 +593,10 @@ def build_advisor_miss_event(
         reasons.append("rank")
     if score_gap >= ADVISOR_MISS_STRONG_SCORE_GAP:
         reasons.append("score_gap")
+    if same_poll_card_count > 1:
+        reasons.append("multi_card_poll")
+        if severity == "high":
+            severity = "medium"
 
     return {
         "type": "advisor_miss",
@@ -551,17 +612,28 @@ def build_advisor_miss_event(
         "score_kind": score_kind,
         "severity": severity,
         "reason": "+".join(reasons) if reasons else "score_gap",
+        "confidence": "low" if same_poll_card_count > 1 else "normal",
+        "same_poll_card_count": same_poll_card_count,
         "top_choices": top_choices,
         "snapshot_error": prev_snap.get("snapshot_error"),
     }
 
 
-def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_name: str) -> dict | None:
+def build_advisor_miss(
+    prev_snap: dict,
+    curr_snap: dict,
+    player_id: str,
+    card_name: str,
+    same_poll_card_count: int = 1,
+) -> dict | None:
     best_move = (prev_snap.get("summary") or {}).get("best_move") or ""
-    if best_move and not str(best_move).startswith("PLAY "):
+    best_move_is_play = str(best_move).lower().startswith("play ")
+    if best_move and not best_move_is_play:
         return None
 
     if "hand_advice" not in prev_snap:
+        if not best_move_is_play:
+            return None
         return build_static_advisor_miss(prev_snap, curr_snap, player_id, card_name)
 
     play_entries = ranked_advisor_play_entries(prev_snap)
@@ -598,6 +670,7 @@ def build_advisor_miss(prev_snap: dict, curr_snap: dict, player_id: str, card_na
         best["score"],
         advisor_miss_top_choices(play_entries, best["name"]),
         "play_value_now",
+        same_poll_card_count,
     )
 
 
@@ -615,6 +688,15 @@ def is_draft_pack_snapshot(snap: dict) -> bool:
 def append_jsonl(path: str, payload: dict) -> None:
     with open(path, "a", encoding="utf-8") as fh:
         fh.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+
+def attach_replay_snapshot(event: dict, snap: dict) -> dict:
+    if not LOG_REPLAY_SNAPSHOTS:
+        return event
+    replay_snapshot = snap.get("replay_snapshot")
+    if replay_snapshot:
+        event["replay_snapshot"] = replay_snapshot
+    return event
 
 
 def hand_check_card_entries(snap: dict) -> list[dict]:
@@ -801,6 +883,9 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
     current_draft = snap.get("current_draft", []) or []
     current_pack = [name for name in (live.get("current_pack") or []) if name]
     actionable = is_actionable_state(snap)
+    summary = snap.get("summary") or {}
+    best_move = str(summary.get("best_move") or "").strip()
+    resolving_prompt = best_move.startswith("Resolve current prompt:")
 
     if snap.get("snapshot_error"):
         add("error", "snapshot_error", "Advisor snapshot raised an exception.", error=snap.get("snapshot_error"))
@@ -821,7 +906,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
     if hand_count and not terminal and not hand_cards and not snap.get("snapshot_error"):
         add("warning", "missing_hand_cards", "Player has cards in hand but advisor hand list is empty.", hand_count=hand_count)
 
-    if hand_count and actionable and live_phase == "action" and not hand_advice and not snap.get("snapshot_error"):
+    if hand_count and actionable and live_phase == "action" and not hand_advice and not resolving_prompt and not snap.get("snapshot_error"):
         add("warning", "missing_hand_advice", "Action-phase hand is non-empty but advisor returned no hand_advice.", hand_count=hand_count)
 
     missing_hand_scores = [card.get("name") for card in hand_cards if card.get("name") and card_score(card) is None]
@@ -835,8 +920,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
     if current_pack and not current_draft and live_phase in {"drafting", "initial_drafting", "initialdrafting", "research"}:
         add("warning", "missing_current_draft", "API exposes a current pack but advisor current_draft is empty.", pack_count=len(current_pack))
 
-    summary = snap.get("summary") or {}
-    best_move = str(summary.get("best_move") or "").strip()
+    best_move_is_play = best_move.lower().startswith("play ")
     play_entries = advisor_play_entries(snap)
     ranked_play = ranked_advisor_play_entries(snap)
     ui_playable_names = ui_playable_project_names(snap)
@@ -870,7 +954,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
                 cards=unavailable_play_cards[:8],
             )
         best_card = recommended_play_card_name(snap)
-        if best_move.lower().startswith("play ") and best_card and best_card not in ui_playable_names:
+        if best_move_is_play and best_card and best_card not in ui_playable_names:
             add(
                 "warning",
                 "best_move_not_available_in_ui",
@@ -886,7 +970,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
             if entry.get("name") in ui_playable_names
         ]
 
-    if best_move.startswith("PLAY "):
+    if best_move_is_play:
         best_card = recommended_play_card_name(snap)
         known_cards = set(hand_cards_by_name(snap).keys()) | set(hand_advice_by_name(snap).keys())
         play_cards = {entry.get("name") for entry in play_entries}
@@ -895,7 +979,7 @@ def build_advisor_diagnostics(snap: dict) -> list[dict]:
         if best_card and play_cards and best_card not in play_cards:
             add("warning", "best_move_not_playable", "Summary PLAY card is not present in PLAY advice entries.", card=best_card)
 
-    if ranked_play_for_value:
+    if best_move_is_play and ranked_play_for_value:
         recommended = ranked_play_for_value[0]
         best_by_value = max(play_entries_for_value, key=lambda entry: entry.get("score", 0), default=None)
         if best_by_value:
@@ -1017,6 +1101,196 @@ def maybe_append_advisor_check(session: dict, game: dict, player_states: dict[st
     return True
 
 
+def decision_top_options(snap: dict, limit: int = 5) -> list[dict]:
+    game = snap.get("game", {}) or {}
+    live = snap.get("live", {}) or {}
+    live_phase = str(game.get("live_phase") or game.get("phase") or "").lower()
+    colony_prompt = snap.get("colony_prompt") or {}
+    if live.get("waiting_type") == "colony" and colony_prompt.get("options"):
+        return [
+            {
+                "name": option.get("name"),
+                "rank": option.get("rank"),
+                "score": option.get("score"),
+                "action": option.get("action") or "COLONY",
+                "reason": option.get("reason"),
+            }
+            for option in colony_prompt.get("options", [])[:limit]
+        ]
+    card_prompt = snap.get("card_prompt") or {}
+    if live.get("waiting_type") == "card" and card_prompt.get("options"):
+        return [
+            {
+                "name": option.get("name"),
+                "rank": option.get("rank"),
+                "score": option.get("score"),
+                "action": option.get("action"),
+                "reason": option.get("reason"),
+                "cards": option.get("cards"),
+            }
+            for option in card_prompt.get("options", [])[:limit]
+        ]
+    if live_phase in {"drafting", "initial_drafting", "initialdrafting", "corporationsdrafting", "research"}:
+        if snap.get("current_draft"):
+            return advisor_check_draft_entries(snap, limit=limit)
+        option_names = list(live.get("current_pack") or live.get("dealt_project_cards") or [])
+        if option_names:
+            return option_entries_from_names(option_names, draft_rank_map(snap), limit=limit)
+    if live_phase == "action":
+        entries = advisor_check_play_entries(snap, limit=limit)
+        if entries:
+            return entries
+    if snap.get("hand_advice"):
+        return [compact_option_entry(entry) for entry in ranked_advisor_play_entries(snap, limit=limit)]
+    if snap.get("hand"):
+        return option_entries_from_cards(snap.get("hand", []) or [], card_score, limit=limit)
+    return []
+
+
+def decision_signature(snap: dict) -> str | None:
+    if not is_actionable_state(snap):
+        return None
+    game = snap.get("game", {}) or {}
+    live = snap.get("live", {}) or {}
+    summary = snap.get("summary") or {}
+    hand_names = list(live.get("cards_in_hand") or [])
+    if not hand_names:
+        hand_names = [card.get("name") for card in (snap.get("hand", []) or []) if card.get("name")]
+    payload = {
+        "generation": game.get("generation"),
+        "phase": game.get("phase"),
+        "live_phase": game.get("live_phase"),
+        "active_player": game.get("activePlayer"),
+        "waiting_type": live.get("waiting_type"),
+        "waiting_label": live.get("waiting_label"),
+        "best_move": summary.get("best_move"),
+        "hand": hand_names,
+        "current_pack": list(live.get("current_pack") or []),
+        "drafted_cards": list(live.get("drafted_cards") or []),
+        "dealt_corps": list(live.get("dealt_corps") or []),
+        "dealt_preludes": list(live.get("dealt_preludes") or []),
+        "dealt_ceos": list(live.get("dealt_ceos") or []),
+        "tableau_count": len(live.get("tableau") or []),
+        "last_card_played": live.get("last_card_played"),
+        "actions_count": len(live.get("actions_this_generation") or []),
+    }
+    return json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str)
+
+
+def next_decision_id(session: dict, player_id: str) -> str:
+    counter = int(session.get("decision_counter") or 0) + 1
+    session["decision_counter"] = counter
+    return f"{session['game_id']}:{session.get('started_at', 'session')}:d{counter}:{player_id}"
+
+
+def build_decision_observed_event(session: dict, player_id: str, snap: dict, decision_id: str, reason: str) -> dict:
+    game = snap.get("game", {}) or {}
+    me = snap.get("me", {}) or {}
+    live = snap.get("live", {}) or {}
+    summary = snap.get("summary") or {}
+    top_options = decision_top_options(snap)
+    event = {
+        "type": "decision_observed",
+        "ts": datetime.now().isoformat(timespec="seconds"),
+        "game_id": session["game_id"],
+        "decision_id": decision_id,
+        "reason": reason,
+        "player_id": player_id,
+        "player": me.get("name") or player_id,
+        "color": live.get("color"),
+        "corp": me.get("corp"),
+        "generation": game.get("generation"),
+        "phase": game.get("phase"),
+        "live_phase": game.get("live_phase"),
+        "active_player": game.get("activePlayer"),
+        "waiting_type": live.get("waiting_type"),
+        "waiting_label": live.get("waiting_label"),
+        "hand_count": live.get("hand_count"),
+        "best_move": summary.get("best_move"),
+        "summary_lines": list((summary.get("lines") or [])[:4]),
+        "top_options": top_options,
+        "decision_context": build_decision_context(snap, top_options),
+        "snapshot_error": snap.get("snapshot_error"),
+    }
+    return attach_replay_snapshot(event, snap)
+
+
+def maybe_append_decision_observed(session: dict, player_id: str, snap: dict, reason: str) -> str | None:
+    pending = session.setdefault("pending_decisions", {})
+    last_signatures = session.setdefault("last_decision_signature_by_pid", {})
+    signature = decision_signature(snap)
+    if signature is None:
+        pending.pop(player_id, None)
+        last_signatures.pop(player_id, None)
+        return None
+    if pending.get(player_id) and last_signatures.get(player_id) == signature:
+        return pending[player_id]
+
+    decision_id = next_decision_id(session, player_id)
+    pending[player_id] = decision_id
+    last_signatures[player_id] = signature
+    append_jsonl(
+        session["log_path"],
+        build_decision_observed_event(session, player_id, snap, decision_id, reason),
+    )
+    return decision_id
+
+
+def build_real_action_observed_event(
+    game_id: str,
+    player_id: str,
+    snap: dict,
+    action_type: str,
+    action: dict,
+    decision_id: str | None = None,
+    prev_snap: dict | None = None,
+) -> dict:
+    context_snap = prev_snap or snap
+    me = snap.get("me", {}) or {}
+    live = snap.get("live", {}) or {}
+    game = snap.get("game", {}) or {}
+    return {
+        "type": "real_action_observed",
+        "ts": datetime.now().isoformat(timespec="seconds"),
+        "game_id": game_id,
+        "decision_id": decision_id,
+        "player_id": player_id,
+        "player": me.get("name") or player_id,
+        "color": live.get("color"),
+        "generation": game.get("generation"),
+        "phase": game.get("phase"),
+        "live_phase": game.get("live_phase"),
+        "action_type": action_type,
+        "action": action,
+        "decision_context": build_decision_context(context_snap),
+        "snapshot_error": context_snap.get("snapshot_error"),
+    }
+
+
+def append_real_action_observed(
+    log_path: str,
+    game_id: str,
+    player_id: str,
+    snap: dict,
+    action_type: str,
+    action: dict,
+    decision_id: str | None = None,
+    prev_snap: dict | None = None,
+) -> None:
+    append_jsonl(
+        log_path,
+        build_real_action_observed_event(
+            game_id,
+            player_id,
+            snap,
+            action_type,
+            action,
+            decision_id=decision_id,
+            prev_snap=prev_snap,
+        ),
+    )
+
+
 def advisor_check_due(session: dict, now: float) -> bool:
     interval_sec = float(session.get("advisor_check_interval", DEFAULT_ADVISOR_CHECK_INTERVAL) or 0)
     if interval_sec <= 0:
@@ -1028,19 +1302,24 @@ def advisor_check_due(session: dict, now: float) -> bool:
 
 def append_pick_event(
     log_path: str,
+    game_id: str,
     event_type: str,
     prev_snap: dict,
+    curr_snap: dict,
     player_id: str,
     picked_name: str,
     option_names: list[str],
     rank_map: dict[str, tuple[int, int | None]] | None = None,
+    decision_id: str | None = None,
 ) -> None:
     rank_map = rank_map or {}
     rank = rank_map.get(picked_name)
     option_entries = option_entries_from_names(option_names, rank_map)
-    append_jsonl(log_path, {
+    event = {
         "type": event_type,
         "ts": datetime.now().isoformat(timespec="seconds"),
+        "game_id": game_id,
+        "decision_id": decision_id,
         "player_id": player_id,
         "player": prev_snap["me"]["name"],
         "picked": picked_name,
@@ -1049,7 +1328,23 @@ def append_pick_event(
         "prev_option_score": rank[1] if rank else None,
         "decision_context": build_decision_context(prev_snap, option_entries),
         "snapshot_error": prev_snap.get("snapshot_error"),
-    })
+    }
+    append_jsonl(log_path, event)
+    append_real_action_observed(
+        log_path,
+        game_id,
+        player_id,
+        curr_snap,
+        event_type,
+        {
+            "picked": picked_name,
+            "options": option_names,
+            "prev_option_rank": rank[0] if rank else None,
+            "prev_option_score": rank[1] if rank else None,
+        },
+        decision_id=decision_id,
+        prev_snap=prev_snap,
+    )
 
 
 def maybe_start_research_pending(session: dict, pid: str, prev_snap: dict) -> None:
@@ -1065,6 +1360,7 @@ def maybe_start_research_pending(session: dict, pid: str, prev_snap: dict) -> No
         "prev_tableau": list(prev_live.get("tableau") or []),
         "retries": 0,
         "rank_map": draft_rank_map(prev_snap),
+        "decision_id": session.get("pending_decisions", {}).get(pid),
         "decision_context": build_decision_context(
             prev_snap,
             option_entries_from_names(offer, draft_rank_map(prev_snap), limit=None),
@@ -1073,7 +1369,7 @@ def maybe_start_research_pending(session: dict, pid: str, prev_snap: dict) -> No
     }
 
 
-def try_resolve_research_pending(log_path: str, pid: str, prev_snap: dict, curr_snap: dict, pending: dict) -> bool:
+def try_resolve_research_pending(log_path: str, game_id: str, pid: str, prev_snap: dict, curr_snap: dict, pending: dict) -> bool:
     curr_live = curr_snap["live"]
     pending_cards = list(pending["cards"])
     prev_hand = list(pending.get("prev_hand") or [])
@@ -1103,9 +1399,12 @@ def try_resolve_research_pending(log_path: str, pid: str, prev_snap: dict, curr_
         detection = "count_only"
 
     skipped = unresolved[bought_unknown_count:] if unresolved else []
-    append_jsonl(log_path, {
+    decision_id = pending.get("decision_id")
+    event = {
         "type": "research_buy",
         "ts": datetime.now().isoformat(timespec="seconds"),
+        "game_id": game_id,
+        "decision_id": decision_id,
         "player_id": pid,
         "player": curr_snap["me"]["name"],
         "offered": pending_cards,
@@ -1116,7 +1415,24 @@ def try_resolve_research_pending(log_path: str, pid: str, prev_snap: dict, curr_
         "advisor_order": option_entries_from_names(pending_cards, rank_map, limit=None),
         "decision_context": pending.get("decision_context"),
         "snapshot_error": pending.get("snapshot_error"),
-    })
+    }
+    append_jsonl(log_path, event)
+    append_real_action_observed(
+        log_path,
+        game_id,
+        pid,
+        curr_snap,
+        "research_buy",
+        {
+            "offered": pending_cards,
+            "bought": bought,
+            "bought_unknown_count": bought_unknown_count,
+            "skipped": skipped,
+            "detection": detection,
+        },
+        decision_id=decision_id,
+        prev_snap=prev_snap,
+    )
     return True
 
 
@@ -1129,8 +1445,9 @@ def start_game_session(game_id: str, base_url: str) -> dict:
     game = fetch_game(base_url, game_id)
     players = game.get("players", [])
     player_ids = [p["id"] for p in players]
-    prev_game = game
     prev_players = {pid: build_player_state(pid, snapshot_fn, base_url) for pid in player_ids}
+    game = enrich_game_metadata(game, prev_players)
+    prev_game = game
 
     append_jsonl(log_path, {
         "type": "session_start",
@@ -1177,6 +1494,9 @@ def start_game_session(game_id: str, base_url: str) -> dict:
         "started_at": started_at,
         "advisor_miss_counts": {},
         "pending_research": {},
+        "pending_decisions": {},
+        "last_decision_signature_by_pid": {},
+        "decision_counter": 0,
         "hand_check_interval": DEFAULT_HAND_CHECK_INTERVAL,
         "last_hand_check_at": 0.0,
         "hand_check_logged": False,
@@ -1184,6 +1504,8 @@ def start_game_session(game_id: str, base_url: str) -> dict:
         "last_advisor_check_at": 0.0,
         "advisor_check_logged": False,
     }
+    for pid, state in prev_players.items():
+        maybe_append_decision_observed(session, pid, state, "initial")
     return session
 
 
@@ -1197,6 +1519,7 @@ def poll_game_session(session: dict) -> dict:
     prev_players = session["prev_players"]
     advisor_miss_counts = session["advisor_miss_counts"]
     pending_research = session["pending_research"]
+    pending_decisions = session.setdefault("pending_decisions", {})
 
     try:
         game = fetch_game(base_url, game_id)
@@ -1208,12 +1531,17 @@ def poll_game_session(session: dict) -> dict:
         })
         return {"active": False, "changed": False, "status": "unavailable"}
     if game.get("phase") == "end":
+        game = enrich_game_metadata(game, prev_players)
         append_jsonl(log_path, {
             "type": "game_end",
             "ts": datetime.now().isoformat(timespec="seconds"),
             "generation": game.get("generation"),
         })
         return {"active": False, "changed": True, "status": "ended"}
+
+    curr_players = {pid: build_player_state(pid, snapshot_fn, base_url) for pid in player_ids}
+    game = enrich_game_metadata(game, curr_players)
+    prev_game = enrich_game_metadata(prev_game, prev_players)
 
     changed = False
     if (
@@ -1233,7 +1561,6 @@ def poll_game_session(session: dict) -> dict:
             "active_to": game.get("activePlayer"),
         })
 
-    curr_players = {pid: build_player_state(pid, snapshot_fn, base_url) for pid in player_ids}
     now_monotonic = time.monotonic()
     if hand_check_due(session, now_monotonic):
         reason = "periodic" if session.get("hand_check_logged") else "initial"
@@ -1252,11 +1579,12 @@ def poll_game_session(session: dict) -> dict:
         prev_play_ranks = {entry["name"]: entry for entry in prev_play_entries}
         prev_recommended_play = prev_play_entries[0]["name"] if prev_play_entries else None
         prev_draft_ranks = draft_rank_map(prev)
+        decision_id = pending_decisions.get(pid)
 
         prev_research_offer = research_offer_cards(prev_live)
         curr_research_offer = research_offer_cards(curr_live)
         if pid in pending_research:
-            if try_resolve_research_pending(log_path, pid, prev, curr, pending_research[pid]):
+            if try_resolve_research_pending(log_path, game_id, pid, prev, curr, pending_research[pid]):
                 changed = True
                 del pending_research[pid]
         if (
@@ -1266,7 +1594,7 @@ def poll_game_session(session: dict) -> dict:
             and curr.get("game", {}).get("live_phase") == "action"
         ):
             maybe_start_research_pending(session, pid, prev)
-            if pid in pending_research and try_resolve_research_pending(log_path, pid, prev, curr, pending_research[pid]):
+            if pid in pending_research and try_resolve_research_pending(log_path, game_id, pid, prev, curr, pending_research[pid]):
                 changed = True
                 del pending_research[pid]
 
@@ -1278,6 +1606,8 @@ def poll_game_session(session: dict) -> dict:
             append_jsonl(log_path, {
                 "type": "card_played",
                 "ts": datetime.now().isoformat(timespec="seconds"),
+                "game_id": game_id,
+                "decision_id": decision_id,
                 "player_id": pid,
                 "player": curr["me"]["name"],
                 "card": card_name,
@@ -1288,13 +1618,34 @@ def poll_game_session(session: dict) -> dict:
                 "prev_play_reason": play_rank.get("reason") if play_rank else None,
                 "prev_recommended_play": prev_recommended_play,
                 "last_card_played": curr_live["last_card_played"],
+                "same_poll_card_count": len(new_cards),
                 "decision_context": build_decision_context(prev),
                 "snapshot_error": prev.get("snapshot_error"),
             })
-            advisor_miss = build_advisor_miss(prev, curr, pid, card_name)
+            append_real_action_observed(
+                log_path,
+                game_id,
+                pid,
+                curr,
+                "card_played",
+                {
+                    "card": card_name,
+                    "prev_hand_rank": rank[0] if rank else None,
+                    "prev_hand_score": rank[1] if rank else None,
+                    "prev_play_rank": play_rank.get("rank") if play_rank else None,
+                    "prev_play_score": play_rank.get("score") if play_rank else None,
+                    "prev_recommended_play": prev_recommended_play,
+                    "same_poll_card_count": len(new_cards),
+                },
+                decision_id=decision_id,
+                prev_snap=prev,
+            )
+            advisor_miss = build_advisor_miss(prev, curr, pid, card_name, len(new_cards))
             if advisor_miss is not None:
                 advisor_miss_counts[pid] = advisor_miss_counts.get(pid, 0) + 1
                 advisor_miss["miss_count"] = advisor_miss_counts[pid]
+                advisor_miss["game_id"] = game_id
+                advisor_miss["decision_id"] = decision_id
                 append_jsonl(log_path, advisor_miss)
 
         new_actions = [
@@ -1306,44 +1657,65 @@ def poll_game_session(session: dict) -> dict:
             append_jsonl(log_path, {
                 "type": "actions_taken",
                 "ts": datetime.now().isoformat(timespec="seconds"),
+                "game_id": game_id,
+                "decision_id": decision_id,
                 "player_id": pid,
                 "player": curr["me"]["name"],
                 "actions": new_actions,
-                "decision_context": build_decision_context(curr),
-                "snapshot_error": curr.get("snapshot_error"),
+                "decision_context": build_decision_context(prev),
+                "snapshot_error": prev.get("snapshot_error"),
             })
+            append_real_action_observed(
+                log_path,
+                game_id,
+                pid,
+                curr,
+                "actions_taken",
+                {"actions": new_actions},
+                decision_id=decision_id,
+                prev_snap=prev,
+            )
 
         for picked_name in new_items(curr_live["picked_corp_cards"], prev_live["picked_corp_cards"]):
             changed = True
             append_pick_event(
                 log_path,
+                game_id,
                 "corp_pick",
                 prev,
+                curr,
                 pid,
                 picked_name,
                 prev_live["dealt_corps"],
+                decision_id=decision_id,
             )
 
         for picked_name in new_items(curr_live["prelude_cards_in_hand"], prev_live["prelude_cards_in_hand"]):
             changed = True
             append_pick_event(
                 log_path,
+                game_id,
                 "prelude_pick",
                 prev,
+                curr,
                 pid,
                 picked_name,
                 prev_live["dealt_preludes"],
+                decision_id=decision_id,
             )
 
         for picked_name in new_items(curr_live["ceo_cards_in_hand"], prev_live["ceo_cards_in_hand"]):
             changed = True
             append_pick_event(
                 log_path,
+                game_id,
                 "ceo_pick",
                 prev,
+                curr,
                 pid,
                 picked_name,
                 prev_live["dealt_ceos"],
+                decision_id=decision_id,
             )
 
         project_options = prev_live["current_pack"] or prev_live["dealt_project_cards"]
@@ -1351,12 +1723,15 @@ def poll_game_session(session: dict) -> dict:
             changed = True
             append_pick_event(
                 log_path,
+                game_id,
                 "project_pick",
                 prev,
+                curr,
                 pid,
                 picked_name,
                 project_options,
                 prev_draft_ranks,
+                decision_id=decision_id,
             )
 
         if (
@@ -1372,6 +1747,7 @@ def poll_game_session(session: dict) -> dict:
             append_jsonl(log_path, {
                 "type": "draft_pack",
                 "ts": datetime.now().isoformat(timespec="seconds"),
+                "game_id": game_id,
                 "player_id": pid,
                 "player": curr["me"]["name"],
                 "cards": curr_live["current_pack"],
@@ -1394,6 +1770,7 @@ def poll_game_session(session: dict) -> dict:
                 append_jsonl(log_path, {
                     "type": "resource_delta",
                     "ts": datetime.now().isoformat(timespec="seconds"),
+                    "game_id": game_id,
                     "player_id": pid,
                     "player": curr["me"]["name"],
                     "resource": res_name,
@@ -1401,6 +1778,17 @@ def poll_game_session(session: dict) -> dict:
                     "to": curr_val,
                     "decision_context": build_decision_context(curr),
                 })
+
+    for pid in player_ids:
+        before_counter = int(session.get("decision_counter") or 0)
+        maybe_append_decision_observed(
+            session,
+            pid,
+            curr_players[pid],
+            "state_change" if changed else "poll",
+        )
+        if int(session.get("decision_counter") or 0) != before_counter:
+            changed = True
 
     session["prev_game"] = game
     session["prev_players"] = curr_players
@@ -1442,7 +1830,7 @@ def monitor_game(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("game_id")
+    parser.add_argument("game_id", help="Game id or full /game?id=... URL")
     parser.add_argument("--interval", type=float, default=10.0)
     parser.add_argument("--server-url", default=os.environ.get("TM_BASE_URL", DEFAULT_BASE_URL))
     parser.add_argument(
@@ -1459,10 +1847,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    game_id, base_url = parse_game_identifier(args.game_id, args.server_url)
     log_path = monitor_game(
-        args.game_id,
+        game_id,
         args.interval,
-        args.server_url.rstrip("/"),
+        base_url,
         args.hand_check_interval,
         args.advisor_check_interval,
     )

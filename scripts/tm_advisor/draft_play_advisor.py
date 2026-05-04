@@ -62,7 +62,6 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
         cost_play = card.get("cost", card.get("calculatedCost", 0))
         score = synergy.adjusted_score(
             name, tags, me.corp, state.generation, me.tags, state, context="draft")
-        tier = _score_to_tier(score)
 
         req_ok, req_reason = True, ""
         if req_checker:
@@ -71,10 +70,23 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
                 req_ok, req_reason = req_checker.check_prod_decrease(name, state)
 
         playability_gens = 0
+        route = {}
         if not req_ok:
             playability_gens = _estimate_req_gap(
                 req_reason, state, gens_left, effect_parser=effect_parser
             )
+            route = _draft_tag_requirement_route(
+                name, req_reason, state, cards,
+                db=getattr(synergy, "db", None),
+                req_checker=req_checker,
+                effect_parser=effect_parser,
+                gens_left=gens_left,
+            )
+            if route:
+                score += route.get("score_delta", 0)
+                playability_gens = max(playability_gens, route.get("playability_gens", playability_gens))
+                if route.get("allow_speculative_req"):
+                    playability_gens = min(playability_gens, route.get("playability_gens", playability_gens))
 
         # Future playability bonus: if req will be met in 1-2 gens, boost score
         if not req_ok and 0 < playability_gens <= 2:
@@ -82,11 +94,14 @@ def draft_buy_advice(cards, state, synergy, req_checker) -> dict:
             score += bonus_future
 
         dead_window_reason = _draft_dead_window_reason(name, state)
+        tier = _score_to_tier(score)
 
         scored.append({
             "name": name, "score": score, "tier": tier,
             "cost_play": cost_play, "req_ok": req_ok,
             "req_reason": req_reason, "playability_gens": playability_gens,
+            "allow_speculative_req": bool(route.get("allow_speculative_req")),
+            "req_route_reason": route.get("reason", ""),
             "tags": tags, "dead_window_reason": dead_window_reason,
         })
 
@@ -194,6 +209,8 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
     req_ok = card["req_ok"]
     playability_gens = card["playability_gens"]
     dead_window_reason = card.get("dead_window_reason", "")
+    allow_speculative_req = bool(card.get("allow_speculative_req"))
+    req_route_reason = card.get("req_route_reason", "")
 
     if dead_window_reason:
         return None, dead_window_reason
@@ -227,6 +244,8 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
         reason = "must-pick" if score >= 80 else "strong card"
         if not req_ok:
             reason += f", req через ~{playability_gens} gen"
+            if req_route_reason:
+                reason += f" ({req_route_reason})"
         return reason, None
 
     # Endgame: skip production cards with low score
@@ -238,7 +257,7 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
         return None, "endgame, не хватит MC сыграть"
 
     # Requirement gap too large
-    if not req_ok and playability_gens > 2:
+    if not req_ok and playability_gens > 2 and not allow_speculative_req:
         return None, f"req через ~{playability_gens} gen"
 
     # Score threshold (dynamic based on income, MC pressure & phase)
@@ -274,6 +293,8 @@ def _decide_buy(card, phase, gens_left, mc_remaining, income,
     reason = "good value"
     if not req_ok:
         reason += f", req через ~{playability_gens} gen"
+        if req_route_reason:
+            reason += f" ({req_route_reason})"
     elif cost_play > mc_remaining - 3 + income:
         reason += ", сыграешь не этот gen"
     else:
@@ -320,6 +341,114 @@ def _normalize_req_resource_name(raw: str) -> str:
         "plants": "plant",
     }
     return aliases.get(key, "")
+
+
+def _parse_tag_req_reason(req_reason: str) -> tuple[int, str, int] | None:
+    m = re.search(r'нужно\s+(\d+)\s+([a-zа-яё]+)\s+tag.*есть\s+(\d+)', str(req_reason or "").lower())
+    if not m:
+        return None
+    return int(m.group(1)), m.group(2).lower(), int(m.group(3))
+
+
+def _card_name_from_row(card) -> str:
+    if isinstance(card, dict):
+        return str(card.get("name", "") or "")
+    return str(card or "")
+
+
+def _card_tags_from_row(card, db=None) -> list[str]:
+    tags = []
+    if isinstance(card, dict):
+        tags = card.get("tags", []) or []
+    name = _card_name_from_row(card)
+    if not tags and db and name:
+        info = db.get_info(name) or {}
+        tags = info.get("tags", []) or []
+    return [str(t).lower() for t in tags]
+
+
+def _visible_draft_cards(state, offered_cards):
+    seen = set()
+    for group in (
+            offered_cards or [],
+            getattr(state, "cards_in_hand", []) or [],
+            getattr(state, "drafted_cards", []) or [],
+            getattr(state, "dealt_project_cards", []) or []):
+        for card in group:
+            name = _card_name_from_row(card)
+            if not name or name in seen:
+                continue
+            seen.add(name)
+            yield card
+
+
+def _route_support_card_playable_soon(card_name: str, state, req_checker, effect_parser, gens_left: int) -> bool:
+    if not card_name or not req_checker:
+        return True
+    ok, reason = req_checker.check(card_name, state)
+    if ok:
+        ok, reason = req_checker.check_prod_decrease(card_name, state)
+    if ok:
+        return True
+    gap = _estimate_req_gap(reason, state, gens_left, effect_parser=effect_parser)
+    return gap <= 1
+
+
+def _visible_persistent_tag_support(req_tag: str, state, offered_cards, db=None,
+                                    exclude_name: str = "", req_checker=None,
+                                    effect_parser=None, gens_left: int = 0) -> int:
+    support = 0
+    for card in _visible_draft_cards(state, offered_cards):
+        name = _card_name_from_row(card)
+        if not name or name == exclude_name:
+            continue
+        tags = _card_tags_from_row(card, db)
+        if "event" in tags:
+            continue
+        if req_tag not in tags and (req_tag == "wild" or "wild" not in tags):
+            continue
+        if not _route_support_card_playable_soon(name, state, req_checker, effect_parser, gens_left):
+            continue
+        support += tags.count(req_tag)
+        if req_tag != "wild" and "wild" in tags:
+            support += tags.count("wild")
+    return support
+
+
+def _draft_tag_requirement_route(card_name: str, req_reason: str, state, offered_cards,
+                                 db=None, req_checker=None, effect_parser=None,
+                                 gens_left: int = 0) -> dict:
+    parsed = _parse_tag_req_reason(req_reason)
+    if not parsed:
+        return {}
+
+    need, req_tag, have = parsed
+    gap = max(0, need - have)
+    if gap <= 0:
+        return {}
+
+    support = _visible_persistent_tag_support(
+        req_tag, state, offered_cards, db=db, exclude_name=card_name,
+        req_checker=req_checker, effect_parser=effect_parser, gens_left=gens_left)
+    route_gap = max(1, gap - support)
+    opening = getattr(state, "phase", "") in ("initial_drafting", "corporationsDrafting")
+
+    if req_tag == "science" and need >= 4 and opening and support >= 2:
+        return {
+            "allow_speculative_req": True,
+            "playability_gens": route_gap,
+            "score_delta": min(4, support),
+            "reason": f"science route +{support}",
+        }
+
+    if req_tag == "jovian" and need == 1 and have <= 0 and support <= 0:
+        return {
+            "playability_gens": gens_left + 99,
+            "score_delta": -12,
+            "reason": "нет Jovian route",
+        }
+
+    return {}
 
 
 def _action_resource_gain_this_gen(action: dict, resource_key: str, me) -> int:
@@ -682,7 +811,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             effect_parser, db, corp_name=me.corp,
             tableau_tags=dict(me.tags) if me.tags else None,
             me=me,
-            hand_cards=state.cards_in_hand)
+            hand_cards=state.cards_in_hand,
+            state=state)
         mc_after = me.mc - total_eff_cost  # effective cost with steel/ti + Reds tax
 
         # SELL: low score card (but allow early game speculation and immediate payoff)
@@ -758,12 +888,13 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
 
         # Income delta for production cards
         if is_production and effect_parser and gens_left > 1:
-            income_delta = _calc_income_delta(name, effect_parser, me)
+            income_delta = _calc_income_delta(
+                name, effect_parser, me, state=state, card_tags=tags, db=db)
             if income_delta:
                 play_reason += f" [income {income_delta}]"
 
         # Milestone tag boost: if card contributes to a near milestone
-        ms_boost = _check_milestone_contribution(name, tags, state, me)
+        ms_boost = _check_milestone_contribution(name, tags, state, me, db=db)
         if ms_boost:
             priority = max(1, priority - 1)
             play_reason += f" 🏆{ms_boost}"
@@ -840,10 +971,16 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             card_data = item["card"]
             card_tags = _merged_card_tags(
                 r.get("name"), card_data.get("tags", []), db)
-            card_cost = _card_base_cost(card_data)
-            eff, _ = _effective_card_cost(card_data, card_tags, me,
-                                          steel_sim, ti_sim,
-                                          tableau_discounts=tableau_discounts)
+            eff, _pay_hint, payment = _effective_card_cost(
+                card_data,
+                card_tags,
+                me,
+                steel_override=steel_sim,
+                ti_override=ti_sim,
+                mc_override=mc_sim,
+                tableau_discounts=tableau_discounts,
+                return_payment=True,
+            )
             reds_tax, _ = _reds_card_tax(r.get("name"), effect_parser, state)
             total_eff = eff + reds_tax
             if total_eff > mc_sim:
@@ -851,14 +988,9 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                 r["action"] = "HOLD"
                 r["priority"] = 7
             else:
-                # Consume resources in simulation
-                tag_set = {t.lower() for t in card_tags}
-                if "building" in tag_set and steel_sim > 0:
-                    steel_used = min(steel_sim, card_cost // me.steel_value)
-                    steel_sim -= steel_used
-                if "space" in tag_set and ti_sim > 0:
-                    ti_used = min(ti_sim, card_cost // me.ti_value)
-                    ti_sim -= ti_used
+                # Consume the same resources chosen by the effective-cost model.
+                steel_sim = max(0, steel_sim - int(payment.get("steel", 0) or 0))
+                ti_sim = max(0, ti_sim - int(payment.get("titanium", 0) or 0))
                 mc_sim -= total_eff
 
     # ── Event tag-loss warning ──
@@ -886,6 +1018,14 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
 # ═══════════════════════════════════════════════════════════════
 # MC Allocation Advice
 # ═══════════════════════════════════════════════════════════════
+
+def _public_allocation_row(row: dict) -> dict:
+    public = dict(row)
+    for key in list(public):
+        if key.startswith("_"):
+            public.pop(key, None)
+    return public
+
 
 def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     """Рекомендация по распределению MC в текущем gen.
@@ -973,7 +1113,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 warnings.append(
                     f"Award {a['name']}: тебя могут обойти! "
                     f"Лид всего +{first_v - second_v}")
-    for ua in urgent_award_actions(state):
+    for ua in urgent_award_actions(state)[:1]:
         if budget < ua["cost"]:
             continue
         factor = _URGENCY_VALUE_FACTOR[ua["urgency"]]
@@ -1072,6 +1212,9 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 "action": action,
                 "cost": int(total_eff_cost), "value_mc": round(value_mc),
                 "priority": priority, "type": "card",
+                "_card": card,
+                "_tags": tags,
+                "_reds_tax": reds_tax,
             })
 
     # 5. Resource conversions (with timing advice)
@@ -1263,11 +1406,30 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
     # ── MC sequence feasibility check ──
     mc_sim = budget
+    steel_sim = me.steel
+    ti_sim = me.titanium
     feasible_allocs = []
     infeasible_allocs = []
     for a in allocations:
-        if a["cost"] <= mc_sim:
-            mc_sim -= a["cost"]
+        payment = {}
+        sim_cost = a["cost"]
+        if a.get("type") == "card" and a.get("_card"):
+            eff_cost, _pay_hint, payment = _effective_card_cost(
+                a["_card"],
+                a.get("_tags", []),
+                me,
+                steel_override=steel_sim,
+                ti_override=ti_sim,
+                mc_override=mc_sim,
+                tableau_discounts=tableau_discounts,
+                return_payment=True,
+            )
+            sim_cost = int(eff_cost + (a.get("_reds_tax") or 0))
+            a["cost"] = sim_cost
+        if sim_cost <= mc_sim:
+            mc_sim -= sim_cost
+            steel_sim = max(0, steel_sim - int(payment.get("steel", 0) or 0))
+            ti_sim = max(0, ti_sim - int(payment.get("titanium", 0) or 0))
             feasible_allocs.append(a)
         else:
             a["action"] += " ❌нет MC"
@@ -1333,7 +1495,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
 
     return {
         "budget": budget,
-        "allocations": allocations,
+        "allocations": [_public_allocation_row(a) for a in allocations],
         "mc_reserve": mc_reserve,
         "reserve_reason": reserve_reason,
         "warnings": warnings,
@@ -1532,6 +1694,7 @@ _MILESTONE_THRESHOLDS = {
     "Hoverlord": ("floaters", 7),
     "Energizer": ("energy_prod", 6),
     "Celebrity": ("expensive_cards", 4),  # cards cost 20+
+    "Pioneer": ("colonies", 3),
 }
 
 
@@ -1605,7 +1768,7 @@ def _add_milestone_progress(warnings, ms_name, current_score, state, me,
     warnings.append(hint)
 
 
-def _check_milestone_contribution(card_name, card_tags, state, me):
+def _check_milestone_contribution(card_name, card_tags, state, me, db=None):
     """Check if a card contributes to a near-claimable milestone.
 
     Returns milestone hint string or None.
@@ -1640,6 +1803,9 @@ def _check_milestone_contribution(card_name, card_tags, state, me):
         target_lower = target.lower()
         if target_lower == "bio_tags":
             if any(t in tag_set for t in ("plant", "microbe", "animal")):
+                return f"→ {ms_name} ({score_val + 1}/{threshold})"
+        elif target_lower == "colonies":
+            if _card_places_colony(card_name, db):
                 return f"→ {ms_name} ({score_val + 1}/{threshold})"
         elif target_lower in tag_set:
             return f"→ {ms_name} ({score_val + 1}/{threshold})"
@@ -1995,7 +2161,7 @@ def _card_base_cost(card: dict) -> int:
 
 
 def _effective_card_cost(card: dict, tags, me, steel_override=None, ti_override=None,
-                         tableau_discounts=None):
+                         mc_override=None, tableau_discounts=None, return_payment=False):
     """Effective payable MC for a card row.
 
     Server `calculatedCost` already includes card/corp/tableau discounts. We may
@@ -2009,8 +2175,10 @@ def _effective_card_cost(card: dict, tags, me, steel_override=None, ti_override=
         me,
         steel_override=steel_override,
         ti_override=ti_override,
+        mc_override=mc_override,
         tableau_discounts=tableau_discounts if apply_discounts else None,
         apply_discounts=apply_discounts,
+        return_payment=return_payment,
     )
 
 
@@ -2028,7 +2196,9 @@ def _tableau_resources(me, card_name: str) -> int:
 
 
 def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=None,
-                    tableau_discounts=None, apply_discounts=True):
+                    mc_override=None,
+                    tableau_discounts=None, apply_discounts=True,
+                    return_payment=False):
     """Calculate effective MC cost after discounts, steel/titanium payment.
 
     Returns (eff_mc_cost, pay_hint_str).
@@ -2037,8 +2207,10 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
     tag_set = {t.lower() for t in tags}
     steel = steel_override if steel_override is not None else me.steel
     ti = ti_override if ti_override is not None else me.titanium
+    mc_available = me.mc if mc_override is None else mc_override
     remaining = printed_cost
     hints = []
+    payment = {"steel": 0, "titanium": 0, "heat": 0}
 
     if apply_discounts:
         # 0. Credicor: +4 MC rebate for cards costing 20+ MC
@@ -2081,21 +2253,33 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
                 remaining -= total_disc
                 hints.append(f"-{total_disc} discount")
 
-    # 2. Titanium (higher value, use first for Space cards)
-    if "space" in tag_set and ti > 0 and me.ti_value > 0:
-        ti_usable = min(ti, remaining // me.ti_value)
-        if ti_usable > 0:
-            ti_mc = ti_usable * me.ti_value
-            remaining -= ti_mc
-            hints.append(f"{ti_usable} ti={ti_mc} MC")
+    def spend_metal(resource_name: str, available: int, value: int) -> None:
+        nonlocal remaining
+        if remaining <= 0 or available <= 0 or value <= 0:
+            return
+        usable = min(available, remaining // value)
+        if usable > 0:
+            remaining -= usable * value
+        if remaining > mc_available and usable < available:
+            extra_needed = (remaining - mc_available + value - 1) // value
+            extra = min(available - usable, extra_needed)
+            if extra > 0:
+                usable += extra
+                remaining = max(0, remaining - extra * value)
+        if usable <= 0:
+            return
+        paid_mc = usable * value
+        payment[resource_name] += usable
+        hints.append(f"{usable} {resource_name}={paid_mc} MC")
 
-    # 3. Steel (for Building cards)
-    if "building" in tag_set and steel > 0 and me.steel_value > 0:
-        steel_usable = min(steel, remaining // me.steel_value)
-        if steel_usable > 0:
-            steel_mc = steel_usable * me.steel_value
-            remaining -= steel_mc
-            hints.append(f"{steel_usable} steel={steel_mc} MC")
+    # 2. Titanium (higher value, use first for Space cards). Allow minimal
+    # metal overpay when the floor payment still leaves unaffordable MC.
+    if "space" in tag_set:
+        spend_metal("titanium", ti, me.ti_value)
+
+    # 3. Steel (for Building cards), with the same minimal-overpay rule.
+    if "building" in tag_set:
+        spend_metal("steel", steel, me.steel_value)
 
     # 4. Card-stored payment resources.
     if "plant" in tag_set and remaining > 0:
@@ -2119,9 +2303,12 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
         heat_usable = min(me.heat, remaining)
         if heat_usable > 0:
             remaining -= heat_usable
+            payment["heat"] += heat_usable
             hints.append(f"{heat_usable} heat=MC")
 
     pay_hint = ", ".join(hints) if hints else ""
+    if return_payment:
+        return remaining, pay_hint, payment
     return remaining, pay_hint
 
 
@@ -2666,7 +2853,8 @@ def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
 
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                               effect_parser=None, db=None, corp_name="",
-                              tableau_tags=None, me=None, hand_cards=None):
+                              tableau_tags=None, me=None, hand_cards=None,
+                              state=None):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
     # Try effect-based estimation first
     if effect_parser:
@@ -2680,7 +2868,8 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                                         card_name=name,
                                         card_tags=tags,
                                         hand_cards=hand_cards,
-                                        db=db)
+                                        db=db,
+                                        state=state)
             # Late-game penalty for engine/draw cards that won't pay off
             if value > 0 and gens_left <= 3:
                 value *= _late_game_engine_multiplier(eff, gens_left)
@@ -2772,10 +2961,96 @@ def _card_places_colony(card_name: str, db) -> bool:
     )
 
 
-def _colony_card_value(card_name: str, db, me, gens_left: int) -> float:
-    if not _card_places_colony(card_name, db):
+_ENERGY_ACTION_SINK_CARDS = {
+    "Development Center",
+    "Physics Complex",
+    "Power Infrastructure",
+    "Supercapacitors",
+    "Ironworks",
+    "Steelworks",
+    "Ore Processor",
+    "Water Splitting Plant",
+    "Energy Market",
+    "Meltworks",
+    "Orbital Cleanup",
+}
+
+
+def _has_non_colony_energy_sink(me) -> bool:
+    if not me:
+        return False
+    tableau_names = {
+        card.get("name", "") if isinstance(card, dict) else str(card)
+        for card in (getattr(me, "tableau", []) or [])
+    }
+    return bool(tableau_names & _ENERGY_ACTION_SINK_CARDS)
+
+
+def _marginal_energy_prod_value(amount: float, prod_remaining: int, me=None, state=None) -> float:
+    if amount <= 0 or prod_remaining <= 0:
         return 0.0
-    if me is not None and getattr(me, "colonies", 0) >= 3:
+    full_mult = 2.0
+    heat_mult = 0.8
+    if not me or _has_non_colony_energy_sink(me):
+        return amount * full_mult * prod_remaining
+    if not (state and getattr(state, "has_colonies", False)):
+        return amount * full_mult * prod_remaining
+
+    fleet_size = max(1, int(getattr(me, "fleet_size", 1) or 1))
+    trade_energy_need = fleet_size * 3
+    current_energy_prod = max(0, int(getattr(me, "energy_prod", 0) or 0))
+    trade_fuel = max(0.0, min(float(amount), trade_energy_need - current_energy_prod))
+    overflow = max(0.0, float(amount) - trade_fuel)
+    return (trade_fuel * full_mult + overflow * heat_mult) * prod_remaining
+
+
+def _my_greenery_count(state, me) -> int:
+    if not state or not me:
+        return 0
+    return sum(
+        1 for space in getattr(state, "spaces", []) or []
+        if isinstance(space, dict)
+        and space.get("tileType") == 0
+        and space.get("color") == getattr(me, "color", None)
+    )
+
+
+def _kaguya_conversion_value(card_name: str, state, me, gens_left: int) -> float:
+    if card_name != "Kaguya Tech" or not state or not me:
+        return 0.0
+    own_greeneries = _my_greenery_count(state, me)
+    plant_route = getattr(me, "plants", 0) >= 8
+    if own_greeneries <= 0 and not plant_route:
+        return 0.0
+    vp_value = 7.0 if gens_left <= 2 else 5.0 if gens_left <= 4 else 3.0
+    value = 3.0 + vp_value
+    if own_greeneries > 0:
+        value += 2.0 if own_greeneries >= 2 else 1.0
+    else:
+        value -= 3.0
+    return max(0.0, min(10.0, value))
+
+
+def _colony_milestone_bonus(card_name: str, db, state, me) -> float:
+    if not state or not me or not _card_places_colony(card_name, db):
+        return 0.0
+    for milestone in getattr(state, "milestones", []) or []:
+        if milestone.get("claimed_by") or milestone.get("name") != "Pioneer":
+            continue
+        my_score = (milestone.get("scores", {}) or {}).get(getattr(me, "color", ""), {})
+        if not isinstance(my_score, dict) or my_score.get("claimable"):
+            continue
+        threshold = _milestone_threshold(milestone) or 3
+        gap = threshold - int(my_score.get("score", 0) or 0)
+        if gap == 1:
+            return 8.0
+        if gap == 2:
+            return 3.0
+    return 0.0
+
+
+def _colony_card_value(card_name: str, db, me, gens_left: int, state=None) -> float:
+    if not _card_places_colony(card_name, db):
         return 0.0
 
     gen = _generated_effect(db, card_name)
@@ -2795,7 +3070,50 @@ def _colony_card_value(card_name: str, db, me, gens_left: int) -> float:
         value += 2.0
     if me is not None and getattr(me, "fleet_size", 1) >= 2:
         value += 1.0
+    value += _colony_milestone_bonus(card_name, db, state, me)
     return value
+
+
+def _plant_steal_swing_value(card_name: str, db, state, rv: dict, me=None) -> float:
+    gen = _generated_effect(db, card_name)
+    removal = 0
+    if isinstance(gen.get("rmPl"), (int, float)):
+        removal = int(gen.get("rmPl") or 0)
+
+    desc_l = _card_description_l(db, card_name)
+    if removal <= 0 and "steal" in desc_l and "plant" in desc_l:
+        match = re.search(r"steal\s+(\d+)\s+plants?", desc_l)
+        if match:
+            removal = int(match.group(1))
+
+    if removal <= 0 or "steal" not in desc_l:
+        return 0.0
+
+    opponents = getattr(state, "opponents", []) if state else []
+    max_opp_plants = max(
+        (int(getattr(opp, "plants", 0) or 0) for opp in opponents),
+        default=0,
+    )
+    actual = min(removal, max_opp_plants)
+    if actual <= 0:
+        return 0.0
+
+    value = actual * float(rv.get("plant", 1.0) or 1.0)
+    value += actual * 1.2  # denial component: stolen plants are also removed from the best target.
+    if max_opp_plants >= 7:
+        value += 8.0
+    elif max_opp_plants >= 6:
+        value += 5.0
+    elif max_opp_plants >= 4:
+        value += 2.0
+
+    if me is not None:
+        plants_needed = 7 if "ecoline" in str(getattr(me, "corp", "") or "").lower() else 8
+        my_plants = int(getattr(me, "plants", 0) or 0)
+        if my_plants < plants_needed <= my_plants + actual:
+            value += 6.0
+
+    return min(20.0, value)
 
 
 def _trade_fleet_card_value(card_name: str, db, me, gens_left: int) -> float:
@@ -2822,9 +3140,58 @@ def _trade_fleet_card_value(card_name: str, db, me, gens_left: int) -> float:
     return value * fleet_gain
 
 
+def _tag_scaling_count(tag: str, state=None, me=None, card_tags=None, db=None, card_name: str = "") -> int:
+    tag_key = str(tag or "").lower()
+    if not tag_key:
+        return 0
+    desc_l = _card_description_l(db, card_name)
+    if "opponents have" in desc_l or "opponent" in desc_l:
+        return sum(
+            int((getattr(opp, "tags", {}) or {}).get(tag_key, 0) or 0)
+            for opp in getattr(state, "opponents", []) or []
+        )
+    count = int((getattr(me, "tags", {}) or {}).get(tag_key, 0) or 0)
+    card_tag_list = [str(t).lower() for t in (card_tags or [])]
+    if "event" not in card_tag_list:
+        count += card_tag_list.count(tag_key)
+    return count
+
+
+def _parse_tag_scaling_gives(gives: str) -> tuple[int, str] | None:
+    m = re.match(r'\s*(-?\d+)\s+([\w€-]+)', str(gives or "").lower())
+    if not m:
+        return None
+    amount = int(m.group(1))
+    kind = m.group(2)
+    if kind in {"mc-prod", "m€-prod", "megacredit-prod", "megacredits-prod"}:
+        return amount, "mc-prod"
+    if kind == "tr":
+        return amount, "tr"
+    return amount, kind
+
+
+def _tag_scaling_effects(eff, state=None, me=None, card_tags=None, db=None, card_name: str = "") -> list[dict]:
+    rows = []
+    for scaling in getattr(eff, "tag_scaling", []) or []:
+        parsed = _parse_tag_scaling_gives(scaling.get("gives", ""))
+        if not parsed:
+            continue
+        amount, kind = parsed
+        count = _tag_scaling_count(
+            scaling.get("tag", ""),
+            state=state,
+            me=me,
+            card_tags=card_tags,
+            db=db,
+            card_name=card_name,
+        )
+        rows.append({"amount": amount, "kind": kind, "count": count})
+    return rows
+
+
 def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0,
                         tableau_tags=None, me=None, card_name="", card_tags=None,
-                        hand_cards=None, db=None):
+                        hand_cards=None, db=None, state=None):
     """Calculate MC-value from CardEffect data."""
     value = 0
 
@@ -2839,8 +3206,26 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
     for res, amount in eff.production_change.items():
         if amount <= 0:
             continue
-        mult = _PROD_MULT.get(res, 1.0)
-        value += amount * mult * prod_remaining
+        if res == "energy":
+            value += _marginal_energy_prod_value(amount, prod_remaining, me, state)
+        else:
+            mult = _PROD_MULT.get(res, 1.0)
+            value += amount * mult * prod_remaining
+
+    for scaling in _tag_scaling_effects(
+            eff, state=state, me=me, card_tags=card_tags, db=db, card_name=card_name):
+        amount = scaling["amount"]
+        count = scaling["count"]
+        kind = scaling["kind"]
+        if count <= 0 or amount <= 0:
+            continue
+        if kind.endswith("-prod"):
+            res = kind[:-5]
+            already_counted = 1 if eff.production_change.get(res) == amount else 0
+            extra_count = max(0, count - already_counted)
+            value += extra_count * amount * _PROD_MULT.get(res, 1.0) * prod_remaining
+        elif kind == "tr":
+            value += count * amount * rv["tr"]
 
     # TR
     if eff.tr_gain:
@@ -2860,8 +3245,10 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
         elif p == "special":
             value += 3  # special tiles (Nuclear Zone, etc.) — placement bonus only
 
-    value += _colony_card_value(card_name, db, me, gens_left)
+    value += _colony_card_value(card_name, db, me, gens_left, state=state)
+    value += _kaguya_conversion_value(card_name, state, me, gens_left)
     value += _trade_fleet_card_value(card_name, db, me, gens_left)
+    value += _plant_steal_swing_value(card_name, db, state, rv, me)
 
     # Card draw
     if eff.draws_cards:
@@ -3207,7 +3594,7 @@ def _is_production_card(tags, name, effect_parser=None, db=None):
     return any(kw in name.lower() for kw in prod_keywords)
 
 
-def _calc_income_delta(name, effect_parser, me):
+def _calc_income_delta(name, effect_parser, me, state=None, card_tags=None, db=None):
     """Calculate income change from playing a production card.
 
     Returns string like "+3 MC/gen" or "+2 steel +1 MC" or None.
@@ -3218,8 +3605,37 @@ def _calc_income_delta(name, effect_parser, me):
 
     parts = []
     mc_eq_delta = 0
+    dynamic_prod_res = set()
+
+    for scaling in _tag_scaling_effects(
+            eff, state=state, me=me, card_tags=card_tags, db=db, card_name=name):
+        amount = scaling["amount"]
+        count = scaling["count"]
+        kind = scaling["kind"]
+        if count <= 0 or amount <= 0 or not kind.endswith("-prod"):
+            continue
+        res = kind[:-5]
+        total = count * amount
+        dynamic_prod_res.add(res)
+        sign = "+" if total > 0 else ""
+        if res == "mc":
+            parts.append(f"{sign}{total} MC")
+            mc_eq_delta += total
+        else:
+            parts.append(f"{sign}{total} {res}")
+            if res == "energy":
+                mc_eq_delta += _marginal_energy_prod_value(total, 1, me, state)
+            else:
+                _PROD_MULT_INCOME = {
+                    "steel": 1.6, "titanium": 2.5, "plant": 1.6,
+                    "energy": 2.0, "heat": 0.8,
+                }
+                mc_eq_delta += total * _PROD_MULT_INCOME.get(res, 1.0)
+
     for res, amount in eff.production_change.items():
         if amount == 0:
+            continue
+        if res in dynamic_prod_res:
             continue
         sign = "+" if amount > 0 else ""
         if res == "mc":
@@ -3227,12 +3643,15 @@ def _calc_income_delta(name, effect_parser, me):
             mc_eq_delta += amount
         else:
             parts.append(f"{sign}{amount} {res}")
-            _PROD_MULT_INCOME = {
-                "steel": 1.6, "titanium": 2.5, "plant": 1.6,
-                "energy": 2.0, "heat": 0.8,
-            }
-            mult = _PROD_MULT_INCOME.get(res, 1.0)
-            mc_eq_delta += amount * mult
+            if res == "energy":
+                mc_eq_delta += _marginal_energy_prod_value(amount, 1, me, state)
+            else:
+                _PROD_MULT_INCOME = {
+                    "steel": 1.6, "titanium": 2.5, "plant": 1.6,
+                    "energy": 2.0, "heat": 0.8,
+                }
+                mult = _PROD_MULT_INCOME.get(res, 1.0)
+                mc_eq_delta += amount * mult
 
     if not parts:
         return None

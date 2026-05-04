@@ -409,6 +409,24 @@ def test_own_prod_req_early_feasible():
     assert delta == 0, f"expected 0 for early prod req, got {delta} / {reason!r}"
 
 
+def test_livestock_missing_plant_prod_midgame_soft_lock():
+    """Livestock-style own plant-prod payment at gen 6 is fixable, not permanently impossible."""
+    req_checker = MockReqChecker(
+        req_ok=False,
+        req_reason="Нужно своё plant-prod ≥ 1 (есть 0)",
+        req="plant production 1"
+    )
+    adjuster = FeasibilityAdjuster(req_checker, None)
+    state = build_state_with_req(generation=6, temperature=-8, oxygen=6, oceans=5, venus=14)
+
+    delta, reason = adjuster.compute_delta("Livestock", state)
+
+    assert delta > -40, f"Livestock missing one plant-prod should not be hard-blocked, got {delta} / {reason!r}"
+    assert delta <= 0, f"missing production payment should not be a positive adjustment, got {delta}"
+    if delta:
+        assert "own plant-prod gap 1" in reason, reason
+
+
 def test_any_prod_req_nobody_has_it_late():
     """Hackers-style: 'Ни у кого нет steel-prod ≥ 2' with 2 gens left → HARD.
 

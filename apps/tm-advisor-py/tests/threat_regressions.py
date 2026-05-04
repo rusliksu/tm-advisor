@@ -412,6 +412,16 @@ def test_big_asteroid_shares_handler():
     assert score == 63
 
 
+def test_special_permit_steal_denies_greenery():
+    """Special Permit is a steal, not just plant removal: 7 plants is urgent."""
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    adj = OpponentReactiveAdjuster(db)
+    state = build_state_with_opp(opp_plants=7, player_count=3)
+    score, reason = adj.adjust(56, "Special Permit", state)
+    assert score >= 64, f"expected strong steal bonus, got {score} / {reason!r}"
+    assert "steal" in reason.lower() and "plants=7" in reason, reason
+
+
 def test_sabotage_rich_opp_bonus():
     """Sabotage against opp with 10 MC → +4."""
     db = CardDatabase(str(resolve_data_path("evaluations.json")))

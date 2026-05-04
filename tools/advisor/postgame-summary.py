@@ -119,6 +119,12 @@ def parse_log(log_paths: Path | list[Path] | None) -> dict:
         "card_played": defaultdict(list),
         "advisor_miss": defaultdict(list),
         "advisor_check": defaultdict(list),
+        "shadow_merged": defaultdict(lambda: {
+            "turns": 0,
+            "matched": 0,
+            "shadow_only": 0,
+            "input_only": 0,
+        }),
         "game_states": [],
         "log_paths": [],
     }
@@ -168,6 +174,19 @@ def parse_log(log_paths: Path | list[Path] | None) -> dict:
                             "active_player": event.get("active_player"),
                             **player_row,
                         })
+                elif etype == "merged_turn":
+                    player_id = event.get("playerId") or event.get("player_id")
+                    if not player_id:
+                        continue
+                    bucket = result["shadow_merged"][player_id]
+                    bucket["turns"] += 1
+                    status = event.get("matchStatus")
+                    if status == "matched":
+                        bucket["matched"] += 1
+                    elif status == "shadow_only":
+                        bucket["shadow_only"] += 1
+                    elif status == "input_only":
+                        bucket["input_only"] += 1
                 elif etype == "game_state":
                     result["game_states"].append(event)
     return result
@@ -422,6 +441,12 @@ def summarize_player(player_view: dict, log_data: dict) -> dict:
         "initial_top_hand": initial.get("top_hand", []),
         "off_top": off_top,
         "advisor_miss": misses,
+        "shadow_merged": dict(log_data["shadow_merged"].get(player_id, {
+            "turns": 0,
+            "matched": 0,
+            "shadow_only": 0,
+            "input_only": 0,
+        })),
         "unconverted_play_recommendations": unconverted,
     }
 
@@ -584,6 +609,8 @@ def print_text(summary: dict) -> None:
         stale_offtop_text = f" ({'; '.join(detail_parts)})" if detail_parts else ""
         avg_rank = player["off_top"]["avg_rank"]
         avg_rank_text = avg_rank if avg_rank is not None else "-"
+        shadow_merged = player.get("shadow_merged") or {}
+        shadow_turns = shadow_merged.get("turns", 0)
         if not game.get("advisor_log_available"):
             print("  Advisor log: unavailable (no watch log found)")
         else:
@@ -593,6 +620,13 @@ def print_text(summary: dict) -> None:
                 f"off-top {player['off_top']['off_top_count']}{stale_offtop_text}, "
                 f"advisor_miss {player['advisor_miss']['count']}{stale_text}"
             )
+            if shadow_turns:
+                print(
+                    "  Shadow merged: "
+                    f"turns {shadow_turns}, matched {shadow_merged.get('matched', 0)}, "
+                    f"shadow-only {shadow_merged.get('shadow_only', 0)}, "
+                    f"input-only {shadow_merged.get('input_only', 0)}"
+                )
             if player["off_top"]["top_off_top"]:
                 print(f"  Biggest off-top: {format_offtop(player['off_top']['top_off_top'])}")
             if player["advisor_miss"]["top"]:

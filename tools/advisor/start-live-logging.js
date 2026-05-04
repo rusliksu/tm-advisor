@@ -22,10 +22,10 @@ const DEFAULT_ADVISOR_CHECK_INTERVAL = Number.isFinite(Number(process.env.TM_ADV
 function usage() {
   return [
     'Usage:',
-    '  node tools/advisor/start-live-logging.js <gameId|playerId> [options]',
+    '  node tools/advisor/start-live-logging.js <gameId|playerId|gameUrl> [options]',
     '',
     'Options:',
-    '  --server-url URL      TM server URL (default: TM_BASE_URL or tm.knightbyte.win)',
+    '  --server-url URL      TM server URL (default: inferred from URL, TM_BASE_URL, or tm.knightbyte.win)',
     '  --watch-interval SEC  watch_live_game.py polling interval (default: 5)',
     '  --hand-check-interval SEC',
     '                        Full all-player raw hand_check interval (default: 300; <=0 disables)',
@@ -52,6 +52,7 @@ function parseArgs(argv) {
     handCheckInterval: DEFAULT_HAND_CHECK_INTERVAL,
     advisorCheckInterval: DEFAULT_ADVISOR_CHECK_INTERVAL,
     shadowPoll: 2,
+    serverUrlExplicit: false,
     watch: true,
     shadow: true,
     dryRun: false,
@@ -65,6 +66,7 @@ function parseArgs(argv) {
       out.help = true;
     } else if (arg === '--server-url' && args[i + 1]) {
       out.serverUrl = args[++i].replace(/\/$/, '');
+      out.serverUrlExplicit = true;
     } else if (arg === '--watch-interval' && args[i + 1]) {
       out.watchInterval = Number(args[++i]) || out.watchInterval;
     } else if (arg === '--hand-check-interval' && args[i + 1]) {
@@ -91,6 +93,33 @@ function parseArgs(argv) {
   }
 
   return out;
+}
+
+function parseTargetIdentifier(identifier, fallbackServerUrl, serverUrlExplicit = false) {
+  if (!identifier) throw new Error('gameId, playerId, or game URL is required');
+  const raw = String(identifier).trim();
+  let parsed = null;
+  try {
+    parsed = new URL(raw);
+  } catch (_err) {
+    return {
+      identifier: raw,
+      serverUrl: String(fallbackServerUrl || '').replace(/\/$/, ''),
+      source: 'id',
+    };
+  }
+
+  const id = parsed.searchParams.get('id') || parsed.searchParams.get('gameId') || parsed.searchParams.get('playerId');
+  if (!id) throw new Error(`Cannot extract id=... from URL: ${raw}`);
+  const pathName = parsed.pathname.toLowerCase();
+  const inferredServerUrl = parsed.origin.replace(/\/$/, '');
+  const serverUrl = serverUrlExplicit
+    ? String(fallbackServerUrl || '').replace(/\/$/, '')
+    : inferredServerUrl;
+  let source = 'url';
+  if (pathName.includes('/player') || id.startsWith('p')) source = 'player-url';
+  else if (pathName.includes('/game') || pathName.includes('/spectator') || id.startsWith('g')) source = 'game-url';
+  return {identifier: id, serverUrl, source};
 }
 
 function safeArray(value) {
@@ -256,7 +285,9 @@ async function main() {
     throw new Error('Nothing to start: both --no-watch and --no-shadow were passed');
   }
 
-  const target = await resolveTarget(options.identifier, options.serverUrl);
+  const parsedTarget = parseTargetIdentifier(options.identifier, options.serverUrl, options.serverUrlExplicit);
+  options.serverUrl = parsedTarget.serverUrl;
+  const target = await resolveTarget(parsedTarget.identifier, options.serverUrl);
   const phase = target.game?.phase || '?';
   if (gameEnded(target.game) && !options.force) {
     console.log(`Game ${target.gameId} is already ended (phase=${phase}); no logging processes started.`);
@@ -291,7 +322,15 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  console.error(err.message || err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message || err);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  parseArgs,
+  parseTargetIdentifier,
+  resolveTarget,
+};

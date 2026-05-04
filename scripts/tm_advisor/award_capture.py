@@ -7,7 +7,7 @@ Constructor lose in game g5c3f715ec370 (gen 8).
 Urgency tiers:
 - CRITICAL: last slot + I'm ranked 1st + opp has MC to fund → fund immediately
 - HIGH:     thin lead (<= 1) in late game + opp has MC → fund before overtake
-- MEDIUM:   comfortable lead + budget allows → opportunistic fund
+- MEDIUM:   comfortable lead in mid/late game + budget allows → opportunistic fund
 
 Replaces the in-line award block at draft_play_advisor.py:750-798.
 Reused from: mc_allocation_advice, analysis._generate_alerts (award
@@ -108,7 +108,7 @@ def _classify_urgency(
     if gen >= 8 and my_rank == 1 and lead >= 1:
         return "HIGH"
 
-    if my_rank == 1 and lead >= 2:
+    if my_rank == 1 and lead >= 2 and gen >= 6:
         return "MEDIUM"
 
     return None

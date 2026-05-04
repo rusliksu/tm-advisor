@@ -208,6 +208,15 @@ def test_early_game_no_urgency():
         assert out[0]["urgency"] != "CRITICAL"
 
 
+def test_early_comfortable_lead_not_medium():
+    awards = [
+        _award("A", scores={"red": 5, "blue": 3}),
+    ]
+    state = build_state(awards=awards, opp_mc_list=(40,), generation=3)
+    out = urgent_award_actions(state)
+    assert out == [], out
+
+
 if __name__ == "__main__":
     names = [n for n in dir() if n.startswith("test_") and callable(globals()[n])]
     for n in sorted(names):

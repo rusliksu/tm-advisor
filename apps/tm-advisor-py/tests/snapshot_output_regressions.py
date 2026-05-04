@@ -187,6 +187,126 @@ def build_raw_state_with_claimable_milestone() -> dict:
     }
 
 
+def build_colony_prompt_raw_state() -> dict:
+    me = {
+        "color": "blue",
+        "name": "me",
+        "isActive": True,
+        "megaCredits": 25,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 2,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 2,
+        "heatProduction": 0,
+        "terraformRating": 21,
+        "cardsInHandNbr": 0,
+        "fleetSize": 1,
+        "tradesThisGeneration": 0,
+        "tableau": [{"name": "Aridor"}, {"name": "Poseidon"}],
+        "tags": {"space": 1, "power": 1},
+    }
+    return {
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Aridor"}],
+        "cardsInHand": [],
+        "waitingFor": {
+            "title": "Select where to build a colony",
+            "buttonLabel": "Build",
+            "type": "colony",
+            "coloniesModel": [
+                {"name": "Ceres", "isActive": True, "trackPosition": 1, "colonies": ["red"]},
+                {"name": "Io", "isActive": True, "trackPosition": 1, "colonies": []},
+            ],
+        },
+        "game": {
+            "generation": 1,
+            "phase": "action",
+            "oxygenLevel": 0,
+            "temperature": -30,
+            "oceans": 0,
+            "venusScaleLevel": 2,
+            "milestones": [],
+            "awards": [],
+            "colonies": [
+                {"name": "Ceres", "isActive": True, "trackPosition": 1, "colonies": ["red"]},
+                {"name": "Io", "isActive": True, "trackPosition": 1, "colonies": []},
+            ],
+            "gameOptions": {
+                "expansions": {
+                    "prelude": True,
+                    "colonies": True,
+                    "venusNext": True,
+                },
+            },
+        },
+    }
+
+
+def build_reveal_cards_prompt_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 4
+    raw["game"]["phase"] = "action"
+    raw["thisPlayer"].update({
+        "name": "revealer",
+        "isActive": True,
+        "megaCredits": 18,
+        "tableau": [{"name": "Public Plans"}],
+        "cardsInHandNbr": 3,
+    })
+    raw["cardsInHand"] = [
+        {"name": "Sky Docks", "calculatedCost": 18},
+        {"name": "AI Central", "calculatedCost": 21},
+        {"name": "Space Mirrors", "calculatedCost": 3},
+    ]
+    raw["waitingFor"] = {
+        "title": "Select cards to reveal",
+        "buttonLabel": "Reveal",
+        "type": "card",
+        "cards": copy.deepcopy(raw["cardsInHand"]),
+        "min": 0,
+        "max": 3,
+        "showSelectAll": True,
+    }
+    return raw
+
+
+def build_add_resources_prompt_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 13
+    raw["game"]["phase"] = "action"
+    raw["thisPlayer"].update({
+        "name": "resource-target",
+        "isActive": True,
+        "megaCredits": 20,
+        "tableau": [
+            {"name": "Venusian Animals", "resources": 33},
+            {"name": "Extremophiles", "resources": 10},
+            {"name": "Sulphur-Eating Bacteria", "resources": 16},
+        ],
+    })
+    raw["cardsInHand"] = []
+    raw["waitingFor"] = {
+        "title": "Select card to add 2 resources",
+        "buttonLabel": "Add resources",
+        "type": "card",
+        "cards": [
+            {"name": "Venusian Animals", "resources": 33},
+            {"name": "Extremophiles", "resources": 10},
+            {"name": "Sulphur-Eating Bacteria", "resources": 16},
+        ],
+        "min": 1,
+        "max": 1,
+    }
+    return raw
+
+
 def build_raw_state_with_fundable_award() -> dict:
     me = {
         "color": "red",
@@ -250,6 +370,127 @@ def build_raw_state_with_fundable_award() -> dict:
             },
         },
     }
+
+
+def build_raw_state_with_one_award_slot_and_two_leads() -> dict:
+    raw = copy.deepcopy(build_raw_state_with_fundable_award())
+    raw["thisPlayer"]["megaCredits"] = 45
+    raw["game"]["awards"] = [
+        {"name": "Funded A", "playerName": "opp", "scores": []},
+        {"name": "Funded B", "playerName": "opp", "scores": []},
+        {
+            "name": "Banker",
+            "scores": [
+                {"color": "red", "score": 10},
+                {"color": "blue", "score": 8},
+            ],
+        },
+        {
+            "name": "Thermalist",
+            "scores": [
+                {"color": "red", "score": 12},
+                {"color": "blue", "score": 9},
+            ],
+        },
+    ]
+    return raw
+
+
+def build_resource_sequence_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 5
+    raw["game"]["phase"] = "action"
+    raw["waitingFor"] = None
+    raw["game"]["milestones"] = []
+    raw["game"]["awards"] = []
+    raw["thisPlayer"].update({
+        "name": "resource-seq",
+        "megaCredits": 20,
+        "steel": 0,
+        "titanium": 6,
+        "megaCreditProduction": 12,
+        "terraformRating": 23,
+        "tableau": [{"name": "Saturn Systems"}, {"name": "Space Lanes"}],
+        "tags": {"jovian": 4, "earth": 6, "space": 4},
+    })
+    raw["cardsInHand"] = [
+        {"name": "Miranda Resort", "calculatedCost": 10, "tags": ["Jovian", "Space"]},
+        {"name": "Terraforming Ganymede", "calculatedCost": 31, "tags": ["Jovian", "Space"]},
+    ]
+    return raw
+
+
+def build_saturn_miranda_overpay_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 5
+    raw["game"]["phase"] = "action"
+    raw["waitingFor"] = None
+    raw["game"]["milestones"] = []
+    raw["game"]["awards"] = [
+        {
+            "name": "Banker",
+            "scores": [
+                {"color": "red", "score": 24},
+                {"color": "blue", "score": 17},
+            ],
+        }
+    ]
+    raw["thisPlayer"].update({
+        "name": "saturn",
+        "megaCredits": 0,
+        "steel": 2,
+        "titanium": 6,
+        "titaniumValue": 3,
+        "megaCreditProduction": 24,
+        "terraformRating": 25,
+        "tableau": [{"name": "Saturn Systems"}, {"name": "Space Lanes"}],
+        "tags": {
+            "earth": 6,
+            "jovian": 4,
+            "space": 4,
+            "science": 2,
+        },
+    })
+    raw["pickedCorporationCard"] = [{"name": "Saturn Systems"}]
+    raw["cardsInHand"] = [
+        {"name": "Miranda Resort", "calculatedCost": 10, "tags": ["Jovian", "Space"]},
+        {"name": "Solar Probe", "calculatedCost": 9, "tags": ["Space", "Science"]},
+        {"name": "Law Suit", "calculatedCost": 0, "tags": ["Earth"]},
+    ]
+    return raw
+
+
+def build_build_then_trade_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 5
+    raw["game"]["phase"] = "action"
+    raw["waitingFor"] = {"type": "option"}
+    raw["cardsInHand"] = []
+    raw["thisPlayer"].update({
+        "color": "pink",
+        "name": "trade-planner",
+        "megaCredits": 30,
+        "steel": 0,
+        "titanium": 2,
+        "energy": 1,
+        "megaCreditProduction": 11,
+        "steelProduction": 0,
+        "titaniumProduction": 2,
+        "energyProduction": 1,
+        "terraformRating": 21,
+        "fleetSize": 1,
+        "tradesThisGeneration": 0,
+        "coloniesCount": 2,
+        "tableau": [{"name": "CrediCor"}],
+        "tags": {},
+    })
+    raw["players"] = [raw["thisPlayer"]]
+    raw["game"]["colonies"] = [
+        {"name": "Ceres", "isActive": True, "trackPosition": 3, "colonies": ["green"]},
+        {"name": "Luna", "isActive": True, "trackPosition": 4, "colonies": ["pink", "green", "pink"]},
+    ]
+    raw["game"]["gameOptions"]["expansions"]["colonies"] = True
+    return raw
 
 
 def build_raw_state_with_endgame_action_alerts() -> dict:
@@ -744,6 +985,7 @@ def assert_postgame_summary_aggregates_restarted_logs():
         tmp_dir = Path(tmp)
         first_log = tmp_dir / "watch_live_g-test_001.jsonl"
         last_log = tmp_dir / "watch_live_g-test_002.jsonl"
+        merged_log = tmp_dir / "merged-g-test.jsonl"
         played_event = {
             "type": "card_played",
             "player_id": "p1",
@@ -880,11 +1122,47 @@ def assert_postgame_summary_aggregates_restarted_logs():
             "".join(json.dumps(event) + "\n" for event in last_events),
             encoding="utf-8",
         )
+        merged_events = [
+            {
+                "type": "merge_meta",
+                "counts": {
+                    "shadowTurns": 2,
+                    "inputEntries": 1,
+                    "matched": 1,
+                    "shadowOnly": 1,
+                    "inputOnly": 0,
+                },
+            },
+            {
+                "type": "merged_turn",
+                "playerId": "p1",
+                "player": "early",
+                "matchStatus": "matched",
+                "inputAction": "play Sponsors",
+            },
+            {
+                "type": "merged_turn",
+                "playerId": "p1",
+                "player": "early",
+                "matchStatus": "shadow_only",
+                "botAction": "play Media Group",
+            },
+        ]
+        merged_log.write_text(
+            "".join(json.dumps(event) + "\n" for event in merged_events),
+            encoding="utf-8",
+        )
 
-        parsed = module.parse_log([first_log, last_log])
+        parsed = module.parse_log([first_log, last_log, merged_log])
         assert parsed["session_start"]["session"] == "early", parsed["session_start"]
         assert parsed["initial_snapshots"]["p1"]["player"] == "early", parsed["initial_snapshots"]
-        assert parsed["log_paths"] == [str(first_log), str(last_log)], parsed["log_paths"]
+        assert parsed["log_paths"] == [str(first_log), str(last_log), str(merged_log)], parsed["log_paths"]
+        assert parsed["shadow_merged"]["p1"] == {
+            "turns": 2,
+            "matched": 1,
+            "shadow_only": 1,
+            "input_only": 0,
+        }, parsed["shadow_merged"]
         assert len(parsed["card_played"]["p1"]) == 4, parsed["card_played"]
         assert parsed["card_played"]["p1"][0]["card"] == "Kelp Farming", parsed["card_played"]
         assert len(parsed["advisor_miss"]["p1"]) == 3, parsed["advisor_miss"]
@@ -934,6 +1212,7 @@ def main():
     assert hand_advice["Sponsors"]["action"] == hand_rows["Sponsors"]["play_action"], hand_advice
     assert hand_advice["Birds"]["reason"] == hand_rows["Birds"]["play_reason"], hand_advice
     assert hand_advice["Birds"]["description_first"] is True, hand_advice["Birds"]
+    assert snap["opponents"][0]["hand_count"] == 3, snap["opponents"]
 
     media_group_desc = db.get_advisor_description("Media Group", max_len=180, locale="ru")
 
@@ -1056,12 +1335,68 @@ def main():
     assert milestone_summary["best_move"].startswith("🏆 ЗАЯВИ Builder!"), milestone_summary
     assert any("Sponsors" in line for line in milestone_summary["hand"]), milestone_summary
 
+    colony_prompt_snap = advisor_snapshot.snapshot_from_raw(build_colony_prompt_raw_state())
+    colony_prompt = colony_prompt_snap["colony_prompt"]
+    assert colony_prompt["best"]["name"] == "Ceres", colony_prompt
+    assert colony_prompt_snap["summary"]["best_move"].startswith("Colony: Build colony Ceres"), colony_prompt_snap["summary"]
+    assert colony_prompt_snap["summary"]["lines"][1].startswith("Ceres"), colony_prompt_snap["summary"]
+
+    reveal_prompt_snap = advisor_snapshot.snapshot_from_raw(build_reveal_cards_prompt_raw_state())
+    reveal_prompt = reveal_prompt_snap["card_prompt"]
+    assert reveal_prompt["best"]["action"] == "REVEAL_ALL", reveal_prompt
+    assert reveal_prompt["best"]["cards"] == ["Sky Docks", "AI Central", "Space Mirrors"], reveal_prompt
+    assert reveal_prompt_snap["summary"]["best_move"].startswith("Reveal all 3 cards"), reveal_prompt_snap["summary"]
+
+    resource_prompt_snap = advisor_snapshot.snapshot_from_raw(build_add_resources_prompt_raw_state())
+    resource_prompt = resource_prompt_snap["card_prompt"]
+    assert resource_prompt["best"]["name"] == "Venusian Animals", resource_prompt
+    assert resource_prompt["best"]["action"] == "ADD_RESOURCES", resource_prompt
+    assert resource_prompt["options"][1]["name"] == "Sulphur-Eating Bacteria", resource_prompt
+    assert resource_prompt_snap["summary"]["best_move"].startswith("Add 2 resources to Venusian Animals"), resource_prompt_snap["summary"]
+
     award_snap = advisor_snapshot.snapshot_from_raw(build_raw_state_with_fundable_award())
     award_summary = award_snap["summary"]
     assert award_snap["allocation"]["allocations"][0]["type"] == "award", award_snap["allocation"]
-    assert award_summary["best_move"].startswith("💰 ФОНДИРУЙ Banker!"), award_summary
+    assert award_summary["best_move"].startswith("Play Sponsors"), award_summary
+    assert any(line.startswith("💰 ФОНДИРУЙ Banker!") for line in award_summary["lines"]), award_summary
     rendered_award = advisor_snapshot.format_snapshot_summary(award_snap)
-    assert "Best move: 💰 ФОНДИРУЙ Banker!" in rendered_award, rendered_award
+    assert "Best move: Play Sponsors" in rendered_award, rendered_award
+    assert "💰 ФОНДИРУЙ Banker!" in rendered_award, rendered_award
+
+    one_slot_award_snap = advisor_snapshot.snapshot_from_raw(build_raw_state_with_one_award_slot_and_two_leads())
+    one_slot_awards = [
+        row for row in one_slot_award_snap["allocation"]["allocations"]
+        if row.get("type") == "award" and "❌нет MC" not in row.get("action", "")
+    ]
+    assert len(one_slot_awards) == 1, one_slot_awards
+
+    resource_sequence_snap = advisor_snapshot.snapshot_from_raw(build_resource_sequence_raw_state())
+    resource_allocs = resource_sequence_snap["allocation"]["allocations"]
+    miranda_alloc = next(row for row in resource_allocs if row["action"].startswith("Play Miranda Resort"))
+    ganymede_alloc = next(row for row in resource_allocs if row["action"].startswith("Play Terraforming Ganymede"))
+    assert ganymede_alloc["cost"] == 13, resource_allocs
+    assert "❌нет MC" not in ganymede_alloc["action"], resource_allocs
+    assert miranda_alloc["cost"] == 10, resource_allocs
+    assert "❌нет MC" in miranda_alloc["action"], resource_allocs
+
+    saturn_miranda_snap = advisor_snapshot.snapshot_from_raw(build_saturn_miranda_overpay_raw_state())
+    saturn_miranda_advice = {row["name"]: row for row in saturn_miranda_snap["hand_advice"]}
+    miranda_overpay = saturn_miranda_advice["Miranda Resort"]
+    assert miranda_overpay["action"] == "PLAY", miranda_overpay
+    assert "ti" in miranda_overpay["reason"], miranda_overpay
+    assert "[income +6 MC" in miranda_overpay["reason"], miranda_overpay
+    assert miranda_overpay["play_value_now"] >= 25, miranda_overpay
+    assert saturn_miranda_snap["summary"]["best_move"].startswith("Play Miranda Resort"), saturn_miranda_snap["summary"]
+    solar_probe = saturn_miranda_advice["Solar Probe"]
+    assert solar_probe["action"] == "HOLD", saturn_miranda_advice
+
+    build_then_trade_snap = advisor_snapshot.snapshot_from_raw(build_build_then_trade_raw_state())
+    build_then_trade = build_then_trade_snap["trade"]
+    assert build_then_trade["hint"].startswith("Сначала Ceres"), build_then_trade
+    assert build_then_trade["best"]["type"] == "build_then_trade", build_then_trade
+    assert build_then_trade["best"]["name"] == "Ceres", build_then_trade
+    assert build_then_trade["best_direct"]["name"] == "Luna", build_then_trade
+    assert build_then_trade["build_before_trade"]["name"] == "Ceres", build_then_trade
 
     endgame_alert_snap = advisor_snapshot.snapshot_from_raw(build_raw_state_with_endgame_action_alerts())
     action_alert = next(alert for alert in endgame_alert_snap["alerts"] if "🔵 Actions" in alert)

@@ -255,6 +255,45 @@ def main():
     assert budget_card_allocation_summary["best_move"].startswith("Play Virus"), budget_card_allocation_summary
     assert "Giant Ice Asteroid" not in budget_card_allocation_summary["best_move"], budget_card_allocation_summary
 
+    hold_card_allocation_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "late", "generation": 8},
+            "trade": {},
+            "alerts": [],
+        },
+        [
+            {
+                "name": "Atmoscoop",
+                "action": "HOLD",
+                "reason": "budget line spends MC elsewhere",
+                "play_value_now": 25.2,
+                "priority": 2,
+            },
+            {
+                "name": "Maxwell Base",
+                "action": "PLAY",
+                "reason": "better immediate play",
+                "play_value_now": 32.6,
+                "priority": 2,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Play Atmoscoop",
+                    "cost": 21,
+                    "value_mc": 25,
+                    "priority": 2,
+                    "type": "card",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert hold_card_allocation_summary["best_move"].startswith("PLAY Maxwell Base"), hold_card_allocation_summary
+    assert "Atmoscoop" not in hold_card_allocation_summary["best_move"], hold_card_allocation_summary
+
     finish_now_summary = advisor_snapshot._build_summary_block(
         {
             "game": {
@@ -565,7 +604,39 @@ def main():
         draft_plan=None,
         draft_card_advice=None,
     )
-    assert award_summary["best_move"].startswith("💰 ФОНДИРУЙ Banker!"), award_summary
+    assert award_summary["best_move"].startswith("PLAY Sponsors"), award_summary
+
+    late_award_summary = advisor_snapshot._build_summary_block(
+        {
+            "game": {"phase": "late", "generation": 7},
+            "trade": {},
+            "alerts": [],
+        },
+        [
+            {
+                "name": "Sponsors",
+                "action": "PLAY",
+                "reason": "modest late production",
+                "play_value_now": 6.0,
+                "priority": 5,
+            },
+        ],
+        {
+            "allocations": [
+                {
+                    "action": "Fund Banker (MEDIUM, лид +2)",
+                    "cost": 8,
+                    "value_mc": 7,
+                    "priority": 2,
+                    "type": "award",
+                    "urgency": "MEDIUM",
+                },
+            ],
+        },
+        draft_plan=None,
+        draft_card_advice=None,
+    )
+    assert late_award_summary["best_move"].startswith("💰 ФОНДИРУЙ Banker!"), late_award_summary
 
     ui_limited_play_summary = advisor_snapshot._build_summary_block(
         {
