@@ -37,6 +37,28 @@ function makeCardEl(cardName) {
   };
 }
 
+function makeRequirementCardEl(cardName, reqText) {
+  return {
+    getAttribute(attr) {
+      return attr === 'data-tm-card' ? cardName : '';
+    },
+    classList: {
+      contains() {
+        return false;
+      },
+    },
+    querySelector(selector) {
+      if (selector === '.card-requirements, .card-requirement') {
+        return {textContent: reqText};
+      }
+      return null;
+    },
+    closest() {
+      return null;
+    },
+  };
+}
+
 function neutralResult() {
   return {adj: 0, reasons: []};
 }
@@ -163,6 +185,50 @@ function testAdjustForResearchTreatsStepRequirementAsHardBlock() {
   assert(!result.reasons.some((reason) => reason.startsWith('Buy')), 'hard-blocked draft card should not be marked as buy');
 }
 
+function testAdjustForResearchSkipsDenyOnlyInsectsBuy() {
+  const result = {
+    total: 64,
+    uncappedTotal: 64,
+    reasons: [
+      '✂ Deny: Пеша plant shell',
+      'Insects: нет plant shell cap -12',
+      'Greenhouses +1.5',
+    ],
+  };
+
+  playPriority.adjustForResearch({
+    result,
+    el: makeCardEl('Insects'),
+    myHand: [],
+    ctx: {mc: 80, gensLeft: 3},
+    getCardCost() {
+      return 9;
+    },
+    getPlayerVueData() {
+      return {
+        game: {players: []},
+        thisPlayer: {megaCredits: 80},
+        draftedCards: [{name: 'Insects'}],
+      };
+    },
+    tmBrain: null,
+    cardEffects: {Insects: {c: 9}},
+  });
+
+  assert(
+    result.total <= 56,
+    'deny-only Insects should be a draft deny, not a research buy recommendation',
+  );
+  assert(
+    result.reasons.includes('Deny уже сделан: не покупать'),
+    'deny-only research cards should explain that the deny was already achieved',
+  );
+  assert(
+    !result.reasons.some((reason) => reason.startsWith('Buy')),
+    'deny-only Insects should not receive a Buy label in research',
+  );
+}
+
 function testScoreDraftCardMarksSpecificReqAsPenaltyForPositionalFactors() {
   let capturedReqPenaltyPresent = null;
   const input = baseDraftInput();
@@ -223,6 +289,836 @@ function testScoreDraftCardIncludesVisibleCeoInSynergyContext() {
 
   playPriority.scoreDraftCard(input);
   assert(sawGordon, 'visible CEO cards should be available to project-card synergy scoring');
+}
+
+function testScoreDraftCardRoundsStandardProjectComparisonReason() {
+  const input = baseDraftInput();
+  input.ratings = {
+    'Test Card': {s: 52.8, e: 'production', t: 'D'},
+  };
+  input.cardEffects = {
+    'Test Card': {mp: 1},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    allSP: [{type: 'power', name: 'Электростанция', adj: 58}],
+  });
+
+  const result = playPriority.scoreDraftCard(input);
+  const reason = result.reasons.find((text) => text.startsWith('vs Электростанция'));
+
+  assert.strictEqual(reason, 'vs Электростанция -5.2');
+}
+
+function testOptimalAerobrakingPenalizesHighTemperature() {
+  const input = baseDraftInput();
+  input.cardName = 'Optimal Aerobraking';
+  input.cardEl = makeCardEl('Optimal Aerobraking');
+  input.myHand = ['Optimal Aerobraking', 'Solar Probe', 'Deimos Down'];
+  input.ratings = {
+    'Optimal Aerobraking': {s: 84, e: 'When you play a space event, you gain 3 M€ and 3 heat.', t: 'A'},
+  };
+  input.cardTagsData = {
+    'Optimal Aerobraking': ['space'],
+    'Solar Probe': ['event', 'science', 'space'],
+    'Deimos Down': ['event', 'space'],
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    globalParams: {temp: 6, oxy: 8, oceans: 5, venus: 0},
+  });
+  input.sc = Object.assign({}, input.sc, {
+    tempMax: 8,
+    tempStep: 2,
+    oxyMax: 14,
+    oceansMax: 9,
+    venusMax: 30,
+  });
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert.strictEqual(result.total, 78, 'one remaining temperature step should apply a 6 point OptAero penalty');
+  assert(
+    result.reasons.some((reason) => reason.includes('Температура почти закрыта')),
+    'OptAero high-temperature penalty should be visible in reasons',
+  );
+}
+
+function testOptimalAerobrakingWaitsForSpaceEventTriggerWindow() {
+  const input = baseDraftInput();
+  input.cardName = 'Optimal Aerobraking';
+  input.cardEl = makeCardEl('Optimal Aerobraking');
+  input.myHand = ['Optimal Aerobraking', 'Solar Probe'];
+  input.ratings = {
+    'Optimal Aerobraking': {s: 84, e: 'When you play a space event, you gain 3 M€ and 3 heat.', t: 'A'},
+    'Solar Probe': {s: 58, e: 'Space event.', t: 'C'},
+  };
+  input.cardTagsData = {
+    'Optimal Aerobraking': ['space'],
+    'Solar Probe': ['event', 'science', 'space'],
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gensLeft: 3,
+    globalParams: {temp: -8, oxy: 4, oceans: 2, venus: 10},
+  });
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 15, reasons: ['Hand: space event shell +15']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.reasons.some((reason) => reason.includes('OptAero: играть перед space event')),
+    'Optimal Aerobraking should explain that it waits until right before the trigger',
+  );
+  assert(
+    result.total <= 87,
+    'a single future space event should not let Optimal Aerobraking jump as a play-now card',
+  );
+}
+
+function testScoreDraftCardSuppressesClaimedMilestoneProximity() {
+  const input = baseDraftInput();
+  input.cardName = 'Tundra Farming';
+  input.cardEl = makeCardEl('Tundra Farming');
+  input.ratings = {
+    'Tundra Farming': {s: 64, e: 'Increase your plant production 1 step and your M€ production 2 steps.', t: 'C'},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    milestoneNeeds: {plant: 2},
+    globalParams: {temp: -6, oxy: 8, oceans: 5, venus: 0},
+  });
+  input.sc = Object.assign({}, input.sc, {
+    milestoneNeed1: 7,
+    milestoneNeed2: 5,
+    milestoneNeed3: 3,
+  });
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['plant']);
+  };
+  input.scoreMilestoneAwardProximity = function scoreMilestoneAwardProximity() {
+    return {adj: 5, bonus: 5, reasons: ['до Ecologist ещё 2']};
+  };
+  input.getPlayerVueData = function getPlayerVueData() {
+    return {
+      game: {
+        players: [],
+        milestones: [
+          {name: 'Ecologist', playerName: 'claimed-player', color: 'red'},
+        ],
+      },
+      thisPlayer: {megaCredits: 30},
+    };
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert.strictEqual(result.total, 64, 'claimed Ecologist should not keep its stale +5 proximity bonus');
+  assert(
+    !result.reasons.some((reason) => reason.includes('Ecologist')),
+    'claimed Ecologist should be removed from visible card reasons',
+  );
+}
+
+function testDirectedImpactorsPenalizesLateFastTemperatureWindow() {
+  const input = baseDraftInput();
+  input.cardName = 'Directed Impactors';
+  input.cardEl = makeCardEl('Directed Impactors');
+  input.ratings = {
+    'Directed Impactors': {s: 56, e: 'Action: spend 6 M€ to add 1 asteroid to any card, or remove 1 asteroid here to raise temperature 1 step.', t: 'C'},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 7,
+    gensLeft: 3,
+    globalParams: {temp: -8, oxy: 4, oceans: 2, venus: 10},
+  });
+  input.sc = Object.assign({}, input.sc, {
+    tempMax: 8,
+    tempStep: 2,
+    oxyMax: 14,
+    oceansMax: 9,
+    venusMax: 30,
+  });
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['space']);
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 17, bonus: 17, reasons: ['Hand: space shell +17']};
+  };
+  input.getPlayerVueData = function getPlayerVueData() {
+    return {
+      game: {
+        generation: 7,
+        temperature: -8,
+        oxygenLevel: 4,
+        oceans: 2,
+        players: [],
+      },
+      thisPlayer: {megaCredits: 70, titanium: 3, titaniumProduction: 3},
+    };
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 61,
+    'late Directed Impactors should not jump to B from generic space/titanium synergies',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Impactors: темп окно')),
+    'Directed Impactors temp-window penalty should be visible in reasons',
+  );
+}
+
+function testDirigiblesLateEngineCapOverridesGenericSynergy() {
+  const input = baseDraftInput();
+  input.cardName = 'Dirigibles';
+  input.cardEl = makeCardEl('Dirigibles');
+  input.myHand = ['Dirigibles', 'Titan Shuttles', 'Forced Precipitation', 'Unexpected Application'];
+  input.ratings = {
+    'Dirigibles': {s: 75, e: 'When playing a Venus tag, Floaters here may be used as payment, and are worth 3M€ each.', t: 'B'},
+  };
+  input.cardEffects = {
+    'Dirigibles': {c: 11, res: 'floater', tg: 'venus'},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 7,
+    gensLeft: 4,
+    globalParams: {temp: -8, oxy: 4, oceans: 2, venus: 10},
+    floaterTargetCount: 1,
+    floaterAccumRate: 0,
+  });
+  input.getCardCost = function getCardCost() {
+    return 11;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['venus']);
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 17, bonus: 17, reasons: ['Hand: Venus/floater shell +17']};
+  };
+  input.scoreTagSynergies = function scoreTagSynergies() {
+    return {adj: 3, bonus: 3, reasons: ['venus strategy +3']};
+  };
+  input.scoreCardEconomyInContext = function scoreCardEconomyInContext() {
+    return {adj: -24, bonus: -24, reasons: ['Поздн. floater engine -24']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 54,
+    'late Dirigibles should be capped to D-tier when it has no established floater payoff',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Dirigibles: поздний cap')),
+    'late Dirigibles cap should be visible in reasons',
+  );
+  assert(
+    !result.reasons.some((reason) => /Dirigibles: поздний cap -?\d+\.\d{4,}/.test(reason)),
+    'late Dirigibles cap reason should not expose floating-point precision noise',
+  );
+}
+
+function testMineLateProductionCapOverridesGenericSynergy() {
+  const input = baseDraftInput();
+  input.cardName = 'Mine';
+  input.cardEl = makeCardEl('Mine');
+  input.myHand = ['Mine', 'Space Elevator', 'Strip Mine'];
+  input.ratings = {
+    Mine: {s: 72, e: 'Increase your steel production 1 step.', t: 'B'},
+  };
+  input.cardEffects = {
+    Mine: {c: 4, sp: 1},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 7,
+    gensLeft: 4,
+    globalParams: {temp: -8, oxy: 4, oceans: 2, venus: 10},
+  });
+  input.getCardCost = function getCardCost() {
+    return 4;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['building']);
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 8, bonus: 8, reasons: ['Hand: steel/building shell +8']};
+  };
+  input.scoreCardEconomyInContext = function scoreCardEconomyInContext() {
+    return {adj: -15, bonus: -15, reasons: ['Mine: поздняя окупаемость -15']};
+  };
+  input.scoreMapMA = function scoreMapMA() {
+    return {adj: 4, bonus: 4, reasons: ['Miner/Builder race +4']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 54,
+    'late Mine should stay D-tier even when steel/building and M/A context add generic bonuses',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Mine: поздний cap')),
+    'late Mine cap should be visible in reasons',
+  );
+}
+
+function testMiningRightsLateProductionCapOverridesGenericSynergy() {
+  const input = baseDraftInput();
+  input.cardName = 'Mining Rights';
+  input.cardEl = makeCardEl('Mining Rights');
+  input.myHand = ['Mining Rights', 'Advanced Alloys', 'Space Elevator'];
+  input.ratings = {
+    'Mining Rights': {s: 76, e: 'Place this tile on a steel or titanium placement bonus. Increase that production 1 step.', t: 'B'},
+  };
+  input.cardEffects = {
+    'Mining Rights': {c: 9, sp: 1},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 8,
+    gensLeft: 2,
+    prod: {steel: 0, ti: 0},
+    tags: {building: 3},
+    globalParams: {temp: -4, oxy: 8, oceans: 3, venus: 12},
+  });
+  input.getCardCost = function getCardCost() {
+    return 9;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['building']);
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 12, bonus: 12, reasons: ['Hand: steel/building shell +12']};
+  };
+  input.scoreDiscountsAndPayments = function scoreDiscountsAndPayments() {
+    return {adj: 4, bonus: 4, reasons: ['Сталь −4 MC']};
+  };
+  input.scoreCardEconomyInContext = function scoreCardEconomyInContext() {
+    return {adj: -8, bonus: -8, reasons: ['Mining Rights: поздняя окупаемость -8']};
+  };
+  input.scoreMapMA = function scoreMapMA() {
+    return {adj: 4, bonus: 4, reasons: ['Builder race +4']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 62,
+    'late Mining Rights should not stay B-tier just because generic building/steel synergies fire',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Mining Rights: поздний production cap')),
+    'late Mining Rights cap should be visible in reasons',
+  );
+
+  const titaniumRaceResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    ctx: Object.assign({}, input.ctx, {
+      gensLeft: 3,
+    }),
+    scoreMapMA() {
+      return {adj: 8, bonus: 8, reasons: ['Titanium spot +4', 'Miner/Builder race +4']};
+    },
+  }));
+
+  assert(
+    titaniumRaceResult.total > result.total && titaniumRaceResult.total <= 64,
+    'late Mining Rights with a titanium/race reason can stay higher, but should still be capped below normal early B',
+  );
+}
+
+function testMiningExpeditionGetsOnlyTimingRebateBoosts() {
+  const input = baseDraftInput();
+  input.cardName = 'Mining Expedition';
+  input.cardEl = makeCardEl('Mining Expedition');
+  input.myHand = ['Mining Expedition', 'Media Group'];
+  input.ratings = {
+    'Mining Expedition': {s: 46, e: 'Raise oxygen 1 step. Remove 2 plants from any player. Gain 2 steel.', t: 'D'},
+    'Media Group': {s: 62, e: 'When you play an event, gain 3 M€.', t: 'C'},
+  };
+  input.cardEffects = {
+    'Mining Expedition': {c: 12, o2: 1, steel: 2},
+    'Media Group': {c: 6},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 6,
+    gensLeft: 3,
+    steelVal: 3,
+    _myCorps: ['Interplanetary Cinematics'],
+    globalParams: {oxy: 7, temp: -10, oceans: 4, venus: 12},
+  });
+  input.getCardCost = function getCardCost() {
+    return 12;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['event']);
+  };
+  input.scoreCardEconomyInContext = function scoreCardEconomyInContext() {
+    return {adj: -4, bonus: -4, reasons: ['Mining Expedition: узкий tempo event -4']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total >= 55,
+    'Mining Expedition should rise into C-tier when it grabs the 8% O2 bonus with event/steel rebates',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Mining Expedition: 8% O2 bonus')),
+    'Mining Expedition O2 timing reason should be visible',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Mining Expedition: event rebates')),
+    'Mining Expedition event rebate reason should be visible',
+  );
+
+  const genericResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    myHand: ['Mining Expedition'],
+    ctx: Object.assign({}, input.ctx, {
+      steelVal: 2,
+      _myCorps: [],
+      globalParams: {oxy: 4, temp: -10, oceans: 4, venus: 12},
+    }),
+  }));
+
+  assert(
+    genericResult.total <= 50,
+    'generic Mining Expedition without O2 timing or rebates should remain a low-priority niche event',
+  );
+}
+
+function testAiCentralFullHandLateCapOverridesGenericSynergy() {
+  const input = baseDraftInput();
+  input.cardName = 'AI Central';
+  input.cardEl = makeCardEl('AI Central');
+  input.myHand = ['AI Central', 'Warp Drive', 'Mars University', 'Olympus Conference', 'Research'];
+  input.ratings = {
+    'AI Central': {s: 88, e: 'Requires 3 science tags. Decrease your energy production 1 step. Action: Draw 2 cards. 1 VP.', t: 'A'},
+  };
+  input.cardEffects = {
+    'AI Central': {c: 21, ep: -1, actCD: 2, vp: 1},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 7,
+    gensLeft: 4,
+    handSize: 14,
+    tags: {science: 3, building: 2},
+    globalParams: {temp: -8, oxy: 4, oceans: 2, venus: 10},
+  });
+  input.getCardCost = function getCardCost() {
+    return 21;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['science', 'building']);
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 28, bonus: 28, reasons: ['Hand: VP cohesion/science/actions +28']};
+  };
+  input.scoreCardRequirements = function scoreCardRequirements() {
+    return {adj: 4, bonus: 4, reasons: ['Req ✓ +4']};
+  };
+  input.scoreDiscountsAndPayments = function scoreDiscountsAndPayments() {
+    return {adj: 5, bonus: 5, reasons: ['steel/energy shell +5']};
+  };
+  input.scoreCardEconomyInContext = function scoreCardEconomyInContext() {
+    return {adj: -15, bonus: -15, reasons: ['Тайминг -15']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 78,
+    'late AI Central with a full hand should be capped below A/S despite generic science/draw synergies',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('AI Central: полная рука cap')),
+    'late AI Central full-hand cap should be visible in reasons',
+  );
+
+  const richResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    ctx: Object.assign({}, input.ctx, {
+      mc: 70,
+      prod: {mc: 41},
+    }),
+  }));
+
+  assert(
+    richResult.total > result.total && richResult.total <= 86,
+    'rich late AI Central positions should stay A-tier rather than being forced down to the poor full-hand cap',
+  );
+
+  const richPvResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    getPlayerVueData() {
+      return {
+        game: {players: []},
+        thisPlayer: {megaCredits: 67, megacreditProduction: 41},
+      };
+    },
+  }));
+
+  assert(
+    richPvResult.total > result.total && richPvResult.total <= 86,
+    'rich late AI Central positions should also be recognized from live player data when ctx economy is missing',
+  );
+}
+
+function testDevelopmentCenterLateNoEnergyCapOverridesGenericSynergy() {
+  const input = baseDraftInput();
+  input.cardName = 'Development Center';
+  input.cardEl = makeCardEl('Development Center');
+  input.myHand = ['Development Center', 'Mars University', 'Olympus Conference', 'Research', 'Warp Drive'];
+  input.ratings = {
+    'Development Center': {s: 76, e: 'Action: Spend 1 energy to draw a card. Science and Building tags.', t: 'B'},
+  };
+  input.cardEffects = {
+    'Development Center': {c: 11, actCD: 1},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 8,
+    gensLeft: 2,
+    handSize: 12,
+    prod: {energy: 0, steel: 1},
+    tags: {science: 3, building: 4},
+    globalParams: {temp: -4, oxy: 8, oceans: 3, venus: 12},
+  });
+  input.getCardCost = function getCardCost() {
+    return 11;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['science', 'building']);
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 16, bonus: 16, reasons: ['Hand: science/building draw shell +16']};
+  };
+  input.scoreDiscountsAndPayments = function scoreDiscountsAndPayments() {
+    return {adj: 4, bonus: 4, reasons: ['Сталь −4 MC']};
+  };
+  input.scoreTagSynergies = function scoreTagSynergies() {
+    return {adj: 6, bonus: 6, reasons: ['science/building стратегия +6']};
+  };
+  input.scoreCardEconomyInContext = function scoreCardEconomyInContext() {
+    return {adj: -8, bonus: -8, reasons: ['Поздний draw engine -8']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 56,
+    'late Development Center without energy and with a full hand should not look like a buyable B-tier draw card',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Development Center: поздний draw cap')),
+    'late Development Center cap should be visible in reasons',
+  );
+
+  const energyResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    ctx: Object.assign({}, input.ctx, {
+      gensLeft: 3,
+      handSize: 5,
+      prod: {energy: 3, steel: 1},
+    }),
+  }));
+
+  assert(
+    energyResult.total > result.total && energyResult.total <= 68,
+    'late Development Center with real spare energy should stay playable but capped below unconditional B/A',
+  );
+}
+
+function testImmigrantCityContextKeepsGenericOpenerLowAndBoostsSupportedLate() {
+  const input = baseDraftInput();
+  input.cardName = 'Immigrant City';
+  input.cardEl = makeCardEl('Immigrant City');
+  input.myHand = ['Immigrant City'];
+  input.ratings = {
+    'Immigrant City': {
+      s: 58,
+      e: 'Decrease your energy production 1 step and decrease your M€ production 2 steps. Place a city tile.',
+      t: 'C',
+    },
+  };
+  input.cardEffects = {
+    'Immigrant City': {c: 13, city: 1, ep: -1, mp: -2},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 2,
+    gensLeft: 6,
+    _myCorps: ['Credicor'],
+    prod: {energy: 1},
+    steel: 0,
+    cities: 0,
+    totalCities: 1,
+  });
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['building', 'city']);
+  };
+  input.getCardCost = function getCardCost() {
+    return 13;
+  };
+
+  const generic = playPriority.scoreDraftCard(input);
+  assert(
+    generic.total <= 54,
+    'generic early Immigrant City should remain a low C/D pick rather than inherit the core B rating',
+  );
+  assert(
+    generic.reasons.some((reason) => reason.includes('Immigrant City: early engine trap')),
+    'generic early Immigrant City should explain the trap penalty',
+  );
+
+  const supported = playPriority.scoreDraftCard(Object.assign({}, input, {
+    myCorp: 'Tharsis Republic',
+    myTableau: ['Rover Construction', 'Pets'],
+    ctx: Object.assign({}, input.ctx, {
+      gen: 8,
+      gensLeft: 2,
+      _myCorps: ['Tharsis Republic'],
+      prod: {energy: 1},
+      steel: 8,
+      steelVal: 3,
+      cities: 2,
+      totalCities: 7,
+      milestones: new Set(['Mayor']),
+    }),
+    getPlayerVueData() {
+      return {
+        game: {players: [{citiesCount: 3}, {citiesCount: 2}, {citiesCount: 2}]},
+        thisPlayer: {megaCredits: 40, energyProduction: 1, steel: 8, steelValue: 3},
+      };
+    },
+  }));
+
+  assert(
+    supported.total >= 76 && supported.total <= 82,
+    'supported late Immigrant City should rise into B/A context without changing the base score',
+  );
+  assert(
+    supported.reasons.some((reason) => reason.includes('Immigrant City: Tharsis city engine')),
+    'supported Immigrant City should show Tharsis context',
+  );
+  assert(
+    supported.reasons.some((reason) => reason.includes('Immigrant City: Rover')),
+    'supported Immigrant City should show Rover context',
+  );
+  assert(
+    supported.reasons.some((reason) => reason.includes('Immigrant City: late city/steel dump')),
+    'supported late Immigrant City should show late city/steel dump context',
+  );
+}
+
+function testInsectsLateWithoutPlayedPlantShellDoesNotJumpToA() {
+  const input = baseDraftInput();
+  input.cardName = 'Insects';
+  input.cardEl = makeCardEl('Insects');
+  input.myHand = ['Insects', 'Greenhouses'];
+  input.ratings = {
+    Insects: {s: 76, e: 'Increase your plant production 1 step for each plant tag you have.', t: 'B'},
+  };
+  input.cardEffects = {
+    Insects: {c: 9},
+    Greenhouses: {c: 6},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 8,
+    gensLeft: 3,
+    tags: {plant: 0, wild: 0},
+    tagsWithHand: {plant: 1, wild: 0},
+    globalParams: {temp: -4, oxy: 8, oceans: 3, venus: 12},
+  });
+  input.getCardCost = function getCardCost() {
+    return 9;
+  };
+  input.getCachedCardTags = function getCachedCardTags() {
+    return new Set(['microbe']);
+  };
+  input.scoreCardRequirements = function scoreCardRequirements() {
+    return {adj: 4, bonus: 4, reasons: ['Req ✓ +4']};
+  };
+  input.scoreHandSynergy = function scoreHandSynergy() {
+    return {adj: 6, bonus: 6, reasons: ['Greenhouses +1.5', 'Hand: 1 plant tag']};
+  };
+  input.scoreTagSynergies = function scoreTagSynergies() {
+    return {adj: 1, bonus: 1, reasons: ['Topsoil → +1 MC']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert(
+    result.total <= 64,
+    'late Insects with zero played plant tags and one future plant tag should not look like a takeable B-tier card',
+  );
+  assert(
+    result.reasons.some((reason) => reason.includes('Insects: нет plant shell cap')),
+    'Insects plant-shell cap should be visible in reasons',
+  );
+
+  const plantShellResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    ctx: Object.assign({}, input.ctx, {
+      tags: {plant: 4, wild: 0},
+      tagsWithHand: {plant: 4, wild: 0},
+    }),
+  }));
+
+  assert(
+    plantShellResult.total > 80,
+    'Insects should still be high for a real played plant shell like a 4-plant-tag opponent',
+  );
+  assert(
+    !plantShellResult.reasons.some((reason) => reason.includes('Insects: нет plant shell cap')),
+    'real plant shell should not trigger the no-shell cap',
+  );
+
+  const shortWindowResult = playPriority.scoreDraftCard(Object.assign({}, input, {
+    ctx: Object.assign({}, input.ctx, {
+      gensLeft: 2,
+    }),
+  }));
+
+  assert(
+    shortWindowResult.total <= 58,
+    'late Insects speculative one-tag route should drop further when the game has only about two generations left',
+  );
+}
+
+function testScoreDraftCardKeepsProductionPaymentLockSoft() {
+  const input = baseDraftInput();
+  input.cardName = 'Livestock';
+  input.cardEl = makeRequirementCardEl('Livestock', 'Requires 9% oxygen');
+  input.ratings = {
+    Livestock: {s: 73, e: '13 MC animal action vp accumulator', t: 'B'},
+  };
+  input.cardEffects = {
+    Livestock: {c: 13, pp: -1, mp: 2},
+  };
+  input.ctx = Object.assign({}, input.ctx, {
+    gen: 5,
+    gensLeft: 4,
+    prod: {plants: 0, energy: 0, steel: 0, ti: 0, heat: 0},
+    allSP: [{type: 'power', name: 'Электростанция', adj: 70}],
+  });
+  input.getCardCost = function getCardCost() {
+    return 13;
+  };
+  input.scoreBoardStateModifiers = function scoreBoardStateModifiers(cardName, data, eLower, ctx) {
+    assert.strictEqual(cardName, 'Livestock');
+    assert.strictEqual(ctx.prod.plants, 0);
+    return {adj: -10, reasons: ['Не сейчас: plants prod 0→-1 −10']};
+  };
+
+  const result = playPriority.scoreDraftCard(input);
+
+  assert.strictEqual(result.total, 63, 'temporary production payment lock should only apply the soft penalty');
+  assert(result.reasons.includes('Не сейчас: plants prod 0→-1 −10'));
+  assert(!result.reasons.some((reason) => reason.includes('Невозможно сыграть')));
+  assert.strictEqual(
+    result.reasons.find((reason) => reason.startsWith('vs Электростанция')),
+    'vs Электростанция -7',
+    'SP comparison should use the post-penalty score and remain rounded',
+  );
+}
+
+function testComputeReqPriorityShowsProductionPaymentSoftPenalty() {
+  const result = playPriority.computeReqPriority({
+    cardEl: makeRequirementCardEl('Livestock', 'Requires 9% oxygen'),
+    pv: {
+      game: {
+        oxygenLevel: 6,
+        temperature: -16,
+        oceans: 4,
+        venusScaleLevel: 0,
+      },
+    },
+    ctx: {
+      gen: 5,
+      gensLeft: 4,
+      prod: {plants: 0},
+    },
+    getProductionFloorStatus() {
+      return {
+        unplayable: true,
+        reasons: ['Невозможно сыграть: plants prod 0→-1'],
+      };
+    },
+    evaluateBoardRequirements() {
+      return {metNow: true, reqs: [], unmet: []};
+    },
+    detectMyCorps() {
+      return [];
+    },
+    getRequirementFlexSteps() {
+      return {any: 0, venus: 0};
+    },
+    getBoardRequirementDisplayName(_, amount) {
+      return amount === 1 ? 'requirement' : 'requirements';
+    },
+    sc: {
+      ppReqGapCap: 20,
+      ppReqGapMul: 3,
+      ppTagReqCap: 18,
+      ppTagReqMul: 4,
+      ppUnplayable: 50,
+    },
+  });
+
+  assert.strictEqual(result.hardBlocked, false, 'production payment locks should not be hard-blocked');
+  assert(result.penalty < 50, 'production payment locks should not use ppUnplayable');
+  assert(
+    result.reasons.some((reason) => reason.includes('Не сейчас: plants prod 0→-1 −')),
+    'production payment soft-lock reason should show its visible penalty',
+  );
+  assert(!result.reasons.includes('Нельзя сыграть!'), 'production payment locks should not be labelled permanently impossible');
+}
+
+function testComputeReqPriorityShowsPenaltyOnEveryProductionPaymentLock() {
+  const result = playPriority.computeReqPriority({
+    cardEl: makeRequirementCardEl('Electro Catapult', ''),
+    pv: {
+      game: {
+        oxygenLevel: 6,
+        temperature: -16,
+        oceans: 4,
+        venusScaleLevel: 0,
+      },
+    },
+    ctx: {
+      gen: 5,
+      gensLeft: 4,
+      prod: {energy: 0, steel: 0},
+    },
+    getProductionFloorStatus() {
+      return {
+        unplayable: true,
+        reasons: [
+          'Невозможно сыграть: energy prod 0→-1',
+          'Невозможно сыграть: steel prod 0→-1',
+        ],
+      };
+    },
+    evaluateBoardRequirements() {
+      return {metNow: true, reqs: [], unmet: []};
+    },
+    detectMyCorps() {
+      return [];
+    },
+    getRequirementFlexSteps() {
+      return {any: 0, venus: 0};
+    },
+    getBoardRequirementDisplayName(_, amount) {
+      return amount === 1 ? 'requirement' : 'requirements';
+    },
+    sc: {
+      ppReqGapCap: 20,
+      ppReqGapMul: 3,
+      ppTagReqCap: 18,
+      ppTagReqMul: 4,
+      ppUnplayable: 50,
+    },
+  });
+
+  assert.strictEqual(result.hardBlocked, false, 'multi production payment lock should stay temporary');
+  assert.strictEqual(result.penalty, 10, 'two temporary production locks should use one combined soft penalty');
+  assert(result.reasons.includes('Не сейчас: energy prod 0→-1 −10'));
+  assert(result.reasons.includes('Не сейчас: steel prod 0→-1 −10'));
+  assert(!result.reasons.some((reason) => reason.includes('Невозможно сыграть')));
+  assert(!result.reasons.includes('Нельзя сыграть!'));
 }
 
 function testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement() {
@@ -1279,6 +2175,258 @@ function testProjectGlobalCardPenalizesClosingOxygenForLeaderWhenFarBehind() {
   );
 }
 
+function testPlayPriorityPromotesMiningExpeditionAtOxygenBonusWindow() {
+  const result = playPriority.computePlayPriorities(baseProjectPriorityInput({
+    handCards: ['Mining Expedition'],
+    pv: {
+      game: {
+        oxygenLevel: 7,
+        temperature: -10,
+        oceans: 4,
+        venusScaleLevel: 12,
+        players: [
+          {color: 'red', victoryPointsBreakdown: {total: 62}, terraformRating: 30},
+          {color: 'blue', victoryPointsBreakdown: {total: 65}, terraformRating: 32},
+        ],
+      },
+    },
+    ctx: {
+      gensLeft: 3,
+      steelVal: 2,
+      globalParams: {oxy: 7, temp: -10, oceans: 4, venus: 12},
+    },
+    ratings: {
+      'Mining Expedition': {s: 46, t: 'D', e: 'Raise oxygen 1 step. Remove 2 plants from any player. Gain 2 steel.'},
+    },
+    cardEffects: {
+      'Mining Expedition': {c: 12, o2: 1, steel: 2},
+    },
+    cardTagsData: {
+      'Mining Expedition': ['event'],
+    },
+  }));
+  const card = result.find((item) => item.name === 'Mining Expedition');
+  assert(card, 'Mining Expedition should be scored');
+  assert(
+    card.priority >= 45,
+    'Mining Expedition should become a visible play option at the 8% O2 bonus window',
+  );
+  assert(
+    card.reasons.some((reason) => reason.includes('Mining Expedition: 8% O2 bonus')),
+    'Mining Expedition play priority should explain the O2 bonus timing',
+  );
+}
+
+function testPlayPriorityOrdersAdvancedAlloysBeforeAiCentral() {
+  const result = playPriority.computePlayPriorities(baseProjectPriorityInput({
+    handCards: ['AI Central', 'Advanced Alloys', 'Solar Probe'],
+    tp: {
+      megaCredits: 74,
+      steel: 8,
+      titanium: 3,
+      victoryPointsBreakdown: {total: 70},
+      terraformRating: 35,
+    },
+    ctx: {
+      gensLeft: 3,
+      globalParams: {oxy: 4, temp: -8, oceans: 2, venus: 10},
+    },
+    ratings: {
+      'AI Central': {s: 88, t: 'A', e: 'Action: Draw 2 cards. 1 VP.'},
+      'Advanced Alloys': {s: 86, t: 'A', e: 'Each titanium and steel is worth 1 M€ extra.'},
+      'Solar Probe': {s: 58, t: 'C', e: 'Space event.'},
+    },
+    cardEffects: {
+      'AI Central': {c: 21, ep: -1, actCD: 2, vp: 1},
+      'Advanced Alloys': {c: 9},
+      'Solar Probe': {c: 9},
+    },
+    cardTagsData: {
+      'AI Central': ['building', 'science'],
+      'Advanced Alloys': ['science'],
+      'Solar Probe': ['event', 'science', 'space'],
+    },
+  }));
+  const alloys = result.find((item) => item.name === 'Advanced Alloys');
+  const ai = result.find((item) => item.name === 'AI Central');
+
+  assert(alloys && ai, 'both Advanced Alloys and AI Central should be scored');
+  assert(
+    result.indexOf(alloys) < result.indexOf(ai),
+    'Advanced Alloys should be ordered before AI Central when steel value changes the payment',
+  );
+  assert(
+    alloys.reasons.some((reason) => reason.includes('Сначала перед steel/ti spend')),
+    'Advanced Alloys setup ordering reason should be visible',
+  );
+  assert(
+    ai.reasons.some((reason) => reason.includes('После Advanced Alloys')),
+    'AI Central should explain that it waits for Advanced Alloys',
+  );
+}
+
+function testPlayPriorityUsesLowercaseLiveMegacredits() {
+  const result = playPriority.computePlayPriorities(baseProjectPriorityInput({
+    handCards: ['AI Central', 'Advanced Alloys', 'Solar Probe'],
+    tp: {
+      megaCredits: undefined,
+      megacredits: 74,
+      steel: 8,
+      titanium: 3,
+      victoryPointsBreakdown: {total: 70},
+      terraformRating: 35,
+    },
+    ctx: {
+      gensLeft: 3,
+      globalParams: {oxy: 4, temp: -8, oceans: 2, venus: 10},
+    },
+    ratings: {
+      'AI Central': {s: 88, t: 'A', e: 'Action: Draw 2 cards. 1 VP.'},
+      'Advanced Alloys': {s: 86, t: 'A', e: 'Each titanium and steel is worth 1 M€ extra.'},
+      'Solar Probe': {s: 58, t: 'C', e: 'Space event.'},
+    },
+    cardEffects: {
+      'AI Central': {c: 21, ep: -1, actCD: 2, vp: 1},
+      'Advanced Alloys': {c: 9},
+      'Solar Probe': {c: 9},
+    },
+    cardTagsData: {
+      'AI Central': ['building', 'science'],
+      'Advanced Alloys': ['science'],
+      'Solar Probe': ['event', 'science', 'space'],
+    },
+  }));
+  const alloys = result.find((item) => item.name === 'Advanced Alloys');
+  const ai = result.find((item) => item.name === 'AI Central');
+
+  assert(alloys && ai, 'live lowercase megacredits case should score both cards');
+  assert(
+    !alloys.reasons.some((reason) => reason.includes('Дорого')),
+    'Advanced Alloys should not be marked expensive when live data uses megacredits',
+  );
+  assert(
+    !ai.reasons.some((reason) => reason.includes('Дорого')),
+    'AI Central should not be marked expensive when live data uses megacredits',
+  );
+  assert(
+    result.indexOf(alloys) < result.indexOf(ai),
+    'Advanced Alloys should still be ordered before AI Central in the live field-name case',
+  );
+}
+
+function testPlayPriorityKeepsOptimalAerobrakingUntilSpaceEventTrigger() {
+  const result = playPriority.computePlayPriorities(baseProjectPriorityInput({
+    handCards: ['Optimal Aerobraking', 'AI Central', 'Solar Probe'],
+    tp: {
+      megaCredits: 74,
+      steel: 0,
+      titanium: 3,
+      victoryPointsBreakdown: {total: 70},
+      terraformRating: 35,
+    },
+    ctx: {
+      gensLeft: 3,
+      globalParams: {oxy: 4, temp: -8, oceans: 2, venus: 10},
+    },
+    ratings: {
+      'Optimal Aerobraking': {s: 84, t: 'A', e: 'When you play a space event, you gain 3 M€ and 3 heat.'},
+      'AI Central': {s: 88, t: 'A', e: 'Action: Draw 2 cards. 1 VP.'},
+      'Solar Probe': {s: 58, t: 'C', e: 'Space event.'},
+    },
+    cardEffects: {
+      'Optimal Aerobraking': {c: 7},
+      'AI Central': {c: 21, ep: -1, actCD: 2, vp: 1},
+      'Solar Probe': {c: 9},
+    },
+    cardTagsData: {
+      'Optimal Aerobraking': ['space'],
+      'AI Central': ['building', 'science'],
+      'Solar Probe': ['event', 'science', 'space'],
+    },
+  }));
+  const opt = result.find((item) => item.name === 'Optimal Aerobraking');
+  const ai = result.find((item) => item.name === 'AI Central');
+
+  assert(opt && ai, 'both Optimal Aerobraking and AI Central should be scored');
+  assert(
+    result.indexOf(ai) < result.indexOf(opt),
+    'Optimal Aerobraking should not outrank an actual play before the space-event trigger window',
+  );
+  assert(
+    opt.reasons.some((reason) => reason.includes('OptAero: играть перед space event')),
+    'Optimal Aerobraking trigger timing reason should be visible',
+  );
+}
+
+function testPlayPriorityPromotesMediaGroupBeforeKnownEvent() {
+  const withEvent = playPriority.computePlayPriorities(baseProjectPriorityInput({
+    handCards: ['Media Group', 'Big Asteroid', 'Ganymede Colony'],
+    tp: {
+      megaCredits: 16,
+      victoryPointsBreakdown: {total: 76},
+      terraformRating: 43,
+    },
+    ctx: {
+      gensLeft: 1,
+      globalParams: {oxy: 13, temp: 2, oceans: 8, venus: 30},
+    },
+    ratings: {
+      'Media Group': {s: 62, t: 'C', e: 'When you play an event, you gain 3 M€.'},
+      'Big Asteroid': {s: 70, t: 'B', e: 'Raise temperature.'},
+      'Ganymede Colony': {s: 80, t: 'A', e: 'City on Ganymede.'},
+    },
+    cardEffects: {
+      'Media Group': {c: 6},
+      'Big Asteroid': {c: 27, tmp: 2},
+      'Ganymede Colony': {c: 20, vp: 2},
+    },
+    cardTagsData: {
+      'Media Group': ['earth'],
+      'Big Asteroid': ['event', 'space'],
+      'Ganymede Colony': ['space', 'city', 'jovian'],
+    },
+  }));
+  const noEvent = playPriority.computePlayPriorities(baseProjectPriorityInput({
+    handCards: ['Media Group', 'AI Central', 'Ganymede Colony'],
+    tp: {
+      megaCredits: 16,
+      victoryPointsBreakdown: {total: 76},
+      terraformRating: 43,
+    },
+    ctx: {
+      gensLeft: 1,
+      globalParams: {oxy: 13, temp: 2, oceans: 8, venus: 30},
+    },
+    ratings: {
+      'Media Group': {s: 62, t: 'C', e: 'When you play an event, you gain 3 M€.'},
+      'AI Central': {s: 88, t: 'A', e: 'Action: Draw 2 cards. 1 VP.'},
+      'Ganymede Colony': {s: 80, t: 'A', e: 'City on Ganymede.'},
+    },
+    cardEffects: {
+      'Media Group': {c: 6},
+      'AI Central': {c: 21, ep: -1, actCD: 2, vp: 1},
+      'Ganymede Colony': {c: 20, vp: 2},
+    },
+    cardTagsData: {
+      'Media Group': ['earth'],
+      'AI Central': ['building', 'science'],
+      'Ganymede Colony': ['space', 'city', 'jovian'],
+    },
+  }));
+  const mediaWithEvent = withEvent.find((item) => item.name === 'Media Group');
+  const mediaNoEvent = noEvent.find((item) => item.name === 'Media Group');
+
+  assert(mediaWithEvent && mediaNoEvent, 'Media Group should be scored in both contexts');
+  assert(
+    mediaWithEvent.reasons.some((reason) => reason.includes('Media Group: перед event')),
+    'Media Group setup timing reason should be visible',
+  );
+  assert(
+    mediaWithEvent.priority > mediaNoEvent.priority + 14,
+    'Media Group should be much more urgent immediately before known event cards',
+  );
+}
+
 function testBlueOceanActionPenalizesClosingOceansForLeaderWhenFarBehind() {
   const result = playPriority.scoreBlueActions({
     tableauCards: ['Water Import From Europa'],
@@ -1362,10 +2510,27 @@ function testVenusActionDoesNotGetFinishPenaltyWhenVenusCompletionIsOptional() {
 }
 
 testAdjustForResearchTreatsStepRequirementAsHardBlock();
+testAdjustForResearchSkipsDenyOnlyInsectsBuy();
 testScoreDraftCardMarksSpecificReqAsPenaltyForPositionalFactors();
 testScoreDraftCardDropsGenericFarFallbackWhenSpecificReasonExists();
 testScoreDraftCardDropsBareCorpReasonWhenSpecificCorpReasonExists();
 testScoreDraftCardIncludesVisibleCeoInSynergyContext();
+testScoreDraftCardRoundsStandardProjectComparisonReason();
+testOptimalAerobrakingPenalizesHighTemperature();
+testOptimalAerobrakingWaitsForSpaceEventTriggerWindow();
+testScoreDraftCardSuppressesClaimedMilestoneProximity();
+testDirectedImpactorsPenalizesLateFastTemperatureWindow();
+testDirigiblesLateEngineCapOverridesGenericSynergy();
+testMineLateProductionCapOverridesGenericSynergy();
+testMiningRightsLateProductionCapOverridesGenericSynergy();
+testMiningExpeditionGetsOnlyTimingRebateBoosts();
+testAiCentralFullHandLateCapOverridesGenericSynergy();
+testDevelopmentCenterLateNoEnergyCapOverridesGenericSynergy();
+testImmigrantCityContextKeepsGenericOpenerLowAndBoostsSupportedLate();
+testInsectsLateWithoutPlayedPlantShellDoesNotJumpToA();
+testScoreDraftCardKeepsProductionPaymentLockSoft();
+testComputeReqPriorityShowsProductionPaymentSoftPenalty();
+testComputeReqPriorityShowsPenaltyOnEveryProductionPaymentLock();
 testAdjustForResearchUsesLaterLabelForOneTagSoftRequirement();
 testSeptemPoliticalShellDoesNotJumpTo75();
 testAridorInitialDraftReasonLabelsAreActionable();
@@ -1383,6 +2548,11 @@ testTagGateHonorsXavierRequirementWilds();
 testStandardGreeneryPenalizesClosingOxygenForLeaderWhenFarBehind();
 testStandardAwardsGetEndgameTimingBoostWhenLeadIsBankable();
 testProjectGlobalCardPenalizesClosingOxygenForLeaderWhenFarBehind();
+testPlayPriorityPromotesMiningExpeditionAtOxygenBonusWindow();
+testPlayPriorityOrdersAdvancedAlloysBeforeAiCentral();
+testPlayPriorityUsesLowercaseLiveMegacredits();
+testPlayPriorityKeepsOptimalAerobrakingUntilSpaceEventTrigger();
+testPlayPriorityPromotesMediaGroupBeforeKnownEvent();
 testBlueOceanActionPenalizesClosingOceansForLeaderWhenFarBehind();
 testVenusActionDoesNotGetFinishPenaltyWhenVenusCompletionIsOptional();
 

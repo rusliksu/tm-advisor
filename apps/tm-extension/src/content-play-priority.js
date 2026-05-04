@@ -65,6 +65,13 @@
     return 'F';
   }
 
+  function formatReasonNumber(value) {
+    if (typeof value !== 'number' || !isFinite(value)) return String(value);
+    var rounded = Math.round(value * 10) / 10;
+    if (Object.is(rounded, -0)) rounded = 0;
+    return String(rounded);
+  }
+
   function normalizeOpeningHandBias(rawBias) {
     if (typeof rawBias !== 'number' || !isFinite(rawBias) || rawBias === 0) return 0;
     var scaled = Math.round(rawBias * 0.6);
@@ -419,6 +426,27 @@
     var result = { penalty: 0, unplayable: false, hardBlocked: false, reasons: [] };
     if (!cardEl || !pv || !pv.game || !sc) return result;
     var cardName0 = cardEl.getAttribute('data-tm-card') || '';
+    function applyUnplayablePenalty() {
+      if (!result.unplayable) return;
+      if (result.hardBlocked) {
+        result.penalty += sc.ppUnplayable;
+        result.reasons.push('Нельзя сыграть!');
+        return;
+      }
+
+      var softPenalty = Math.min(18, 6 + result.reasons.length * 2);
+      result.penalty += softPenalty;
+      var updatedSoftReason = false;
+      for (var ari = 0; ari < result.reasons.length; ari++) {
+        if (result.reasons[ari].indexOf('Не сейчас') !== 0) continue;
+        if (!/\s[−-]\d+(?:\.\d+)?$/.test(result.reasons[ari])) {
+          result.reasons[ari] += ' −' + softPenalty;
+        }
+        updatedSoftReason = true;
+      }
+      if (!updatedSoftReason) result.reasons.push('Не сейчас −' + softPenalty);
+    }
+
     var prodFloor = typeof getProductionFloorStatus === 'function'
       ? getProductionFloorStatus(cardName0, ctx)
       : { unplayable: false, reasons: [] };
@@ -429,7 +457,10 @@
       }
     }
     var reqEl = cardEl.querySelector('.card-requirements, .card-requirement');
-    if (!reqEl) return result;
+    if (!reqEl) {
+      applyUnplayablePenalty();
+      return result;
+    }
 
     var reqText = (reqEl.textContent || '').trim();
     var boardReqs = typeof evaluateBoardRequirements === 'function'
@@ -518,13 +549,7 @@
     }
 
     if (result.unplayable) {
-      if (result.hardBlocked) {
-        result.penalty += sc.ppUnplayable;
-        result.reasons.push('Нельзя сыграть!');
-      } else {
-        result.penalty += Math.min(18, 6 + result.reasons.length * 2);
-        if (!result.reasons.some(function(r) { return r.indexOf('Не сейчас') === 0; })) result.reasons.push('Не сейчас');
-      }
+      applyUnplayablePenalty();
     }
     return result;
   }
@@ -652,6 +677,555 @@
       oceans: Math.max(0, (sc.oceansMax || 9) - getGlobalValueForPriority(pv, ctx, 'oceans')),
       venus: Math.max(0, Math.ceil(((sc.venusMax || 30) - getGlobalValueForPriority(pv, ctx, 'venus')) / 2)),
     };
+  }
+
+  function scoreOptimalAerobrakingTemperaturePressure(cardName, pv, ctx, sc) {
+    if (cardName !== 'Optimal Aerobraking') return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var left = getMarsGlobalStepsLeft(pv, ctx, sc || {});
+    var tempStepsLeft = left.temperature;
+    var penalty = 0;
+    if (tempStepsLeft <= 0) penalty = 8;
+    else if (tempStepsLeft <= 1) penalty = 6;
+    else if (tempStepsLeft <= 2) penalty = 4;
+    else if (tempStepsLeft <= 3) penalty = 2;
+    if (penalty <= 0) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var reason = 'Температура почти закрыта −' + penalty;
+    return { adj: -penalty, bonus: -penalty, reasons: [reason], reasonRows: [{ tone: 'negative', text: reason }] };
+  }
+
+  function lookupPriorityCardData(map, name, lookupCardData) {
+    if (!map || !name) return null;
+    if (typeof lookupCardData === 'function') return lookupCardData(map, name);
+    return map[name] || null;
+  }
+
+  function priorityCardTags(name, cardTagsData, lookupCardData) {
+    var tags = lookupPriorityCardData(cardTagsData, name, lookupCardData) || [];
+    var out = [];
+    for (var i = 0; i < tags.length; i++) out.push(String(tags[i] || '').toLowerCase());
+    return out;
+  }
+
+  function priorityCardHasTag(name, tagName, cardTagsData, lookupCardData) {
+    var tags = priorityCardTags(name, cardTagsData, lookupCardData);
+    return tags.indexOf(String(tagName || '').toLowerCase()) >= 0;
+  }
+
+  function isSpaceEventCardForPriority(name, cardTagsData, lookupCardData) {
+    return priorityCardHasTag(name, 'space', cardTagsData, lookupCardData) &&
+      priorityCardHasTag(name, 'event', cardTagsData, lookupCardData);
+  }
+
+  function countSpaceEventTriggersForPriority(myHand, selfName, cardTagsData, lookupCardData) {
+    if (!Array.isArray(myHand)) return 0;
+    var count = 0;
+    for (var i = 0; i < myHand.length; i++) {
+      var name = myHand[i];
+      if (!name || name === selfName) continue;
+      if (isSpaceEventCardForPriority(name, cardTagsData, lookupCardData)) count++;
+    }
+    return count;
+  }
+
+  function countEventTriggersForPriority(myHand, selfName, cardTagsData, lookupCardData) {
+    if (!Array.isArray(myHand)) return 0;
+    var count = 0;
+    for (var i = 0; i < myHand.length; i++) {
+      var name = myHand[i];
+      if (!name || name === selfName) continue;
+      if (priorityCardHasTag(name, 'event', cardTagsData, lookupCardData)) count++;
+    }
+    return count;
+  }
+
+  function scoreOptimalAerobrakingTriggerTiming(cardName, myHand, ctx, cardTagsData, lookupCardData) {
+    if (cardName !== 'Optimal Aerobraking') return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var triggers = countSpaceEventTriggersForPriority(myHand, cardName, cardTagsData, lookupCardData);
+    var gensLeft = Number(ctx && ctx.gensLeft) || 99;
+    if (triggers >= 2) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    if (triggers >= 1 && gensLeft <= 1) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var penalty = triggers >= 1 ? 12 : 18;
+    var reason = triggers >= 1 ? 'OptAero: играть перед space event −' + penalty : 'OptAero: нет space event триггера −' + penalty;
+    return { adj: -penalty, bonus: -penalty, reasons: [reason], reasonRows: [{ tone: 'negative', text: reason }] };
+  }
+
+  function scoreMediaGroupTriggerTiming(cardName, myHand, pv, ctx, cardTagsData, lookupCardData) {
+    if (cardName !== 'Media Group') return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var triggers = countEventTriggersForPriority(myHand, cardName, cardTagsData, lookupCardData);
+    var gensLeft = Number(ctx && ctx.gensLeft) || 99;
+    if (triggers <= 0) {
+      if (gensLeft > 4) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+      var penalty = gensLeft <= 2 ? 10 : 6;
+      var noTriggerReason = 'Media Group: нет event триггера −' + penalty;
+      return { adj: -penalty, bonus: -penalty, reasons: [noTriggerReason], reasonRows: [{ tone: 'negative', text: noTriggerReason }] };
+    }
+    var player = (pv && pv.thisPlayer) || {};
+    var boost = 5 + triggers * 3;
+    if (gensLeft <= 2) boost += 2;
+    if (getMegaCreditsForPriority(player) > 0 && getMegaCreditsForPriority(player) < 18) boost += 2;
+    boost = Math.min(14, boost);
+    var reason = 'Media Group: перед event +' + boost;
+    return { adj: boost, bonus: boost, reasons: [reason], reasonRows: [{ tone: 'positive', text: reason }] };
+  }
+
+  function scoreMiningExpeditionTiming(cardName, myHand, pv, ctx) {
+    if (cardName !== 'Mining Expedition') return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var bonus = 0;
+    var reasons = [];
+    var reasonRows = [];
+    var oxy = getGlobalValueForPriority(pv, ctx, 'oxy');
+    var tp = pv && pv.thisPlayer ? pv.thisPlayer : null;
+    var vpGap = getVpGapToLeader(tp, pv);
+
+    if (oxy === 7) {
+      bonus += 10;
+      reasons.push('Mining Expedition: 8% O2 bonus +10');
+      reasonRows.push({ tone: 'positive', text: 'Mining Expedition: 8% O2 bonus +10' });
+    } else if (oxy === 13 && vpGap <= 12) {
+      bonus += 7;
+      reasons.push('Mining Expedition: закрыть O2 +7');
+      reasonRows.push({ tone: 'positive', text: 'Mining Expedition: закрыть O2 +7' });
+    } else if (oxy === 6 || oxy === 12) {
+      bonus += 3;
+      reasons.push('Mining Expedition: O2 timing +3');
+      reasonRows.push({ tone: 'positive', text: 'Mining Expedition: O2 timing +3' });
+    }
+
+    var corps = ctx && Array.isArray(ctx._myCorps) ? ctx._myCorps : [];
+    var hasIC = corps.indexOf('Interplanetary Cinematics') !== -1;
+    var hasMedia = Array.isArray(myHand) && myHand.indexOf('Media Group') !== -1;
+    if (hasIC || hasMedia) {
+      var rebateBoost = hasIC && hasMedia ? 5 : 3;
+      bonus += rebateBoost;
+      var rebateReason = hasIC && hasMedia ? 'Mining Expedition: event rebates +5' : 'Mining Expedition: event rebate +3';
+      reasons.push(rebateReason);
+      reasonRows.push({ tone: 'positive', text: rebateReason });
+    }
+
+    var steelVal = ctx && typeof ctx.steelVal === 'number' ? ctx.steelVal : 2;
+    if (steelVal >= 3) {
+      bonus += 2;
+      reasons.push('Mining Expedition: сталь x' + steelVal + ' +2');
+      reasonRows.push({ tone: 'positive', text: 'Mining Expedition: сталь x' + steelVal + ' +2' });
+    }
+
+    if (bonus <= 0) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    bonus = Math.min(14, bonus);
+    return { adj: bonus, bonus: bonus, reasons: reasons, reasonRows: reasonRows };
+  }
+
+  function priorityNameSetHas(allMyCardsSet, cardName) {
+    return !!(allMyCardsSet && typeof allMyCardsSet.has === 'function' && allMyCardsSet.has(cardName));
+  }
+
+  function countTotalCitiesInPlayForPriority(pv, ctx) {
+    if (ctx && typeof ctx.totalCities === 'number') return Math.max(0, ctx.totalCities);
+    var total = 0;
+    if (pv && pv.game && Array.isArray(pv.game.players)) {
+      for (var i = 0; i < pv.game.players.length; i++) {
+        total += Math.max(0, Number(pv.game.players[i] && pv.game.players[i].citiesCount) || 0);
+      }
+      if (total > 0) return total;
+    }
+    if (pv && pv.game && pv.game.playerTiles) {
+      for (var color in pv.game.playerTiles) {
+        if (!Object.prototype.hasOwnProperty.call(pv.game.playerTiles, color)) continue;
+        total += Math.max(0, Number(pv.game.playerTiles[color] && pv.game.playerTiles[color].cities) || 0);
+      }
+      if (total > 0) return total;
+    }
+    return Math.max(0, Number(ctx && ctx.cities) || 0);
+  }
+
+  function scoreImmigrantCityContext(cardName, pv, ctx, allMyCardsSet) {
+    if (cardName !== 'Immigrant City') return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    ctx = ctx || {};
+    var pvPlayer = pv && pv.thisPlayer ? pv.thisPlayer : null;
+    var gen = Number(ctx.gen || (pv && pv.game && pv.game.generation) || 0);
+    var gensLeft = ctx.gensLeft != null ? Number(ctx.gensLeft) : 99;
+    var myCorps = Array.isArray(ctx._myCorps) ? ctx._myCorps : [];
+    var energyProd = Math.max(
+      ctx.prod && typeof ctx.prod.energy === 'number' ? ctx.prod.energy : 0,
+      pvPlayer && typeof pvPlayer.energyProduction === 'number' ? pvPlayer.energyProduction : 0
+    );
+    var steel = Math.max(0, Number(ctx.steel) || (pvPlayer ? Number(pvPlayer.steel) || 0 : 0));
+    var steelVal = typeof ctx.steelVal === 'number' ? ctx.steelVal : (pvPlayer && pvPlayer.steelValue ? pvPlayer.steelValue : 2);
+    var totalCities = countTotalCitiesInPlayForPriority(pv, ctx);
+    var reasons = [];
+    var reasonRows = [];
+    var positive = 0;
+    var negative = 0;
+
+    function addPositive(amount, reason) {
+      positive += amount;
+      reasons.push(reason);
+      reasonRows.push({ tone: 'positive', text: reason });
+    }
+    function addNegative(amount, reason) {
+      negative -= amount;
+      reasons.push(reason);
+      reasonRows.push({ tone: 'negative', text: reason });
+    }
+
+    if (energyProd <= 0) {
+      var noEnergyPenalty = gensLeft <= 1 ? 16 : (gensLeft <= 3 ? 12 : 6);
+      addNegative(noEnergyPenalty, 'Immigrant City: нет energy prod -' + noEnergyPenalty);
+    }
+
+    if (myCorps.indexOf('Tharsis Republic') !== -1) addPositive(7, 'Immigrant City: Tharsis city engine +7');
+    if (priorityNameSetHas(allMyCardsSet, 'Rover Construction')) addPositive(5, 'Immigrant City: Rover +5');
+    if (priorityNameSetHas(allMyCardsSet, 'Pets')) addPositive(3, 'Immigrant City: Pets +3');
+    if (priorityNameSetHas(allMyCardsSet, 'Standard Technology')) addPositive(2, 'Immigrant City: Standard Tech +2');
+
+    if (ctx.milestones && typeof ctx.milestones.has === 'function' && ctx.milestones.has('Mayor') && (Number(ctx.cities) || 0) <= 2) {
+      addPositive(3, 'Immigrant City: Mayor push +3');
+    }
+
+    if (totalCities >= 6 && gensLeft >= 2) addPositive(3, 'Immigrant City: city-heavy table +3');
+    else if (totalCities >= 4 && gensLeft >= 3) addPositive(2, 'Immigrant City: city table +2');
+
+    if ((gen >= 8 || gensLeft <= 2) && energyProd > 0) {
+      addPositive(4, 'Immigrant City: late city/steel dump +4');
+      if (steel >= 5 || (steel >= 3 && steelVal >= 3)) addPositive(4, 'Immigrant City: steel payable +' + 4);
+    } else if (gen <= 3 && gensLeft >= 5 && positive <= 0) {
+      addNegative(5, 'Immigrant City: early engine trap -5');
+    }
+
+    var cappedPositive = Math.min(22, positive);
+    if (cappedPositive < positive) {
+      var capAdj = cappedPositive - positive;
+      reasons.push('Immigrant City: context cap ' + formatReasonNumber(capAdj));
+      reasonRows.push({ tone: 'negative', text: 'Immigrant City: context cap ' + formatReasonNumber(capAdj) });
+    }
+    var adj = cappedPositive + negative;
+    if (adj === 0) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    return { adj: adj, bonus: adj, reasons: reasons, reasonRows: reasonRows };
+  }
+
+  function hasPriorityCardInHand(myHand, cardName) {
+    return Array.isArray(myHand) && myHand.indexOf(cardName) >= 0;
+  }
+
+  function hasAdvancedAlloysMetalSpendTarget(myHand, pv, cardTagsData, lookupCardData) {
+    if (!Array.isArray(myHand)) return false;
+    var player = (pv && pv.thisPlayer) || {};
+    var steel = Math.max(0, Number(player.steel) || 0);
+    var titanium = Math.max(0, Number(player.titanium) || 0);
+    for (var i = 0; i < myHand.length; i++) {
+      var name = myHand[i];
+      if (!name || name === 'Advanced Alloys') continue;
+      if (steel > 0 && priorityCardHasTag(name, 'building', cardTagsData, lookupCardData)) return true;
+      if (titanium > 0 && priorityCardHasTag(name, 'space', cardTagsData, lookupCardData)) return true;
+    }
+    return false;
+  }
+
+  function getMegaCreditsForPriority(player) {
+    if (!player) return 0;
+    var raw = player.megaCredits;
+    if (raw == null) raw = player.megacredits;
+    return Math.max(0, Number(raw) || 0);
+  }
+
+  function getMegaCreditProductionForPriority(player) {
+    if (!player) return 0;
+    var raw = player.megaCreditProduction;
+    if (raw == null) raw = player.megacreditProduction;
+    return Number(raw) || 0;
+  }
+
+  function scoreAdvancedAlloysPlayOrder(cardName, myHand, pv, cardTagsData, lookupCardData) {
+    if (!hasPriorityCardInHand(myHand, 'Advanced Alloys')) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var player = (pv && pv.thisPlayer) || {};
+    if (getMegaCreditsForPriority(player) < 9) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    if (!hasAdvancedAlloysMetalSpendTarget(myHand, pv, cardTagsData, lookupCardData)) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var steel = Math.max(0, Number(player.steel) || 0);
+    var titanium = Math.max(0, Number(player.titanium) || 0);
+    if (cardName === 'Advanced Alloys') {
+      var boost = 18;
+      var setupReason = 'Сначала перед steel/ti spend +' + boost;
+      return { adj: boost, bonus: boost, reasons: [setupReason], reasonRows: [{ tone: 'positive', text: setupReason }] };
+    }
+    var isMetalSpend =
+      (steel > 0 && priorityCardHasTag(cardName, 'building', cardTagsData, lookupCardData)) ||
+      (titanium > 0 && priorityCardHasTag(cardName, 'space', cardTagsData, lookupCardData));
+    if (!isMetalSpend) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    var penalty = 12;
+    var reason = 'После Advanced Alloys −' + penalty;
+    return { adj: -penalty, bonus: -penalty, reasons: [reason], reasonRows: [{ tone: 'negative', text: reason }] };
+  }
+
+  function hasDirectedImpactorsAsteroidSupport(allMyCardsSet) {
+    if (!allMyCardsSet) return false;
+    var support = [
+      'Asteroid Rights',
+      'Astrodrill',
+      'Main Belt Asteroids',
+      'Comet Aiming',
+      'Icy Impactors'
+    ];
+    for (var i = 0; i < support.length; i++) {
+      if (allMyCardsSet.has(support[i])) return true;
+    }
+    return false;
+  }
+
+  function scoreDirectedImpactorsTempoPressure(cardName, pv, ctx, sc, allMyCardsSet) {
+    if (cardName !== 'Directed Impactors') return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    sc = sc || {};
+    var left = getMarsGlobalStepsLeft(pv, ctx, sc);
+    var tempStepsLeft = left.temperature;
+    var temp = getGlobalValueForPriority(pv, ctx, 'temp');
+    var tempStep = sc.tempStep || 2;
+    var gen = Number((ctx && ctx.gen) || (pv && pv.game && pv.game.generation) || 0);
+    var gensLeft = Number(ctx && ctx.gensLeft) || 0;
+    var tempRaisedSteps = Math.max(0, Math.round((temp - (-30)) / tempStep));
+    var tempRate = gen > 1 ? tempRaisedSteps / Math.max(1, gen - 1) : 0;
+    var penalty = 0;
+
+    if (tempStepsLeft <= 0) penalty += 10;
+    else if (tempStepsLeft <= 3) penalty += 6;
+    else if (tempStepsLeft <= 5) penalty += 4;
+    else if (tempStepsLeft <= 8) penalty += 2;
+
+    if (gen >= 7) penalty += 4;
+    else if (gen >= 5) penalty += 2;
+
+    if (tempRate >= 1.5) penalty += 4;
+    else if (tempRate >= 1.0) penalty += 2;
+
+    if (gensLeft > 0 && gensLeft <= 2) penalty += 5;
+    else if (gensLeft > 0 && gensLeft <= 3) penalty += 3;
+
+    if (penalty > 0 && !hasDirectedImpactorsAsteroidSupport(allMyCardsSet)) penalty += 2;
+    if (penalty <= 0) return { adj: 0, bonus: 0, reasons: [], reasonRows: [] };
+    penalty = Math.min(14, penalty);
+    var reason = 'Impactors: темп окно −' + penalty;
+    return { adj: -penalty, bonus: -penalty, reasons: [reason], reasonRows: [{ tone: 'negative', text: reason }] };
+  }
+
+  function getContextTagCount(tagMap, tag) {
+    var value = tagMap && tagMap[tag];
+    return typeof value === 'number' && isFinite(value) ? value : 0;
+  }
+
+  function applyLateNoVpEngineScoreCap(cardName, ctx, pv, baseScore, bonus, reasons) {
+    if (!ctx || (
+      cardName !== 'Dirigibles' &&
+      cardName !== 'Mine' &&
+      cardName !== 'AI Central' &&
+      cardName !== 'Insects' &&
+      cardName !== 'Development Center' &&
+      cardName !== 'Mining Rights'
+    )) return bonus;
+    var gen = Number(ctx.gen || 0);
+    var gensLeft = ctx.gensLeft != null ? Number(ctx.gensLeft) : 99;
+    var isLateWindow = gen >= 7 || gensLeft <= 3;
+    if (!isLateWindow) return bonus;
+
+    if (cardName === 'Insects') {
+      var currentPlantTags = getContextTagCount(ctx.tags, 'plant') + getContextTagCount(ctx.tags, 'wild');
+      var projectedPlantTags = getContextTagCount(ctx.tagsWithHand, 'plant') + getContextTagCount(ctx.tagsWithHand, 'wild');
+      var futurePlantTags = Math.max(0, projectedPlantTags - currentPlantTags);
+      if (currentPlantTags >= 2 || currentPlantTags + futurePlantTags >= 3) return bonus;
+
+      var insectsCap = 56;
+      if (currentPlantTags <= 0 && futurePlantTags >= 1) insectsCap = 64;
+      else if (currentPlantTags >= 1 && futurePlantTags >= 1) insectsCap = 72;
+      else if (currentPlantTags >= 1) insectsCap = 68;
+      if (gensLeft <= 2) insectsCap -= 6;
+      if (gensLeft <= 1) insectsCap -= 8;
+
+      var insectsCurrent = baseScore + bonus;
+      if (insectsCurrent <= insectsCap) return bonus;
+      var insectsAdj = Math.floor(insectsCap - insectsCurrent);
+      bonus += insectsAdj;
+      if (Array.isArray(reasons)) reasons.push('Insects: нет plant shell cap ' + formatReasonNumber(insectsAdj));
+      return bonus;
+    }
+
+    if (cardName === 'AI Central') {
+      var aiHandSize = typeof ctx.handSize === 'number' ? ctx.handSize : 0;
+      if (aiHandSize < 10) return bonus;
+      var aiPvPlayer = pv && pv.thisPlayer ? pv.thisPlayer : null;
+      var aiMc = Math.max(ctx.mc || 0, aiPvPlayer ? getMegaCreditsForPriority(aiPvPlayer) : 0);
+      var aiMcProd = Math.max(
+        ctx.prod && ctx.prod.mc ? ctx.prod.mc : 0,
+        aiPvPlayer ? getMegaCreditProductionForPriority(aiPvPlayer) : 0
+      );
+      var aiRichEconomy = aiMc >= 50 || aiMcProd >= 25;
+      var aiCap = aiRichEconomy ? 86 : 78;
+      if (gensLeft <= 2) aiCap = aiRichEconomy ? 76 : 68;
+      if (gensLeft <= 1) aiCap = aiRichEconomy ? 66 : 60;
+      var aiCurrent = baseScore + bonus;
+      if (aiCurrent <= aiCap) return bonus;
+      var aiAdj = Math.floor(aiCap - aiCurrent);
+      bonus += aiAdj;
+      if (Array.isArray(reasons)) reasons.push('AI Central: полная рука cap ' + formatReasonNumber(aiAdj));
+      return bonus;
+    }
+
+    if (cardName === 'Development Center') {
+      var dcPvPlayer = pv && pv.thisPlayer ? pv.thisPlayer : null;
+      var dcHandSize = typeof ctx.handSize === 'number'
+        ? ctx.handSize
+        : (dcPvPlayer ? (dcPvPlayer.cardsInHandNbr || (dcPvPlayer.cardsInHand ? dcPvPlayer.cardsInHand.length : 0)) : 0);
+      var dcEnergyProd = Math.max(
+        ctx.prod && typeof ctx.prod.energy === 'number' ? ctx.prod.energy : 0,
+        dcPvPlayer && typeof dcPvPlayer.energyProduction === 'number' ? dcPvPlayer.energyProduction : 0
+      );
+      var dcEnergyStock = Math.max(
+        typeof ctx.energy === 'number' ? ctx.energy : 0,
+        dcPvPlayer && typeof dcPvPlayer.energy === 'number' ? dcPvPlayer.energy : 0
+      );
+      var dcHasEnergy = dcEnergyProd >= 1 || dcEnergyStock >= 1;
+      var dcStrongEnergy = dcEnergyProd >= 2 || dcEnergyStock >= 2;
+      var dcFullHand = dcHandSize >= 10 || (gensLeft > 0 && dcHandSize > gensLeft * 2 + 2);
+      var dcCap = dcStrongEnergy ? 72 : (dcHasEnergy ? 68 : 62);
+      if (dcFullHand) dcCap -= 6;
+      if (gensLeft <= 2) dcCap = dcStrongEnergy ? 64 : (dcHasEnergy ? 60 : 56);
+      if (gensLeft <= 1) dcCap = dcStrongEnergy ? 56 : 50;
+      if (gen >= 8 && dcCap > 68) dcCap = 68;
+
+      var dcCurrent = baseScore + bonus;
+      if (dcCurrent <= dcCap) return bonus;
+      var dcAdj = Math.floor(dcCap - dcCurrent);
+      bonus += dcAdj;
+      if (Array.isArray(reasons)) reasons.push('Development Center: поздний draw cap ' + formatReasonNumber(dcAdj));
+      return bonus;
+    }
+
+    if (cardName === 'Mining Rights') {
+      var mrReasonText = Array.isArray(reasons) ? reasons.join(' | ').toLowerCase() : '';
+      var mrTitaniumSpot = mrReasonText.indexOf('titan') !== -1 || mrReasonText.indexOf('титан') !== -1;
+      var mrRace = mrReasonText.indexOf('miner') !== -1 ||
+        mrReasonText.indexOf('builder') !== -1 ||
+        mrReasonText.indexOf('mining guild') !== -1 ||
+        mrReasonText.indexOf('майн') !== -1 ||
+        mrReasonText.indexOf('строит') !== -1;
+      var mrCap = mrTitaniumSpot || mrRace ? 68 : 62;
+      if (gensLeft <= 2) mrCap = mrTitaniumSpot || mrRace ? 62 : 56;
+      if (gensLeft <= 1) mrCap = 50;
+      if (gen >= 8 && mrCap > 64) mrCap = 64;
+
+      var mrCurrent = baseScore + bonus;
+      if (mrCurrent <= mrCap) return bonus;
+      var mrAdj = Math.floor(mrCap - mrCurrent);
+      bonus += mrAdj;
+      if (Array.isArray(reasons)) reasons.push('Mining Rights: поздний production cap ' + formatReasonNumber(mrAdj));
+      return bonus;
+    }
+
+    var hasDeepFloaterPayoff = cardName === 'Dirigibles' &&
+      (ctx.floaterTargetCount || 0) >= 2 &&
+      (ctx.floaterAccumRate || 0) > 0;
+    var cap = 54;
+    if (cardName === 'Dirigibles' && hasDeepFloaterPayoff) cap = 60;
+    if (gensLeft <= 2) cap = cardName === 'Dirigibles' && hasDeepFloaterPayoff ? 56 : 50;
+    if (gensLeft <= 1) cap = 48;
+    if (gen >= 8 && cap > 56) cap = 56;
+
+    var current = baseScore + bonus;
+    if (current <= cap) return bonus;
+    var adj = Math.floor(cap - current);
+    bonus += adj;
+    if (Array.isArray(reasons)) reasons.push(cardName + ': поздний cap ' + formatReasonNumber(adj));
+    return bonus;
+  }
+
+  function milestoneNameKey(name) {
+    return String(name || '').trim().toLowerCase();
+  }
+
+  function isClaimedMilestoneEntry(ms) {
+    return !!(ms && (
+      ms.owner_name || ms.owner_color ||
+      ms.playerName || ms.playerColor ||
+      ms.player || ms.color ||
+      ms.claimedByPlayer || ms.claimed
+    ));
+  }
+
+  function addClaimedMilestoneName(set, item) {
+    if (!set || !item) return;
+    var name = typeof item === 'string' ? item : item.name;
+    var key = milestoneNameKey(name);
+    if (key) set.add(key);
+  }
+
+  function getClaimedMilestoneState(pv, ctx) {
+    var claimed = new Set();
+    var claimedCount = 0;
+    if (ctx && ctx.claimedMilestones) {
+      if (typeof ctx.claimedMilestones.forEach === 'function') {
+        ctx.claimedMilestones.forEach(function(name) { addClaimedMilestoneName(claimed, name); });
+      } else if (Array.isArray(ctx.claimedMilestones)) {
+        for (var cmi = 0; cmi < ctx.claimedMilestones.length; cmi++) addClaimedMilestoneName(claimed, ctx.claimedMilestones[cmi]);
+      }
+    }
+    if (ctx && typeof ctx.milestoneClaimedCount === 'number') claimedCount = Math.max(claimedCount, ctx.milestoneClaimedCount);
+    var game = pv && pv.game ? pv.game : {};
+    if (Array.isArray(game.claimedMilestones)) {
+      claimedCount = Math.max(claimedCount, game.claimedMilestones.length);
+      for (var gci = 0; gci < game.claimedMilestones.length; gci++) addClaimedMilestoneName(claimed, game.claimedMilestones[gci]);
+    }
+    if (Array.isArray(game.milestones)) {
+      for (var mi = 0; mi < game.milestones.length; mi++) {
+        if (!isClaimedMilestoneEntry(game.milestones[mi])) continue;
+        claimedCount++;
+        addClaimedMilestoneName(claimed, game.milestones[mi]);
+      }
+    }
+    return { claimed: claimed, allClaimed: claimedCount >= 3 };
+  }
+
+  function milestoneNeedBonus(need, sc) {
+    sc = sc || {};
+    if (need === 1) return sc.milestoneNeed1 || 0;
+    if (need === 2) return sc.milestoneNeed2 || 0;
+    return sc.milestoneNeed3 || 0;
+  }
+
+  function shouldDropClaimedMilestoneReason(reason, claimedState) {
+    var text = String(reason || '');
+    var match = text.match(/^до\s+(.+?)\s+ещ[ёе]\s+(\d+)/i);
+    if (!match) return null;
+    var name = milestoneNameKey(match[1]);
+    if (!name) return null;
+    if (claimedState.allClaimed || claimedState.claimed.has(name)) {
+      return { name: name, need: parseInt(match[2], 10) || 3 };
+    }
+    return null;
+  }
+
+  function suppressClaimedMilestoneProximity(result, pv, ctx, sc) {
+    if (!result || !Array.isArray(result.reasons) || result.reasons.length === 0) return result;
+    var claimedState = getClaimedMilestoneState(pv, ctx);
+    if (!claimedState.allClaimed && claimedState.claimed.size === 0) return result;
+    var removedBonus = 0;
+    var keptReasons = [];
+    for (var ri = 0; ri < result.reasons.length; ri++) {
+      var drop = shouldDropClaimedMilestoneReason(result.reasons[ri], claimedState);
+      if (drop) {
+        removedBonus += milestoneNeedBonus(drop.need, sc);
+      } else {
+        keptReasons.push(result.reasons[ri]);
+      }
+    }
+    if (removedBonus <= 0) return result;
+    var out = {};
+    for (var key in result) {
+      if (Object.prototype.hasOwnProperty.call(result, key)) out[key] = result[key];
+    }
+    out.reasons = keptReasons;
+    if (typeof out.bonus === 'number') out.bonus -= removedBonus;
+    if (typeof out.adj === 'number') out.adj -= removedBonus;
+    if (Array.isArray(out.reasonRows)) {
+      out.reasonRows = out.reasonRows.filter(function(row) {
+        return !shouldDropClaimedMilestoneReason(row && row.text, claimedState);
+      });
+    }
+    return out;
   }
 
   function isVenusRequiredForPriority(pv) {
@@ -785,7 +1359,7 @@
       items.push({ name: '🚀 Торговля', priority: 40, reasons: colReasons, tier: '-', score: 0, type: 'standard', mcValue: Math.max(8, bestColVal) });
     }
 
-    if (pv && pv.game && pv.game.milestones && (tp.megaCredits || 0) >= 8) {
+    if (pv && pv.game && pv.game.milestones && getMegaCreditsForPriority(tp) >= 8) {
       var claimedMs = 0;
       pv.game.milestones.forEach(function(ms) {
         if (ms.owner_name || ms.owner_color) claimedMs++;
@@ -816,7 +1390,7 @@
       if (fundedAwardsCache && fundedAwardsCache.awards) fundedCount = Math.max(fundedCount, fundedAwardsCache.awards.size);
       if (fundedCount < 3) {
         var fundCost = fundCosts[Math.min(fundedCount, 2)];
-        if ((tp.megaCredits || 0) >= fundCost) {
+        if (getMegaCreditsForPriority(tp) >= fundCost) {
           pv.game.awards.forEach(function(aw) {
             if (!aw.scores || aw.scores.length === 0) return;
             var isFunded = fundedAwardsCache && fundedAwardsCache.awards && fundedAwardsCache.awards.has(aw.name);
@@ -1156,6 +1730,14 @@
     var cardCost = typeof getCardCost === 'function' ? getCardCost(el) : null;
     var myMC = ctx ? (ctx.mc || 0) : 0;
     var gensLeft = ctx ? (ctx.gensLeft || 3) : 3;
+    var hasDenyReason = false;
+    var hasInsectsNoShellCap = false;
+    for (var rr = 0; rr < result.reasons.length; rr++) {
+      var reasonText = String(result.reasons[rr] || '');
+      if (reasonText.indexOf('Deny:') !== -1) hasDenyReason = true;
+      if (reasonText.indexOf('Insects: нет plant shell cap') !== -1) hasInsectsNoShellCap = true;
+    }
+    var denyOnlyResearchSkip = cardName === 'Insects' && hasDenyReason && hasInsectsNoShellCap;
 
     var cardEV = 0;
     if (tmBrain && typeof tmBrain.scoreCard === 'function' && cardName) {
@@ -1177,6 +1759,8 @@
 
     if (handSize > gensLeft * 2) adj -= Math.min(4, Math.round((handSize - gensLeft * 2) * 1.5));
 
+    if (denyOnlyResearchSkip) adj -= 10;
+
     if (gensLeft <= 1 && cardEffects) {
       var fx = cardEffects[cardName];
       var hasVP = fx && (fx.vp || fx.tr || fx.tmp || fx.o2 || fx.oc || fx.vn || fx.grn);
@@ -1190,7 +1774,8 @@
     result.total += adj;
     if (result.uncappedTotal != null) result.uncappedTotal += adj;
     var preferReqLaterLabel = reqHardBlockDraft && reqSoftNearDraft && (result.total >= 55 || (result.uncappedTotal != null ? result.uncappedTotal : result.total) >= 55);
-    if (adj <= -4) {
+    if (denyOnlyResearchSkip) result.reasons.push('Deny уже сделан: не покупать');
+    else if (adj <= -4) {
       if (preferReqLaterLabel) result.reasons.push('Позже (req)');
       else result.reasons.push('Skip (' + (cardEV < 0 ? 'EV ' + Math.round(cardEV) : 'слабая') + ')');
     }
@@ -1222,6 +1807,7 @@
     var getCardCost = input && input.getCardCost;
     var cardEffects = input && input.cardEffects;
     var cardTagsData = input && input.cardTagsData;
+    var lookupCardData = input && input.lookupCardData;
     var cardGlobalReqs = input && input.cardGlobalReqs;
     var cardTagReqs = input && input.cardTagReqs;
     var scoreCardRequirements = input && input.scoreCardRequirements;
@@ -1334,6 +1920,12 @@
     if (ctx) {
       var reqResult = typeof scoreCardRequirements === 'function' ? scoreCardRequirements(cardEl, ctx, cardName) : null;
       if (reqResult && typeof applyResult === 'function') bonus = applyResult(reqResult, bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreOptimalAerobrakingTemperaturePressure(cardName, pv, ctx, sc), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreOptimalAerobrakingTriggerTiming(cardName, myHand, ctx, cardTagsData, lookupCardData), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreMediaGroupTriggerTiming(cardName, myHand, pv, ctx, cardTagsData, lookupCardData), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreMiningExpeditionTiming(cardName, myHand, pv, ctx), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreImmigrantCityContext(cardName, pv, ctx, allMyCardsSet), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreAdvancedAlloysPlayOrder(cardName, myHand, pv, cardTagsData, lookupCardData), bonus, reasons);
 
       if (cardName === 'Caretaker Contract' && (isOpeningHandContext({ ctx: ctx, getPlayerVueData: getPlayerVueData }) || (ctx && ctx.gen <= 2))) {
         var caretakerTemp = ctx && ctx.globalParams
@@ -1412,9 +2004,15 @@
       var skipCrudeTiming = ftnResult.skipCrudeTiming;
 
       if (!skipCrudeTiming && typeof applyResult === 'function') bonus = applyResult(scoreCrudeTiming(cardName, eLower, data, ctx), bonus, reasons);
-      if (typeof applyResult === 'function') bonus = applyResult(scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx, cardName), bonus, reasons);
+      if (typeof applyResult === 'function') {
+        var maProximityResult = typeof scoreMilestoneAwardProximity === 'function'
+          ? scoreMilestoneAwardProximity(cardTags, cardType, eLower, data, ctx, cardName)
+          : null;
+        bonus = applyResult(suppressClaimedMilestoneProximity(maProximityResult, pv, ctx, sc), bonus, reasons);
+      }
       if (typeof applyResult === 'function') bonus = applyResult(scoreResourceSynergies(eLower, data, cardTags, ctx, cardName), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreCardEconomyInContext(cardTags, cardType, cardName, cardCost, tagDecay, eLower, data, ctx, skipCrudeTiming), bonus, reasons);
+      if (typeof applyResult === 'function') bonus = applyResult(scoreDirectedImpactorsTempoPressure(cardName, pv, ctx, sc, allMyCardsSet), bonus, reasons);
       if (typeof applyResult === 'function') bonus = applyResult(scoreOpponentAwareness(cardName, eLower, data, cardTags, ctx), bonus, reasons);
 
       var reqMet = reasons.some(function(r) { return r.indexOf('Req ✓') !== -1; });
@@ -1494,7 +2092,7 @@
       }
       if (relevantSP) {
         var spDiff = (baseScore + bonus) - relevantSP.adj;
-        if (spDiff < -5) reasons.push('vs ' + relevantSP.name + ' ' + spDiff);
+        if (spDiff < -5) reasons.push('vs ' + relevantSP.name + ' ' + formatReasonNumber(spDiff));
       }
     }
 
@@ -1552,6 +2150,7 @@
       }
     }
     var isUnplayable = reasons.some(function(r) { return r.indexOf('Невозможно сыграть') !== -1; });
+    bonus = applyLateNoVpEngineScoreCap(cardName, ctx, pv, baseScore, bonus, reasons);
     var uncappedTotal = baseScore + bonus;
     var finalScore = Math.min(100, uncappedTotal);
     if (isUnplayable && !(ctx && (ctx._openingHand || (ctx.gensLeft != null && ctx.gensLeft >= 6))) && finalScore > 54) finalScore = 54;
@@ -1591,9 +2190,10 @@
     var pv = getPlayerVueData();
     var gensLeft = typeof estimateGensLeft === 'function' ? estimateGensLeft(pv) : 0;
     var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
-    var myMC = (pv && pv.thisPlayer) ? (pv.thisPlayer.megaCredits || 0) : 0;
+    var myMC = (pv && pv.thisPlayer) ? getMegaCreditsForPriority(pv.thisPlayer) : 0;
     var tpForPriority = (pv && pv.thisPlayer) ? pv.thisPlayer : null;
     var myTableau = typeof getMyTableauNames === 'function' ? getMyTableauNames() : [];
+    var allPriorityCardsSet = new Set((myTableau || []).concat(handCards || []));
 
     var handElMap = new Map();
     if (documentObj && selHand) {
@@ -1666,6 +2266,36 @@
           priority += expensiveInHand * sc.ppDiscountMul;
           reasons.push('Скидка → ' + expensiveInHand + ' карт');
         }
+      }
+
+      var optAeroTiming = scoreOptimalAerobrakingTriggerTiming(name, handCards, ctx, cardTagsData, lookupCardData);
+      if (optAeroTiming && optAeroTiming.adj) {
+        priority += optAeroTiming.adj;
+        for (var oati = 0; oati < optAeroTiming.reasons.length; oati++) reasons.push(optAeroTiming.reasons[oati]);
+      }
+
+      var mediaGroupTiming = scoreMediaGroupTriggerTiming(name, handCards, pv, ctx, cardTagsData, lookupCardData);
+      if (mediaGroupTiming && mediaGroupTiming.adj) {
+        priority += mediaGroupTiming.adj;
+        for (var mgti = 0; mgti < mediaGroupTiming.reasons.length; mgti++) reasons.push(mediaGroupTiming.reasons[mgti]);
+      }
+
+      var miningExpeditionTiming = scoreMiningExpeditionTiming(name, handCards, pv, ctx);
+      if (miningExpeditionTiming && miningExpeditionTiming.adj) {
+        priority += miningExpeditionTiming.adj;
+        for (var meti = 0; meti < miningExpeditionTiming.reasons.length; meti++) reasons.push(miningExpeditionTiming.reasons[meti]);
+      }
+
+      var immigrantCityContext = scoreImmigrantCityContext(name, pv, ctx, allPriorityCardsSet);
+      if (immigrantCityContext && immigrantCityContext.adj) {
+        priority += immigrantCityContext.adj;
+        for (var icti = 0; icti < immigrantCityContext.reasons.length; icti++) reasons.push(immigrantCityContext.reasons[icti]);
+      }
+
+      var alloysOrder = scoreAdvancedAlloysPlayOrder(name, handCards, pv, cardTagsData, lookupCardData);
+      if (alloysOrder && alloysOrder.adj) {
+        priority += alloysOrder.adj;
+        for (var aaoi = 0; aaoi < alloysOrder.reasons.length; aaoi++) reasons.push(alloysOrder.reasons[aaoi]);
       }
 
       if (econ.includes('tr') && !econ.includes('prod')) {
@@ -1815,7 +2445,7 @@
     var myTableau = getMyTableauNames();
     var ctx = typeof getCachedPlayerContext === 'function' ? getCachedPlayerContext() : null;
     var pv = getPlayerVueData();
-    var myMC = (pv && pv.thisPlayer) ? (pv.thisPlayer.megaCredits || 0) : 0;
+    var myMC = (pv && pv.thisPlayer) ? getMegaCreditsForPriority(pv.thisPlayer) : 0;
 
     var scored = [];
     for (var i = 0; i < handCards.length; i++) {
