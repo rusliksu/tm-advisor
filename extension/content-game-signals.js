@@ -70,6 +70,61 @@
     return tempStepsRemaining(game) + oxygenStepsRemaining(game) + oceanStepsRemaining(game);
   }
 
+  function playerMc(player) {
+    return asNumber(player && (player.megacredits != null ? player.megacredits : player.megaCredits), 0);
+  }
+
+  function playerSteel(player) {
+    return asNumber(player && player.steel, 0);
+  }
+
+  function playerTitanium(player) {
+    return asNumber(player && (player.titanium != null ? player.titanium : player.ti), 0);
+  }
+
+  function visiblePlayers(state, fallbackPlayer) {
+    if (state && Array.isArray(state.players) && state.players.length > 0) return state.players;
+    if (state && state.game && Array.isArray(state.game.players) && state.game.players.length > 0) return state.game.players;
+    return fallbackPlayer ? [fallbackPlayer] : [];
+  }
+
+  function estimateVisibleTableTerraformingCapacity(game, players) {
+    var tempLeft = tempStepsRemaining(game);
+    var oxygenLeft = oxygenStepsRemaining(game);
+    var oceanLeft = oceanStepsRemaining(game);
+    var heatRaises = 0;
+    var plantGreeneries = 0;
+    var liquidity = 0;
+    for (var i = 0; i < (players || []).length; i++) {
+      var p = players[i] || {};
+      heatRaises += Math.floor(asNumber(p.heat, 0) / 8);
+      plantGreeneries += Math.floor(asNumber(p.plants, 0) / (hasTableauCard(p, 'Ecoline') ? 7 : 8));
+      liquidity += playerMc(p) + playerSteel(p) * 2 + playerTitanium(p) * 3;
+    }
+
+    var freeTemp = Math.min(tempLeft, heatRaises);
+    var freeOxygen = Math.min(oxygenLeft, plantGreeneries);
+    var costs = [];
+    for (var ti = freeTemp; ti < tempLeft; ti++) costs.push(14);
+    for (var oi = freeOxygen; oi < oxygenLeft; oi++) costs.push(23);
+    for (var wi = 0; wi < oceanLeft; wi++) costs.push(18);
+    costs.sort(function(a, b) { return a - b; });
+
+    var paidSteps = 0;
+    for (var ci = 0; ci < costs.length; ci++) {
+      if (liquidity < costs[ci]) break;
+      liquidity -= costs[ci];
+      paidSteps++;
+    }
+
+    return {
+      capacity: freeTemp + freeOxygen + paidSteps,
+      freeTemp: freeTemp,
+      freeOxygen: freeOxygen,
+      paidSteps: paidSteps
+    };
+  }
+
   function eventTextParts(eventLike) {
     if (!eventLike) return [];
     if (typeof eventLike === 'string') return [eventLike];
@@ -195,6 +250,27 @@
     ));
   }
 
+  function addLikelyFinalGenerationSignal(out, game, players) {
+    var remaining = remainingTerraformingSteps(game);
+    if (remaining <= 5 || remaining > 12) return;
+    if (asNumber(game && game.generation, 1) < 8) return;
+    var capacity = estimateVisibleTableTerraformingCapacity(game, players);
+    if (!capacity || capacity.capacity < remaining) return;
+    out.push(signal(
+      'likely-final-gen',
+      'warning',
+      'Likely final gen',
+      {type: 'global', key: 'terraforming'},
+      'Likely final generation',
+      [
+        remaining + ' terraforming steps remain.',
+        'Visible table capacity can cover about ' + capacity.capacity + ' steps from heat, plants, and liquidity.'
+      ],
+      'Switch to cashout: prioritize VP, milestones, awards, and safe final conversions.',
+      78
+    ));
+  }
+
   function awardFundCost(game, awardIndex) {
     var awards = (game && game.awards) || [];
     var funded = 0;
@@ -212,6 +288,101 @@
 
   function slug(value) {
     return lower(value).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function milestoneAdvisor() {
+    return (global && (global.TM_ADVISOR || global.TM_BRAIN)) || null;
+  }
+
+  function milestoneTarget(milestone) {
+    if (!milestone) return 0;
+    var target = asNumber(milestone.threshold, 0) || asNumber(milestone.target, 0);
+    if (target > 0) return target;
+    var maData = global && global.TM_MA_DATA;
+    var def = maData && milestone.name && maData[milestone.name];
+    return asNumber(def && def.target, 0);
+  }
+
+  function milestoneScoreFromRows(milestone, color) {
+    if (!milestone || !Array.isArray(milestone.scores)) return null;
+    for (var i = 0; i < milestone.scores.length; i++) {
+      var row = milestone.scores[i] || {};
+      if (row.color === color || row.playerColor === color) return asNumber(row.score, 0);
+    }
+    return null;
+  }
+
+  function evaluateMilestoneProgress(milestone, state, player) {
+    var name = milestone && milestone.name;
+    if (!name) return null;
+    var advisor = milestoneAdvisor();
+    if (advisor && typeof advisor.evaluateMilestone === 'function') {
+      var result = null;
+      try {
+        result = advisor.evaluateMilestone(name, state);
+      } catch (err) {
+        result = null;
+      }
+      if (result) {
+        var resultThreshold = asNumber(result.threshold != null ? result.threshold : result.target, 0) || milestoneTarget(milestone);
+        if (resultThreshold > 0) {
+          return {
+            score: asNumber(result.myScore != null ? result.myScore : result.score, 0),
+            threshold: resultThreshold
+          };
+        }
+      }
+    }
+
+    var target = milestoneTarget(milestone);
+    var score = milestoneScoreFromRows(milestone, getPlayerColor(player));
+    if (target > 0 && score !== null) return {score: score, threshold: target};
+    return null;
+  }
+
+  function claimedMilestoneCount(game) {
+    var milestones = (game && game.milestones) || [];
+    var count = 0;
+    for (var i = 0; i < milestones.length; i++) {
+      if (isClaimed(milestones[i])) count++;
+    }
+    return count;
+  }
+
+  function addGenericMilestoneSignal(out, milestone, progress, claimedCount) {
+    var name = milestone && milestone.name;
+    if (!name || !progress || progress.threshold <= 0) return;
+    var score = progress.score;
+    var threshold = progress.threshold;
+    if (score >= threshold) {
+      out.push(signal(
+        'claim-' + slug(name),
+        'warning',
+        'Claim ' + name,
+        {type: 'milestone', key: name},
+        'Claim ' + name,
+        [
+          score + '/' + threshold + ' milestone progress.',
+          'Milestone claim is a clean 5 VP for 8 MC.'
+        ],
+        'Claim this milestone now unless the action slot must close the game.',
+        claimedCount >= 2 ? 88 : 84
+      ));
+    } else if (score === threshold - 1) {
+      out.push(signal(
+        'near-' + slug(name),
+        'info',
+        name + ' close',
+        {type: 'milestone', key: name},
+        name + ' is 1 away',
+        [
+          score + '/' + threshold + ' milestone progress.',
+          'One more step can unlock a 5 VP claim for 8 MC.'
+        ],
+        'Consider whether a small setup action is better than passing.',
+        62
+      ));
+    }
   }
 
   function addAwardSignals(out, game, player) {
@@ -248,12 +419,21 @@
     }
   }
 
-  function addMilestoneSignals(out, game, player) {
+  function addMilestoneSignals(out, game, player, state) {
     var milestones = (game && game.milestones) || [];
+    var claimedCount = claimedMilestoneCount(game);
+    if (claimedCount >= 3) return;
     var tags = (player && player.tags) || {};
-    var mc = asNumber(player && (player.megacredits != null ? player.megacredits : player.megaCredits), 0);
+    var mc = playerMc(player);
+    if (mc < 8) return;
+    for (var mi = 0; mi < milestones.length; mi++) {
+      var milestone = milestones[mi];
+      if (!milestone || isClaimed(milestone)) continue;
+      addGenericMilestoneSignal(out, milestone, evaluateMilestoneProgress(milestone, state, player), claimedCount);
+    }
+
     var events = asNumber(tags.event, 0);
-    if (events < 5 || mc < 8) return;
+    if (events < 5) return;
     for (var i = 0; i < milestones.length; i++) {
       var ms = milestones[i];
       if (!ms || isClaimed(ms) || ms.name !== 'Legend') continue;
@@ -276,6 +456,7 @@
 
   function addEndgameClosureSignal(out, game) {
     var remaining = remainingTerraformingSteps(game);
+    if (remaining <= 0) return;
     if (remaining > 2) return;
     out.push(signal(
       'endgame-close',
@@ -315,9 +496,11 @@
     var out = [];
     addHeatEventRisk(out, game, player);
     addPlantSpendRisk(out, game, player);
-    addFinishNowSignal(out, game, player, state.players || []);
+    var players = visiblePlayers(state, player);
+    addLikelyFinalGenerationSignal(out, game, players);
+    addFinishNowSignal(out, game, player, players);
     addAwardSignals(out, game, player);
-    addMilestoneSignals(out, game, player);
+    addMilestoneSignals(out, game, player, state);
     addEndgameClosureSignal(out, game);
     return uniqueById(out);
   }
