@@ -630,6 +630,18 @@ function corpCardBoost(cardName, corpName) {
   return boost;
 }
 
+function scoreCorporationChoice(card, state) {
+  const name = card?.name || '';
+  if (!name) return -Infinity;
+  if (TM_BRAIN && typeof TM_BRAIN.getOverlayRatingScore === 'function') {
+    const overlayScore = TM_BRAIN.getOverlayRatingScore(name, state, null);
+    if (typeof overlayScore === 'number' && Number.isFinite(overlayScore)) {
+      return overlayScore;
+    }
+  }
+  return 50;
+}
+
 // EV-based prelude scoring (preludes are free, played gen 0)
 function scorePrelude(prelude, state, corpName) {
   var name = prelude.name || '';
@@ -2220,6 +2232,17 @@ function handleInput(wf, state, depth = 0) {
     // Guard: if min > 0 but all cards disabled, force-pick first card to avoid server rejection
     if (min > 0 && cards.every(c => c.isDisabled)) {
       return { type: 'card', cards: cards.slice(0, min).map(c => c.name) };
+    }
+
+    if (title.includes('corporation')) {
+      const count = Math.max(1, min);
+      const scored = [...cards]
+        .filter(c => !c.isDisabled)
+        .map(c => ({...c, _corpScore: scoreCorporationChoice(c, state)}))
+        .sort((a, b) => b._corpScore - a._corpScore);
+      const pool = scored.length >= count ? scored : cards;
+      dbg(`corp choice: ${scored.slice(0, 4).map(c => `${c.name}=${c._corpScore}`).join(',')}`);
+      return { type: 'card', cards: pool.slice(0, Math.min(count, max || count)).map(c => c.name) };
     }
 
     // Buy cards phase: buy good cards, keep reserve for plays
