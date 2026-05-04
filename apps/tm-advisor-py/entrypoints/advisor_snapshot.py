@@ -29,6 +29,7 @@ from scripts.tm_advisor.colony_advisor import (  # noqa: E402
     analyze_trade_options, colony_strategy_advice,
 )
 from scripts.tm_advisor.decision_prompts import prompt_decision_advice  # noqa: E402
+from scripts.tm_advisor.decision_sequences import sequence_decision_advice  # noqa: E402
 from scripts.tm_advisor.draft_play_advisor import (  # noqa: E402
     draft_buy_advice, mc_allocation_advice, play_hold_advice,
 )
@@ -780,6 +781,13 @@ def _build_summary_block(
             if line and line not in summary["lines"]:
                 summary["lines"].append(line)
 
+    sequence = result.get("sequence") or {}
+    if sequence.get("options"):
+        for option in sequence["options"][:3]:
+            line = option.get("line")
+            if line and line not in summary["lines"]:
+                summary["lines"].append(line)
+
     colony_prompt = result.get("colony_prompt") or {}
     if colony_prompt.get("options"):
         for option in colony_prompt["options"][:3]:
@@ -828,14 +836,20 @@ def _build_summary_block(
             summary["best_move"] = alert_move
             summary["lines"].append(alert_move)
         else:
-            allocation_move = _finish_now_allocation_move(allocation_plan)
-            if not allocation_move:
-                allocation_move = _priority_allocation_move(
-                    allocation_plan, best_play
-                )
-            if allocation_move:
-                summary["best_move"] = allocation_move
-                summary["lines"].append(allocation_move)
+            sequence_move = (result.get("sequence") or {}).get("best_move")
+            if sequence_move:
+                summary["best_move"] = sequence_move
+                if sequence_move not in summary["lines"]:
+                    summary["lines"].append(sequence_move)
+            else:
+                allocation_move = _finish_now_allocation_move(allocation_plan)
+                if not allocation_move:
+                    allocation_move = _priority_allocation_move(
+                        allocation_plan, best_play
+                    )
+                if allocation_move:
+                    summary["best_move"] = allocation_move
+                    summary["lines"].append(allocation_move)
         if not summary["best_move"] and hand_advice:
             best_play = _best_play_entry(hand_advice)
             fallback = hand_advice[0] if hand_advice else None
@@ -1072,6 +1086,14 @@ def snapshot_from_raw(raw: dict) -> dict:
                 entry["note"] = meta["note"]
             entry["description_first"] = bool(meta.get("description_first"))
     result["hand_advice"] = _public_hand_advice(result, hand_advice)
+
+    if should_build_action_plan and not result.get("decision"):
+        sequence_decision = sequence_decision_advice(
+            state, hand_advice=hand_advice, req_checker=req_checker)
+        if sequence_decision:
+            sequence_payload = sequence_decision.to_dict()
+            result["decision"] = sequence_payload
+            result[sequence_decision.channel] = sequence_payload
 
     if should_build_action_plan:
         try:

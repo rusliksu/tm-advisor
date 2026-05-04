@@ -420,6 +420,43 @@ def build_resource_sequence_raw_state() -> dict:
     return raw
 
 
+def build_minority_refuge_miranda_sequence_raw_state() -> dict:
+    raw = copy.deepcopy(build_raw_state())
+    raw["game"]["generation"] = 8
+    raw["game"]["phase"] = "action"
+    raw["game"]["temperature"] = 0
+    raw["game"]["oxygenLevel"] = 9
+    raw["game"]["oceans"] = 4
+    raw["waitingFor"] = None
+    raw["game"]["milestones"] = []
+    raw["game"]["awards"] = []
+    raw["game"]["colonies"] = [
+        {"name": "Miranda", "isActive": True, "trackPosition": 1, "colonies": ["red"]},
+        {"name": "Ceres", "isActive": True, "trackPosition": 3, "colonies": ["green"]},
+    ]
+    raw["game"]["gameOptions"]["expansions"]["colonies"] = True
+    raw["thisPlayer"].update({
+        "name": "miranda-seq",
+        "isActive": True,
+        "megaCredits": 40,
+        "titanium": 6,
+        "titaniumValue": 4,
+        "megaCreditProduction": 48,
+        "terraformRating": 28,
+        "tableau": [
+            {"name": "Teractor"},
+            {"name": "Adaptation Technology"},
+        ],
+        "tags": {"science": 1},
+    })
+    raw["cardsInHand"] = [
+        {"name": "Fish", "calculatedCost": 9, "tags": ["Animal"]},
+        {"name": "Minority Refuge", "calculatedCost": 1, "tags": ["Space"]},
+        {"name": "Birds", "calculatedCost": 10, "tags": ["Animal"]},
+    ]
+    return raw
+
+
 def build_saturn_miranda_overpay_raw_state() -> dict:
     raw = copy.deepcopy(build_raw_state())
     raw["game"]["generation"] = 5
@@ -1381,6 +1418,16 @@ def main():
     assert "❌нет MC" not in ganymede_alloc["action"], resource_allocs
     assert miranda_alloc["cost"] == 10, resource_allocs
     assert "❌нет MC" in miranda_alloc["action"], resource_allocs
+
+    minority_refuge_sequence_snap = advisor_snapshot.snapshot_from_raw(
+        build_minority_refuge_miranda_sequence_raw_state())
+    minority_sequence = minority_refuge_sequence_snap["sequence"]
+    assert minority_refuge_sequence_snap["decision"]["kind"] == "minority_refuge_miranda", minority_sequence
+    assert minority_sequence["best"]["target_colony"] == "Miranda", minority_sequence
+    assert minority_sequence["best"]["animal_target"] == "Fish", minority_sequence
+    assert minority_sequence["best"]["setup_card"] == "Fish", minority_sequence
+    assert minority_refuge_sequence_snap["summary"]["best_move"].startswith(
+        "Sequence: Play Fish -> Minority Refuge on Miranda"), minority_refuge_sequence_snap["summary"]
 
     saturn_miranda_snap = advisor_snapshot.snapshot_from_raw(build_saturn_miranda_overpay_raw_state())
     saturn_miranda_advice = {row["name"]: row for row in saturn_miranda_snap["hand_advice"]}

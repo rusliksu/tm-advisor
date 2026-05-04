@@ -732,6 +732,70 @@ function testEuropaNeptunianTradesmanChainOverridesGenericAdvisor() {
   assert(rec.reasonRows.some((row) => row.text.includes('opponent is also 2/3')), rec.reasonRows);
 }
 
+function testMinorityRefugeMirandaSequenceOverridesSingleCardRank() {
+  const rec = actionRec.computeActionRecommendation({
+    state: makeState({
+      game: {
+        phase: 'action',
+        generation: 8,
+        temperature: 0,
+        oxygenLevel: 9,
+        colonies: [
+          {name: 'Miranda', isActive: true, trackPosition: 1, colonies: ['red']},
+          {name: 'Ceres', isActive: true, trackPosition: 3, colonies: ['green']},
+        ],
+      },
+      thisPlayer: {
+        color: 'hydro',
+        megacredits: 60,
+        tableau: [{name: 'Saturn Systems'}, {name: 'Adaptation Technology'}],
+      },
+      players: [{color: 'hydro', isActive: true}],
+      _waitingFor: {
+        type: 'or',
+        options: [
+          {
+            type: 'card',
+            title: 'Play project card',
+            cards: [
+              {name: 'Minority Refuge', calculatedCost: 1, tags: ['Space']},
+              {name: 'Fish', calculatedCost: 9, tags: ['Animal']},
+              {name: 'Birds', calculatedCost: 10, tags: ['Animal']},
+            ],
+          },
+          {type: 'option', title: 'Use played-card action'},
+        ],
+      },
+    }),
+    advisor: {
+      analyzeActions() {
+        return [
+          {index: 0, action: 'Play project card', score: 70, reason: 'Cheap colony'},
+          {index: 1, action: 'Use played-card action', score: 65, reason: 'Draw first'},
+        ];
+      },
+      rankHandCards() {
+        throw new Error('sequence should override the generic single-card rank');
+      },
+    },
+    isPlayableCard(card) {
+      return card.name !== 'Fish' && card.name !== 'Birds';
+    },
+  });
+
+  assert(rec, 'minority-refuge sequence recommendation should be produced');
+  assert.strictEqual(rec.kind, 'sequence');
+  assert.strictEqual(rec.optionIndex, 0);
+  assert.strictEqual(rec.optionTitle, 'Play project card');
+  assert.strictEqual(rec.title, 'Play Fish -> Minority Refuge');
+  assert.strictEqual(rec.cardName, 'Fish');
+  assert(rec.subtitle.includes('Miranda'), rec.subtitle);
+  assert(rec.reasonRows.some((row) => row.text.includes('First play Fish')), rec.reasonRows);
+  assert(rec.reasonRows.some((row) => row.text.includes('+1 VP')), rec.reasonRows);
+  assert(rec.reasonRows.some((row) => row.tone === 'negative' && row.text.includes('before an animal target')), rec.reasonRows);
+  assert.strictEqual(rec.alt, 'Use played-card action');
+}
+
 function testSignalFallbackRequiresActionPrompt() {
   const rec = actionRec.computeActionRecommendation({
     state: makeState(),
@@ -1113,6 +1177,7 @@ testAdvisorRecommendationKeepsCeosFavoriteAsFinalPoke();
 testAdvisorRecommendationKeepsCeosFavoriteAsFinalPokeFromApiFixture();
 testAdvisorRecommendationSkipsFinalWindowEngineCardForScoringAction();
 testEuropaNeptunianTradesmanChainOverridesGenericAdvisor();
+testMinorityRefugeMirandaSequenceOverridesSingleCardRank();
 testSignalFallbackRequiresActionPrompt();
 testNoRecommendationOutsideTurnOrActionPhase();
 testRenderAnchorsAndHighlightsAction();
