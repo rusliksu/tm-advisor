@@ -916,18 +916,20 @@
   },
   "Huge Asteroid": {
     "name": "Huge Asteroid",
-    "score": 66,
-    "tier": "C",
+    "score": 78,
+    "tier": "B",
     "type": "prelude",
-    "economy": "3 temp steps = 3 TR (~21-22 MC) + heat-prod from 0->-2 step = ~4 MC. -5 MC cost. Total ~20 MC direct, but 3 TR is massive tempo.",
-    "reasoning": "3 temp TR = 21 MC - 5 MC cost = 16 MC net + ~4 MC heat-prod bonus = ~20 MC. Below average prelude (24.5 MC). Tempo is good but no tags, no production, no cards. Rush-only value, and WGT already raises temp. Per expert review: overrated.",
+    "economy": "3 temp steps = 3 TR (~21-22 MC) + likely heat-prod bonus from crossing -24/-20/-16/-12/-8/-4/0 tracks (~3-5 MC) - 5 MC cost. Direct value is around 20 MC, but the 3 finite temperature TR and requirement tempo are worth more than flat cash in rush games.",
+    "reasoning": "Canonical 66/C was too low. COTD consensus is strongly positive: Huge Asteroid is a premium rush prelude, often first or second pick, because it claims finite temperature TR, adds heat-production tempo, and unlocks temperature-gated plant cards several generations earlier. It is still not a clean A for every hand: -5 MC hurts cash-starved corps, it has no tag/card/production flexibility, and low-player engine starts may prefer a non-rush prelude. High-B baseline, A-level in rush/short-game contexts.",
     "synergies": [
       "Helion",
       "Insects",
       "Methane From Titan",
+      "Temperature-gated plant cards",
+      "TR rush strategies",
       "Adaptation Technology"
     ],
-    "when_to_pick": "Strong in rush strategies. Good when you have temp-requirement cards. The 5 MC cost means less good if you're cash-starved.",
+    "when_to_pick": "Take highly in rush or short-game plans, with temperature-gated cards, plant payoffs, Helion, or opponents that need time to set up. Downgrade if your corporation is cash-starved, your hand is pure engine, or you do not want to accelerate the temperature track.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1f2def9/cotd_huge_asteroid_27_aug_2024/"
   },
   "UNMI Contractor": {
@@ -1496,18 +1498,20 @@
   },
   "Donation": {
     "name": "Donation",
-    "score": 45,
-    "tier": "D",
+    "score": 60,
+    "tier": "C",
     "type": "prelude",
     "economy": "21 MC flat. No tags, no production. Average prelude benchmark.",
-    "reasoning": "The baseline prelude — exactly average historically but slightly below the current ~24.5 MC average. Raw money is flexible but has no multiplying effect (no production, no tags, no TR). COTD: 'perfectly average, the standard by which others are judged'. Fine with expensive gen 1 cards, underwhelming otherwise.",
+    "reasoning": "The baseline cash prelude, not a D-tier trap. COTD calls it the average standard by which other preludes are judged: raw money is flexible, helps low-cash corporations and expensive gen 1 plays, and gets relatively better in shorter games where production has less runway. It is still unexciting because it has no tags, production, TR, or compounding effect, so it stays C rather than a priority pick.",
     "synergies": [
       "Io Mining Industries",
       "Terraforming Ganymede",
-      "Large Convoy"
+      "Large Convoy",
+      "Terralabs Research",
+      "Low-starting-MC corporations"
     ],
     "when_to_pick": "When you have expensive cards to play gen 1 and other preludes don't fit. Never exciting but rarely terrible.",
-    "ml_note": "ML -9.1, WR 15%/13g. Worst prelude by WR.",
+    "ml_note": "ML -9.1, WR 15%/13g is a small-sample warning, but COTD and baseline valuation support C-tier rather than D.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/105lln0/cotd_donation_7_jan_2023/"
   },
   "Venus L1 Shade": {
@@ -1602,8 +1606,8 @@
   },
   "Floating Trade Hub": {
     "name": "Floating Trade Hub",
-    "score": 64,
-    "tier": "C",
+    "score": 50,
+    "tier": "D",
     "type": "prelude",
     "economy": "2 floaters/action, convert to standard resource. ~3 MC/gen as titanium (1 ti every 1.5 gens average). Space tag ~1 MC. With other floater cards, value increases.",
     "reasoning": "Slow engine card on a prelude. 2 floaters/action is decent but converting to ti is only ~3 MC/gen. No immediate value — zero MC, zero production gen 1. Space tag is minor. Better with other floater cards to feed. Floater trap concerns apply somewhat, though this is cheaper than most floater cards.",
@@ -2221,11 +2225,11 @@
   },
   "Ecological Zone": {
     "name": "Ecological Zone",
-    "score": 72,
-    "tier": "B",
+    "score": 83,
+    "tier": "A",
     "type": "project",
-    "economy": "12 MC + 3 MC card = 15 MC total. You get a tile placement, a starting animal that already counts its own two tags, and very strong Plant plus Animal tag synergy. It commonly reaches 3-4 VP by itself and can go much higher in bio engines.",
-    "reasoning": "One of the strongest combo cards in the bio package. The double tag profile is excellent for milestones and for all the usual Plant, Animal, and microbe-adjacent payoff chains, and the tile placement adds real tactical value. Even without extreme combo support it can score well; with a proper bio shell it becomes a centerpiece rather than a side card.",
+    "economy": "12 MC + 3 MC card = 15 MC cost. Returns: tile placement (~4-6 MC), starts with 1 animal (counts own 2 tags), Plant+Animal tags (~3 MC). Typically accumulates 3-4 VP = 15-20 MC. With bio combos: 5+ VP.",
+    "reasoning": "One of the best combo cards in the game. Per shai_aus, it's a vital part of the 'holy Plant Trinity' with Viral Enhancers and Decomposers. Per ad_hocNC, it's the best point card in base game. The dual Plant+Animal tags are incredible for milestones (Ecologist, NRA) and trigger both bio-tag accumulator chains. The tile placement adds additional value. Easily 3-4 VP even without heavy combos.",
     "synergies": [
       "Viral Enhancers",
       "Decomposers",
@@ -2233,26 +2237,26 @@
       "Imported Nitrogen",
       "Large Convoy"
     ],
-    "when_to_pick": "High priority whenever you have, or can soon make, a greenery. Core card for bio-tag strategies and a real deny pick against plant-heavy opponents.",
+    "when_to_pick": "High priority whenever you have or plan for a greenery. Core card for bio-tag strategies. Hate-draft from plant players.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1mesfdy/cotd_ecological_zone_1_aug_2025/"
   },
   "AI Central": {
     "name": "AI Central",
-    "score": 88,
+    "score": 82,
     "tier": "A",
     "type": "project",
-    "opening_hand_bias": 8,
-    "opening_hand_note": "TFMStats starting-hand signal is extremely strong; keep unless the hand is a pure rush with no credible science path.",
-    "economy": "21 + 3 = 24 MC, steel-payable, plus roughly 7 MC of energy production to keep it online, so about 31 MC effective. Drawing 2 cards per generation is usually worth 6-8 MC each cycle, and the 1 VP plus strong tags add more.",
-    "reasoning": "One of the best draw engines in the game. TFMStats is elite across played, option, and starting-hand results, and the desktop tierlist already treats it as S-level power. The setup cost still matters: it asks for 3 Science tags, real energy, and enough economy to convert the extra cards into tempo. That keeps it below the most universal S-tier cards, but the old low-A score understated how often the payoff wins games.",
+    "economy": "21+3=24 MC (steel-payable) + ~7 MC energy-prod = 31 MC effective. Action: draw 2 cards/gen = 6-8 MC value/gen. 1 VP = 5 MC. Payoff in ~4 gens. Science+Building tags worth ~4 MC.",
+    "reasoning": "One of the strongest card-draw engines in the game. 2 free cards per gen is enormous value for engine players, and in 2P/long games it can snowball into the kind of huge hand advantage highlighted by the Infinite Cards thread. The caveat from COTD still matters: it needs 3 Science tags, energy production, and enough economy to play what it draws. Played gen 3-4 with good economy it is near-S; in fast 3-5P games or gen 6+ it drops because the setup cost may not pay back.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
       "Mass Converter",
       "Earth Catapult",
-      "Anti-Gravity Technology"
+      "Anti-Gravity Technology",
+      "Viron",
+      "Valley Trust"
     ],
-    "when_to_pick": "Very high priority whenever a science path is plausible. Keep from the opening hand unless the rest of the hand is a pure rush with no science support; once 2+ Science tags or cheap energy are visible, it becomes one of the best cards to build around.",
+    "when_to_pick": "High priority when you already have 2+ Science tags, energy production, and a game that is not ending immediately. Upgrade in 2P, Colonies, and long engine tables; downgrade in rush hands or short 4-5P games. Counter-draft to deny engine players when they can realistically play it.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1eizqyc/cotd_ai_central_3_aug_2024/"
   },
   "Deimos Down": {
@@ -2975,11 +2979,11 @@
   },
   "Field-Capped City": {
     "name": "Field-Capped City",
-    "score": 70,
-    "tier": "B",
+    "score": 68,
+    "tier": "C",
     "type": "project",
-    "economy": "29+3=32 MC, steel-payable. The bundle is +2 MC-prod, +1 energy-prod, a city tile, 3 plants, and City+Building+Power tags, so raw accounting can look efficient when paid with steel. In cash terms it is still a very large upfront spend for production that decays quickly after the early game.",
-    "reasoning": "COTD reads more like good value in the right shell than a must-play. The card is mostly attractive as an answer to excess steel, especially for Mining Guild/IC/Ceres lines or when you specifically want a city that gives energy instead of consuming it. Without steel or corp support, the 32 MC tempo hit is painful early, awkward midgame once premium city spots are contested, and too slow late when MC production and energy production have little runway. Low-B rather than a high-priority city.",
+    "economy": "29+3=32 MC, steel-payable. The bundle is +2 MC-prod, +1 energy-prod, a city tile, 3 plants, and City+Building+Power tags, so raw accounting can look efficient when paid with steel. In cash terms it is still a very large upfront spend, and the production value decays quickly outside the early game.",
+    "reasoning": "COTD reads more like good value in the right shell than a must-play. The card is mostly attractive as an answer to excess steel, especially for Mining Guild/IC/Ceres lines or when you specifically want a city that gives energy instead of consuming it. Without steel or corp support, the 32 MC tempo hit is painful early, awkward midgame once premium city spots are contested, and too slow late when MC production and energy production have little runway. High-C situational city rather than a default B-tier keep.",
     "synergies": [
       "Mining Guild",
       "Interplanetary Cinematics",
@@ -3272,8 +3276,8 @@
   },
   "Stratospheric Birds": {
     "name": "Stratospheric Birds",
-    "score": 83,
-    "tier": "A",
+    "score": 73,
+    "tier": "B",
     "type": "project",
     "economy": "12+3=15 MC + 1 floater cost for 1 VP/animal action. Venus+Animal tags worth ~3-4 MC. 3 gens remaining = 3 VP (15 MC value). With animal placers: 5+ VP ceiling.",
     "reasoning": "Strong 1-VP animal card with dual requirements (12% Venus + spend floater). Per COTD community, 'scary card to pass in draft' when Venus is active. Comes online earlier than Venusian Animals. With Freyja Biodomes the Venus animals package is overpowered. Balanced by Venus often staying untouched in 3P.",
@@ -4499,8 +4503,8 @@
   },
   "Dirigibles": {
     "name": "Dirigibles",
-    "score": 75,
-    "tier": "B",
+    "score": 67,
+    "tier": "C",
     "type": "project",
     "economy": "11 MC + 3 MC card = 14 MC cost. Action: 1 floater to ANY card + floaters worth 3 MC for Venus cards. Equivalent to ~3 MC-prod for Venus spending = ~15 MC over 5 gens. Venus tag for Venuphile.",
     "reasoning": "The best floater dispenser for Venus strategies. The 'to ANY card' clause is key — floaters can go to Aerial Mappers (half a card), Deuterium Export (energy prod), or VP cards. Per benbever, equivalent to ~3 MC-prod but restricted to Venus cards when used on itself. The Venus tag helps with Venuphile and Hoverlord. Decent but not amazing unless you have strong floater targets.",
@@ -4510,7 +4514,7 @@
       "Floating Habs",
       "Titan colony"
     ],
-    "when_to_pick": "Gen 1-3 when committing to Venus strategy with other floater/Venus cards. Late only for an immediate floater payoff or a live Hoverlord/Venuphile race.",
+    "when_to_pick": "When committing to Venus strategy with other floater/Venus cards. Good for Hoverlord milestone.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1led8wj/cotd_dirigibles_18_jun_2025/"
   },
   "Giant Solar Shade": {
@@ -5787,20 +5791,21 @@
   },
   "Inventors' Guild": {
     "name": "Inventors' Guild",
-    "score": 72,
-    "tier": "B",
+    "score": 66,
+    "tier": "C",
     "type": "project",
-    "opening_hand_bias": 6,
-    "opening_hand_note": "Early repeatable card selection is one of the clearest positive TFMStats signals; avoid only when the opener lacks economy to buy found cards.",
-    "economy": "9 MC + 3 MC card = 12 MC for a Science tag plus repeatable filtering. If played on gen 1-3 and used 4-6 times, it often pays back through card quality, stall value, and finding missing engine links rather than raw cheap draw.",
-    "reasoning": "Still expensive in Prelude-speed games, but TFMStats and recent COTD both support a stronger early-game rating. The value is not just cards kept: it is a live science tag, a repeatable stall action, and the ability to dig toward payoffs or missing requirements without committing to every draw. It remains mediocre when played late or into weak economy, but early engine starts perform much closer to B-tier.",
+    "opening_hand_bias": 3,
+    "opening_hand_note": "Playable early card selection, but only when economy can afford both the 12 MC setup and future kept cards; much weaker in fast or already-full-hand games.",
+    "economy": "9 MC + 3 MC card = 12 MC for a Science tag plus repeatable top-card selection. Each kept card still costs 3 MC, so the card needs early play, spare economy, and multiple useful activations before it beats cheaper/free draw.",
+    "reasoning": "Recalibrated down from B. COTD still likes repeatable draw/filtering, but the consistent caveat is cost: hard to play early, basically unplayable late, and weaker in all-expansion games where card draw has more alternatives. The Science tag and stall action keep it playable, but generic B made the advisor too willing to buy a slow no-VP engine in mid/late game.",
     "synergies": [
       "Mars University",
       "Olympus Conference",
       "AI Central",
-      "Atalanta Planitia Lab"
+      "Atalanta Planitia Lab",
+      "Terralabs"
     ],
-    "when_to_pick": "Strong on gen 1-3 in engine starts, especially when you can play it immediately and your hand already has science payoffs or missing links to dig for. Downshifts hard once the game is short or your economy cannot afford kept cards.",
+    "when_to_pick": "Gen 1-3 when you can play it soon, have economy to buy found cards, and actually need science/card selection. Downshift hard after midgame, with a full hand, weak cash, or no science payoff.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1m0drfs/cotd_inventors_guild_15_jul_2025/"
   },
   "Lake Marineris": {
@@ -7206,11 +7211,11 @@
   },
   "Directed Impactors": {
     "name": "Directed Impactors",
-    "score": 56,
+    "score": 55,
     "tier": "C",
     "type": "project",
-    "economy": "8+3=11 MC upfront. Each temperature raise costs one 6 MC/titanium-payable asteroid action plus a later remove-asteroid action: 1 raise = 17 MC, 2 = 11.5 MC/TR, 3 = 9.67 MC/TR, 4 = 8.75 MC/TR before action/opportunity cost. Space tag and titanium payment matter.",
-    "reasoning": "COTD consensus: acceptable early terraforming/titanium sink, but asteroid support remains narrow and timing-sensitive. It needs 3+ uses to look efficient, becomes close to dead once temperature is advanced, and loses flexibility compared with simply waiting on standard projects or better heat cards. Combos can push it up, but default draft priority stays low-mid C.",
+    "economy": "8+3=11 MC upfront. A self-contained temperature raise needs one 6 MC/titanium-payable add-asteroid action plus a later remove-asteroid action: 1 raise = 17 MC, 2 = 11.5 MC/TR, 3 = 9.67 MC/TR, 4 = 8.75 MC/TR before action/opportunity cost. Space tag and titanium payment are the main stabilizers.",
+    "reasoning": "2026 COTD leans more skeptical: asteroid support is still narrow/janky, and without Asteroid Rights/Astrodrill-style help this often loses to simply waiting and using SP asteroids because SP keeps timing flexibility. Still C rather than D because gen-1 rush/titanium lines with 3-4 temperature raises are mathematically acceptable, but the default draft priority is very low C.",
     "synergies": [
       "Asteroid Rights",
       "Astrodrill",
@@ -7219,7 +7224,7 @@
       "Viron",
       "Advanced Alloys"
     ],
-    "when_to_pick": "Gen 1-2 when rushing temperature, with spare titanium/space discounts, or with asteroid-resource support. Skip after early game unless you already have a clear asteroid combo and enough temperature track remaining.",
+    "when_to_pick": "Gen 1-2 only if you know you want multiple temperature raises and have titanium, space discounts, or asteroid-resource support. Skip after about gen 3, when fewer than 3 raises are likely, or when temperature timing/flexibility matters more than a slow every-other-action engine.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1ii75i1/cotd_directed_impactors_5_feb_2025/"
   },
   "Greenhouses": {
@@ -7241,18 +7246,21 @@
   },
   "Hired Raiders": {
     "name": "Hired Raiders",
-    "score": 66,
-    "tier": "B",
+    "score": 60,
+    "tier": "C",
     "type": "project",
-    "opening_hand_bias": 4,
-    "opening_hand_note": "Strong early if it steals usable steel or disrupts a key player; less valuable as a random late attack.",
-    "economy": "1 MC + 3 MC card = 4 MC cost. Steal 2 steel (~4 MC) or 3 MC. Nearly cost-neutral. No tags = -3 to -5 penalty.",
-    "reasoning": "Cheap tempo swing that performs better than the old C score implied. TFMStats is positive across played, option, and kept-starting-hand results. COTD still has the correct caveat: it is best in 2P or when you can identify the real target in multiplayer. Stealing steel you can spend turns it into a near-free card plus disruption, and event rebates can make it profitable.",
+    "opening_hand_bias": 2,
+    "opening_hand_note": "Keep mainly in 2P, with event rebates, or when there is an obvious early steel target; do not treat it as a generic multiplayer B card.",
+    "economy": "1 MC + 3 MC card = 4 MC cost. Steal 2 steel only matters if you can spend that steel soon; otherwise it is closer to stealing 3 MC. No tags, no VP, and weak late scaling.",
+    "reasoning": "Recalibrated down from B. COTD evidence is consistent: strong enough in 2P or with a clear early target, much thinner in 3P+ when the victim may not be your real rival. Event rebates or usable stolen steel can make it profitable, but random take-that should not be valued like a standalone tempo card.",
     "synergies": [
+      "Interplanetary Cinematics",
       "Media Group",
-      "Electro Catapult"
+      "Electro Catapult",
+      "Advanced Alloys",
+      "Legend milestone"
     ],
-    "when_to_pick": "Early with a clear steel target, in 2P, with event rebates, or when disrupting a specific opponent's timed play matters. Lower priority as a random late multiplayer attack.",
+    "when_to_pick": "Early in 2P, with Media Group/Interplanetary Cinematics, when stolen steel is immediately spendable, or when disrupting a specific timed play matters. Low priority as a random late 3P+ attack.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1gtaeyy/cotd_hired_raiders_17_nov_2024/"
   },
   "Hydrogen to Venus": {
@@ -8078,21 +8086,23 @@
   },
   "Capital": {
     "name": "Capital",
-    "score": 60,
-    "tier": "C",
+    "score": 50,
+    "tier": "D",
     "type": "project",
     "economy": "26+3=29 MC + 2 energy-prod (15 MC) = 44 MC effective. 5 MC-prod (25 MC) + special VP (1/ocean adj, typically 2-4 VP = 10-20 MC). Steel-payable. 4 ocean req.",
-    "reasoning": "Most expensive city in the game. Per COTD community, widely considered a trap by experienced players. True cost ~43 MC including energy production. At 5 MC-prod it takes 9+ gens to recover. Experienced players note it can sometimes be the best available option late game as a steel dump. VP from ocean adjacency is variable.",
+    "reasoning": "Most expensive city in the game and a classic city trap. Per COTD, the true cost is about 43-44 MC once the 2 energy production is counted, while the 5 MC production arrives too late to recover in normal games because the card requires 4 oceans. TFMStats also flags the opener as bad: kept starts are strongly negative and not-kept starts are positive. It is still playable as a narrow late-game steel/energy dump when a 3+ ocean adjacency spot is available, but that ceiling does not justify a generic C-tier rating.",
     "synergies": [
       "Artificial Lake",
-      "Ceres colony",
-      "Lakefront Resorts"
+      "Ceres",
+      "Lakefront Resorts",
+      "Mining Guild",
+      "Mass Converter"
     ],
     "when_to_pick": "Late game only, with excess steel and energy production. Good placement spots are rare.",
-    "opening_hand_bias": -6,
-    "opening_hand_note": "Mostly a late steel/energy city and ocean-adjacency VP dump; starting keeps are negative.",
-    "game_data_note": "Fix D-46: ocean adjacency VP undervalued. 2-3 adjacent oceans = 2-3 extra VP = +10-15 MC. City + VP per ocean adj. C in ocean-heavy boards (Hellas, Vastitas).",
-    "review_note": "COTD: decent steel dump late. 4+ VP with ocean adjacency. Expensive but 5 MC-prod helps. Req 4 oceans + 2 energy.",
+    "opening_hand_bias": -8,
+    "opening_hand_note": "Do not keep as a normal opener; consider only with a clear steel/energy surplus plan or a specific map/ocean setup.",
+    "game_data_note": "Ocean adjacency VP gives Capital a real late ceiling, but it needs both spare energy production and an open 3+ ocean spot to compete with simpler VP dumps.",
+    "review_note": "COTD: widely treated as a trap because the 43-44 MC effective cost rarely pays back; playable mostly as a late steel/energy sink for ocean-adjacency points.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1djfs49/cotd_capital_19_jun_2024/"
   },
   "Forced Precipitation": {
@@ -8113,20 +8123,22 @@
   },
   "Sabotage": {
     "name": "Sabotage",
-    "score": 66,
-    "tier": "B",
+    "score": 58,
+    "tier": "C",
     "type": "project",
-    "economy": "4 MC total (1+3) to remove 7 MC, 4 steel, or 3 titanium from an opponent. No tags and no self-benefit, but the raw exchange is efficient when aimed at the current leader or at resources that were about to convert into a key play.",
-    "reasoning": "Raised to the B/C border because COTD and TFMStats both show real value, especially early, in 2P, or when it disrupts the player who is actually ahead. The multiplayer take-that caveat still matters: in 3P+ it can hand relative value to the uninvolved players. Treat it as a cheap tempo/disruption tool, not an automatic draft pick.",
+    "economy": "4 MC total (1+3) to remove 7 MC, 4 steel, or 3 titanium from an opponent. Raw exchange is good in 2P or against a precise leader target, but in 3P+ the uninvolved player gets relative value for free.",
+    "reasoning": "Recalibrated down from generic B. COTD consensus is consistent: very strong in 2P and with event rebates/discounts, but much more questionable in 3+ player games unless it hits the actual leader, blocks a milestone/award, or breaks a timed play. No tags, no self-benefit, and random early attacks are often kingmaking. Keep as a tactical C-tier disruption tool, not a default buy.",
     "synergies": [
       "Interplanetary Cinematics",
       "Media Group",
-      "Legend milestone"
+      "Legend milestone",
+      "PhoboLog target",
+      "Advanced Alloys target"
     ],
-    "when_to_pick": "High priority in 2P and playable in 3P+ when it hits the leader, blocks a milestone, wrecks a timed expensive play, or comes with event rebates/discounts. Lower priority as a random attack into a crowded table.",
+    "when_to_pick": "High in 2P, or in any player count when it hits a clear leader, denies a milestone/award, breaks a timed expensive play, or is nearly free through Interplanetary Cinematics/Media Group/discounts. Low priority as a random 3P+ draft pick.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1hhpocv/cotd_sabotage_19_dec_2024/",
-    "opening_hand_bias": 3,
-    "opening_hand_note": "Good early disruption in 2P or against a clear target; much weaker if it only helps uninvolved opponents."
+    "opening_hand_bias": 1,
+    "opening_hand_note": "Good early disruption mainly in 2P or against a clear runaway/timed target; do not buy generically in 3P+."
   },
   "Colonial Envoys": {
     "name": "Colonial Envoys",
@@ -8173,17 +8185,21 @@
   },
   "Magnetic Field Dome": {
     "name": "Magnetic Field Dome",
-    "score": 52,
+    "score": 42,
     "tier": "D",
     "type": "project",
-    "economy": "5 MC + 3 MC card + 15 MC (2 energy prod) = ~23 MC for 1 TR (~7 MC) + 1 plant prod (~8 MC) + Building tag (~2 MC) = ~17 MC value. 6 MC deficit.",
-    "reasoning": "Overcosted production card. Per COTD community, 'never a keep, sometimes playable last gen.' The 2 energy production cost is steep for just 1 TR + 1 plant-prod return. Experienced players unanimously rate it as a last-gen-only play with excess energy. Very weak overall.",
-    "synergies": [],
-    "when_to_pick": "Last gen with 2+ unused energy production and steel to dump. Otherwise skip. Never play early/mid game.",
-    "backtest_note": "WR 57%. Cheap city (steel payable) + 1 plant prod. City VP underrated.",
+    "economy": "5 MC + 3 MC card + 2 energy production is a poor mid-game exchange: roughly 23 MC of cost for 1 TR, 1 plant production, and a Building tag. In the final generation the energy production loss matters less, but then the plant production usually matters little too.",
+    "reasoning": "Late energy dump, not a real production card. COTD consensus is 'never a keep, sometimes playable last gen,' and the 2 energy production cost is too steep before the endgame. TFMStats starting-hand signal is severe: only ~5.3% keep rate and kept starts underperform badly. Keep it in D, not F, because a final TR for spare energy/steel or an exact plant-to-greenery line can still pay.",
+    "synergies": [
+      "Excess energy production",
+      "Steel surplus",
+      "Final-generation TR push"
+    ],
+    "when_to_pick": "Do not buy in the opening hand. Consider mid/late only if heat is maxed or the game is ending, you have 2 energy production that no longer matters, and steel/surplus cash makes a 1 TR play efficient. Upgrade only if +1 plant production creates an extra greenery.",
+    "backtest_note": "TFMStats: 5.3% opening keep rate, kept starts -1.49 Elo, played win rate 42.6%. Treat rare played Elo gains as selection bias from final-generation/spare-energy spots.",
     "cotd_url": "https://reddit.com/r/TerraformingMarsGame/comments/1ikkf71/cotd_magnetic_field_dome_8_feb_2025/",
-    "opening_hand_bias": -8,
-    "opening_hand_note": "Later spare-energy conversion only; TFMStats starting keeps are among the worst signals in this batch."
+    "opening_hand_bias": -10,
+    "opening_hand_note": "Never an opener unless the hand already has an extreme, cheap-energy plan; TFMStats starting keeps are among the worst signals in this batch."
   },
   "Meltworks": {
     "name": "Meltworks",
@@ -8871,17 +8887,17 @@
   },
   "Asimov": {
     "name": "Asimov",
-    "score": 76,
-    "tier": "B",
+    "score": 40,
+    "tier": "D",
     "type": "ceo",
-    "economy": "OPG: free award funding saves 8-20 MC depending on timing and lets you add/choose a favorable award. Ongoing: +2 award score is not direct VP; it matters when it flips an award race into 1st/2nd place. Typical value is one good funded award plus 0-2 flipped award placements, roughly 25-45 MC-equivalent in games where awards are contested.",
-    "reasoning": "Сильный, но не автопик A-tier. Бесплатный fund и выбор подходящей награды дают высокий floor, а +2 score может решить плотные award races. Но эффект не даёт VP напрямую: если ты не конкурируешь в наградах или awards уже не под твою линию, ongoing почти пустой. Поэтому это сильный B, а не D и не уверенный A/S.",
+    "economy": "OPG: free award funding only matters if the funded award is already a realistic 1st/2nd place race. It can save 8-20 MC, but often just commits you to an award you do not actually convert into VP. Ongoing +2 award score is not direct VP and is usually worth 0 unless it flips a close award result.",
+    "reasoning": "Слабый CEO. Бесплатный fund звучит приятно, но awards в 3P часто уже определяются позицией и бордом, а не тем, кто дешевле их профандил. +2 score не даёт VP само по себе и часто ничего не меняет: если ты не в гонке за награду, бонус мёртвый; если и так выигрываешь, он win-more. Поэтому Asimov обычно trap pick и не должен стоять выше D.",
     "synergies": [
-      "Любая корпорация с сильной специализацией (Phobolog для Miner, Ecoline для Mayor)",
-      "Award-heavy стратегии",
-      "Diversified engines (чтобы быть 2nd+ в нескольких наградах)"
+      "Уже выигрышная award-линия",
+      "Поздний deny-fund против явного лидера",
+      "Форматы с особенно важными awards"
     ],
-    "when_to_pick": "Бери, если старт/корпы дают понятный путь к 1-2 awards или можно рано выбрать свою награду. Слабее в узкой линии без award alignment и когда стол уже явно контролирует funded awards."
+    "when_to_pick": "Почти никогда. Бери только если остальные CEO совсем плохие и у тебя уже есть очевидная award-линия, которую бесплатный fund реально превращает в VP."
   },
   "Bjorn": {
     "name": "Bjorn",
@@ -10331,15 +10347,15 @@
   },
   "Museum of Early Colonisation": {
     "name": "Museum of Early Colonisation",
-    "score": 66,
+    "score": 58,
     "tier": "C",
     "type": "project",
-    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Effect: -1 energy-prod, +1 steel-prod, +1 titanium-prod, +1 plant-prod, +1 TR, and 2 VP. Raw payoff is real, but the production part needs runway and the energy hit is a real cost.",
-    "reasoning": "The 72/B bump overvalued raw output and underweighted the requirement. Needing an ocean, city, and greenery on Mars is a serious timing gate: if you meet it naturally the game is often already in midgame, and if you chase it just to unlock this card you spend too much tempo. The card is playable when the board state and spare energy already line up, especially with steel payment, but it is a narrow high-C payoff rather than a general B-tier production card.",
+    "economy": "23 MC total (20+3), steel payable. Req: 1 ocean + 1 city + 1 greenery on Mars. Effect: -1 energy-prod, +1 steel-prod, +1 titanium-prod, +1 plant-prod, and +1 TR. There are no printed VP, so the payoff is mostly delayed production plus one TR.",
+    "reasoning": "The 72/B bump overvalued raw output and also counted VP the card does not have. Needing an ocean, city, and greenery on Mars is a serious timing gate: if you meet it naturally the game is often already in midgame, and if you chase it just to unlock this card you spend too much tempo. Without printed VP, the production package needs several generations of runway and a spare energy production just to become attractive. Playable with steel payment and a naturally satisfied board state, but a low-C role-player rather than a broadly good production card.",
     "synergies": [
       "Gordon"
     ],
-    "when_to_pick": "Only when the ocean + city + greenery requirement is already naturally met or trivially met, you can afford the -1 energy-prod, and there are enough generations left for the production. Do not draft it early as a plan by itself."
+    "when_to_pick": "Only when the ocean + city + greenery requirement is already naturally met or trivially met, you can afford the -1 energy-prod, can pay partly in steel, and there are enough generations left for the production. Do not draft it early as a plan by itself."
   },
   "New Venice": {
     "name": "New Venice",
@@ -10456,15 +10472,17 @@
   },
   "Red City": {
     "name": "Red City",
-    "score": 60,
+    "score": 55,
     "tier": "C",
     "type": "project",
-    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. Effect: -1 energy-prod, +2 MC-prod, special no-greenery city tile, and 1 VP per empty/hazard adjacent space. City+Building tags. The +2 MC-prod is often near-blank because the card usually comes online late.",
-    "reasoning": "Old entry missed the concrete production and exact VP text, but the old low score was directionally right. In practice this is usually a late-game VP snipe, not an economy city: Reds timing/2 delegates delays it, +2 MC-prod has little runway, and the -1 energy-prod still needs to be available. The card is good only when a high-empty/hazard adjacency spot exists; otherwise you pay a lot for a mediocre special city that also blocks future greeneries around it.",
+    "economy": "24 MC total (21+3), steel payable. Req Reds ruling/2 delegates. Effect: -1 energy-prod, +2 MC-prod, special no-greenery city tile, and 1 VP per empty/hazard adjacent space. City+Building tags. The +2 MC-prod is usually almost blank because the card comes online late; the real value is only the special VP spot.",
+    "reasoning": "Old entry missed the concrete production and exact VP text, but the old low score was directionally right. In practice this is a late-game VP snipe, not an economy city: Reds timing/2 delegates delays it, +2 MC-prod rarely has meaningful runway, and the -1 energy-prod still needs to be available. The card is playable only when a high-empty/hazard adjacency spot exists and preferably when steel lowers the cash cost. Otherwise you pay a lot for a special city that scores poorly and also blocks future greeneries around it.",
     "synergies": [
-      "Gordon"
+      "Gordon",
+      "Reds party",
+      "Steel payment"
     ],
-    "when_to_pick": "Late game when Reds/2 delegates are already available, you have spare energy, and there is a real 5+ VP empty/hazard spot. Prefer steel payment or Gordon/city incentives. Do not buy early as an economy plan, and skip if the best spot is only medium."
+    "when_to_pick": "Late game when Reds/2 delegates are already available, you have spare energy, and there is a real 5+ VP empty/hazard spot. Prefer steel payment or Gordon/city incentives. Do not buy early as an economy plan, and skip if the best spot is only medium or the cash cost is painful."
   },
   "Return to Abandoned Technology": {
     "name": "Return to Abandoned Technology",

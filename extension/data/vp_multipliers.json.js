@@ -19,11 +19,6 @@ const TM_VP_MULTIPLIERS = {
   "Search For Life":             { vpPer: "flat_conditional", vpFlat: 3, selfTags: ["science"] },
 
   // ══════════════════════════════════════════════════════════════
-  // VP PER EARTH TAG
-  // ══════════════════════════════════════════════════════════════
-  "Satellites":                  { vpPer: "space", rate: 1, selfTags: ["space"] },
-
-  // ══════════════════════════════════════════════════════════════
   // VP PER N RESOURCES ON SELF (action accumulators)
   // ══════════════════════════════════════════════════════════════
   "Tardigrades":                 { vpPer: "self_resource", divisor: 4, selfTags: ["microbe"] },
