@@ -295,6 +295,12 @@ function getWeakPseudoVpBuyPenalty(cardName, state) {
   return gen >= 5 ? -4 : -2;
 }
 
+const HIGH_PRIORITY_PICK_BONUS = {
+  'Viral Enhancers': 6,
+  'Jovian Lanterns': 6,
+  'Molecular Printing': 12,
+};
+
 function scoreKeepPassDraftCard(card, state, corp) {
   const name = card?.name || '';
   let score = scoreCard(card, state) + corpCardBoost(name, corp) + getWeakPseudoVpBuyPenalty(name, state);
@@ -304,7 +310,13 @@ function scoreKeepPassDraftCard(card, state, corp) {
       score = overlayScore + corpCardBoost(name, corp);
     }
   }
+  score += HIGH_PRIORITY_PICK_BONUS[name] || 0;
   return score;
+}
+
+function scoreDiscardCandidate(card, state) {
+  const priorityProtection = HIGH_PRIORITY_PICK_BONUS[card?.name] ? 1000 : 0;
+  return scoreCard(card, state) + priorityProtection;
 }
 
 function isSellProtectedCard(card, state, corp, isEndgame) {
@@ -376,6 +388,22 @@ function estimateCardCashCost(card, state) {
   return Math.max(0, cost - covered);
 }
 
+function getMegaCredits(player) {
+  return player?.megacredits ?? player?.megaCredits ?? 0;
+}
+
+function getMegaCreditProduction(player) {
+  return player?.megacreditProduction ?? player?.megaCreditProduction ?? 0;
+}
+
+function normalizePlayerMoneyFields(player) {
+  if (!player) return;
+  if (player.megaCredits != null && player.megacredits == null) player.megacredits = player.megaCredits;
+  if (player.megacredits != null && player.megaCredits == null) player.megaCredits = player.megacredits;
+  if (player.megaCreditProduction != null && player.megacreditProduction == null) player.megacreditProduction = player.megaCreditProduction;
+  if (player.megacreditProduction != null && player.megaCreditProduction == null) player.megaCreditProduction = player.megacreditProduction;
+}
+
 function isLiquidityProtectedCard(cardName) {
   return ENGINE_CARDS.has(cardName) || PROD_CARDS.has(cardName) || CITY_CARDS.has(cardName);
 }
@@ -394,8 +422,8 @@ function isBottomTierLowCashUtilityCard(cardName, state) {
 function computeLowMcPlayFloor(state, urgency, spAvailable) {
   const gen = state?.game?.generation || 1;
   const tp = state?.thisPlayer || {};
-  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
-  const income = (tp.megacreditProduction || 0) + (tp.terraformRating || 20);
+  const mc = getMegaCredits(tp);
+  const income = getMegaCreditProduction(tp) + (tp.terraformRating || 20);
   if (gen <= 2) return -999;
   if (spAvailable) return -999;
   // No-SP midgame: do not cash in weak filler just because it is the only card option.
@@ -529,7 +557,7 @@ function shouldUseOpeningBlueActionBeforeProject(actionCard, projectCard, state)
 
   const projectCost = projectCard.calculatedCost ?? projectCard.cost ?? CARD_DATA[projectCard.name]?.cost ?? 0;
   if (projectCost < 10) return false;
-  const mc = state?.thisPlayer?.megacredits ?? state?.thisPlayer?.megaCredits ?? 0;
+  const mc = getMegaCredits(state?.thisPlayer);
   const cashAfter = mc - estimateCardCashCost(projectCard, state);
   return cashAfter < 8;
 }
@@ -629,6 +657,7 @@ function scoreBuildColonyChoice(colony, state) {
     const spaceDemand = estimateSpaceHandTitaniumDemand(state);
     if (gen <= 3 && spaceDemand > 0) score += Math.min(10, 4 + spaceDemand * 2);
     if ((tp.titanium || 0) <= 1) score += 1;
+    if (gen <= 3 && (tp.titanium || 0) <= 1 && (tp.titaniumProduction || 0) <= 0) score += 8;
   } else if (name === 'Ceres' && gen <= 3 && (tp.steel || 0) <= 1) {
     score += 3;
   } else if (name === 'Pluto' || name === 'Leavitt') {
@@ -732,6 +761,43 @@ function isLatePremiumVpPayoffCard(cardName) {
   );
 }
 
+const FINAL_WINDOW_ENGINE_CARDS = new Set([
+  'Advanced Alloys',
+  'Media Group',
+  'Sponsors',
+]);
+
+const FINAL_WINDOW_LAST_POKE_CARDS = new Set([
+  "CEO's Favorite Project",
+]);
+
+function hasFinalWindowScoringSignal(cardName) {
+  if (!cardName || isWeakPseudoVpActionCard(cardName)) return false;
+  if (VP_CARDS.has(cardName) || DYNAMIC_VP_CARDS.has(cardName)) return true;
+  const data = CARD_DATA[cardName] || {};
+  const vp = CARD_VP[cardName] || data.victoryPoints || data.vp;
+  if (typeof vp === 'number') return vp > 0;
+  if (vp && typeof vp === 'object') return true;
+  return isLatePremiumVpPayoffCard(cardName);
+}
+
+function hasFinalWindowEngineSignal(cardName) {
+  if (!cardName) return false;
+  return FINAL_WINDOW_ENGINE_CARDS.has(cardName) ||
+    ENGINE_CARDS.has(cardName) ||
+    PROD_CARDS.has(cardName) ||
+    hasProductionGain(cardName) ||
+    hasCardDrawUtility(cardName) ||
+    hasCardDiscountUtility(cardName);
+}
+
+function shouldDeferClosedCoreFinalWindowCard(cardName, state, context = {}) {
+  if (remainingCoreSteps(state) > 0) return false;
+  if (FINAL_WINDOW_LAST_POKE_CARDS.has(cardName) && context.hasPlayableCardAction) return true;
+  if (hasFinalWindowScoringSignal(cardName)) return false;
+  return hasFinalWindowEngineSignal(cardName);
+}
+
 function getLateCoreNonProgressCardFloor(cardName, coreSteps, gen11OceanLagCompletion) {
   if (coreSteps <= 5) return 50;
   if (gen11OceanLagCompletion) return 22;
@@ -757,7 +823,7 @@ function getEarlyAwardDelayCard(playCardOption, state) {
   const gen = state?.game?.generation ?? 1;
   if (!playCardOption || gen < 5 || gen > 8) return null;
   const tp = state?.thisPlayer || {};
-  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
+  const mc = getMegaCredits(tp);
   const heat = tp.heat || 0;
   const steel = tp.steel || 0;
   const titanium = tp.titanium || 0;
@@ -963,7 +1029,7 @@ function scoreVisibleStandardProject(spCard, state, context) {
     const playableColonies = colonies.filter((colony) => (colony?.colonies?.length ?? 0) < 3);
     if (playableColonies.length === 0) return -999;
     const myColonies = tp.coloniesCount || 0;
-    const currentMc = tp.megacredits ?? tp.megaCredits ?? 0;
+    const currentMc = getMegaCredits(tp);
     const currentEnergy = tp.energy || 0;
     let best = -999;
     for (const colony of playableColonies) {
@@ -1036,7 +1102,7 @@ function isVisibleStandardProjectAffordable(spCard, state, context) {
   const cost = getVisibleStandardProjectCost(spCard);
   if (!Number.isFinite(cost)) return true;
   const tp = state?.thisPlayer || {};
-  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
+  const mc = getMegaCredits(tp);
   const redsTax = context?.redsTax ?? (isRedsRuling(state) ? 3 : 0);
   const terraformTax = isTerraformingStandardProject(spCard?.name || spCard) ? redsTax : 0;
   return mc >= cost + terraformTax;
@@ -1094,7 +1160,7 @@ function getBestVisibleAquiferStandardProject(spCards, state, context) {
 }
 
 function getBestVisibleGreeneryStandardProject(spCards, state, context) {
-  const mc = state?.thisPlayer?.megacredits ?? state?.thisPlayer?.megaCredits ?? 0;
+  const mc = getMegaCredits(state?.thisPlayer);
   const greeneryOnly = (spCards || []).filter((card) => {
     if (!card || card.isDisabled) return false;
     const name = String(card.name || card || '');
@@ -1421,7 +1487,7 @@ function classifyStrategy(state) {
       colonies: 0,
       animals: (myTags.animal || 0) * 2 + (myTags.microbe || 0) * 2 + (handTags.animal || 0) + (handTags.microbe || 0),
       venus: (myTags.venus || 0) * 2 + (handTags.venus || 0),
-      production: (tp.megacreditProduction || 0) + (tp.steelProduction || 0) * 2 + (tp.titaniumProduction || 0) * 3,
+      production: getMegaCreditProduction(tp) + (tp.steelProduction || 0) * 2 + (tp.titaniumProduction || 0) * 3,
     };
 
     // Corp signals (+10-15 for matching archetype)
@@ -1483,8 +1549,8 @@ function planGeneration(state) {
   const cached = genPlans.get(color);
   if (cached && cached.gen === gen) return cached;
 
-  const mc = me.megacredits || 0;
-  const income = (me.megacreditProduction || 0) + (me.terraformRating || 20);
+  const mc = getMegaCredits(me);
+  const income = getMegaCreditProduction(me) + (me.terraformRating || 20);
   const hand = getHandCards(state);
   const steps = remainingSteps(state);
   const ratePerGen = Math.max(4, (state?.players?.length || 3) * 2);
@@ -1603,11 +1669,8 @@ function handleInput(wf, state, depth = 0) {
   if (depth > 10) return { type: 'option' };
   // Normalize megaCredits → megacredits (our fork API uses camelCase, smartbot expects lowercase)
   if (depth === 0 && state?.thisPlayer) {
-    const tp = state.thisPlayer;
-    if (tp.megaCredits != null && tp.megacredits == null) tp.megacredits = tp.megaCredits;
-    for (const p of (state.players || [])) {
-      if (p.megaCredits != null && p.megacredits == null) p.megacredits = p.megaCredits;
-    }
+    normalizePlayerMoneyFields(state.thisPlayer);
+    for (const p of (state.players || [])) normalizePlayerMoneyFields(p);
   }
   const t = wf.type;
   const corp = (state?.thisPlayer?.tableau || [])[0]?.name || "";
@@ -1688,7 +1751,7 @@ function handleInput(wf, state, depth = 0) {
     const opts = wf.options || [];
     if (opts.length === 0) return { type: 'option' };
 
-    const mc = state?.thisPlayer?.megacredits ?? 0;
+    const mc = getMegaCredits(state?.thisPlayer);
     const steel = state?.thisPlayer?.steel ?? 0;
     const titanium = state?.thisPlayer?.titanium ?? 0;
     const heat = state?.thisPlayer?.heat ?? 0;
@@ -1761,6 +1824,9 @@ function handleInput(wf, state, depth = 0) {
       ? getSeptemActionCard(opts[cardActionIdx]?.cards || [])
       : null;
     const onlyWeakLateActions = actionCards.length > 0 && actionCards.every(name => WEAK_LATE_ACTION_CARDS.has(name));
+    const hasPlayableCardActionNow = cardActionIdx >= 0 &&
+      !onlyWeakLateActions &&
+      (opts[cardActionIdx]?.cards || []).some(c => c && !c.isDisabled);
 
     // v74: Colony trade payment — ALWAYS prefer energy (2.4 MC effective) over MC (9 MC) or titanium (9 MC)
     if (titles.some(x => x.t.includes('pay for trade') || x.t.includes('pay 3 energy') || (x.t.includes('trade') && x.t.includes('pay')))) {
@@ -1885,7 +1951,7 @@ function handleInput(wf, state, depth = 0) {
     if (orTitle.includes('fund an award') || orTitle.includes('fund -')) {
       const tp = state?.thisPlayer || {};
       const myColor = tp.color;
-      const mc = tp.megacredits || 0;
+      const mc = getMegaCredits(tp);
       const gen = state?.game?.generation ?? 5;
       const steps = remainingSteps(state);
       const players = state?.players || [];
@@ -1925,7 +1991,7 @@ function handleInput(wf, state, depth = 0) {
 
       const metrics = players.map(p => ({
         color: p.color,
-        banker: p.megacreditProduction ?? 0,
+        banker: getMegaCreditProduction(p),
         thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
         miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
         scientist: p.tags?.science ?? 0,
@@ -2114,6 +2180,7 @@ function handleInput(wf, state, depth = 0) {
           // v76: +3 sunk cost recovery (card already bought)
           const ev = scoreCard(c, state) + 3;
           const hasVP = !!(CARD_DATA[c.name]?.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name);
+          if (shouldDeferClosedCoreFinalWindowCard(c.name, state, {hasPlayableCardAction: hasPlayableCardActionNow})) return false;
           if (!coreGlobalOpen && hasProductionGain(c.name) && !hasImmediateCoreGlobalProgress(c.name) && !hasVP) return false;
           return ev >= 0 || hasVP; // any positive EV or VP-giving card
         }).sort((a, b) => (scoreCard(b, state) + 3) - (scoreCard(a, state) + 3));
@@ -2155,6 +2222,7 @@ function handleInput(wf, state, depth = 0) {
             if (cTags.includes('space')) budget += (titanium * (state?.thisPlayer?.titaniumValue || 3));
             if (cost > budget) return false;
             const hasVP = !!(CARD_DATA[c.name]?.victoryPoints) || VP_CARDS.has(c.name) || DYNAMIC_VP_CARDS.has(c.name);
+            if (shouldDeferClosedCoreFinalWindowCard(c.name, state, {hasPlayableCardAction: hasPlayableCardActionNow})) return false;
             if (!coreGlobalOpen && hasProductionGain(c.name) && !hasImmediateCoreGlobalProgress(c.name) && !hasVP) return false;
             return scoreCard(c, state) + 3 >= 0; // must have positive EV (+3 sunk cost)
           })
@@ -2211,7 +2279,7 @@ function handleInput(wf, state, depth = 0) {
         } else {
           const metrics = players.map(p => ({
             color: p.color,
-            banker: p.megacreditProduction ?? 0,
+            banker: getMegaCreditProduction(p),
             thermalist: (p.heat ?? 0) + (p.energy ?? 0) + (p.heatProduction ?? 0),
             miner: (p.steel ?? 0) + (p.titanium ?? 0) + (p.steelProduction ?? 0) + (p.titaniumProduction ?? 0),
             scientist: p.tags?.science ?? 0,
@@ -2450,9 +2518,9 @@ function handleInput(wf, state, depth = 0) {
     // v76: Only from gen 5+ — not enough info about opponent engine before that
     let tempoSwitchBonus = 0;
     if (gen >= 5) {
-      const _myMCProd = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const _myMCProd = getMegaCreditProduction(state?.thisPlayer) + (state?.thisPlayer?.terraformRating || 20);
       const _oppPlayers75 = (state?.players || []).filter(p => p.color !== state?.thisPlayer?.color);
-      const _maxOppProd = Math.max(0, ..._oppPlayers75.map(p => (p.megacreditProduction || 0) + (p.terraformRating || 20)));
+      const _maxOppProd = Math.max(0, ..._oppPlayers75.map(p => getMegaCreditProduction(p) + (p.terraformRating || 20)));
       if (_maxOppProd >= _myMCProd + 10) {
         tempoSwitchBonus = 5;
       }
@@ -2796,11 +2864,11 @@ function handleInput(wf, state, depth = 0) {
 
     // Buy cards phase: buy good cards, keep reserve for plays
     if (title.includes('buy') || title.includes('select card(s) to buy') || title.includes('select up to')) {
-      const mc = state?.thisPlayer?.megacredits ?? 40;
+      const mc = state?.thisPlayer?.megacredits ?? state?.thisPlayer?.megaCredits ?? 40;
       const cardCost = state?.thisPlayer?.cardCost ?? 3;
       const gen = state?.game?.generation ?? 5;
       const handCount = getHandCards(state).length;
-      const income = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const income = getMegaCreditProduction(state?.thisPlayer) + (state?.thisPlayer?.terraformRating || 20);
       const steps = remainingSteps(state);
       const isEndgame = steps <= 8 || gen >= 20;
       // In endgame: stop buying — save MC for SPs and terraforming
@@ -2825,6 +2893,7 @@ function handleInput(wf, state, depth = 0) {
       const buyCards = cards.map((card) => {
         let score = scoreCard(card, state) + corpCardBoost(card.name, corp);
         score += getWeakPseudoVpBuyPenalty(card.name, state);
+        score += HIGH_PRIORITY_PICK_BONUS[card.name] || 0;
         const cost = card.calculatedCost ?? card.cost ?? 0;
         const data = CARD_DATA[card.name] || {};
         const prod = data.behavior?.production || {};
@@ -2862,7 +2931,7 @@ function handleInput(wf, state, depth = 0) {
       if (starvingHand) threshold -= 1;
       // v66: Hand bloat gate — raise threshold and reduce maxBuy when hand is overloaded
       const _hbHand = handCount;
-      const _hbIncome = (state?.thisPlayer?.megacreditProduction || 0) + (state?.thisPlayer?.terraformRating || 20);
+      const _hbIncome = getMegaCreditProduction(state?.thisPlayer) + (state?.thisPlayer?.terraformRating || 20);
       const _hbPlayRate = Math.max(1, _hbIncome / 15);
       const _hbGensLeft = Math.max(1, Math.ceil(steps / Math.max(4, (state?.players?.length || 3) * 2)));
       const _hbBufferedMidgame = gen >= 4 && !starvingHand && _hbHand >= 7;
@@ -2884,14 +2953,35 @@ function handleInput(wf, state, depth = 0) {
       else if (_hbBufferedMidgame && _hbHand >= 10) maxBuy = Math.max(1, maxBuy - 2);
       else if (_hbBufferedMidgame) maxBuy = Math.max(1, maxBuy - 1);
       let count = Math.max(min, Math.min(canAfford, worthBuying.length, maxBuy));
+      let selectedCards = worthBuying.slice(0, count);
       if (starvingHand && count > 1 && worthBuying.length > 0) {
-        const topLineCashCost = estimateCardCashCost(worthBuying[0], state);
-        if (topLineCashCost > 0 && mc - cardCost >= topLineCashCost) {
-          while (count > 1 && mc - count * cardCost < topLineCashCost) count--;
+        let protectedCard = null;
+        let protectedCashCost = 0;
+        for (const candidate of worthBuying) {
+          const cashCost = estimateCardCashCost(candidate, state);
+          if (cashCost >= 20 && mc - cardCost >= cashCost && cashCost > protectedCashCost) {
+            protectedCard = candidate;
+            protectedCashCost = cashCost;
+          }
+        }
+        if (protectedCard && (!selectedCards.includes(protectedCard) || mc - selectedCards.length * cardCost < protectedCashCost)) {
+          selectedCards = [protectedCard];
+          for (const candidate of worthBuying) {
+            if (candidate === protectedCard) continue;
+            if (selectedCards.length >= count) break;
+            if (mc - (selectedCards.length + 1) * cardCost < protectedCashCost) continue;
+            selectedCards.push(candidate);
+          }
+          count = selectedCards.length;
+        } else if (protectedCashCost > 0) {
+          while (selectedCards.length > 1 && mc - selectedCards.length * cardCost < protectedCashCost) {
+            selectedCards.pop();
+          }
+          count = selectedCards.length;
         }
       }
       dbg(`BUY: ${buyCards.length} cards, thr=${threshold} worth=${worthBuying.length} afford=${canAfford} max=${maxBuy} buy=${count} hand=${_hbHand} reserve=${reserve} starved=${starvingHand?1:0} top3=${buyCards.slice(0,3).map(c=>`${c.name}=${c._buyScore.toFixed(0)}`).join(',')}`);
-      return { type: 'card', cards: worthBuying.slice(0, count).map(c => c.name) };
+      return { type: 'card', cards: selectedCards.map(c => c.name) };
     }
 
     if (title.includes('cannot afford')) {
@@ -2952,18 +3042,18 @@ function handleInput(wf, state, depth = 0) {
       return { type: 'card', cards: [bestTarget.name] };
     }
 
+    // Discard: discard least valuable (keep best cards in hand)
+    if (title.includes('discard')) {
+      const sorted = [...cards].sort((a, b) => scoreDiscardCandidate(a, state) - scoreDiscardCandidate(b, state)); // worst first
+      return { type: 'card', cards: sorted.slice(0, Math.max(min, 1)).map(c => c.name) };
+    }
+
     // Draft/keep: pick highest-scored card(s)
     if (title.includes('select a card') || title.includes('keep')) {
       const count = Math.max(1, min);
       const scored = [...cards].sort((a, b) =>
         scoreKeepPassDraftCard(b, state, corp) - scoreKeepPassDraftCard(a, state, corp));
       return { type: 'card', cards: scored.slice(0, count).map(c => c.name) };
-    }
-
-    // Discard: discard least valuable (keep best cards in hand)
-    if (title.includes('discard')) {
-      const sorted = [...cards].sort((a, b) => scoreCard(a, state) - scoreCard(b, state)); // worst first
-      return { type: 'card', cards: sorted.slice(0, Math.max(min, 1)).map(c => c.name) };
     }
 
     // Sell: sell lowest-scored cards, but KEEP VP cards when the workflow allows it.
@@ -3171,7 +3261,7 @@ function handleInput(wf, state, depth = 0) {
   if (t === 'projectCard') {
     const cards = wf.cards || [];
     if (cards.length > 0) {
-      const mc = state?.thisPlayer?.megacredits ?? 0;
+      const mc = getMegaCredits(state?.thisPlayer);
       const tp = state?.thisPlayer || {};
       const payOpts = wf.paymentOptions || {};
       const heatAvail = payOpts.heat ? (tp.heat || 0) : 0;
@@ -3254,7 +3344,7 @@ function handleInput(wf, state, depth = 0) {
     const loseOrder = [
       { key: 'heat', prod: available.heat ?? tp.heatProduction ?? 0 },
       { key: 'energy', prod: available.energy ?? tp.energyProduction ?? 0 },
-      { key: 'megacredits', prod: available.megacredits ?? ((tp.megacreditProduction ?? 0) + 5) }, // MC prod can go negative in theory
+      { key: 'megacredits', prod: available.megacredits ?? (getMegaCreditProduction(tp) + 5) }, // MC prod can go negative in theory
       { key: 'plants', prod: available.plants ?? tp.plantProduction ?? 0 },
       { key: 'steel', prod: available.steel ?? tp.steelProduction ?? 0 },
       { key: 'titanium', prod: available.titanium ?? tp.titaniumProduction ?? 0 },
@@ -3467,7 +3557,7 @@ function handleInput(wf, state, depth = 0) {
         // Include corp boost in threshold — corp-synergy cards are worth buying even if base EV is low
         const worthBuying = scored.filter(c => openingKeepScore(c) >= (openingDraft ? 30 : 4));
         // Respect required minimum picks first; only optional extra buys are affordability-limited.
-        const mc = state?.thisPlayer?.megaCredits ?? 0;
+        const mc = getMegaCredits(state?.thisPlayer);
         const affordable = Math.floor(mc / 3);
         const desired = Math.min(max, Math.max(min, worthBuying.length));
         const count = min > 0 ? desired : Math.min(desired, affordable);
@@ -3524,8 +3614,8 @@ function mlLogAction(playerName, state, action, phase) {
     player: playerName,
     // State features
     tr: me.terraformRating || 0,
-    mc: me.megacredits || 0,
-    mc_prod: me.megacreditProduction || 0,
+    mc: getMegaCredits(me),
+    mc_prod: getMegaCreditProduction(me),
     steel: me.steel || 0, steel_prod: me.steelProduction || 0,
     ti: me.titanium || 0, ti_prod: me.titaniumProduction || 0,
     plants: me.plants || 0, plant_prod: me.plantProduction || 0,
@@ -3544,7 +3634,7 @@ function mlLogAction(playerName, state, action, phase) {
     // Opponents (visible info)
     opponents: (state?.players || []).filter(p => p.color !== me.color).map(p => ({
       tr: p.terraformRating || 0,
-      mc_prod: p.megacreditProduction || 0,
+      mc_prod: getMegaCreditProduction(p),
       tableau_size: (p.tableau || []).length,
       tags: p.tags || {},
     })),

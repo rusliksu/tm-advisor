@@ -63,6 +63,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   var _fallbackApiLastError = '';
   var _bridgeObserver = null;
   var _pendingFastRetry = 0;
+  var _actionTargetClass = 'tm-advisor-action-target';
+  var _cardTargetClass = 'tm-advisor-card-target';
+  var _actionBadgeClass = 'tm-advisor-action-badge';
 
   function hasBridgeData() {
     var targets = [
@@ -122,6 +125,174 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return data;
   }
 
+  function firstNumber(obj, keys, fallback) {
+    if (!obj) return fallback || 0;
+    for (var i = 0; i < keys.length; i++) {
+      var value = obj[keys[i]];
+      if (typeof value === 'number') return value;
+    }
+    return fallback || 0;
+  }
+
+  function playerMc(player) {
+    return firstNumber(player, ['megaCredits', 'megacredits'], 0);
+  }
+
+  function playerMcProd(player) {
+    return firstNumber(player, ['megaCreditProduction', 'megacreditProduction', 'megaCreditsProduction'], 0);
+  }
+
+  function visiblePlayers(state) {
+    if (!state) return [];
+    if (state.game && Array.isArray(state.game.players) && state.game.players.length > 0) return state.game.players;
+    if (Array.isArray(state.players) && state.players.length > 0) return state.players;
+    return state.thisPlayer ? [state.thisPlayer] : [];
+  }
+
+  function playerNameForColor(state, color) {
+    var players = visiblePlayers(state);
+    for (var i = 0; i < players.length; i++) {
+      if (players[i] && players[i].color === color) return players[i].name || color;
+    }
+    return color || '?';
+  }
+
+  function awardIsFunded(award) {
+    return !!(award && (award.funder_name || award.funder_color || award.playerName || award.playerColor));
+  }
+
+  function milestoneIsClaimed(milestone) {
+    return !!(milestone && (milestone.playerName || milestone.playerColor || milestone.owner_name || milestone.owner_color || milestone.player || milestone.color));
+  }
+
+  function milestoneTarget(milestone) {
+    if (!milestone) return 0;
+    if (typeof milestone.threshold === 'number' && milestone.threshold > 0) return milestone.threshold;
+    if (typeof milestone.target === 'number' && milestone.target > 0) return milestone.target;
+    var maData = (typeof TM_MA_DATA !== 'undefined') ? TM_MA_DATA : {};
+    var def = maData[milestone.name];
+    if (def && typeof def.target === 'number' && def.target > 0) return def.target;
+    return 0;
+  }
+
+  function scoreRowsIncludeColor(rows, color) {
+    if (!color || !Array.isArray(rows)) return false;
+    for (var i = 0; i < rows.length; i++) {
+      if ((rows[i].playerColor || rows[i].color) === color) return true;
+    }
+    return false;
+  }
+
+  function currentColorHasPublicScores(state) {
+    var color = state && state.thisPlayer && state.thisPlayer.color;
+    if (!color) return false;
+    var game = (state && state.game) || {};
+    var awards = game.awards || [];
+    var milestones = game.milestones || [];
+    for (var ai = 0; ai < awards.length; ai++) {
+      if (scoreRowsIncludeColor(awards[ai].scores, color)) return true;
+    }
+    for (var mi = 0; mi < milestones.length; mi++) {
+      if (scoreRowsIncludeColor(milestones[mi].scores, color)) return true;
+    }
+    return false;
+  }
+
+  function renderPublicAwardRace(state) {
+    var awards = (state && state.game && state.game.awards) || [];
+    if (!awards.length) return '';
+    var fundedCount = 0;
+    for (var i = 0; i < awards.length; i++) {
+      if (awardIsFunded(awards[i])) fundedCount++;
+    }
+    if (fundedCount >= 3) return '';
+    var costs = [8, 14, 20];
+    var fundCost = costs[Math.min(fundedCount, 2)];
+    var candidates = [];
+    for (var ai = 0; ai < awards.length; ai++) {
+      var aw = awards[ai];
+      if (awardIsFunded(aw) || !Array.isArray(aw.scores) || aw.scores.length === 0) continue;
+      var ranked = aw.scores.slice().sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+      var top = ranked[0] || {};
+      var second = ranked[1] || {};
+      var topScore = top.score || 0;
+      var secondScore = second.score || 0;
+      var lead = topScore - secondScore;
+      if (topScore <= 0 || lead <= 0) continue;
+      candidates.push({
+        name: aw.name,
+        color: top.playerColor || top.color,
+        topScore: topScore,
+        secondScore: secondScore,
+        lead: lead
+      });
+    }
+    if (candidates.length === 0) return '';
+    candidates.sort(function(a, b) {
+      if (b.lead !== a.lead) return b.lead - a.lead;
+      return b.topScore - a.topScore;
+    });
+
+    var html = '<div style="font-size:10px;color:#f1c40f;margin-top:2px">🏆 Public award windows (' + fundCost + ' MC)</div>';
+    for (var ci = 0; ci < Math.min(candidates.length, 3); ci++) {
+      var c = candidates[ci];
+      var owner = playerNameForColor(state, c.color);
+      html += '<div style="font-size:10px;color:#ddd">• ' + _esc(c.name) + ': ' +
+        '<span style="color:#f1c40f">' + _esc(owner) + '</span> ' +
+        c.topScore + ' vs ' + c.secondScore + ' (+' + c.lead + ')</div>';
+    }
+    return html;
+  }
+
+  function renderPublicMilestoneRace(state) {
+    var milestones = (state && state.game && state.game.milestones) || [];
+    if (!milestones.length) return '';
+    var claimedCount = 0;
+    for (var i = 0; i < milestones.length; i++) {
+      if (milestoneIsClaimed(milestones[i])) claimedCount++;
+    }
+    var slotsLeft = Math.max(0, 3 - claimedCount);
+    if (slotsLeft <= 0) return '';
+
+    var candidates = [];
+    for (var mi = 0; mi < milestones.length; mi++) {
+      var ms = milestones[mi];
+      if (milestoneIsClaimed(ms) || !Array.isArray(ms.scores) || ms.scores.length === 0) continue;
+      var target = milestoneTarget(ms);
+      if (target <= 0) continue;
+      var ranked = ms.scores.slice().sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+      var top = ranked[0] || {};
+      var topScore = top.score || 0;
+      if (topScore <= 0 || topScore < target - 1) continue;
+      candidates.push({
+        name: ms.name,
+        color: top.playerColor || top.color,
+        topScore: topScore,
+        target: target,
+        distance: Math.max(0, target - topScore),
+        claimable: topScore >= target
+      });
+    }
+    if (candidates.length === 0) return '';
+    candidates.sort(function(a, b) {
+      if (a.claimable !== b.claimable) return a.claimable ? -1 : 1;
+      if (a.distance !== b.distance) return a.distance - b.distance;
+      return b.topScore - a.topScore;
+    });
+
+    var html = '<div style="font-size:10px;color:#f1c40f;margin-top:2px">🎯 Public milestone windows (' + slotsLeft + ' slot' + (slotsLeft === 1 ? '' : 's') + ')</div>';
+    for (var ci = 0; ci < Math.min(candidates.length, 3); ci++) {
+      var c = candidates[ci];
+      var owner = playerNameForColor(state, c.color);
+      var tone = c.claimable ? '#e74c3c' : '#f39c12';
+      var status = c.claimable ? 'claimable' : '1 away';
+      html += '<div style="font-size:10px;color:#ddd">• ' + _esc(c.name) + ': ' +
+        '<span style="color:' + tone + '">' + _esc(owner) + '</span> ' +
+        c.topScore + '/' + c.target + ' (' + status + ')</div>';
+    }
+    return html;
+  }
+
   function shouldMountPanel() {
     var gameId = (typeof TM_UTILS !== 'undefined' && TM_UTILS.parseGameId) ? TM_UTILS.parseGameId() : null;
     if (gameId) return true;
@@ -137,9 +308,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   function getPanelBodyShellHtml() {
     return '' +
       '<div id="tm-advisor-timing"></div>' +
+      '<div id="tm-advisor-actions"></div>' +
       '<div id="tm-advisor-variance"></div>' +
       '<div id="tm-advisor-alerts"></div>' +
-      '<div id="tm-advisor-actions"></div>' +
       '<div id="tm-advisor-pass"></div>' +
       '<div id="tm-advisor-pace"></div>' +
       '<div id="tm-advisor-turmoil"></div>' +
@@ -152,6 +323,12 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (!bodyEl) return null;
     if (!document.getElementById('tm-advisor-timing')) {
       bodyEl.innerHTML = getPanelBodyShellHtml();
+    } else {
+      var actionsEl = document.getElementById('tm-advisor-actions');
+      var varianceEl = document.getElementById('tm-advisor-variance');
+      if (actionsEl && varianceEl && actionsEl.nextSibling !== varianceEl) {
+        bodyEl.insertBefore(actionsEl, varianceEl);
+      }
     }
     return bodyEl;
   }
@@ -579,7 +756,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var maAlert = '';
     if (state && state.game && state.thisPlayer) {
       var tp = state.thisPlayer;
-      var mc = tp.megaCredits || 0;
+      var mc = playerMc(tp);
       var _maData = (typeof TM_MA_DATA !== 'undefined') ? TM_MA_DATA : {};
 
       // ── Compact M/A progress tracker ──
@@ -637,10 +814,10 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       // Milestone alerts: claimable + opponent proximity
       if (state.game.milestones) {
         var msClaimed = 0;
-        state.game.milestones.forEach(function(ms) { if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) msClaimed++; });
+        state.game.milestones.forEach(function(ms) { if (milestoneIsClaimed(ms)) msClaimed++; });
         if (msClaimed < 3) {
           state.game.milestones.forEach(function(ms) {
-            if (ms.playerName || ms.playerColor || ms.owner_name || ms.owner_color) return;
+            if (milestoneIsClaimed(ms)) return;
             if (!ms.scores || ms.scores.length === 0) return;
             var maDef = _maData[ms.name];
             var thr = (ms.threshold > 0) ? ms.threshold : (maDef && maDef.target > 0 ? maDef.target : 0);
@@ -670,6 +847,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
             }
           });
         }
+      }
+      if (!currentColorHasPublicScores(state)) {
+        maAlert += renderPublicMilestoneRace(state);
       }
       // Award alerts: funded standings + funding recommendations
       if (state.game.awards) {
@@ -712,6 +892,9 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
               }
             });
           }
+        }
+        if (!currentColorHasPublicScores(state)) {
+          maAlert += renderPublicAwardRace(state);
         }
       }
 
@@ -879,7 +1062,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var budgetLine = '';
     if (state && state.thisPlayer) {
       var _tp = state.thisPlayer;
-      var _mc = _tp.megaCredits || 0;
+      var _mc = playerMc(_tp);
       var _ti = _tp.titanium || 0;
       var _tiVal = _tp.titaniumValue || 3;
       var _st = _tp.steel || 0;
@@ -889,7 +1072,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       if (_ti > 0) parts.push(_ti + ' Ti');
       if (_st > 0) parts.push(_st + ' St');
       var tr = _tp.terraformRating || 0;
-      var mcProd = _tp.megaCreditProduction || _tp.megaCreditsProduction || 0;
+      var mcProd = playerMcProd(_tp);
       var income = tr + mcProd;
       var isLastGen = timing.estimatedGens <= 1;
       if (isLastGen) {
@@ -903,7 +1086,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (state && state.thisPlayer && !isLastGen) {
       var _tpI = state.thisPlayer;
       var _trI = _tpI.terraformRating || 0;
-      var _mcProdI = _tpI.megaCreditProduction || _tpI.megaCreditsProduction || 0;
+      var _mcProdI = playerMcProd(_tpI);
       var _stProdI = _tpI.steelProduction || 0;
       var _tiProdI = _tpI.titaniumProduction || 0;
       var _eProdI = _tpI.energyProduction || 0;
@@ -927,7 +1110,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         for (var _ii = 0; _ii < state.players.length; _ii++) {
           var _op = state.players[_ii];
           var _oTR = _op.terraformRating || 0;
-          var _oMcP = _op.megaCreditProduction || _op.megaCreditsProduction || 0;
+          var _oMcP = playerMcProd(_op);
           var _oStP = _op.steelProduction || 0;
           var _oTiP = _op.titaniumProduction || 0;
           var _oEP = _op.energyProduction || 0;
@@ -946,7 +1129,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       var _trendCol = _myEffIncome > _bestOpp ? '#2ecc71' : _myEffIncome < _bestOpp ? '#e74c3c' : '#f1c40f';
 
       // Available MC this gen
-      var _mcNow = _tpI.megaCredits || 0;
+      var _mcNow = playerMc(_tpI);
       var _stNow = _tpI.steel || 0;
       var _tiNow = _tpI.titanium || 0;
       var _avail = _mcNow + _stNow * _stValI + _tiNow * _tiValI;
@@ -1137,7 +1320,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     }
 
     // (d) Low production after gen 3
-    var mcProd = tp.megaCreditProduction || tp.megaCreditsProduction || 0;
+    var mcProd = playerMcProd(tp);
     if (gen >= 3 && mcProd < 5 && !isEndgame && !isLastGen) {
       warnings.push('\uD83D\uDCC9 Low production (MC-prod ' + mcProd + ') \u2014 consider engine cards');
     }
@@ -1281,8 +1464,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   function normalizeBotActionLabel(title) {
     var raw = String(title || '');
     var low = raw.toLowerCase();
-    if ((low.indexOf('play') >= 0 && low.indexOf('card') >= 0) || low.indexOf('project card') >= 0) return 'Play project card';
-    if (low.indexOf('action') >= 0 || low.indexOf('use') >= 0) return 'Use played-card action';
+    if (isBotPlayedCardActionLabel(low) || low.indexOf('action') >= 0 || low.indexOf('use') >= 0) return 'Use played-card action';
+    if (isBotPlayProjectCardLabel(low)) return 'Play project card';
     if (low.indexOf('standard project') >= 0) return 'Standard project';
     if (low.indexOf('trade') >= 0) return 'Trade';
     if (low.indexOf('pass') >= 0 || low.indexOf('end turn') >= 0 || low.indexOf('skip') >= 0 || low.indexOf('do nothing') >= 0) return 'Pass';
@@ -1291,6 +1474,283 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (low.indexOf('award') >= 0 || low.indexOf('fund') >= 0) return 'Fund award';
     if (low.indexOf('colony') >= 0 || low.indexOf('build') >= 0) return 'Build colony';
     return raw || 'Action';
+  }
+
+  function isBotPlayedCardActionLabel(title) {
+    var low = String(title || '').toLowerCase();
+    return (low.indexOf('played') >= 0 && low.indexOf('action') >= 0) ||
+      low.indexOf('perform an action') >= 0;
+  }
+
+  function isBotPlayProjectCardLabel(title) {
+    var low = String(title || '').toLowerCase();
+    if (isBotPlayedCardActionLabel(low)) return false;
+    return low.indexOf('project card') >= 0 || (/\bplay\b/.test(low) && low.indexOf('card') >= 0);
+  }
+
+  function botLabelText(value) {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+    if (Array.isArray(value)) {
+      var parts = [];
+      for (var i = 0; i < value.length; i++) {
+        var part = botLabelText(value[i]);
+        if (part) parts.push(part);
+      }
+      return parts.join(' ');
+    }
+    if (typeof value === 'object') {
+      if (typeof value.message === 'string') {
+        var data = Array.isArray(value.data) ? value.data : [];
+        return value.message.replace(/\$\{(\d+)\}/g, function(match, indexText) {
+          var entry = data[Number(indexText)];
+          if (entry && typeof entry === 'object' && Object.prototype.hasOwnProperty.call(entry, 'value')) {
+            return botLabelText(entry.value);
+          }
+          return botLabelText(entry);
+        });
+      }
+      return botLabelText(value.text || value.message || value.title || value.label || value.buttonLabel || value.name);
+    }
+    return '';
+  }
+
+  function optionBotLabel(option) {
+    return botLabelText(option && option.title) || botLabelText(option && option.buttonLabel);
+  }
+
+  var BOT_FINAL_WINDOW_ENGINE_CARDS = {
+    Sponsors: true,
+  };
+
+  function botCardName(card) {
+    if (!card) return '';
+    return typeof card === 'string' ? card : (card.name || card.cardName || card.card || '');
+  }
+
+  function botLower(value) {
+    return String(value || '').toLowerCase();
+  }
+
+  function botAsNumber(value, fallback) {
+    var number = Number(value);
+    return isFinite(number) ? number : fallback;
+  }
+
+  function estimateBotGensLeft(state) {
+    var direct = state && (state.gensLeft || state.estimatedGensLeft);
+    if (typeof direct === 'number' && isFinite(direct) && direct > 0) return direct;
+    if (TM_ADVISOR && typeof TM_ADVISOR.estimateGensLeft === 'function') {
+      var estimated = TM_ADVISOR.estimateGensLeft(state);
+      if (typeof estimated === 'number' && isFinite(estimated) && estimated > 0) return estimated;
+    }
+    if (TM_ADVISOR && typeof TM_ADVISOR.endgameTiming === 'function') {
+      var timing = TM_ADVISOR.endgameTiming(state) || {};
+      var fromTiming = timing.estimatedGens || timing.gensLeft;
+      if (typeof fromTiming === 'number' && isFinite(fromTiming) && fromTiming > 0) return fromTiming;
+    }
+    var gen = state && state.game ? Number(state.game.generation) : 0;
+    return gen > 0 ? Math.max(1, 9 - gen + 1) : 3;
+  }
+
+  function botRequiresVenusCompletion(game) {
+    var opts = (game && (game.gameOptions || game.options)) || {};
+    return opts.requiresVenusTrackCompletion === true || opts.requiresVenusTrackCompletion === 'true';
+  }
+
+  function botIsFullyTerraformedFinalWindow(state) {
+    var game = (state && state.game) || {};
+    if (game.isTerraformed === true) return true;
+    var temp = botAsNumber(game.temperature, -30);
+    var oxygen = botAsNumber(game.oxygenLevel != null ? game.oxygenLevel : game.oxygen, 0);
+    var oceans = botAsNumber(game.oceans, 0);
+    if (temp < 8 || oxygen < 14 || oceans < 9) return false;
+    if (botRequiresVenusCompletion(game)) {
+      var venus = botAsNumber(game.venusScaleLevel != null ? game.venusScaleLevel : game.venus, 0);
+      if (venus < 30) return false;
+    }
+    return true;
+  }
+
+  function botHasFinalWindowScoringSignal(card) {
+    var name = botCardName(card);
+    if (name === "CEO's Favorite Project") return true;
+    var directVp = botAsNumber(card && (card.vp != null ? card.vp : card.victoryPoints), 0);
+    if (directVp > 0) return true;
+    var reason = botLower(card && card.reason);
+    return /\b(vp|point|points|score|scoring|cashout|animal|jovian|greenery)\b/.test(reason);
+  }
+
+  function botHasFinalWindowEngineSignal(card) {
+    var name = botCardName(card);
+    if (BOT_FINAL_WINDOW_ENGINE_CARDS[name]) return true;
+    var reason = botLower(card && card.reason);
+    return /\b(prod|production|engine|tempo|income|draw|discount|steel|titanium|energy|heat)\b/.test(reason);
+  }
+
+  function shouldDeferBotFinalWindowEngineCard(card, state) {
+    if (estimateBotGensLeft(state) > 1) return false;
+    if (!botIsFullyTerraformedFinalWindow(state)) return false;
+    if (botHasFinalWindowScoringSignal(card)) return false;
+    return botHasFinalWindowEngineSignal(card);
+  }
+
+  function botHasOtherPlayedCardAction(playContext) {
+    var wf = playContext && playContext.waitingFor;
+    var currentIndex = playContext && playContext.optionIndex;
+    var options = (wf && Array.isArray(wf.options)) ? wf.options : [];
+    for (var i = 0; i < options.length; i++) {
+      if (i === currentIndex) continue;
+      var opt = options[i];
+      if (!isBotPlayedCardActionLabel(optionBotLabel(opt))) continue;
+      var cards = Array.isArray(opt && opt.cards) ? opt.cards : [];
+      for (var ci = 0; ci < cards.length; ci++) {
+        if (cards[ci] && !cards[ci].isDisabled) return true;
+      }
+    }
+    return false;
+  }
+
+  function shouldDeferBotPlayCard(card, state, playContext) {
+    var name = botCardName(card);
+    if (shouldDeferBotFinalWindowEngineCard(card, state)) return true;
+    if (name === "CEO's Favorite Project") {
+      if (estimateBotGensLeft(state) > 1) return true;
+      return botHasOtherPlayedCardAction(playContext);
+    }
+    return false;
+  }
+
+  function bestNonDeferredBotCard(rankedCards, state, playContext) {
+    rankedCards = Array.isArray(rankedCards) ? rankedCards : [];
+    for (var i = 0; i < rankedCards.length; i++) {
+      if (!shouldDeferBotPlayCard(rankedCards[i], state, playContext)) return rankedCards[i];
+    }
+    return null;
+  }
+
+  function compactBotTargetText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function clearBotActionTarget(documentObj) {
+    var doc = documentObj || document;
+    if (!doc || !doc.querySelectorAll) return;
+    var targets = doc.querySelectorAll('.' + _actionTargetClass);
+    for (var i = 0; i < targets.length; i++) {
+      var target = targets[i];
+      if (!target) continue;
+      if (target.classList) target.classList.remove(_actionTargetClass);
+      if (target.classList) target.classList.remove(_cardTargetClass);
+      if (target.getAttribute && target.getAttribute('data-tm-advisor-prev-title') != null) {
+        var prevTitle = target.getAttribute('data-tm-advisor-prev-title') || '';
+        if (prevTitle) target.setAttribute('title', prevTitle);
+        else if (target.removeAttribute) target.removeAttribute('title');
+        if (target.removeAttribute) target.removeAttribute('data-tm-advisor-prev-title');
+      }
+      var badges = target.querySelectorAll ? target.querySelectorAll('.' + _actionBadgeClass) : [];
+      for (var bi = 0; bi < badges.length; bi++) {
+        if (badges[bi] && badges[bi].remove) badges[bi].remove();
+      }
+    }
+    var cardTargets = doc.querySelectorAll('.' + _cardTargetClass);
+    for (var ci = 0; ci < cardTargets.length; ci++) {
+      var cardTarget = cardTargets[ci];
+      if (!cardTarget) continue;
+      if (cardTarget.classList) cardTarget.classList.remove(_cardTargetClass);
+      if (cardTarget.getAttribute && cardTarget.getAttribute('data-tm-advisor-prev-title') != null) {
+        var cardPrevTitle = cardTarget.getAttribute('data-tm-advisor-prev-title') || '';
+        if (cardPrevTitle) cardTarget.setAttribute('title', cardPrevTitle);
+        else if (cardTarget.removeAttribute) cardTarget.removeAttribute('title');
+        if (cardTarget.removeAttribute) cardTarget.removeAttribute('data-tm-advisor-prev-title');
+      }
+    }
+  }
+
+  function findBotActionTarget(botHint, documentObj) {
+    var doc = documentObj || document;
+    if (!botHint || !doc || !doc.querySelectorAll) return null;
+    var wanted = compactBotTargetText(botHint.optionTitle || botHint.title);
+    var candidates = [];
+    var selectors = [
+      'label.form-radio',
+      '.wf-component button',
+      '.wf-component input[type="button"]',
+      '.wf-component input[type="submit"]',
+      'button'
+    ];
+    for (var si = 0; si < selectors.length; si++) {
+      var nodes = [];
+      try { nodes = doc.querySelectorAll(selectors[si]) || []; } catch (e) { nodes = []; }
+      for (var ni = 0; ni < nodes.length; ni++) {
+        if (candidates.indexOf(nodes[ni]) < 0) candidates.push(nodes[ni]);
+      }
+    }
+    if (botHint.optionIndex != null) {
+      var optionLabels = [];
+      try { optionLabels = doc.querySelectorAll('label.form-radio') || []; } catch (e1) {}
+      if (optionLabels[botHint.optionIndex]) return optionLabels[botHint.optionIndex];
+    }
+    for (var i = 0; i < candidates.length; i++) {
+      var text = compactBotTargetText(candidates[i] && candidates[i].textContent);
+      if (!text) continue;
+      if (wanted && (text.indexOf(wanted) >= 0 || wanted.indexOf(text) >= 0)) return candidates[i];
+      var normalized = compactBotTargetText(normalizeBotActionLabel(text));
+      if (normalized && compactBotTargetText(botHint.title).indexOf(normalized) >= 0) return candidates[i];
+    }
+    return null;
+  }
+
+  function findBotCardTarget(botHint, documentObj) {
+    var doc = documentObj || document;
+    var wanted = compactBotTargetText(botHint && botHint.cardName);
+    if (!wanted || !doc || !doc.querySelectorAll) return null;
+    var cards = [];
+    try { cards = doc.querySelectorAll('[data-tm-card]') || []; } catch (e) { cards = []; }
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var name = compactBotTargetText(card && card.getAttribute && card.getAttribute('data-tm-card'));
+      if (!name) name = compactBotTargetText(card && card.textContent);
+      if (name === wanted) return card;
+    }
+    try { cards = doc.querySelectorAll('.card-container') || []; } catch (e2) { cards = []; }
+    for (var ci = 0; ci < cards.length; ci++) {
+      var text = compactBotTargetText(cards[ci] && cards[ci].textContent);
+      if (!text) continue;
+      var tailIndex = text.indexOf(' ' + wanted);
+      if (text === wanted || text.indexOf(wanted + ' ') === 0 || text.indexOf(' ' + wanted + ' ') >= 0 || (tailIndex >= 0 && tailIndex === text.length - wanted.length - 1)) {
+        return cards[ci];
+      }
+    }
+    return null;
+  }
+
+  function markBotActionTarget(botHint, documentObj) {
+    var doc = documentObj || document;
+    clearBotActionTarget(doc);
+    var target = findBotActionTarget(botHint, doc);
+    var cardTarget = findBotCardTarget(botHint, doc);
+    if (target && target.classList) target.classList.add(_actionTargetClass);
+    if (target && target.getAttribute && target.setAttribute) {
+      target.setAttribute('data-tm-advisor-prev-title', target.getAttribute('title') || '');
+      var titleParts = ['Best: ' + (botHint.title || 'Action')];
+      if (botHint.reason) titleParts.push('Why: ' + botHint.reason);
+      if (botHint.alt) titleParts.push('Alt: ' + botHint.alt);
+      target.setAttribute('title', titleParts.join('\n'));
+    }
+    if (target && target.querySelector && !target.querySelector('.' + _actionBadgeClass)) {
+      var badge = doc.createElement('span');
+      badge.className = _actionBadgeClass;
+      badge.textContent = 'BEST';
+      target.appendChild(badge);
+    }
+    if (cardTarget && cardTarget.classList) cardTarget.classList.add(_cardTargetClass);
+    if (cardTarget && cardTarget.getAttribute && cardTarget.setAttribute) {
+      cardTarget.setAttribute('data-tm-advisor-prev-title', cardTarget.getAttribute('title') || '');
+      cardTarget.setAttribute('title', 'Best card: ' + (botHint.cardName || botHint.title || 'Card'));
+    }
+    return target || cardTarget || null;
   }
 
   function advisorDetectMyCorp(state) {
@@ -1471,6 +1931,68 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return html;
   }
 
+  function advisorCardName(card) {
+    if (!card) return '';
+    if (typeof card === 'string') return card;
+    return card.name || card.card || card.cardName || card.title || '';
+  }
+
+  function buildRankableHandCards(state) {
+    var tp = state && state.thisPlayer;
+    var hand = tp && Array.isArray(tp.cardsInHand) ? tp.cardsInHand : [];
+    var built = [];
+    for (var i = 0; i < hand.length; i++) {
+      var card = hand[i];
+      var name = advisorCardName(card);
+      if (!name) continue;
+      built.push({
+        name: name,
+        cost: card && card.cost != null ? card.cost : 0,
+        calculatedCost: card && card.calculatedCost != null ? card.calculatedCost : undefined,
+        tags: card && card.tags ? card.tags : []
+      });
+    }
+    return built;
+  }
+
+  function renderOffTurnPlan(state) {
+    if (!state || !state.thisPlayer || panelIsMyActionTurn(state)) return '';
+    var ranked = [];
+    if (typeof TM_ADVISOR.rankHandCards === 'function') {
+      ranked = TM_ADVISOR.rankHandCards(buildRankableHandCards(state), state) || [];
+    }
+    ranked = ranked.filter(function(card) { return card && card.name; }).slice(0, 3);
+    if (ranked.length === 0) return '';
+
+    var activePlayer = panelActivePlayerRow(state);
+    var topCard = ranked[0];
+    var detailLines = [];
+    for (var i = 1; i < ranked.length; i++) {
+      var card = ranked[i];
+      detailLines.push(
+        '<div style="padding:1px 0"><span style="color:#7fc8ff">' + (i + 1) + '.</span> <b>' +
+        _esc(card.name) + '</b>' +
+        (typeof card.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(card.score) + ')</span>' : '') +
+        (card.reason ? ' <span class="tm-advisor-next-muted">— ' + _esc(card.reason) + '</span>' : '') +
+        '</div>'
+      );
+    }
+
+    return '' +
+      '<div class="tm-advisor-next-plan">' +
+        '<div class="tm-advisor-next-title">⏭ Next action' +
+          (activePlayer ? ' <span>· ход ' + _esc(activePlayer.name || activePlayer.color || '?') + '</span>' : '') +
+        '</div>' +
+        '<div class="tm-advisor-next-main">\uD83C\uDCCF <b>' + _esc(topCard.name) + '</b>' +
+          (typeof topCard.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(topCard.score) + ')</span>' : '') +
+          (topCard.reason ? ' <span class="tm-advisor-next-muted">— ' + _esc(topCard.reason) + '</span>' : '') +
+        '</div>' +
+        (detailLines.length
+          ? '<details class="tm-advisor-next-more"><summary>ещё варианты</summary>' + detailLines.join('') + '</details>'
+          : '') +
+      '</div>';
+  }
+
   function buildBotActionHint(state) {
     if (!state || !state._waitingFor || !state.thisPlayer || !panelIsMyActionTurn(state) || typeof TM_ADVISOR.analyzeActions !== 'function') return null;
     var wf = state._waitingFor;
@@ -1479,36 +2001,50 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var rankedActions = TM_ADVISOR.analyzeActions(wf, state) || [];
     if (!rankedActions.length) return null;
 
-    var best = rankedActions[0];
-    var alt = rankedActions.length > 1 ? rankedActions[1] : null;
-    var opt = wf.options[best.index] || null;
-    var title = best.action || '';
-    var titleLow = String(title || '').toLowerCase();
-    var detail = normalizeBotActionLabel(title);
-    var reason = best.reason || '';
+    for (var ai = 0; ai < rankedActions.length; ai++) {
+      var best = rankedActions[ai];
+      var alt = rankedActions.length > ai + 1 ? rankedActions[ai + 1] : null;
+      var opt = wf.options[best.index] || null;
+      var title = botLabelText(best.action) || optionBotLabel(opt) || '';
+      var titleLow = String(title || '').toLowerCase();
+      var detail = normalizeBotActionLabel(title);
+      var cardTargetName = '';
+      var reason = best.reason || '';
 
-    if (opt && opt.cards && opt.cards.length > 0) {
-      var visibleCards = opt.cards.filter(function(card) { return card && !card.isDisabled; });
-      if (((titleLow.indexOf('play') >= 0 && titleLow.indexOf('card') >= 0) || titleLow.indexOf('project card') >= 0) &&
-          typeof TM_ADVISOR.rankHandCards === 'function') {
-        var rankedCards = TM_ADVISOR.rankHandCards(visibleCards, state) || [];
-        if (rankedCards.length > 0) {
-          detail = 'Play ' + rankedCards[0].name;
-          if (rankedCards[0].reason) reason = reason ? (reason + ' · ' + rankedCards[0].reason) : rankedCards[0].reason;
-        } else if (visibleCards.length === 1 && visibleCards[0].name) {
-          detail = 'Play ' + visibleCards[0].name;
+      if (opt && opt.cards && opt.cards.length > 0) {
+        var visibleCards = opt.cards.filter(function(card) { return card && !card.isDisabled; });
+        if (isBotPlayProjectCardLabel(title) && typeof TM_ADVISOR.rankHandCards === 'function') {
+          var rankedCards = TM_ADVISOR.rankHandCards(visibleCards, state) || [];
+          var playContext = { waitingFor: wf, optionIndex: best.index };
+          if (rankedCards.length > 0) {
+            var bestCard = bestNonDeferredBotCard(rankedCards, state, playContext);
+            if (!bestCard) continue;
+            detail = 'Play ' + bestCard.name;
+            cardTargetName = bestCard.name || '';
+            if (bestCard.reason) reason = reason ? (reason + ' · ' + bestCard.reason) : bestCard.reason;
+          } else if (visibleCards.length === 1 && visibleCards[0].name) {
+            if (shouldDeferBotPlayCard(visibleCards[0], state, playContext)) continue;
+            detail = 'Play ' + visibleCards[0].name;
+            cardTargetName = visibleCards[0].name || '';
+          }
+        } else if ((isBotPlayedCardActionLabel(title) || titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) && visibleCards.length === 1 && visibleCards[0].name) {
+          detail = 'Use ' + visibleCards[0].name;
+          cardTargetName = visibleCards[0].name || '';
         }
-      } else if ((titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) && visibleCards.length === 1 && visibleCards[0].name) {
-        detail = 'Use ' + visibleCards[0].name;
       }
+
+      return {
+        title: detail,
+        reason: reason || 'Action',
+        alt: alt ? normalizeBotActionLabel(botLabelText(alt.action) || optionBotLabel(wf.options[alt.index]) || '') : '',
+        optionTitle: optionBotLabel(opt),
+        optionIndex: best.index,
+        cardName: cardTargetName,
+        score: best.score
+      };
     }
 
-    return {
-      title: detail,
-      reason: reason || 'Action',
-      alt: alt ? normalizeBotActionLabel(alt.action || '') : '',
-      score: best.score
-    };
+    return null;
   }
 
   function buildBotHintStatus(state, rankedActions) {
@@ -1555,14 +2091,18 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
   function renderActions(state) {
     var el = document.getElementById('tm-advisor-actions');
-    if (!el) return;
-    if (!state || !state.thisPlayer) { el.innerHTML = ''; return; }
+    if (!el) { clearBotActionTarget(document); return; }
+    if (!state || !state.thisPlayer) { clearBotActionTarget(document); el.innerHTML = ''; return; }
 
     var html = '';
-    var botHint = buildBotActionHint(state);
-    var spHint = buildStandardProjectsHint(state);
+    var isMyActionTurn = panelIsMyActionTurn(state);
+    var botHint = isMyActionTurn ? buildBotActionHint(state) : null;
+    var spHint = isMyActionTurn ? buildStandardProjectsHint(state) : null;
+    markBotActionTarget(botHint, document);
     if (botHint) {
       html += renderBotHintCard(botHint, false);
+    } else if (!isMyActionTurn) {
+      html += renderOffTurnPlan(state);
     } else if (spHint) {
       html += renderBotHintCard(buildBotHintStatus(state), true);
     }
@@ -1574,7 +2114,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     // Award funding advisor
     var awards = (state.game && state.game.awards) || [];
     var myColor = state.thisPlayer ? state.thisPlayer.color : '';
-    var mc = state.thisPlayer ? (state.thisPlayer.megaCredits || 0) : 0;
+    var mc = state.thisPlayer ? playerMc(state.thisPlayer) : 0;
     if (!myColor || awards.length === 0) { el.innerHTML = html; return; }
 
     // Count funded awards
@@ -1995,7 +2535,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var tp = state.thisPlayer;
     var _usedLen = (tp.actionsThisGeneration || []).length;
     var hash = (state.game && state.game.generation || 0) + ':' +
-               (tp.megaCredits || 0) + ':' +
+               playerMc(tp) + ':' +
                (tp.terraformRating || 0) + ':' +
                (tp.heat || 0) + ':' +
                (tp.plants || 0) + ':' +
@@ -2323,8 +2863,13 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       buildBotActionHint: buildBotActionHint,
       buildBotHintStatus: buildBotHintStatus,
       buildStandardProjectsHint: buildStandardProjectsHint,
+      clearBotActionTarget: clearBotActionTarget,
       collectVarianceWarnings: collectVarianceWarnings,
+      markBotActionTarget: markBotActionTarget,
       renderBotHintCard: renderBotHintCard,
+      renderActions: renderActions,
+      renderOffTurnPlan: renderOffTurnPlan,
+      renderPublicMilestoneRace: renderPublicMilestoneRace,
       renderStandardProjectHint: renderStandardProjectHint
     };
   }

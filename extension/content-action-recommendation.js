@@ -4,6 +4,7 @@
 
   var BOX_CLASS = 'tm-action-recommendation';
   var TARGET_CLASS = 'tm-action-recommendation-target';
+  var CARD_TARGET_CLASS = 'tm-action-recommendation-card-target';
 
   function asArray(value) {
     return Array.isArray(value) ? value : [];
@@ -123,8 +124,38 @@
     return out;
   }
 
+  function renderTitle(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value !== 'object') return String(value);
+    if (typeof value.message === 'string') {
+      var data = asArray(value.data);
+      return value.message.replace(/\$\{(\d+)\}/g, function(match, indexText) {
+        var entry = data[Number(indexText)];
+        if (entry && typeof entry === 'object' && Object.prototype.hasOwnProperty.call(entry, 'value')) {
+          return String(entry.value);
+        }
+        return entry == null ? '' : String(entry);
+      });
+    }
+    return renderTitle(value.title || value.buttonLabel || value.label || value.name || '');
+  }
+
   function optionTitle(option) {
-    return compactText(option && (option.title || option.buttonLabel || option.type || ''));
+    if (!option) return '';
+    return compactText(renderTitle(option.title) || renderTitle(option.buttonLabel) || renderTitle(option.type));
+  }
+
+  function isPlayedCardActionLabel(label) {
+    var low = lower(label);
+    return (low.indexOf('played') >= 0 && low.indexOf('action') >= 0) ||
+      low.indexOf('perform an action') >= 0;
+  }
+
+  function isPlayProjectCardLabel(label) {
+    var low = lower(label);
+    if (isPlayedCardActionLabel(low)) return false;
+    return low.indexOf('project card') >= 0 || (/\bplay\b/.test(low) && low.indexOf('card') >= 0);
   }
 
   function normalizeActionLabel(label) {
@@ -134,7 +165,8 @@
     var low = lower(text);
     if (low.indexOf('sell patents') >= 0 || low.indexOf('sell patent') >= 0) return 'Sell patents';
     if (low.indexOf('standard project') >= 0) return 'Standard project';
-    if (low.indexOf('project card') >= 0 || (low.indexOf('play') >= 0 && low.indexOf('card') >= 0)) return 'Play card';
+    if (isPlayedCardActionLabel(low) || low.indexOf('action') >= 0 || low.indexOf('use') >= 0) return 'Use played-card action';
+    if (isPlayProjectCardLabel(low)) return 'Play card';
     if (low.indexOf('convert') >= 0 && low.indexOf('heat') >= 0) return 'Convert heat';
     if (low.indexOf('convert') >= 0 && low.indexOf('plant') >= 0) return 'Place greenery';
     if (low.indexOf('fund') >= 0 && low.indexOf('award') >= 0) return 'Fund award';
@@ -150,6 +182,230 @@
       if (rows[i] && rows[i].isDisabled !== true) out.push(rows[i]);
     }
     return out;
+  }
+
+  function countCitiesInPlay(state) {
+    var players = asArray((state && state.players) || (state && state.game && state.game.players));
+    var count = 0;
+    for (var i = 0; i < players.length; i++) count += Math.max(0, asNumber(players[i] && players[i].citiesCount, 0));
+
+    var spaces = asArray(state && state.game && state.game.spaces);
+    var boardCount = 0;
+    for (var si = 0; si < spaces.length; si++) {
+      var tileType = spaces[si] && spaces[si].tileType;
+      if (tileType === 0 || tileType === 'city' || tileType === 5 || tileType === 'capital') boardCount++;
+    }
+    return Math.max(count, boardCount);
+  }
+
+  function hasCorpName(state, corpName) {
+    var target = lower(corpName);
+    var player = (state && state.thisPlayer) || {};
+    if (lower(player.corporation || player.corp) === target) return true;
+    var tableau = asArray(player.tableau);
+    for (var i = 0; i < tableau.length; i++) {
+      if (lower(tableau[i] && (tableau[i].name || tableau[i])) === target) return true;
+    }
+    return false;
+  }
+
+  function estimateGensLeft(state, estimateGensLeftFn) {
+    if (typeof estimateGensLeftFn === 'function') {
+      var estimated = asNumber(estimateGensLeftFn(state), 0);
+      if (estimated > 0) return estimated;
+    }
+    var explicit = asNumber(state && (state.gensLeft || state.estimatedGensLeft), 0);
+    if (explicit > 0) return explicit;
+    var gen = asNumber(state && state.game && state.game.generation, 0);
+    return gen > 0 ? Math.max(1, 9 - gen + 1) : 3;
+  }
+
+  var DEFERRED_SCALING_CASHOUTS = {
+    'Terraforming Ganymede': { tag: 'jovian' },
+    'Social Events': { tag: 'mars' },
+  };
+
+  var DEFERRED_LAST_WINDOW_CASHOUTS = {
+    "CEO's Favorite Project": true,
+  };
+
+  var FINAL_WINDOW_ENGINE_CARDS = {
+    Sponsors: true,
+  };
+
+  function cardName(card) {
+    return card && (card.name || card.cardName || card);
+  }
+
+  function cardTags(card) {
+    if (!card) return [];
+    if (Array.isArray(card.tags)) return card.tags;
+    var name = cardName(card);
+    var globalTags = global && global.TM_CARD_TAGS;
+    return (globalTags && name && globalTags[name]) || [];
+  }
+
+  function cardHasTag(card, targetTag) {
+    var tags = cardTags(card);
+    var target = String(targetTag || '').toLowerCase();
+    for (var i = 0; i < tags.length; i++) {
+      if (String(tags[i] || '').toLowerCase() === target) return true;
+    }
+    return false;
+  }
+
+  function countSpaceEventTriggers(cards, selfName) {
+    var count = 0;
+    cards = asArray(cards);
+    for (var i = 0; i < cards.length; i++) {
+      var name = cardName(cards[i]);
+      if (!name || name === selfName) continue;
+      if (cardHasTag(cards[i], 'space') && cardHasTag(cards[i], 'event')) count++;
+    }
+    return count;
+  }
+
+  function shouldDeferTriggerSetup(card, state, rankableCards, estimateGensLeftFn) {
+    var name = cardName(card);
+    if (name !== 'Optimal Aerobraking') return false;
+    var triggers = countSpaceEventTriggers(rankableCards, name);
+    var gensLeft = estimateGensLeft(state, estimateGensLeftFn);
+    if (triggers >= 2) return false;
+    if (triggers >= 1 && gensLeft <= 1) return false;
+    return true;
+  }
+
+  function shouldDeferGreenhouses(state, estimateGensLeftFn) {
+    var cities = countCitiesInPlay(state);
+    if (cities <= 0) return false;
+    var player = (state && state.thisPlayer) || {};
+    var plants = Math.max(0, asNumber(player.plants, 0));
+    var plantCost = hasCorpName(state, 'Ecoline') ? 7 : 8;
+    var before = Math.floor(plants / plantCost);
+    var after = Math.floor((plants + cities) / plantCost);
+    if (after > before) return false;
+    return estimateGensLeft(state, estimateGensLeftFn) > 1;
+  }
+
+  function shouldDeferScalingCashout(card, state, rankableCards, estimateGensLeftFn) {
+    var name = cardName(card);
+    var def = DEFERRED_SCALING_CASHOUTS[name];
+    if (!def) return false;
+    var gensLeft = estimateGensLeft(state, estimateGensLeftFn);
+    return gensLeft > 1;
+  }
+
+  function hasOtherPlayedCardAction(playContext) {
+    var waitingFor = playContext && playContext.waitingFor;
+    var currentIndex = playContext && playContext.optionIndex;
+    var options = asArray(waitingFor && waitingFor.options);
+    for (var i = 0; i < options.length; i++) {
+      if (i === currentIndex) continue;
+      var opt = options[i];
+      if (!isPlayedCardActionLabel(optionTitle(opt))) continue;
+      if (visibleCards(opt && opt.cards).length > 0) return true;
+    }
+    return false;
+  }
+
+  function shouldDeferLastWindowCashout(card, state, estimateGensLeftFn, playContext) {
+    var name = cardName(card);
+    if (!DEFERRED_LAST_WINDOW_CASHOUTS[name]) return false;
+    if (estimateGensLeft(state, estimateGensLeftFn) > 1) return true;
+    return hasOtherPlayedCardAction(playContext);
+  }
+
+  function requiresVenusCompletion(game) {
+    var opts = (game && (game.gameOptions || game.options)) || {};
+    return opts.requiresVenusTrackCompletion === true || opts.requiresVenusTrackCompletion === 'true';
+  }
+
+  function isFullyTerraformedFinalWindow(state) {
+    var game = (state && state.game) || {};
+    if (game.isTerraformed === true) return true;
+    var temp = asNumber(game.temperature, -30);
+    var oxygen = asNumber(game.oxygenLevel != null ? game.oxygenLevel : game.oxygen, 0);
+    var oceans = asNumber(game.oceans, 0);
+    if (temp < 8 || oxygen < 14 || oceans < 9) return false;
+    if (requiresVenusCompletion(game)) {
+      var venus = asNumber(game.venusScaleLevel != null ? game.venusScaleLevel : game.venus, 0);
+      if (venus < 30) return false;
+    }
+    return true;
+  }
+
+  function hasFinalWindowScoringSignal(card) {
+    var name = cardName(card);
+    if (DEFERRED_LAST_WINDOW_CASHOUTS[name]) return true;
+    var directVp = asNumber(card && (card.vp != null ? card.vp : card.victoryPoints), 0);
+    if (directVp > 0) return true;
+    var reason = lower(card && card.reason);
+    return /\b(vp|point|points|score|scoring|cashout|animal|jovian|greenery)\b/.test(reason);
+  }
+
+  function hasFinalWindowEngineSignal(card) {
+    var name = cardName(card);
+    if (FINAL_WINDOW_ENGINE_CARDS[name]) return true;
+    var reason = lower(card && card.reason);
+    return /\b(prod|production|engine|tempo|income|draw|discount|steel|titanium|energy|heat)\b/.test(reason);
+  }
+
+  function shouldDeferFinalWindowEngineCard(card, state, estimateGensLeftFn) {
+    if (estimateGensLeft(state, estimateGensLeftFn) > 1) return false;
+    if (!isFullyTerraformedFinalWindow(state)) return false;
+    if (hasFinalWindowScoringSignal(card)) return false;
+    return hasFinalWindowEngineSignal(card);
+  }
+
+  function shouldDeferPlayCard(card, state, rankableCards, estimateGensLeftFn, playContext) {
+    var name = cardName(card);
+    if (name === 'Greenhouses') return shouldDeferGreenhouses(state, estimateGensLeftFn);
+    if (shouldDeferFinalWindowEngineCard(card, state, estimateGensLeftFn)) return true;
+    if (shouldDeferLastWindowCashout(card, state, estimateGensLeftFn, playContext)) return true;
+    if (shouldDeferTriggerSetup(card, state, rankableCards, estimateGensLeftFn)) return true;
+    return shouldDeferScalingCashout(card, state, rankableCards, estimateGensLeftFn);
+  }
+
+  function metalSpendTargetForAdvancedAlloys(card, state) {
+    if (!card || cardName(card) === 'Advanced Alloys') return false;
+    var player = (state && state.thisPlayer) || {};
+    if (cardHasTag(card, 'building') && Math.max(0, asNumber(player.steel, 0)) > 0) return true;
+    if (cardHasTag(card, 'space') && Math.max(0, asNumber(player.titanium, 0)) > 0) return true;
+    return false;
+  }
+
+  function advancedAlloysSetupCard(rankedCards, state, rankableCards) {
+    rankableCards = asArray(rankableCards);
+    var hasAlloys = false;
+    var hasTarget = false;
+    var alloysCost = 9;
+    for (var i = 0; i < rankableCards.length; i++) {
+      if (cardName(rankableCards[i]) === 'Advanced Alloys') {
+        hasAlloys = true;
+        if (rankableCards[i].calculatedCost != null || rankableCards[i].cost != null) {
+          alloysCost = asNumber(rankableCards[i].calculatedCost != null ? rankableCards[i].calculatedCost : rankableCards[i].cost, 9);
+        }
+      }
+      if (metalSpendTargetForAdvancedAlloys(rankableCards[i], state)) hasTarget = true;
+    }
+    var player = (state && state.thisPlayer) || {};
+    if (asNumber(player.megaCredits || player.megacredits, 0) < alloysCost) return null;
+    if (!hasAlloys || !hasTarget) return null;
+    rankedCards = asArray(rankedCards);
+    for (var ri = 0; ri < rankedCards.length; ri++) {
+      if (cardName(rankedCards[ri]) === 'Advanced Alloys') return rankedCards[ri];
+    }
+    return null;
+  }
+
+  function bestNonDeferredCard(rankedCards, state, rankableCards, estimateGensLeftFn, playContext) {
+    rankedCards = asArray(rankedCards);
+    var setupCard = advancedAlloysSetupCard(rankedCards, state, rankableCards);
+    if (setupCard && !shouldDeferPlayCard(setupCard, state, rankableCards, estimateGensLeftFn, playContext)) return setupCard;
+    for (var i = 0; i < rankedCards.length; i++) {
+      if (!shouldDeferPlayCard(rankedCards[i], state, rankableCards, estimateGensLeftFn, playContext)) return rankedCards[i];
+    }
+    return null;
   }
 
   function reasonRowsFromText(text, tone) {
@@ -223,6 +479,229 @@
     return null;
   }
 
+  function optionIndexMatching(waitingFor, matcher) {
+    var options = asArray(waitingFor && waitingFor.options);
+    for (var i = 0; i < options.length; i++) {
+      if (matcher(optionTitle(options[i]), options[i])) return i;
+    }
+    return -1;
+  }
+
+  function ownedResourceType(card) {
+    if (!card || !card.name) return '';
+    var raw = card.resourceType || card.resource_type || '';
+    var data = null;
+    var cardData = global && global.TM_CARD_DATA;
+    if (cardData) data = cardData[card.name] || cardData[String(card.name).replace(/:ares$/i, '')];
+    if (!raw && data) raw = data.resourceType || data.resource_type || data.res || '';
+    if (!raw) {
+      var known = {
+        Psychrophiles: 'microbe',
+        'Titan Shuttles': 'floater',
+        'Neptunian Power Consultants': 'hydroelectric resource',
+      };
+      raw = known[card.name] || '';
+    }
+    return lower(raw).replace(/[_-]+/g, ' ').trim();
+  }
+
+  function tableauCard(state, cardName) {
+    var tableau = asArray(state && state.thisPlayer && state.thisPlayer.tableau);
+    for (var i = 0; i < tableau.length; i++) {
+      if (tableau[i] && tableau[i].name === cardName) return tableau[i];
+    }
+    return null;
+  }
+
+  function countNonStandardResourceTypes(state) {
+    var tableau = asArray(state && state.thisPlayer && state.thisPlayer.tableau);
+    var types = {};
+    for (var i = 0; i < tableau.length; i++) {
+      var card = tableau[i];
+      var resources = asNumber(card && (card.resources || card.resourceCount), 0);
+      if (resources <= 0) continue;
+      var type = ownedResourceType(card);
+      if (type) types[type] = true;
+    }
+    return Object.keys(types);
+  }
+
+  function unclaimedMilestoneCount(game) {
+    var milestones = asArray(game && game.milestones);
+    var claimed = 0;
+    for (var i = 0; i < milestones.length; i++) {
+      if (milestones[i] && (milestones[i].playerName || milestones[i].player || milestones[i].playerColor || milestones[i].color)) claimed++;
+    }
+    return claimed;
+  }
+
+  function milestoneScore(ms, color) {
+    var scores = asArray(ms && ms.scores);
+    for (var i = 0; i < scores.length; i++) {
+      if (sameColor(scores[i] && scores[i].color, color)) return asNumber(scores[i].score, 0);
+    }
+    return 0;
+  }
+
+  function hasOpenEuropaColony(state) {
+    var game = (state && state.game) || {};
+    var myColor = colorOf(state && state.thisPlayer);
+    var colonies = asArray(game.colonies);
+    for (var i = 0; i < colonies.length; i++) {
+      var col = colonies[i];
+      if (!col || col.name !== 'Europa' || col.isActive === false) continue;
+      var slots = asArray(col.colonies);
+      if (slots.length >= 3) return false;
+      for (var j = 0; j < slots.length; j++) {
+        if (sameColor(colorOf(slots[j]), myColor)) return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function hasFreeTriplePlantOcean(state) {
+    var spaces = asArray(state && state.game && state.game.spaces);
+    for (var i = 0; i < spaces.length; i++) {
+      var s = spaces[i] || {};
+      var bonus = asArray(s.bonus);
+      if (s.spaceType !== 'ocean' || s.tile) continue;
+      if (bonus.length === 3 && bonus[0] === 2 && bonus[1] === 2 && bonus[2] === 2) return true;
+    }
+    return false;
+  }
+
+  function buildTradesmanChain(input) {
+    var state = input && input.state;
+    var waitingFor = input && input.waitingFor;
+    if (!state || !state.thisPlayer || !state.game || !isActionChoicePrompt(waitingFor)) return null;
+
+    var standardIndex = optionIndexMatching(waitingFor, function(title) {
+      var low = lower(title);
+      return low.indexOf('standard project') >= 0 || low.indexOf('standard projects') >= 0;
+    });
+    if (standardIndex < 0) return null;
+
+    var player = state.thisPlayer || {};
+    if (asNumber(player.actionsTakenThisRound || player.actionsThisRound, 0) > 0) return null;
+    if (asNumber(player.megaCredits || player.megacredits, 0) < 30) return null;
+    if (asNumber(state.game.oceans, 0) >= 9) return null;
+    if (unclaimedMilestoneCount(state.game) >= 3) return null;
+    if (!hasOpenEuropaColony(state)) return null;
+
+    var npc = tableauCard(state, 'Neptunian Power Consultants');
+    if (!npc || asNumber(npc.resources || npc.resourceCount, 0) > 0) return null;
+    var resourceTypes = countNonStandardResourceTypes(state);
+    if (resourceTypes.length !== 2) return null;
+    if (resourceTypes.indexOf('hydroelectric resource') >= 0) return null;
+
+    var myColor = colorOf(player);
+    var milestones = asArray(state.game.milestones);
+    var tradesman = null;
+    for (var mi = 0; mi < milestones.length; mi++) {
+      if (milestones[mi] && milestones[mi].name === 'Tradesman' && !(milestones[mi].playerName || milestones[mi].player)) {
+        tradesman = milestones[mi];
+        break;
+      }
+    }
+    if (!tradesman || milestoneScore(tradesman, myColor) !== 2) return null;
+
+    var oppAtTwo = false;
+    var scores = asArray(tradesman.scores);
+    for (var si = 0; si < scores.length; si++) {
+      if (!sameColor(scores[si] && scores[si].color, myColor) && asNumber(scores[si] && scores[si].score, 0) >= 2) {
+        oppAtTwo = true;
+      }
+    }
+
+    var europaText = 'Europa colony places an ocean';
+    if (hasFreeTriplePlantOcean(state)) {
+      europaText += ' on the free 3-plant tile';
+    }
+    var reasons = [
+      {text: europaText, tone: 'positive'},
+      {text: 'Pay Neptunian 5 MC: third resource type', tone: 'positive'},
+      {text: 'Then claim Tradesman as the second action', tone: 'positive'},
+    ];
+    if (oppAtTwo) {
+      reasons.push({text: 'Race: opponent is also 2/3', tone: 'negative'});
+    }
+
+    return {
+      id: 'milestone-chain:tradesman-europa-neptunian',
+      kind: 'milestone-chain',
+      title: 'SP Colony: Europa -> Tradesman',
+      subtitle: 'Standard project chain',
+      optionTitle: optionTitle(waitingFor.options[standardIndex]) || 'Standard projects',
+      optionIndex: standardIndex,
+      score: 100,
+      reasonRows: dedupeReasons(reasons),
+      alt: '',
+      anchor: {type: 'actions', key: 'current'}
+    };
+  }
+
+  function buildFromRankedAdvisorAction(input, ranked, actionRank) {
+    var advisor = input && input.advisor;
+    var state = input && input.state;
+    var waitingFor = input && input.waitingFor;
+    var isPlayableCard = input && input.isPlayableCard;
+    var estimateGensLeftFn = input && input.estimateGensLeft;
+    var best = ranked[actionRank] || {};
+    var alt = ranked.length > actionRank + 1 ? ranked[actionRank + 1] : null;
+    var bestIndex = typeof best.index === 'number' ? best.index : 0;
+    var opt = waitingFor.options[bestIndex] || null;
+    var optTitle = optionTitle(opt) || best.action || '';
+    var title = normalizeActionLabel(best.action || optTitle);
+    var cardTargetName = '';
+    var reasonRows = reasonRowsFromText(best.reason || '', 'positive');
+
+    if (opt && opt.cards && opt.cards.length > 0) {
+      var cards = visibleCards(opt.cards);
+      var low = lower(best.action || optTitle);
+      if (isPlayProjectCardLabel(best.action || optTitle) && typeof advisor.rankHandCards === 'function') {
+        var rankableCards = cards;
+        if (typeof isPlayableCard === 'function') {
+          rankableCards = [];
+          for (var rci = 0; rci < cards.length; rci++) {
+            if (isPlayableCard(cards[rci], state)) rankableCards.push(cards[rci]);
+          }
+        }
+        var rankedCards = rankableCards.length > 0 ? (advisor.rankHandCards(rankableCards, state) || []) : [];
+        if (rankedCards.length > 0) {
+          var bestCard = bestNonDeferredCard(rankedCards, state, rankableCards, estimateGensLeftFn, {
+            waitingFor: waitingFor,
+            optionIndex: bestIndex
+          });
+          if (!bestCard) return null;
+          title = 'Play ' + bestCard.name;
+          cardTargetName = bestCard.name || '';
+          addReasonRows(reasonRows, reasonRowsFromText(bestCard.reason || '', 'positive'));
+        } else if (rankableCards.length === 1 && rankableCards[0].name) {
+          title = 'Play ' + rankableCards[0].name;
+          cardTargetName = rankableCards[0].name || '';
+        }
+      } else if ((isPlayedCardActionLabel(best.action || optTitle) || low.indexOf('action') >= 0 || low.indexOf('use') >= 0) && cards.length === 1 && cards[0].name) {
+        title = 'Use ' + cards[0].name;
+        cardTargetName = cards[0].name || '';
+      }
+    }
+
+    return {
+      id: 'advisor:' + bestIndex + ':' + title,
+      kind: 'advisor',
+      title: title || normalizeActionLabel(optTitle) || 'Best action',
+      subtitle: optTitle && optTitle !== title ? optTitle : '',
+      cardName: cardTargetName,
+      optionTitle: optTitle,
+      optionIndex: bestIndex,
+      score: typeof best.score === 'number' ? best.score : undefined,
+      reasonRows: dedupeReasons(reasonRows),
+      alt: alt ? normalizeActionLabel(alt.action || optionTitle(waitingFor.options[alt.index]) || '') : '',
+      anchor: {type: 'actions', key: 'current'}
+    };
+  }
+
   function buildFromAdvisor(input) {
     var advisor = input && input.advisor;
     var state = input && input.state;
@@ -232,43 +711,11 @@
     var ranked = advisor.analyzeActions(waitingFor, state) || [];
     if (!ranked.length) return null;
 
-    var best = ranked[0] || {};
-    var alt = ranked.length > 1 ? ranked[1] : null;
-    var bestIndex = typeof best.index === 'number' ? best.index : 0;
-    var opt = waitingFor.options[bestIndex] || null;
-    var optTitle = optionTitle(opt) || best.action || '';
-    var title = normalizeActionLabel(best.action || optTitle);
-    var reasonRows = reasonRowsFromText(best.reason || '', 'positive');
-
-    if (opt && opt.cards && opt.cards.length > 0) {
-      var cards = visibleCards(opt.cards);
-      var low = lower(best.action || optTitle);
-      if (((low.indexOf('play') >= 0 && low.indexOf('card') >= 0) || low.indexOf('project card') >= 0) &&
-          typeof advisor.rankHandCards === 'function') {
-        var rankedCards = advisor.rankHandCards(cards, state) || [];
-        if (rankedCards.length > 0) {
-          title = 'Play ' + rankedCards[0].name;
-          addReasonRows(reasonRows, reasonRowsFromText(rankedCards[0].reason || '', 'positive'));
-        } else if (cards.length === 1 && cards[0].name) {
-          title = 'Play ' + cards[0].name;
-        }
-      } else if ((low.indexOf('action') >= 0 || low.indexOf('use') >= 0) && cards.length === 1 && cards[0].name) {
-        title = 'Use ' + cards[0].name;
-      }
+    for (var i = 0; i < ranked.length; i++) {
+      var rec = buildFromRankedAdvisorAction(input, ranked, i);
+      if (rec) return rec;
     }
-
-    return {
-      id: 'advisor:' + bestIndex + ':' + title,
-      kind: 'advisor',
-      title: title || normalizeActionLabel(optTitle) || 'Best action',
-      subtitle: optTitle && optTitle !== title ? optTitle : '',
-      optionTitle: optTitle,
-      optionIndex: bestIndex,
-      score: typeof best.score === 'number' ? best.score : undefined,
-      reasonRows: dedupeReasons(reasonRows),
-      alt: alt ? normalizeActionLabel(alt.action || optionTitle(waitingFor.options[alt.index]) || '') : '',
-      anchor: {type: 'actions', key: 'current'}
-    };
+    return null;
   }
 
   function buildFromStandardProjects(input) {
@@ -310,10 +757,18 @@
     if (!waitingFor) return null;
     var state = cloneStateWithWaitingFor(rawState, waitingFor);
 
-    var rec = buildFromAdvisor({
-      advisor: input && input.advisor,
+    var rec = buildTradesmanChain({
       state: state,
       waitingFor: waitingFor
+    });
+    if (rec) return rec;
+
+    rec = buildFromAdvisor({
+      advisor: input && input.advisor,
+      state: state,
+      waitingFor: waitingFor,
+      isPlayableCard: input && input.isPlayableCard,
+      estimateGensLeft: input && input.estimateGensLeft
     });
     if (rec) return rec;
 
@@ -353,6 +808,7 @@
   function restoreTarget(node) {
     if (!node) return;
     if (node.classList && typeof node.classList.remove === 'function') node.classList.remove(TARGET_CLASS);
+    if (node.classList && typeof node.classList.remove === 'function') node.classList.remove(CARD_TARGET_CLASS);
     if (node.style) {
       var prevOutline = node.getAttribute && node.getAttribute('data-tm-action-prev-outline');
       var prevShadow = node.getAttribute && node.getAttribute('data-tm-action-prev-box-shadow');
@@ -372,6 +828,8 @@
     for (var i = 0; i < boxes.length; i++) removeNode(boxes[i]);
     var targets = documentObj.querySelectorAll('.' + TARGET_CLASS);
     for (var ti = 0; ti < targets.length; ti++) restoreTarget(targets[ti]);
+    var cardTargets = documentObj.querySelectorAll('.' + CARD_TARGET_CLASS);
+    for (var ci = 0; ci < cardTargets.length; ci++) restoreTarget(cardTargets[ci]);
   }
 
   function nodeText(node) {
@@ -434,6 +892,44 @@
       best.style.boxShadow = '0 0 0 3px rgba(96,211,148,0.24)';
     }
     return best;
+  }
+
+  function findCardTarget(documentObj, rec) {
+    var wanted = normalizeText(rec && rec.cardName);
+    if (!wanted || !documentObj || typeof documentObj.querySelectorAll !== 'function') return null;
+    var cards = [];
+    try { cards = documentObj.querySelectorAll('[data-tm-card]'); } catch (e) { cards = []; }
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var name = compactText(card && card.getAttribute && card.getAttribute('data-tm-card'));
+      if (!name) name = nodeText(card);
+      if (normalizeText(name) === wanted) return card;
+    }
+    try { cards = documentObj.querySelectorAll('.card-container'); } catch (e2) { cards = []; }
+    for (var ci = 0; ci < cards.length; ci++) {
+      var text = normalizeText(nodeText(cards[ci]));
+      if (!text) continue;
+      var tailIndex = text.indexOf(' ' + wanted);
+      if (text === wanted || text.indexOf(wanted + ' ') === 0 || text.indexOf(' ' + wanted + ' ') >= 0 || (tailIndex >= 0 && tailIndex === text.length - wanted.length - 1)) {
+        return cards[ci];
+      }
+    }
+    return null;
+  }
+
+  function highlightCardTarget(documentObj, rec) {
+    var target = findCardTarget(documentObj, rec);
+    if (!target) return null;
+    if (target.classList && typeof target.classList.add === 'function') target.classList.add(CARD_TARGET_CLASS);
+    if (target.style) {
+      if (target.getAttribute && !target.getAttribute('data-tm-action-prev-outline')) {
+        target.setAttribute('data-tm-action-prev-outline', target.style.outline || '');
+        target.setAttribute('data-tm-action-prev-box-shadow', target.style.boxShadow || '');
+      }
+      target.style.outline = '3px solid #f1c40f';
+      target.style.boxShadow = '0 0 0 4px rgba(241,196,15,0.22), 0 0 18px rgba(241,196,15,0.34)';
+    }
+    return target;
   }
 
   function boxStyle(anchored) {
@@ -502,6 +998,14 @@
     return box;
   }
 
+  function directChildBefore(anchor, nested) {
+    var node = nested;
+    while (node && node.parentNode && node.parentNode !== anchor) {
+      node = node.parentNode;
+    }
+    return node && node.parentNode === anchor ? node : null;
+  }
+
   function renderActionRecommendation(input) {
     var documentObj = (input && input.documentObj) || (typeof document !== 'undefined' ? document : null);
     if (!documentObj || typeof documentObj.createElement !== 'function') return [];
@@ -515,14 +1019,19 @@
     if (anchor) {
       if (anchor.style && !anchor.style.position) anchor.style.position = 'relative';
       var before = queryFirst(anchor, ['.wf-component', '.wf-options']);
-      if (before && anchor.insertBefore) anchor.insertBefore(box, before);
+      var directBefore = directChildBefore(anchor, before);
+      if (directBefore && anchor.insertBefore) anchor.insertBefore(box, directBefore);
       else anchor.appendChild(box);
     } else {
       var host = documentObj.body || documentObj.documentElement;
       if (host && typeof host.appendChild === 'function') host.appendChild(box);
     }
     var target = highlightActionTarget(documentObj, anchor, rec);
-    return target ? [box, target] : [box];
+    var cardTarget = highlightCardTarget(documentObj, rec);
+    var rendered = [box];
+    if (target) rendered.push(target);
+    if (cardTarget && cardTarget !== target) rendered.push(cardTarget);
+    return rendered;
   }
 
   global.TM_CONTENT_ACTION_RECOMMENDATION = {
