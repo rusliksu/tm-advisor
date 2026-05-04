@@ -52,6 +52,7 @@ const formatReasonNumberSource = extractFunctionSource(source, 'formatReasonNumb
 const globalParamRaisesSource = extractFunctionSource(source, 'globalParamRaises');
 const estimateGensLeftSource = extractFunctionSource(source, 'estimateGensLeft');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
+const checkDenyDraftSource = extractFunctionSource(source, 'checkDenyDraft');
 const pushStructuredReasonSource = extractFunctionSource(source, 'pushStructuredReason');
 const getRequirementHardnessSource = extractFunctionSource(source, 'getRequirementHardness');
 const getProductionFloorStatusSource = extractFunctionSource(source, 'getProductionFloorStatus');
@@ -65,6 +66,7 @@ const getBoardRequirementCountsSource = extractFunctionSource(source, 'getBoardR
 const getBoardRequirementDisplayNameSource = extractFunctionSource(source, 'getBoardRequirementDisplayName');
 const parseBoardRequirementsSource = extractFunctionSource(source, 'parseBoardRequirements');
 const evaluateBoardRequirementsSource = extractFunctionSource(source, 'evaluateBoardRequirements');
+const computeReqPrioritySource = extractFunctionSource(source, 'computeReqPriority');
 const scoreCardRequirementsSource = extractFunctionSource(source, 'scoreCardRequirements');
 const scoreTagSynergiesSource = extractFunctionSource(source, 'scoreTagSynergies');
 const scoreResourceSynergiesSource = extractFunctionSource(source, 'scoreResourceSynergies');
@@ -79,6 +81,7 @@ const isFinalGreenerySourceSource = extractFunctionSource(source, 'isFinalGreene
 const isMeltworksLastGenCashoutSource = extractFunctionSource(source, 'isMeltworksLastGenCashout');
 const hasSelfFloaterSourceSource = extractFunctionSource(source, 'hasSelfFloaterSource');
 const scorePostContextChecksSource = extractFunctionSource(source, 'scorePostContextChecks');
+const kaguyaTechConversionValueSource = extractFunctionSource(source, 'kaguyaTechConversionValue');
 const ftnRowSource = extractFunctionSource(source, 'ftnRow');
 const computeCardValueSource = extractFunctionSource(source, 'computeCardValue');
 const scoreBreakEvenTimingSource = extractFunctionSource(source, 'scoreBreakEvenTiming');
@@ -102,6 +105,7 @@ const estimateOpeningRequirementDelayProfileSource = extractFunctionSource(sourc
 const openingLatePayoffScoreFromDelaySource = extractFunctionSource(source, 'openingLatePayoffScoreFromDelay');
 const scoreOpeningDraftPolicySource = extractFunctionSource(source, 'scoreOpeningDraftPolicy');
 const isPreludeOrCorpCardSource = extractFunctionSource(source, 'isPreludeOrCorpCard');
+const getEffectiveCostSource = extractFunctionSource(source, 'getEffectiveCost');
 const formatTableauSynergyReasonSource = extractFunctionSource(source, 'formatTableauSynergyReason');
 const dampTableauSynergyWeightSource = extractFunctionSource(source, 'dampTableauSynergyWeight');
 const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTableauSynergy');
@@ -110,6 +114,8 @@ const getComboIndexSource = extractFunctionSource(source, 'getComboIndex');
 const getAntiComboIndexSource = extractFunctionSource(source, 'getAntiComboIndex');
 const scoreComboPotentialSource = extractFunctionSource(source, 'scoreComboPotential');
 const scoreSynergyRulesSource = extractFunctionSource(source, '_scoreSynergyRules');
+const scoreMapMASource = extractFunctionSource(source, '_scoreMapMA');
+const scoreMilestoneAwardProximitySource = extractFunctionSource(source, 'scoreMilestoneAwardProximity');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
 const isOpeningHandContextSource = extractFunctionSource(source, 'isOpeningHandContext');
@@ -236,6 +242,8 @@ const sandbox = {
   TM_OPP_CORP_VULN_GLOBAL: {},
   TM_DELEGATE_CARDS: {},
   TM_CARD_DESCRIPTIONS: {},
+  MA_DATA: {},
+  TAG_TO_MA: {},
   TM_FTN_TABLE: {
     0: [8.0, 0.0, 8.0],
     1: [8.0, 0.5, 7.5],
@@ -357,6 +365,7 @@ vm.runInNewContext(
     globalParamRaisesSource,
     estimateGensLeftSource,
     getCorpBoostSource,
+    checkDenyDraftSource,
     pushStructuredReasonSource,
     getRequirementHardnessSource,
     getRequirementTagReasonLabelSource,
@@ -369,6 +378,7 @@ vm.runInNewContext(
     getBoardRequirementDisplayNameSource,
     parseBoardRequirementsSource,
     evaluateBoardRequirementsSource,
+    computeReqPrioritySource,
     scoreCardRequirementsSource,
     scoreTagSynergiesSource,
     scoreResourceSynergiesSource,
@@ -384,6 +394,7 @@ vm.runInNewContext(
     isMeltworksLastGenCashoutSource,
     hasSelfFloaterSourceSource,
     scorePostContextChecksSource,
+    kaguyaTechConversionValueSource,
     ftnRowSource,
     computeCardValueSource,
     scoreBreakEvenTimingSource,
@@ -407,6 +418,7 @@ vm.runInNewContext(
     openingLatePayoffScoreFromDelaySource,
     scoreOpeningDraftPolicySource,
     isPreludeOrCorpCardSource,
+    getEffectiveCostSource,
     formatTableauSynergyReasonSource,
     dampTableauSynergyWeightSource,
     isSpentTableauSynergySource,
@@ -416,6 +428,9 @@ vm.runInNewContext(
     getAntiComboIndexSource,
     scoreComboPotentialSource,
     scoreSynergyRulesSource,
+    scoreMapMASource,
+    'var MA_DATA = globalThis.MA_DATA || {}; var TAG_TO_MA = globalThis.TAG_TO_MA || {};',
+    scoreMilestoneAwardProximitySource,
     getNamedRequirementDelayProfileSource,
     scorePositionalFactorsSource,
     isOpeningHandContextSource,
@@ -425,7 +440,9 @@ vm.runInNewContext(
     'globalThis.__tm_test_describeCorpBoostReason = describeCorpBoostReason;',
     'globalThis.__tm_test_estimateGensLeft = estimateGensLeft;',
     'globalThis.__tm_test_getCorpBoost = getCorpBoost;',
+    'globalThis.__tm_test_checkDenyDraft = checkDenyDraft;',
     'globalThis.__tm_test_scoreCardRequirements = scoreCardRequirements;',
+    'globalThis.__tm_test_computeReqPriority = computeReqPriority;',
     'globalThis.__tm_test_scoreTagSynergies = scoreTagSynergies;',
     'globalThis.__tm_test_scoreResourceSynergies = scoreResourceSynergies;',
     'globalThis.__tm_test_scoreCardEconomyInContext = scoreCardEconomyInContext;',
@@ -438,6 +455,7 @@ vm.runInNewContext(
     'globalThis.__tm_test_isFinalGreenerySource = isFinalGreenerySource;',
     'globalThis.__tm_test_isMeltworksLastGenCashout = isMeltworksLastGenCashout;',
     'globalThis.__tm_test_scorePostContextChecks = scorePostContextChecks;',
+    'globalThis.__tm_test_kaguyaTechConversionValue = kaguyaTechConversionValue;',
     'globalThis.__tm_test_isVpAccumulatorActionFx = isVpAccumulatorActionFx;',
     'globalThis.__tm_test_isBlueActionFx = isBlueActionFx;',
     'globalThis.__tm_test_getVpAccumulatorProjectedResources = getVpAccumulatorProjectedResources;',
@@ -455,6 +473,8 @@ vm.runInNewContext(
     'globalThis.__tm_test_scoreComboPotential = scoreComboPotential;',
     'globalThis.__tm_test_resourcePlacementCanReachTarget = resourcePlacementCanReachTarget;',
     'globalThis.__tm_test_scoreSynergyRules = _scoreSynergyRules;',
+    'globalThis.__tm_test_scoreMapMA = _scoreMapMA;',
+    'globalThis.__tm_test_scoreMilestoneAwardProximity = scoreMilestoneAwardProximity;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
     'globalThis.__tm_test_scorePositionalFactors = scorePositionalFactors;',
     'globalThis.__tm_test_getOpeningHandBias = getOpeningHandBias;',
@@ -467,7 +487,9 @@ vm.runInNewContext(
 const describeCorpBoostReason = sandbox.__tm_test_describeCorpBoostReason;
 const estimateGensLeft = sandbox.__tm_test_estimateGensLeft;
 const getCorpBoost = sandbox.__tm_test_getCorpBoost;
+const checkDenyDraft = sandbox.__tm_test_checkDenyDraft;
 const scoreCardRequirements = sandbox.__tm_test_scoreCardRequirements;
+const computeReqPriority = sandbox.__tm_test_computeReqPriority;
 const scoreTagSynergies = sandbox.__tm_test_scoreTagSynergies;
 const scoreResourceSynergies = sandbox.__tm_test_scoreResourceSynergies;
 const scoreCardEconomyInContext = sandbox.__tm_test_scoreCardEconomyInContext;
@@ -480,6 +502,7 @@ const estimateImmediatePlantGainForFinal = sandbox.__tm_test_estimateImmediatePl
 const isFinalGreenerySource = sandbox.__tm_test_isFinalGreenerySource;
 const isMeltworksLastGenCashout = sandbox.__tm_test_isMeltworksLastGenCashout;
 const scorePostContextChecks = sandbox.__tm_test_scorePostContextChecks;
+const kaguyaTechConversionValue = sandbox.__tm_test_kaguyaTechConversionValue;
 const isVpAccumulatorActionFx = sandbox.__tm_test_isVpAccumulatorActionFx;
 const isBlueActionFx = sandbox.__tm_test_isBlueActionFx;
 const getVpAccumulatorProjectedResources = sandbox.__tm_test_getVpAccumulatorProjectedResources;
@@ -497,10 +520,25 @@ const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
 const scoreComboPotential = sandbox.__tm_test_scoreComboPotential;
 const resourcePlacementCanReachTarget = sandbox.__tm_test_resourcePlacementCanReachTarget;
 const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
+const scoreMapMA = sandbox.__tm_test_scoreMapMA;
+const scoreMilestoneAwardProximity = sandbox.__tm_test_scoreMilestoneAwardProximity;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
 const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
 const getOpeningHandBias = sandbox.__tm_test_getOpeningHandBias;
 const getInitialDraftRatingScore = sandbox.__tm_test_getInitialDraftRatingScore;
+
+assert.strictEqual(
+  checkDenyDraft(
+    {s: 76, t: 'B', e: 'Increase your plant production 1 step for each plant tag you have.'},
+    72,
+    {oppCorps: ['Any Corp'], oppStrategies: {'Пеша': [{id: 'plant'}]}},
+    new Set(),
+    'Insects',
+    'increase your plant production 1 step for each plant tag you have.'
+  ),
+  '\u2702 Deny: Пеша plant shell',
+  'Insects should be treated as a deny pick against an opponent plant shell even when it is not good for us'
+);
 
 function assertNoUglyFloatReasons(result, label) {
   const reasons = result && Array.isArray(result.reasons) ? result.reasons : [];
@@ -512,6 +550,7 @@ assert.strictEqual(typeof describeCorpBoostReason, 'function', 'describeCorpBoos
 assert.strictEqual(typeof estimateGensLeft, 'function', 'estimateGensLeft should be exposed');
 assert.strictEqual(typeof getCorpBoost, 'function', 'getCorpBoost should be exposed');
 assert.strictEqual(typeof scoreCardRequirements, 'function', 'scoreCardRequirements should be exposed');
+assert.strictEqual(typeof computeReqPriority, 'function', 'computeReqPriority should be exposed');
 assert.strictEqual(typeof scoreTagSynergies, 'function', 'scoreTagSynergies should be exposed');
 assert.strictEqual(typeof scoreResourceSynergies, 'function', 'scoreResourceSynergies should be exposed');
 assert.strictEqual(typeof scoreCardEconomyInContext, 'function', 'scoreCardEconomyInContext should be exposed');
@@ -524,6 +563,7 @@ assert.strictEqual(typeof estimateImmediatePlantGainForFinal, 'function', 'estim
 assert.strictEqual(typeof isFinalGreenerySource, 'function', 'isFinalGreenerySource should be exposed');
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scorePostContextChecks, 'function', 'scorePostContextChecks should be exposed');
+assert.strictEqual(typeof kaguyaTechConversionValue, 'function', 'kaguyaTechConversionValue should be exposed');
 assert.strictEqual(typeof isVpAccumulatorActionFx, 'function', 'isVpAccumulatorActionFx should be exposed');
 assert.strictEqual(typeof isBlueActionFx, 'function', 'isBlueActionFx should be exposed');
 assert.strictEqual(typeof getVpAccumulatorProjectedResources, 'function', 'getVpAccumulatorProjectedResources should be exposed');
@@ -540,6 +580,8 @@ assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy 
 assert.strictEqual(typeof scoreComboPotential, 'function', 'scoreComboPotential should be exposed');
 assert.strictEqual(typeof resourcePlacementCanReachTarget, 'function', 'resourcePlacementCanReachTarget should be exposed');
 assert.strictEqual(typeof scoreSynergyRules, 'function', 'scoreSynergyRules should be exposed');
+assert.strictEqual(typeof scoreMapMA, 'function', 'scoreMapMA should be exposed');
+assert.strictEqual(typeof scoreMilestoneAwardProximity, 'function', 'scoreMilestoneAwardProximity should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
 assert.strictEqual(typeof getOpeningHandBias, 'function', 'getOpeningHandBias should be exposed');
 assert.strictEqual(typeof getInitialDraftRatingScore, 'function', 'getInitialDraftRatingScore should be exposed');
@@ -668,6 +710,44 @@ assert(
 assertNoUglyFloatReasons(cloudSeedingNoTagPenalty, 'Cloud Seeding no-tag penalty');
 
 sandbox.TM_CARD_EFFECTS = {
+  'Optimal Aerobraking': {c: 7},
+  Asteroid: {c: 14, tmp: 1},
+  'Local Heat Trapping': {c: 1},
+  'Media Group': {c: 6},
+};
+sandbox.TM_CARD_TAGS = {
+  'Optimal Aerobraking': ['space'],
+  Asteroid: ['event', 'space'],
+  'Local Heat Trapping': ['event'],
+  'Media Group': ['earth', 'event'],
+};
+sandbox.TM_CARD_TAG_REQS = {};
+sandbox.TM_CARD_GLOBAL_REQS = {};
+sandbox.TM_CARD_DISCOUNTS = {};
+sandbox.TM_TAG_TRIGGERS = {};
+const optAeroMixedEventsSynergy = scoreHandSynergy(
+  'Optimal Aerobraking',
+  ['Optimal Aerobraking', 'Asteroid', 'Local Heat Trapping', 'Media Group'],
+  {
+    gensLeft: 4,
+    gen: 5,
+    globalParams: {temp: 6, oxy: 8, oceans: 5, venus: 0},
+    tags: {},
+    _myCorps: [],
+  },
+);
+const optAeroMixedReasons = optAeroMixedEventsSynergy.reasons.join(' | ');
+assert(
+  optAeroMixedReasons.includes('1 space ev'),
+  'Optimal Aerobraking should still count actual space-event triggers in hand',
+);
+assert(
+  !/\d+ events \+3ea/.test(optAeroMixedReasons),
+  'Optimal Aerobraking should not treat non-space events as trigger density',
+);
+assertNoUglyFloatReasons(optAeroMixedEventsSynergy, 'Optimal Aerobraking mixed-event hand');
+
+sandbox.TM_CARD_EFFECTS = {
   'Dirigibles': {c: 11},
   'Immigration Shuttles': {c: 31, mp: 5},
   'Mercurian Alloys': {c: 3},
@@ -764,6 +844,71 @@ const insectsHarvestSynergy = scoreHandSynergy(
 assert(
   !insectsHarvestSynergy.reasons.some((reason) => reason.includes('plant tag')),
   'Insects should not count plant tags from event cards in hand',
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  Livestock: {c: 13, pp: -1, mp: 2},
+};
+const livestockMissingPlantProd = scoreBoardStateModifiers(
+  'Livestock',
+  {},
+  '',
+  {
+    gen: 5,
+    gensLeft: 4,
+    prod: {plants: 0, energy: 0, steel: 0, ti: 0, heat: 0},
+  },
+);
+assert.strictEqual(
+  livestockMissingPlantProd.bonus,
+  -10,
+  'missing own plant production for Livestock should be a temporary soft-lock penalty, not ppUnplayable',
+);
+assert(
+  livestockMissingPlantProd.reasons.some((reason) => reason.includes('Не сейчас: plants prod 0→-1 −10')),
+  'temporary production-payment locks should show the visible score penalty',
+);
+assert(
+  !livestockMissingPlantProd.reasons.some((reason) => reason.includes('Невозможно сыграть')),
+  'temporary production-payment locks should not be labelled as permanently impossible',
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  'Electro Catapult': {c: 14, ep: -1, sp: -1},
+};
+const electroCatapultLegacyReqPriority = computeReqPriority(
+  {
+    getAttribute(attr) {
+      return attr === 'data-tm-card' ? 'Electro Catapult' : '';
+    },
+    querySelector() {
+      return null;
+    },
+  },
+  {
+    game: {
+      oxygenLevel: 6,
+      temperature: -16,
+      oceans: 4,
+      venusScaleLevel: 0,
+    },
+  },
+  {
+    gen: 5,
+    gensLeft: 4,
+    prod: {energy: 0, steel: 0, plants: 0, ti: 0, heat: 0},
+  },
+);
+assert.strictEqual(
+  electroCatapultLegacyReqPriority.penalty,
+  10,
+  'legacy computeReqPriority fallback should apply one visible soft penalty for multi production-payment locks',
+);
+assert(electroCatapultLegacyReqPriority.reasons.includes('Не сейчас: energy prod 0→-1 −10'));
+assert(electroCatapultLegacyReqPriority.reasons.includes('Не сейчас: steel prod 0→-1 −10'));
+assert(
+  !electroCatapultLegacyReqPriority.reasons.some((reason) => reason.includes('Невозможно сыграть')),
+  'legacy computeReqPriority fallback should not expose hard impossible text for temporary production locks',
 );
 
 sandbox.TM_CARD_EFFECTS = {
@@ -1115,6 +1260,135 @@ assert(
   'Interstellar Colony Ship should explain the played Science requirement instead of hiding it behind a small Нет science penalty',
 );
 
+sandbox.TM_CARD_TAG_REQS = {'Warp Drive': {science: 5}};
+sandbox.TM_CARD_GLOBAL_REQS = {};
+sandbox.TM_CARD_EFFECTS = {};
+sandbox.__tm_test_handNames = [];
+sandbox.__tm_test_pv = {
+  thisPlayer: {tableau: []},
+};
+const warpDriveOpeningScienceRouteReq = scoreCardRequirements(
+  null,
+  {
+    tags: {science: 0},
+    tagsWithHand: {science: 1},
+    _handTagCounts: {science: 1},
+    globalParams: {temp: -30, oxy: 0, oceans: 0, venus: 0},
+    gensLeft: 10,
+    gen: 1,
+    terraformRate: 1,
+    _myCorps: [],
+    tableauNames: new Set(),
+  },
+  'Warp Drive',
+);
+assert(
+  warpDriveOpeningScienceRouteReq.bonus >= -18,
+  `Warp Drive opener with visible Science route should stay speculative instead of being hard-greyed, got ${warpDriveOpeningScienceRouteReq.bonus}`,
+);
+
+sandbox.TM_CARD_TAG_REQS = {'Mining Quota': {venus: 1, earth: 1, jovian: 1}};
+sandbox.TM_CARD_GLOBAL_REQS = {};
+sandbox.TM_CARD_EFFECTS = {};
+sandbox.__tm_test_handNames = [];
+sandbox.__tm_test_pv = {
+  thisPlayer: {tableau: []},
+};
+const miningQuotaMissingJovianReq = scoreCardRequirements(
+  null,
+  {
+    tags: {venus: 1, earth: 1, building: 5},
+    globalParams: {temp: -30, oxy: 0, oceans: 0, venus: 0},
+    gensLeft: 10,
+    gen: 1,
+    terraformRate: 1,
+    _myCorps: [],
+    tableauNames: new Set(),
+  },
+  'Mining Quota',
+);
+assert(
+  miningQuotaMissingJovianReq.bonus <= -8,
+  `Mining Quota without a Jovian route should not stay A-tier from steel synergy alone, got ${miningQuotaMissingJovianReq.bonus}`,
+);
+
+sandbox.cardBuildsColonyByName = function cardBuildsColonyByName(name) {
+  return name === 'Interplanetary Colony Ship';
+};
+const pioneerColonyMilestoneBonus = scoreMapMA(
+  {e: 'Place a colony.'},
+  new Set(['event', 'space', 'earth']),
+  12,
+  {
+    milestones: new Set(['Pioneer']),
+    awards: new Set(),
+    tags: {space: 1, earth: 1},
+  },
+  sandbox.SC,
+  'Interplanetary Colony Ship',
+);
+assert(
+  pioneerColonyMilestoneBonus.reasons.some((reason) => reason.includes('Pioneer')),
+  'Colony-placement cards should show Pioneer milestone value when Pioneer is active',
+);
+
+sandbox.TAG_TO_MA.plant = [{name: 'Ecologist', type: 'milestone', target: 4, bio: true}];
+const tundraClaimedEcologistProximity = scoreMilestoneAwardProximity(
+  new Set(['plant']),
+  'green',
+  'increase your plant production 1 step',
+  {e: 'Increase your plant production 1 step.'},
+  {
+    milestoneNeeds: {plant: 2},
+    milestoneSpecial: {},
+    claimedMilestones: new Set(['ecologist']),
+    milestoneClaimedCount: 1,
+    awardTags: {},
+    awardRacing: {},
+    tags: {plant: 2},
+  },
+  'Tundra Farming',
+);
+assert.strictEqual(
+  tundraClaimedEcologistProximity.bonus,
+  0,
+  'Tundra Farming should not get plant-tag milestone proximity after Ecologist is claimed',
+);
+assert(
+  !tundraClaimedEcologistProximity.reasons.some((reason) => reason.includes('Ecologist')),
+  'claimed Ecologist should not appear in Tundra Farming play reasons',
+);
+
+sandbox.TM_CARD_EFFECTS = {
+  'Kaguya Tech': {c: 10, mp: 2, cd: 1},
+};
+const kaguyaPlayableCtx = {
+  gensLeft: 3,
+  gen: 7,
+  greeneries: 2,
+  plants: 7,
+  tableauNames: new Set(['Lakefront Resorts']),
+  globalParams: {temp: -14, oxy: 6, oceans: 7, venus: 6},
+};
+const kaguyaBreakEven = scoreBreakEvenTiming(
+  'Kaguya Tech',
+  kaguyaPlayableCtx,
+  new Set(['city', 'plant']),
+);
+assert(
+  kaguyaBreakEven.penalty <= 3,
+  `Kaguya Tech should not get a full pure-production break-even penalty when own greenery can be converted, got ${kaguyaBreakEven.penalty}`,
+);
+const kaguyaTiming = scoreFTNTiming(
+  'Kaguya Tech',
+  kaguyaPlayableCtx,
+  {},
+);
+assert(
+  kaguyaTiming.bonus >= -6,
+  `Kaguya Tech should cap production timing penalty when greenery->city conversion is live, got ${kaguyaTiming.bonus}`,
+);
+
 sandbox.TM_CARD_EFFECTS = {
   'Gyropolis': {c: 20, mp: 0, ep: -2, city: 1},
 };
@@ -1178,7 +1452,7 @@ const spacePortColonyFastRate = scoreTerraformRate(
   {e: 'requires 1 colony. build a colony and gain 1 trade fleet. 1 vp per 2 colonies.'},
 );
 assert(
-  !spacePortColonyFastRate.reasons.some((reason) => reason.includes('Быстр. → VP')),
+  !spacePortColonyFastRate.reasons.some((reason) => reason.includes('VP timing')),
   'Conditional colony VP text should not receive the generic fast-game VP burst bonus',
 );
 
@@ -1208,6 +1482,33 @@ assert(
   duplicateTharsisTriggers.reasons.length === 1 &&
     (duplicateTharsisTriggers.reasons[0].match(/Tharsis → \+1 MC-прод/g) || []).length === 1,
   'Duplicate Tharsis city triggers should be displayed once',
+);
+
+const discountedTitaniumPayment = scoreDiscountsAndPayments(
+  new Set(['space']),
+  10,
+  'green',
+  {
+    discounts: {space: 4},
+    steel: 0,
+    titanium: 6,
+    steelVal: 2,
+    tiVal: 4,
+    tagTriggers: [],
+  },
+  1,
+);
+assert(
+  discountedTitaniumPayment.reasons.some((reason) => reason.includes('Скидка −4 MC')),
+  'space discount should still be visible',
+);
+assert(
+  discountedTitaniumPayment.reasons.some((reason) => reason.includes('Титан −6 MC')),
+  'titanium payment should be capped to the post-discount remaining cost, not the printed card cost',
+);
+assert(
+  !discountedTitaniumPayment.reasons.some((reason) => reason.includes('Титан −10 MC')),
+  'discounted space cards should not double-count discount and full printed-cost titanium payment',
 );
 
 sandbox.TM_CARD_EFFECTS = {
@@ -1488,6 +1789,93 @@ assert.strictEqual(
 assert(
   computeCardValue({vpAcc: 1, vpPer: 2}, 5) > 0,
   'real VP/resource action cards should keep recurring value in computeCardValue'
+);
+
+const prevVpMultipliers = sandbox.TM_VP_MULTIPLIERS;
+sandbox.TM_VP_MULTIPLIERS = {
+  Satellites: {vpPer: 'space', rate: 1, selfTags: ['space']},
+};
+sandbox.TM_CARD_EFFECTS['Satellites'] = {c: 10};
+positionalScoring.vpMultBaseline = 5;
+positionalScoring.vpMultScale = 2.5;
+positionalScoring.vpMultCap = 12;
+const satellitesEconomyWithBadVpData = scoreCardEconomyInContext(
+  new Set(['space']),
+  'green',
+  'Satellites',
+  10,
+  1,
+  '13 mc total for x mc-prod, 1 per space tag including this',
+  {e: '13 mc total for x mc-prod, 1 per space tag including this'},
+  {
+    gensLeft: 2,
+    gen: 7,
+    tags: {space: 8, wild: 0},
+    tagsProjected: {space: 9},
+    prod: {ti: 0, steel: 0, mc: 0, plants: 0, energy: 0, heat: 0},
+    tableauNames: new Set(['Space Station']),
+  },
+  false,
+);
+assert(
+  !satellitesEconomyWithBadVpData.reasons.some((reason) => reason.includes('VP×space')),
+  'Satellites should not get fake VP×space projection from bad multiplier data because it is production, not VP',
+);
+sandbox.TM_VP_MULTIPLIERS = prevVpMultipliers;
+
+const richLateSatellitesEconomy = scoreCardEconomyInContext(
+  new Set(['space']),
+  'green',
+  'Satellites',
+  10,
+  1,
+  'increase your m€ production 1 step for each space tag you have, including this one.',
+  {e: 'Increase your M€ production 1 step for each space tag you have, including this one.'},
+  {
+    gensLeft: 2,
+    gen: 8,
+    mc: 80,
+    tags: {space: 7, wild: 0},
+    tagsProjected: {space: 8},
+    prod: {ti: 4, steel: 2, mc: 48, plants: 0, energy: 3, heat: 0},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    activeMA: [],
+    tableauNames: new Set(['Warp Drive', 'Advanced Alloys']),
+  },
+  false,
+);
+assert(
+  richLateSatellitesEconomy.reasons.some((reason) => reason.includes('Прод. избыток −7')),
+  'Satellites should be damped when late rich players already have massive MC production and no VP conversion',
+);
+
+const cloudTourismPairProduction = scoreCardEconomyInContext(
+  new Set(['jovian', 'venus']),
+  'blue',
+  'Cloud Tourism',
+  11,
+  1,
+  'increase your m€ production 1 step for each pair of earth and venus tags you own. 1 vp for every 3rd floater on this card.',
+  {e: 'Increase your M€ production 1 step for each pair of Earth and Venus tags you own. 1 VP for every 3rd floater on this card.'},
+  {
+    gensLeft: 2,
+    gen: 8,
+    tags: {earth: 7, venus: 1, wild: 0},
+    tagsProjected: {earth: 7, venus: 2},
+    prod: {ti: 0, steel: 0, mc: 0, plants: 0, energy: 0, heat: 0},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    activeMA: [],
+    tableauNames: new Set(['Saturn Systems']),
+  },
+  false,
+);
+assert(
+  cloudTourismPairProduction.reasons.some((reason) => reason.includes('2× прод +2')),
+  'Cloud Tourism should score its own Earth/Venus pair MC-production in context',
 );
 
 sandbox.TM_CARD_EFFECTS['Real City Project'] = {c: 18, city: 1};
@@ -1988,6 +2376,46 @@ assert(
   'late rich players with an empty hand should treat project draw as VP-conversion, not as dead late draw'
 );
 
+const oldActionROICDMul = positionalScoring.actionROICDMul;
+const oldActionROIBonCap = positionalScoring.actionROIBonCap;
+const oldActionROIDivisor = positionalScoring.actionROIDivisor;
+const oldHandFullThreshold = positionalScoring.handFullThreshold;
+positionalScoring.actionROICDMul = 3;
+positionalScoring.actionROIBonCap = 8;
+positionalScoring.actionROIDivisor = 4;
+positionalScoring.handFullThreshold = 10;
+sandbox.TM_CARD_EFFECTS['AI Central'] = {c: 21, vp: 1, actCD: 2, ep: -1};
+const fullHandLateAiCentralEconomy = scoreCardEconomyInContext(
+  new Set(['science', 'building']),
+  'blue',
+  'AI Central',
+  21,
+  0.5,
+  'requires 3 science tags. decrease your energy production 1 step. action: draw 2 cards.',
+  {e: 'Requires 3 science tags. Decrease your energy production 1 step. Action: Draw 2 cards.'},
+  {
+    gen: 7,
+    gensLeft: 4,
+    handSize: 14,
+    tags: {science: 3, building: 2},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    prod: {steel: 0, ti: 0, energy: 3, heat: 0, plants: 0, mc: 0},
+    tableauNames: new Set(['Olympus Conference', 'Mars University', 'Research']),
+    globalParams: {oxy: 4, temp: -8, oceans: 2},
+  },
+  false
+);
+assert(
+  fullHandLateAiCentralEconomy.reasons.some((reason) => reason.includes('Draw ROI: рука полна −6')),
+  'AI Central should not value draw-2 action at full ROI when the player already has a large late hand'
+);
+positionalScoring.actionROICDMul = oldActionROICDMul;
+positionalScoring.actionROIBonCap = oldActionROIBonCap;
+positionalScoring.actionROIDivisor = oldActionROIDivisor;
+positionalScoring.handFullThreshold = oldHandFullThreshold;
+
 sandbox.TM_CARD_EFFECTS['Acquired Company'] = {c: 10, mp: 3};
 const richEmptyLateProdEconomy = scoreCardEconomyInContext(
   new Set(['earth']),
@@ -2027,8 +2455,66 @@ const lateDirigiblesEconomy = scoreCardEconomyInContext(
   true
 );
 assert(
-  lateDirigiblesEconomy.bonus <= -20 && lateDirigiblesEconomy.reasons.some((reason) => reason.includes('Поздн. floater engine -20')),
+  lateDirigiblesEconomy.bonus <= -24 && lateDirigiblesEconomy.reasons.some((reason) => reason.includes('Поздн. floater engine -24')),
   'Dirigibles should receive a hard late-game penalty as a no-VP floater/payment engine'
+);
+
+const genSevenDirigiblesEconomy = scoreCardEconomyInContext(
+  new Set(['venus']),
+  'blue',
+  'Dirigibles',
+  11,
+  0.5,
+  'action: add 1 floater to any card. when playing a venus tag, floaters here may be used as payment.',
+  {e: 'Action: Add 1 floater to ANY card. When playing a Venus tag, Floaters here may be used as payment.'},
+  {
+    gen: 7,
+    gensLeft: 4,
+    tags: {venus: 2},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    prod: {steel: 0, ti: 0, energy: 0, heat: 0, plants: 0, mc: 0},
+    floaterTargetCount: 1,
+    floaterAccumRate: 0,
+    tableauNames: new Set(['Titan Shuttles']),
+    globalParams: {oxy: 4, temp: -8, oceans: 2},
+  },
+  true
+);
+assert(
+  genSevenDirigiblesEconomy.bonus <= -20 &&
+    genSevenDirigiblesEconomy.reasons.some((reason) => reason.includes('Поздн. floater engine -24')),
+  'Dirigibles should not jump to S-tier in generation 7 from generic Venus/floater shell bonuses'
+);
+
+sandbox.TM_CARD_EFFECTS['Mine'] = {c: 4, sp: 1};
+const lateMineEconomy = scoreCardEconomyInContext(
+  new Set(['building']),
+  'green',
+  'Mine',
+  4,
+  0.5,
+  'increase your steel production 1 step.',
+  {e: 'Increase your steel production 1 step.'},
+  {
+    gen: 7,
+    gensLeft: 4,
+    tags: {building: 3},
+    awardTags: {},
+    milestoneNeeds: {},
+    tagTriggers: [],
+    prod: {steel: 0, ti: 0, energy: 0, heat: 0, plants: 0, mc: 0},
+    steel: 8,
+    tableauNames: new Set(['Space Elevator']),
+    globalParams: {oxy: 4, temp: -8, oceans: 2},
+  },
+  false
+);
+assert(
+  lateMineEconomy.bonus <= -15 &&
+    lateMineEconomy.reasons.some((reason) => reason.includes('Mine: поздняя окупаемость -15')),
+  'Mine should not stay high in generation 7 just because steel/building synergy exists'
 );
 
 sandbox.TM_CARD_EFFECTS["Inventors' Guild"] = {c: 9, actCD: 0.3};
