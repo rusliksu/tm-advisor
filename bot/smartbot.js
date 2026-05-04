@@ -553,6 +553,21 @@ function getBestVisibleTerraformingStandardProject(spCards, state, context) {
   return getBestVisibleStandardProject(terraformingOnly, state, context);
 }
 
+function getBestStandardProjectForPrompt(cards, state) {
+  const gm = state?.game || {};
+  const gen = gm.generation || 1;
+  const steps = remainingSteps(state);
+  const closureMode =
+    (((gm.temperature ?? -30) < 8) ||
+      ((gm.oxygenLevel ?? 0) < 14) ||
+      ((gm.oceans ?? 0) < 9) ||
+      ((gm.venusScaleLevel ?? 0) < 30)) &&
+    (gen >= 12 || steps <= 6);
+  return closureMode
+    ? (getBestVisibleTerraformingStandardProject(cards, state) || getBestVisibleStandardProject(cards, state))
+    : getBestVisibleStandardProject(cards, state);
+}
+
 function corpCardBoost(cardName, corpName) {
   var tags = (typeof CARD_TAGS !== "undefined" ? CARD_TAGS[cardName] : null) || [];
   var cd = typeof CARD_DATA !== "undefined" ? CARD_DATA[cardName] : null;
@@ -2298,18 +2313,7 @@ function handleInput(wf, state, depth = 0) {
 
     // Standard projects selection: pick best terraform (check isDisabled!)
     if (title.includes('standard project')) {
-      const gm = state?.game || {};
-      const gen = gm.generation || 1;
-      const steps = remainingSteps(state);
-      const closureMode =
-        (((gm.temperature ?? -30) < 8) ||
-          ((gm.oxygenLevel ?? 0) < 14) ||
-          ((gm.oceans ?? 0) < 9) ||
-          ((gm.venusScaleLevel ?? 0) < 30)) &&
-        (gen >= 12 || steps <= 6);
-      const bestSp = closureMode
-        ? (getBestVisibleTerraformingStandardProject(cards, state) || getBestVisibleStandardProject(cards, state))
-        : getBestVisibleStandardProject(cards, state);
+      const bestSp = getBestStandardProjectForPrompt(cards, state);
       if (bestSp) {
         dbg(`std project: ${bestSp.name}=${bestSp._spScore.toFixed(0)}`);
         return { type: 'card', cards: [bestSp.name] };
@@ -2539,6 +2543,20 @@ function handleInput(wf, state, depth = 0) {
 
   if (t === 'projectCard') {
     const cards = wf.cards || [];
+    const title = getTitle(wf).toLowerCase();
+    if (title.includes('standard project')) {
+      const bestSp = getBestStandardProjectForPrompt(cards, state);
+      if (bestSp) {
+        const cost = getVisibleStandardProjectCost(bestSp) ?? bestSp.calculatedCost ?? bestSp.cost ?? 0;
+        dbg(`std project: ${bestSp.name}=${bestSp._spScore.toFixed(0)}`);
+        return {
+          type: 'projectCard',
+          card: bestSp.name,
+          payment: smartPay(cost, state, wf, [], bestSp.name),
+        };
+      }
+      return { type: 'option' };
+    }
     if (cards.length > 0) {
       const mc = state?.thisPlayer?.megacredits ?? 0;
       const tp = state?.thisPlayer || {};
