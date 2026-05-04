@@ -37,6 +37,17 @@
     return pv;
   }
 
+  function firstPlayerNumber(player, keys) {
+    if (!player) return undefined;
+    for (var i = 0; i < keys.length; i++) {
+      var raw = player[keys[i]];
+      if (raw == null) continue;
+      var num = Number(raw);
+      return isFinite(num) ? num : raw;
+    }
+    return undefined;
+  }
+
   // Strategy 1: Walk Vue component tree
   function findPlayerViewVue() {
     var roots = ['#game', '#app', '#main', '[data-v-app]'];
@@ -455,7 +466,7 @@
       var p = pv.thisPlayer;
       data.thisPlayer = {
         color: p.color,
-        megaCredits: p.megaCredits,
+        megaCredits: firstPlayerNumber(p, ['megaCredits', 'megacredits']),
         steel: p.steel,
         steelValue: p.steelValue,
         titanium: p.titanium,
@@ -464,7 +475,7 @@
         plants: p.plants,
         energy: p.energy,
         terraformRating: p.terraformRating,
-        megaCreditProduction: p.megaCreditProduction,
+        megaCreditProduction: firstPlayerNumber(p, ['megaCreditProduction', 'megacreditProduction', 'megaCreditsProduction']),
         steelProduction: p.steelProduction,
         titaniumProduction: p.titaniumProduction,
         plantProduction: p.plantProduction,
@@ -536,7 +547,7 @@
           name: pl.name,
           color: pl.color,
           terraformRating: pl.terraformRating,
-          megaCredits: pl.megaCredits,
+          megaCredits: firstPlayerNumber(pl, ['megaCredits', 'megacredits']),
           steel: pl.steel,
           titanium: pl.titanium,
           heat: pl.heat,
@@ -547,7 +558,7 @@
           cardsInHandNbr: pl.cardsInHandNbr || 0,
           isActive: pl.isActive,
           actionsTakenThisRound: pl.actionsTakenThisRound || 0,
-          megaCreditProduction: pl.megaCreditProduction,
+          megaCreditProduction: firstPlayerNumber(pl, ['megaCreditProduction', 'megacreditProduction', 'megaCreditsProduction']),
           steelProduction: pl.steelProduction,
           titaniumProduction: pl.titaniumProduction,
           plantProduction: pl.plantProduction,
