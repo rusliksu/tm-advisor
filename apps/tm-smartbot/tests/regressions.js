@@ -26,6 +26,7 @@ const {
   testProdSetupCardMidgameBeatsSmallSpEdge,
   testNonSetupFillerStillLetsSpWinOnBigEdge,
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid,
+  testProjectCardStandardProjectPromptUsesVisibleSpSelector,
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
   testWeakEndgameStandardProjectsDoNotBeatBlueAction,
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions,
@@ -880,6 +881,7 @@ function run() {
   testProdSetupCardMidgameBeatsSmallSpEdge();
   testNonSetupFillerStillLetsSpWinOnBigEdge();
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid();
+  testProjectCardStandardProjectPromptUsesVisibleSpSelector();
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
   testWeakEndgameStandardProjectsDoNotBeatBlueAction();
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions();

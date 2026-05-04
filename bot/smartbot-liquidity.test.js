@@ -95,6 +95,18 @@ function makeStandardProjectWorkflow(hand) {
   };
 }
 
+function makeProjectCardStandardProjectWorkflow(standardCards) {
+  return {
+    type: 'or',
+    title: 'Take your next action',
+    options: [
+      {title: 'Perform an action from a played card', type: 'card', cards: ['Mars Maths'].map(makeCard), selectBlueCardAction: true},
+      {title: 'Standard projects', type: 'projectCard', cards: standardCards},
+      {title: 'Pass for this generation', type: 'option'},
+    ],
+  };
+}
+
 function makeAwardActionWorkflow(hand, awardCost = 8) {
   return {
     type: 'or',
@@ -391,6 +403,38 @@ function testEarlyStandardProjectPrefersColonyOverBlindAsteroid() {
   assert.strictEqual(input.type, 'or');
   assert.strictEqual(input.index, 1);
   assert.deepStrictEqual(input.response?.cards, ['Colony']);
+}
+
+function testProjectCardStandardProjectPromptUsesVisibleSpSelector() {
+  const standardCards = [
+    {name: 'Collusion:SP', cost: 0, calculatedCost: 0, isDisabled: true},
+    {name: 'Excavate:SP', cost: 7, calculatedCost: 7},
+    {name: 'Power Plant:SP', cost: 11, calculatedCost: 11},
+    {name: 'Asteroid:SP', cost: 14, calculatedCost: 14},
+    {name: 'Air Scrapping', cost: 15, calculatedCost: 15},
+    {name: 'Build Colony', cost: 17, calculatedCost: 17},
+    {name: 'Aquifer', cost: 18, calculatedCost: 18},
+    {name: 'Greenery', cost: 23, calculatedCost: 23},
+    {name: 'City', cost: 25, calculatedCost: 25},
+  ];
+  const state = makeState({mc: 43, gen: 1, hand: []});
+  state.game.temperature = -30;
+  state.game.oxygenLevel = 0;
+  state.game.oceans = 0;
+  state.game.venusScaleLevel = 2;
+  state.game.colonies = [
+    {name: 'Luna', colonies: []},
+    {name: 'Ceres', colonies: []},
+  ];
+
+  const input = BOT.handleInput(makeProjectCardStandardProjectWorkflow(standardCards), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 1);
+  assert.strictEqual(input.response?.type, 'projectCard');
+  assert.strictEqual(input.response?.card, 'Build Colony');
+  assert.strictEqual(input.response?.payment?.megaCredits, 17);
+  assert.ok(!Object.prototype.hasOwnProperty.call(input.response?.payment || {}, 'megacredits'));
 }
 
 function testStrongPlayableCardBeatsSmallColonyEdgeInMidgame() {
@@ -752,6 +796,7 @@ function main() {
   testProdSetupCardMidgameBeatsSmallSpEdge();
   testNonSetupFillerStillLetsSpWinOnBigEdge();
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid();
+  testProjectCardStandardProjectPromptUsesVisibleSpSelector();
   testStrongPlayableCardBeatsSmallColonyEdgeInMidgame();
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
   testWeakEndgameStandardProjectsDoNotBeatBlueAction();
@@ -795,6 +840,7 @@ module.exports = {
   testProdSetupCardMidgameBeatsSmallSpEdge,
   testNonSetupFillerStillLetsSpWinOnBigEdge,
   testEarlyStandardProjectPrefersColonyOverBlindAsteroid,
+  testProjectCardStandardProjectPromptUsesVisibleSpSelector,
   testStrongPlayableCardBeatsSmallColonyEdgeInMidgame,
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
   testWeakEndgameStandardProjectsDoNotBeatBlueAction,
