@@ -258,6 +258,53 @@ function testOpeningDraftKeepsIcAheadWhenSpliceOnlyHasLoneDecomposers() {
   assert.strictEqual(getCorpPickFromInitialDraft(input), 'Interplanetary Cinematics');
 }
 
+function testMergerCorporationChoiceDoesNotUseServerOrder() {
+  const wf = {
+    type: 'card',
+    title: 'Choose corporation card to play',
+    min: 1,
+    max: 1,
+    cards: [
+      {name: 'Kuiper Cooperative'},
+      {name: 'Inventrix'},
+      {name: 'Celestic'},
+      {name: 'Arcadian Communities'},
+    ],
+  };
+  const state = {
+    thisPlayer: {
+      color: 'blue',
+      megaCredits: 24,
+      megacredits: 24,
+      tableau: [{name: 'EcoTec'}, {name: 'Soil Bacteria'}, {name: 'Merger'}],
+      cardsInHand: [
+        {name: "Inventors' Guild"},
+        {name: 'Subterranean Reservoir'},
+        {name: 'Herbivores'},
+        {name: 'Farming'},
+        {name: 'Giant Solar Shade'},
+        {name: 'Adapted Lichen'},
+        {name: 'Domed Crater'},
+        {name: 'Lava Flows'},
+        {name: 'Asteroid'},
+        {name: 'Community Services'},
+      ],
+    },
+    players: [{color: 'blue'}, {color: 'orange'}, {color: 'emerald'}],
+    game: {
+      generation: 1,
+      phase: 'preludes',
+      oxygenLevel: 0,
+      temperature: -30,
+      oceans: 0,
+      venusScaleLevel: 0,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.deepStrictEqual(input, {type: 'card', cards: ['Inventrix']});
+}
+
 function testOpeningDraftEcolineRushKeepsKelpAndSkipsDeadScienceGreed() {
   const wf = buildInitialDraftWorkflow(
     ['Ecoline', 'Helion', 'Arklight'],
@@ -843,6 +890,7 @@ function run() {
   testOpeningDraftPrefersIcEventShell();
   testOpeningDraftPrefersSpliceDenseMicrobeShell();
   testOpeningDraftKeepsIcAheadWhenSpliceOnlyHasLoneDecomposers();
+  testMergerCorporationChoiceDoesNotUseServerOrder();
   testOpeningDraftEcolineRushKeepsKelpAndSkipsDeadScienceGreed();
   testOpeningDraftPrefersFactorumColoniesTempoShell();
   testPristarBoostPrefersEngineShellOverTerraforming();
