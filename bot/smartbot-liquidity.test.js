@@ -348,9 +348,34 @@ function testScoreCardValuesGreenhousesWhenCitiesExist() {
       {color: 'green', megacreditProduction: 9, terraformRating: 21, citiesCount: 1},
     ],
   });
+  const convertingTable = makeState({
+    mc: 30,
+    gen: 6,
+    hand: [],
+    players: [
+      {color: 'red', megacreditProduction: 6, terraformRating: 24, citiesCount: 1},
+      {color: 'blue', megacreditProduction: 10, terraformRating: 22, citiesCount: 1},
+      {color: 'green', megacreditProduction: 9, terraformRating: 21, citiesCount: 1},
+    ],
+  });
+  convertingTable.thisPlayer.plants = 5;
+  const lateCityTable = makeState({
+    mc: 30,
+    gen: 9,
+    hand: [],
+    players: [
+      {color: 'red', megacreditProduction: 6, terraformRating: 24, citiesCount: 1},
+      {color: 'blue', megacreditProduction: 10, terraformRating: 22, citiesCount: 1},
+      {color: 'green', megacreditProduction: 9, terraformRating: 21, citiesCount: 1},
+    ],
+  });
   const lowScore = BOT.TM_BRAIN.scoreCard(card, noCities);
-  const highScore = BOT.TM_BRAIN.scoreCard(card, cityTable);
-  assert.ok(highScore > lowScore);
+  const earlyCityScore = BOT.TM_BRAIN.scoreCard(card, cityTable);
+  const convertingScore = BOT.TM_BRAIN.scoreCard(card, convertingTable);
+  const lateScore = BOT.TM_BRAIN.scoreCard(card, lateCityTable);
+  assert.ok(earlyCityScore <= lowScore + 1, 'three early cities should not create a play-now Greenhouses boost');
+  assert.ok(convertingScore > earlyCityScore + 4, 'Greenhouses should score higher when it converts plants into a greenery now');
+  assert.ok(lateScore > earlyCityScore + 4, 'Greenhouses should score higher in the late cashout window');
 }
 
 function testScoreCardMartianRailsScalesWithTableCitiesAndMode() {
@@ -401,6 +426,35 @@ function testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport() {
     hand: [makeCard('Optimal Aerobraking')],
   }));
   assert.ok(score > noSupportScore + 6);
+}
+
+function testScoreCardValuesMediaGroupBeforeKnownEvents() {
+  const setupHand = [
+    makeCard('Media Group'),
+    makeCard('Big Asteroid'),
+    makeCard('Technology Demonstration'),
+  ];
+  const setupState = makeState({mc: 16, gen: 9, hand: setupHand, income: 22});
+  setupState.game.temperature = 2;
+  setupState.game.oxygenLevel = 13;
+  setupState.game.oceans = 8;
+  const noTriggerState = makeState({
+    mc: 16,
+    gen: 9,
+    hand: [makeCard('Media Group'), makeCard('AI Central')],
+    income: 22,
+  });
+  noTriggerState.game.temperature = 2;
+  noTriggerState.game.oxygenLevel = 13;
+  noTriggerState.game.oceans = 8;
+
+  const setupScore = BOT.TM_BRAIN.scoreCard(setupHand[0], setupState);
+  const noTriggerScore = BOT.TM_BRAIN.scoreCard(makeCard('Media Group'), noTriggerState);
+
+  assert.ok(
+    setupScore > noTriggerScore + 14,
+    'Media Group should become materially better as a play-now setup before known event cards',
+  );
 }
 
 function testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport() {
@@ -1107,6 +1161,40 @@ function testWeakEndgameStandardProjectsDoNotBeatBlueAction() {
   BOT.flushReasoning();
   assert.strictEqual(input.type, 'or');
   assert.strictEqual(input.index, 0);
+}
+
+function testFinalClosedGlobalsUsesScoringBlueActionOverEngineCard() {
+  const hand = ['Advanced Alloys'].map(makeCard);
+  const actionCards = ['Fish'].map(makeCard);
+  const state = makeState({mc: 40, gen: 13, hand, income: 35});
+  state.game.temperature = 8;
+  state.game.oxygenLevel = 14;
+  state.game.oceans = 9;
+  state.game.venusScaleLevel = 30;
+  state.thisPlayer.tableau = [{name: 'Viron'}, {name: 'Fish', resources: 2}];
+
+  const input = BOT.handleInput(makeProjectVsActionWorkflow(hand, actionCards), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 1);
+  assert.deepStrictEqual(input.response?.cards, ['Fish']);
+}
+
+function testFinalClosedGlobalsUsesScoringBlueActionBeforeCeoPoke() {
+  const hand = ["CEO's Favorite Project"].map(makeCard);
+  const actionCards = ['Fish'].map(makeCard);
+  const state = makeState({mc: 40, gen: 13, hand, income: 35});
+  state.game.temperature = 8;
+  state.game.oxygenLevel = 14;
+  state.game.oceans = 9;
+  state.game.venusScaleLevel = 30;
+  state.thisPlayer.tableau = [{name: 'Viron'}, {name: 'Fish', resources: 2}];
+
+  const input = BOT.handleInput(makeProjectVsActionWorkflow(hand, actionCards), state);
+  BOT.flushReasoning();
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 1);
+  assert.deepStrictEqual(input.response?.cards, ['Fish']);
 }
 
 function testProfitableLunaTradeBeatsWeakCardAction() {
@@ -1975,6 +2063,7 @@ function main() {
   testScoreCardValuesGreenhousesWhenCitiesExist();
   testScoreCardMartianRailsScalesWithTableCitiesAndMode();
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport();
+  testScoreCardValuesMediaGroupBeforeKnownEvents();
   testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport();
   testScoreCardValuesDiscountCardMoreWithMatchingHand();
   testScoreCardGivesProductionCardsMoreRunwayEarly();
@@ -2027,6 +2116,8 @@ function main() {
   testCollusionStandardProjectPassesEvenWithCorruption();
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback();
   testWeakEndgameStandardProjectsDoNotBeatBlueAction();
+  testFinalClosedGlobalsUsesScoringBlueActionOverEngineCard();
+  testFinalClosedGlobalsUsesScoringBlueActionBeforeCeoPoke();
   testProfitableLunaTradeBeatsWeakCardAction();
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions();
   testOnlyVenusOpenPrefersBestBlueActionOverAirScrapping();
@@ -2102,6 +2193,7 @@ module.exports = {
   testScoreCardValuesGreenhousesWhenCitiesExist,
   testScoreCardMartianRailsScalesWithTableCitiesAndMode,
   testScoreCardKeepsOptimalAerobrakingPremiumWithSpaceSupport,
+  testScoreCardValuesMediaGroupBeforeKnownEvents,
   testScoreCardCountsOnlySpaceEventsForOptimalAerobrakingSupport,
   testScoreCardValuesDiscountCardMoreWithMatchingHand,
   testScoreCardGivesProductionCardsMoreRunwayEarly,
@@ -2139,6 +2231,8 @@ module.exports = {
   testCollusionStandardProjectPassesEvenWithCorruption,
   testLateClosedGlobalsPassesInsteadOfWeakStandardProjectFallback,
   testWeakEndgameStandardProjectsDoNotBeatBlueAction,
+  testFinalClosedGlobalsUsesScoringBlueActionOverEngineCard,
+  testFinalClosedGlobalsUsesScoringBlueActionBeforeCeoPoke,
   testProfitableLunaTradeBeatsWeakCardAction,
   testLateOpenGlobalsPreferTerraformingSpOverPureVpActions,
   testOnlyVenusOpenPrefersBestBlueActionOverAirScrapping,
