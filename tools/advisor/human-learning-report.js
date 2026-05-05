@@ -2,10 +2,13 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
+const {spawnSync} = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..', '..');
 const LOG_DIR = path.join(ROOT, 'data', 'game_logs');
+const REPLAY_SCRIPT = path.join(ROOT, 'tools', 'advisor', 'replay-watch-log.py');
 const DEFAULT_MIN_GAP = 6;
 
 function usage() {
@@ -15,6 +18,7 @@ function usage() {
     '  node tools/advisor/human-learning-report.js --game <gameId>',
     '  node tools/advisor/human-learning-report.js --last 10',
     '  node tools/advisor/human-learning-report.js --all',
+    '  node tools/advisor/human-learning-report.js --last 5 --replay',
     '  node tools/advisor/human-learning-report.js --json',
   ].join('\n');
 }
@@ -27,6 +31,7 @@ function parseArgs(argv) {
     gameId: null,
     minGap: DEFAULT_MIN_GAP,
     json: false,
+    replay: false,
     help: false,
     files: [],
   };
@@ -36,6 +41,7 @@ function parseArgs(argv) {
     if (arg === '--help' || arg === '-h') out.help = true;
     else if (arg === '--all') out.all = true;
     else if (arg === '--json') out.json = true;
+    else if (arg === '--replay') out.replay = true;
     else if (arg === '--game' && args[i + 1]) out.gameId = args[++i];
     else if (arg === '--last' && args[i + 1]) out.last = parseInt(args[++i], 10) || out.last;
     else if (arg === '--min-gap' && args[i + 1]) out.minGap = Number(args[++i]) || out.minGap;
@@ -79,6 +85,43 @@ function parseJsonl(file) {
       }
     })
     .filter(Boolean);
+}
+
+function replayFileWithCurrentAdvisor(file) {
+  const tempPath = path.join(
+    os.tmpdir(),
+    `${path.basename(file, '.jsonl')}.replayed.${process.pid}.${Date.now()}.jsonl`,
+  );
+  const python = process.env.PYTHON || 'python';
+  const result = spawnSync(python, [REPLAY_SCRIPT, file, '--out', tempPath], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
+  if (result.status !== 0) {
+    const detail = `${result.stdout || ''}${result.stderr || ''}`.trim();
+    throw new Error(`Replay failed for ${file}: ${detail || `exit ${result.status}`}`);
+  }
+  try {
+    return {
+      file: tempPath,
+      sourceFile: file,
+      events: parseJsonl(tempPath),
+    };
+  } finally {
+    try {
+      fs.unlinkSync(tempPath);
+    } catch (_err) {
+      // Temp cleanup is best-effort; the report output should not fail because of it.
+    }
+  }
+}
+
+function buildEntries(files, options = {}) {
+  if (!options.replay) {
+    return files.map((file) => ({file, events: parseJsonl(file)}));
+  }
+  const replayFile = options.replayFile || replayFileWithCurrentAdvisor;
+  return files.map((file) => replayFile(file));
 }
 
 function gameIdFromFile(file) {
@@ -718,6 +761,9 @@ function formatReport(stats) {
   const s = stats.summary;
   const lines = [];
   lines.push('Human learning report');
+  if (stats.replay) {
+    lines.push(`Replay: current advisor engine over ${stats.replay.files} file(s)`);
+  }
   lines.push(`Files: ${s.files} | plays: ${s.plays} | ranked: ${s.ranked}`);
   lines.push(`Aligned: ${s.aligned} | reasonable alt: ${s.reasonable} | teaching: ${s.teaching} | candidate: ${s.candidate} | deferred top later: ${s.deferredBest} | noisy: ${s.noisy} | unranked: ${s.unranked}`);
   lines.push(`Actions: ${s.actions} | ranked: ${s.actionRanked} | aligned: ${s.actionAligned} | mismatch: ${s.actionMismatch} | noisy: ${s.actionNoisy} | stale after card: ${s.actionStaleAfterCardPlay} | unranked: ${s.actionUnranked}`);
@@ -774,8 +820,14 @@ function main() {
     return;
   }
   const files = resolveFiles(options);
-  const entries = files.map((file) => ({file, events: parseJsonl(file)}));
+  const entries = buildEntries(files, options);
   const stats = analyzeEntries(entries, {minGap: options.minGap});
+  if (options.replay) {
+    stats.replay = {
+      files: entries.length,
+      sourceFiles: entries.map((entry) => entry.sourceFile || entry.file),
+    };
+  }
   if (options.json) {
     console.log(JSON.stringify(stats, null, 2));
   } else {
@@ -789,7 +841,9 @@ if (require.main === module) {
 
 module.exports = {
   analyzeEntries,
+  buildEntries,
   classify,
   formatReport,
   resolveFiles,
+  replayFileWithCurrentAdvisor,
 };

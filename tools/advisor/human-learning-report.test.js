@@ -2,7 +2,7 @@
 'use strict';
 
 const assert = require('assert');
-const {analyzeEntries} = require('./human-learning-report');
+const {analyzeEntries, buildEntries} = require('./human-learning-report');
 
 function play(ts, card, best) {
   return {
@@ -378,6 +378,22 @@ function testClassifiesEmojiAdvisorMoveTypes() {
   assert.strictEqual(stats.aggregates.actionTypes[0].key, 'blue_action <- action');
 }
 
+function testBuildEntriesCanReplayWithInjectedEngine() {
+  const entries = buildEntries(['source-watch.jsonl'], {
+    replay: true,
+    replayFile: (file) => ({
+      file: 'temp-replayed.jsonl',
+      sourceFile: file,
+      events: [play('2026-05-03T23:10:00Z', 'Replay Card', 'Replay Card')],
+    }),
+  });
+
+  assert.strictEqual(entries.length, 1);
+  assert.strictEqual(entries[0].file, 'temp-replayed.jsonl');
+  assert.strictEqual(entries[0].sourceFile, 'source-watch.jsonl');
+  assert.strictEqual(entries[0].events[0].card, 'Replay Card');
+}
+
 testDoesNotReuseMissAcrossFiles();
 testIgnoresStaleMissInSameFile();
 testUsesLinkedDecisionWhenPlayHasNoContext();
@@ -388,4 +404,5 @@ testActionMatchesAdvisorActionAlert();
 testGenericAlertsDoNotRankActionMismatch();
 testAggregatesBlueActionsOverPlayCards();
 testClassifiesEmojiAdvisorMoveTypes();
+testBuildEntriesCanReplayWithInjectedEngine();
 console.log('human-learning-report tests: OK');
