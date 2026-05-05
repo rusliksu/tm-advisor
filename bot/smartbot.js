@@ -201,6 +201,31 @@ function hasCardDiscountUtility(cardName) {
   return !!data.cardDiscount || DISCOUNT_SETUP_CARDS.has(cardName);
 }
 
+function cardHasRequirementForDiscount(cardName) {
+  const data = CARD_DATA[cardName] || {};
+  return !!data.requirements || !!CARD_GLOBAL_REQS[cardName];
+}
+
+function countDiscountSetupTargets(cardName, hand) {
+  const cards = Array.isArray(hand) ? hand : [];
+  if (cardName === 'Cutting Edge Technology') {
+    return cards.filter(card => {
+      const name = card?.name || card || '';
+      return name && name !== cardName && cardHasRequirementForDiscount(name);
+    }).length;
+  }
+  return cards.filter(card => {
+    const name = card?.name || card || '';
+    return name && name !== cardName;
+  }).length;
+}
+
+function shouldPrioritizeDiscountSetupNow(cardName, hand, gensLeft) {
+  if (!hasCardDiscountUtility(cardName)) return false;
+  const targetCount = countDiscountSetupTargets(cardName, hand);
+  return targetCount >= (gensLeft <= 2 ? 2 : 1);
+}
+
 function isSellProtectedCard(card, state, corp, isEndgame) {
   const name = card?.name || '';
   const data = CARD_DATA[name] || {};
@@ -335,7 +360,48 @@ function scoreBlueActionCard(card, state) {
   else if (PROD_CARDS.has(name) || ENGINE_CARDS.has(name)) ev += 2;
   else ev += 1.5;
   if ((card?.resources || 0) > 0 && vpd?.type === 'per_resource') ev += 0.5;
+  if (name === 'Titan Shuttles') {
+    const unlock = titanShuttlesCashoutUnlock(state, card);
+    if (unlock) ev += Math.max(12, Math.min(30, unlock.score / 2));
+  }
   return ev;
+}
+
+function effectiveSpaceCostWithTitanium(card, state, extraTitanium = 0) {
+  const name = card?.name || '';
+  const tags = CARD_TAGS[name] || [];
+  let remaining = card?.calculatedCost ?? card?.cost ?? CARD_DATA[name]?.cost ?? 0;
+  if (!tags.includes('space')) return remaining;
+  const tp = state?.thisPlayer || {};
+  const tiValue = tp.titaniumValue || 3;
+  const titanium = (tp.titanium || 0) + extraTitanium;
+  const usable = Math.min(titanium, Math.floor(remaining / tiValue));
+  return Math.max(0, remaining - usable * tiValue);
+}
+
+function titanShuttlesCashoutUnlock(state, actionCard = null, candidateCards = null) {
+  const tp = state?.thisPlayer || {};
+  const used = tp.actionsThisGeneration || [];
+  if (used.includes('Titan Shuttles')) return null;
+  const shuttle = actionCard?.name === 'Titan Shuttles'
+    ? actionCard
+    : (tp.tableau || []).find(c => c?.name === 'Titan Shuttles' && !c.isDisabled);
+  const floaters = shuttle?.resources || 0;
+  if (floaters <= 0) return null;
+
+  const mc = tp.megacredits ?? tp.megaCredits ?? 0;
+  const hand = candidateCards || state?.cardsInHand || tp.cardsInHand || [];
+  let best = null;
+  for (const card of hand) {
+    const name = card?.name || '';
+    if (!(CARD_TAGS[name] || []).includes('space')) continue;
+    const nowCost = effectiveSpaceCostWithTitanium(card, state, 0);
+    const afterCost = effectiveSpaceCostWithTitanium(card, state, floaters);
+    if (nowCost <= mc || afterCost > mc) continue;
+    const score = scoreCard(card, state) + 3 + Math.max(0, nowCost - afterCost) * 0.25;
+    if (!best || score > best.score) best = {name, score, nowCost, afterCost, floaters};
+  }
+  return best;
 }
 
 function getBestBlueActionCard(cards, state) {
@@ -1041,7 +1107,7 @@ function planGeneration(state) {
     }
 
     // Discount cards = IMMEDIATE (enables cheaper plays same gen)
-    if (hasDiscount && hand.length > 3) {
+    if (hasDiscount && hand.length > 3 && shouldPrioritizeDiscountSetupNow(name, hand, gensLeft)) {
       playPlan.immediate.push({ name, cost, ev, reason: 'discount → play first' });
       continue;
     }
@@ -1602,6 +1668,14 @@ function handleInput(wf, state, depth = 0) {
 
     // === NORMAL MODE ===
 
+    const titanCashoutUnlock = cardActionIdx >= 0
+      ? titanShuttlesCashoutUnlock(state, null, playCardIdx >= 0 ? opts[playCardIdx]?.cards : null)
+      : null;
+    if (titanCashoutUnlock) {
+      dbg(`sequence: Titan Shuttles cashout unlocks ${titanCashoutUnlock.name}`);
+      return pick(cardActionIdx);
+    }
+
     // Milestones: best ROI in game (8 MC = 5 VP), claim ASAP — even gen 1
     // v72: Milestone timing — don't claim gen 1-2, spend MC on engine instead
     // BonelessDota: "8 MC in gen 1 engine = ~40-48 MC production value over game"
@@ -1836,7 +1910,7 @@ function handleInput(wf, state, depth = 0) {
               'Space Station': { tag: 'space', amount: 2 },
               'Anti-Gravity Technology': { tag: null, amount: 2 }, // all cards with requirements
               'Warp Drive': { tag: 'space', amount: 4 },
-              'Cutting Edge Technology': { tag: null, amount: 2 }, // cards with requirements
+              'Cutting Edge Technology': { tag: null, amount: 2, requiresRequirement: true }, // cards with requirements
               'Sky Docks': { tag: 'earth', amount: 2 },
               'Mass Converter': { tag: 'space', amount: 2 },
               'Shuttles': { tag: 'space', amount: 2 },
@@ -1849,9 +1923,11 @@ function handleInput(wf, state, depth = 0) {
               let _totalSaving = 0;
               const _dTag = _discInfo?.tag;
               const _dAmt = _discInfo?.amount || 1;
+              const _requiresReq = !!_discInfo?.requiresRequirement;
               for (const hc of cardsInHand) {
                 if (hc.name === c.name) continue; // skip self
                 const hTags = CARD_TAGS[hc.name] || [];
+                if (_requiresReq && !cardHasRequirementForDiscount(hc.name)) continue;
                 if (!_dTag || hTags.includes(_dTag)) {
                   _discountedCards++;
                   _totalSaving += _dAmt;

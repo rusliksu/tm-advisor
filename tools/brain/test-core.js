@@ -273,6 +273,17 @@ function testCoreHelpers() {
 
   assert.strictEqual(core.scoreCardDiscountValue({discount: {amount: 2}, gensLeft: 4}), 20);
   assert.strictEqual(core.scoreCardDiscountValue({discount: {tag: 'science', amount: 2}, gensLeft: 4}), 8);
+  assert.strictEqual(
+    core.scoreCardDiscountValue({
+      name: 'Cutting Edge Technology',
+      discount: {amount: 2},
+      gensLeft: 4,
+      handCards: [{name: 'Birds'}, {name: 'Research'}, {name: 'Cartel'}],
+      cardHasRequirement: (name) => name === 'Birds',
+    }),
+    2,
+    'Cutting Edge Technology should discount only requirement cards in hand'
+  );
   assert.strictEqual(core.scoreCardDisruptionValue({beh: {decreaseAnyProduction: {count: 2}, removeAnyPlants: 4}}), 5);
 
   const greenhousesBaseState = {
@@ -408,6 +419,18 @@ function testCoreHelpers() {
     estimateTriggersPerGen: () => 2,
   });
   assert.strictEqual(manualDelta, 17.4);
+  assert.strictEqual(
+    core.applyManualEVAdjustments({
+      name: 'Cutting Edge Technology',
+      manual: {perGen: 3},
+      handCards: [{name: 'Birds'}, {name: 'Research'}, {name: 'Cartel'}],
+      selfName: 'Cutting Edge Technology',
+      cardHasRequirement: (name) => name === 'Birds',
+      gensLeft: 3,
+    }),
+    2,
+    'Cutting Edge Technology manual EV should be capped by actual requirement targets'
+  );
 
   const lateFieldState = {
     game: {generation: 8, oxygenLevel: 12, oceans: 7},

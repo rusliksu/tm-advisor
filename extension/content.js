@@ -9538,7 +9538,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!mdEntry) continue;
         for (var mdTag in mdEntry) {
           if (mdEntry[mdTag] <= 0) continue;
-          if (mdTag === '_all' || mdTag === '_req' || cardTagsArr.indexOf(mdTag) >= 0) {
+          var mdReqMatch = mdTag === '_req' && cardHasRequirementsByName(cardName);
+          if (mdTag === '_all' || mdReqMatch || cardTagsArr.indexOf(mdTag) >= 0) {
             totalDiscount += mdEntry[mdTag];
             discountSources++;
             break;
@@ -10797,8 +10798,38 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
   }
 
-  function isSpentTableauSynergy(cardName, targetName) {
+  function dampTableauSynergyWeight(cardName, targetName, weight, reverse, options) {
+    if (cardName === 'Power Infrastructure' || targetName === 'Power Infrastructure') {
+      return Math.min(weight, reverse ? 0.5 : 1);
+    }
+    if (cardName === 'Cutting Edge Technology') {
+      var cetSetupCaps = {
+        'Adaptation Technology': 1,
+        'Special Design': 1,
+        'Mars University': 1,
+        'Olympus Conference': 1,
+        'Research': 1
+      };
+      if (Object.prototype.hasOwnProperty.call(cetSetupCaps, targetName)) {
+        return Math.min(weight, cetSetupCaps[targetName]);
+      }
+    }
+    return weight;
+  }
+
+  function isSpentTableauSynergy(cardName, targetName, options) {
     if (!cardName || !targetName) return false;
+    var sourceInHand = !!(options && options.inHand);
+    var oneShotPlayedSynergies = {
+      'Research': 1,
+      'Invention Contest': 1,
+      'Business Contacts': 1,
+      'Business Network': 1,
+      'Technology Demonstration': 1,
+      'Sponsored Academies': 1,
+      'Acquired Space Agency': 1
+    };
+    if (!sourceInHand && oneShotPlayedSynergies[targetName]) return true;
     var cardTags = getCardTagsForName(cardName);
     if (!cardTags || cardTags.length === 0) return false;
     var hasWildcard = cardTags.indexOf('wild') >= 0;
@@ -10841,11 +10872,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
 
   // Synergy with tableau cards — forward (data.y) + reverse lookup
-  function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents) {
+  function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents, ctx) {
     let synTotal = 0;
     let synCount = 0;
     let synDescs = [];
     let directPartners = new Set();
+    var handNamesSet = ctx && ctx._handNamesSet ? ctx._handNamesSet : new Set();
     // Skip corps — already scored in corp synergy (5c), avoid double-count
     var _corpSet = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
     if (data.y) {
@@ -10854,9 +10886,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var sw = yWeight(entry) || SC.tableauSynergyPer;
         if (playedEvents.has(sn)) continue;
         if (_corpSet[sn]) continue; // corp already handled in 5c
-        if (isSpentTableauSynergy(cardName, sn)) continue;
+        var sourceInHand = handNamesSet.has(sn);
+        if (isSpentTableauSynergy(cardName, sn, { inHand: sourceInHand })) continue;
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
+          sw = dampTableauSynergyWeight(cardName, sn, sw, false, { inHand: sourceInHand, gensLeft: ctx && ctx.gensLeft });
           synTotal += sw;
           directPartners.add(sn);
           var directReason = formatTableauSynergyReason(cardName, sn, sw, false);
@@ -10875,8 +10909,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (directPartners.has(myCard)) continue;
       for (const re of myData.y) {
         if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
-          if (isSpentTableauSynergy(cardName, myCard)) break;
+          var reverseSourceInHand = handNamesSet.has(myCard);
+          if (isSpentTableauSynergy(cardName, myCard, { inHand: reverseSourceInHand })) break;
           var rw = Math.round(((yWeight(re) || SC.tableauSynergyPer) * reverseScale) * 10) / 10;
+          rw = dampTableauSynergyWeight(cardName, myCard, rw, true, { inHand: reverseSourceInHand, gensLeft: ctx && ctx.gensLeft });
           synCount++;
           synTotal += rw;
           var reverseReason = formatTableauSynergyReason(cardName, myCard, rw, true);
@@ -11174,7 +11210,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
     const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
     var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
-    bonus = applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents), bonus, reasons, reasonRows);
+    bonus = applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents, ctx), bonus, reasons, reasonRows);
 
     // Combo + anti-combo potential (indexed lookup with timing)
     bonus = applyResult(scoreComboPotential(cardName, eLower, allMyCardsSet, ctx), bonus, reasons, reasonRows);
