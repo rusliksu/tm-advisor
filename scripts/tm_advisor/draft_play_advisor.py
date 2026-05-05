@@ -451,6 +451,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             effect_parser, db, corp_name=me.corp,
             tableau_tags=dict(me.tags) if me.tags else None,
             player_colonies=getattr(me, "colonies", 0),
+            tableau_cards=getattr(me, "tableau", None),
             hand_cards=hand)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
@@ -847,6 +848,7 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 effect_parser, db, corp_name=me.corp,
                 tableau_tags=dict(me.tags) if me.tags else None,
                 player_colonies=getattr(me, "colonies", 0),
+                tableau_cards=getattr(me, "tableau", None),
                 hand_cards=state.cards_in_hand)
             priority = _play_priority(
                 score,
@@ -1930,6 +1932,7 @@ def _entry(name, action, reason, play_value_now, hold_value,
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                               effect_parser=None, db=None, corp_name="",
                               tableau_tags=None, player_colonies=0,
+                              tableau_cards=None,
                               hand_cards=None):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
     carbon_bonus = _carbon_nanosystems_graphene_value(
@@ -1943,7 +1946,10 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                                         corp_name=corp_name,
                                         card_cost=cost,
                                         tableau_tags=tableau_tags,
-                                        player_colonies=player_colonies)
+                                        player_colonies=player_colonies,
+                                        card_tags=tags,
+                                        tableau_cards=tableau_cards,
+                                        effect_parser=effect_parser)
             value += carbon_bonus
             # Late-game penalty for engine/draw cards that won't pay off
             if value > 0 and gens_left <= 3:
@@ -2048,6 +2054,119 @@ def _scaled_resource_gain(eff, resource, tableau_tags=None, player_colonies=0):
     return total
 
 
+def _resource_vp_type(eff) -> str:
+    if not eff or not eff.vp_per:
+        return ""
+    if "resource" not in str(eff.vp_per.get("per", "")).lower():
+        return ""
+    if eff.resource_type:
+        return _normalize_vp_resource_name(eff.resource_type)
+    per_text = str(eff.vp_per.get("per", "")).lower()
+    for word in ("animal", "microbe", "floater", "fighter", "science", "asteroid",
+                 "data", "camp", "seed"):
+        if word in per_text:
+            return word
+    return "resource"
+
+
+def _normalize_vp_resource_name(name: str) -> str:
+    text = str(name or "").lower().strip()
+    aliases = {
+        "animals": "animal",
+        "microbes": "microbe",
+        "floaters": "floater",
+        "fighters": "fighter",
+        "asteroids": "asteroid",
+    }
+    if text in aliases:
+        return aliases[text]
+    if text.endswith("s") and text not in {"science"}:
+        return text[:-1]
+    return text
+
+
+def _action_cost_value(cost_text: str) -> float:
+    text = str(cost_text or "").lower()
+    if text in ("", "free"):
+        return 0.0
+    m = re.search(r'(\d+)', text)
+    amount = int(m.group(1)) if m else 1
+    if "energy" in text:
+        return amount * 2.0
+    if "heat" in text:
+        return amount * 1.0
+    if "steel" in text:
+        return amount * 2.0
+    if "titanium" in text:
+        return amount * 3.0
+    return float(amount)
+
+
+def _best_self_resource_vp_action_value(eff, rv) -> float:
+    res_type = _resource_vp_type(eff)
+    if not res_type:
+        return 0.0
+    vp_amount = float(eff.vp_per.get("amount", 1) or 1)
+    best = 0.0
+    for act in eff.actions or []:
+        effect = str(act.get("effect", "")).lower()
+        if "to this card" not in effect and "here" not in effect:
+            continue
+        m = re.search(r'add\s+(\d+)\s+([a-z -]+?)(?:\s+to|\s+here|$)', effect)
+        if not m:
+            continue
+        amount = int(m.group(1))
+        action_res = _normalize_vp_resource_name(m.group(2))
+        if res_type != "resource" and res_type not in action_res:
+            continue
+        raw = amount * vp_amount * rv["vp"] - _action_cost_value(act.get("cost", "free"))
+        best = max(best, raw)
+    return best
+
+
+def _tag_trigger_matches_play(trigger_text: str, tags: set[str]) -> bool:
+    text = str(trigger_text or "").lower()
+    if "play" not in text:
+        return False
+    return any(tag and tag in text for tag in tags)
+
+
+def _tableau_trigger_resource_vp_value(card_tags, target_eff, tableau_cards,
+                                       effect_parser, rv) -> float:
+    """Immediate VP-resource value from already-played triggers."""
+    if not effect_parser:
+        return 0.0
+    res_type = _resource_vp_type(target_eff)
+    if not res_type:
+        return 0.0
+    tags = {str(t).lower() for t in (card_tags or [])}
+    vp_amount = float(target_eff.vp_per.get("amount", 1) or 1)
+    total_resources = 0
+    for tableau_card in tableau_cards or []:
+        if not isinstance(tableau_card, dict) or tableau_card.get("isDisabled"):
+            continue
+        source_eff = effect_parser.get(tableau_card.get("name", ""))
+        if not source_eff:
+            continue
+        for trigger in source_eff.triggers or []:
+            if not _tag_trigger_matches_play(trigger.get("on", ""), tags):
+                continue
+            effect = str(trigger.get("effect", "")).lower()
+            if "add" not in effect or "to that card" not in effect:
+                continue
+            m = re.search(r'add\s+(\d+)\s+([a-z -]+?)\s+to that card', effect)
+            if m:
+                amount = int(m.group(1))
+                trigger_res = _normalize_vp_resource_name(m.group(2))
+                if trigger_res != "resource" and res_type != "resource" and res_type not in trigger_res:
+                    continue
+                total_resources += amount
+            else:
+                amount_m = re.search(r'add\s+(\d+)\s+resource', effect)
+                total_resources += int(amount_m.group(1)) if amount_m else 1
+    return total_resources * vp_amount * rv["vp"]
+
+
 def _has_structured_effect_data(eff):
     return bool(
         eff.tr_gain
@@ -2095,7 +2214,8 @@ def _endgame_low_value_reason(name, effect_parser, play_value, eff_cost, state,
 
 
 def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0,
-                        tableau_tags=None, player_colonies=0):
+                        tableau_tags=None, player_colonies=0, card_tags=None,
+                        tableau_cards=None, effect_parser=None):
     """Calculate MC-value from CardEffect data."""
     value = 0
 
@@ -2152,9 +2272,17 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
         amt = eff.vp_per.get("amount", 1)
         if "resource" in str(per):
             # Resource-VP cards accumulate resources → VP at end.
-            # Base rate: 1 resource/gen from own action.
+            # Current generation matters: after playing a blue action card, the
+            # player can usually spend the second action on that new card. Also
+            # count immediate tableau triggers such as Viral Enhancers.
             # External placers (Bio Printing, Freyja Biodomes, etc.) add more.
             # Count external placers in tableau if available.
+            current_action_value = max(
+                0.0, _best_self_resource_vp_action_value(eff, rv) - 1.0)
+            trigger_value = _tableau_trigger_resource_vp_value(
+                card_tags, eff, tableau_cards, effect_parser, rv)
+            value += current_action_value + trigger_value
+
             resources_per_gen = 1.0  # own action
             if tableau_tags:
                 # Heuristic: each animal/microbe/floater placer in tableau
@@ -2178,7 +2306,8 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
             action_cost_per_gen = 2.0
             net_value_per_gen = (resources_per_gen * amt * rv["vp"]
                                  - action_cost_per_gen)
-            value += max(0, gens_left * net_value_per_gen * 0.65)
+            future_action_gens = max(0, gens_left - 1)
+            value += max(0, future_action_gens * net_value_per_gen * 0.65)
         elif "tag" in str(per):
             # Use actual tableau tag count instead of hardcoded 3
             tag_name = ""
