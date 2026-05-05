@@ -67,6 +67,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   var _storedSeenCardsByGame = Object.create(null);
   var _storedSeenLoadStateByGame = Object.create(null);
   var _actionTargetClass = 'tm-advisor-action-target';
+  var _cardTargetClass = 'tm-advisor-card-target';
   var _actionBadgeClass = 'tm-advisor-action-badge';
 
   function hasBridgeData() {
@@ -1883,7 +1884,8 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   function normalizeBotActionLabel(title) {
     var raw = String(title || '');
     var low = raw.toLowerCase();
-    if ((low.indexOf('play') >= 0 && low.indexOf('card') >= 0) || low.indexOf('project card') >= 0) return 'Play project card';
+    if (isBotPlayedCardActionLabel(low)) return 'Use played-card action';
+    if (isBotPlayProjectCardLabel(low)) return 'Play project card';
     if (low.indexOf('action') >= 0 || low.indexOf('use') >= 0) return 'Use played-card action';
     if (low.indexOf('standard project') >= 0) return 'Standard project';
     if (low.indexOf('trade') >= 0) return 'Trade';
@@ -1893,6 +1895,18 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     if (low.indexOf('award') >= 0 || low.indexOf('fund') >= 0) return 'Fund award';
     if (low.indexOf('colony') >= 0 || low.indexOf('build') >= 0) return 'Build colony';
     return raw || 'Action';
+  }
+
+  function isBotPlayedCardActionLabel(title) {
+    var low = String(title || '').toLowerCase();
+    return (low.indexOf('played') >= 0 && low.indexOf('action') >= 0) ||
+      low.indexOf('perform an action') >= 0;
+  }
+
+  function isBotPlayProjectCardLabel(title) {
+    var low = String(title || '').toLowerCase();
+    if (isBotPlayedCardActionLabel(low)) return false;
+    return low.indexOf('project card') >= 0 || (/\bplay\b/.test(low) && low.indexOf('card') >= 0);
   }
 
   function botLabelText(value) {
@@ -1915,6 +1929,65 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
 
   function optionBotLabel(option) {
     return botLabelText(option && option.title) || botLabelText(option && option.buttonLabel);
+  }
+
+  function botCardName(card) {
+    if (!card) return '';
+    return typeof card === 'string' ? card : (card.name || card.cardName || card.card || '');
+  }
+
+  function botAsNumber(value, fallback) {
+    var number = Number(value);
+    return isFinite(number) ? number : fallback;
+  }
+
+  function estimateBotGensLeft(state) {
+    var direct = state && (state.gensLeft || state.estimatedGensLeft);
+    if (typeof direct === 'number' && isFinite(direct) && direct > 0) return direct;
+    if (TM_ADVISOR && typeof TM_ADVISOR.estimateGensLeft === 'function') {
+      var estimated = TM_ADVISOR.estimateGensLeft(state);
+      if (typeof estimated === 'number' && isFinite(estimated) && estimated > 0) return estimated;
+    }
+    if (TM_ADVISOR && typeof TM_ADVISOR.endgameTiming === 'function') {
+      var timing = TM_ADVISOR.endgameTiming(state) || {};
+      var fromTiming = timing.estimatedGens || timing.gensLeft;
+      if (typeof fromTiming === 'number' && isFinite(fromTiming) && fromTiming > 0) return fromTiming;
+    }
+    var gen = state && state.game ? botAsNumber(state.game.generation, 0) : 0;
+    return gen > 0 ? Math.max(1, 9 - gen + 1) : 3;
+  }
+
+  function botHasOtherPlayedCardAction(playContext) {
+    var wf = playContext && playContext.waitingFor;
+    var currentIndex = playContext && playContext.optionIndex;
+    var options = (wf && Array.isArray(wf.options)) ? wf.options : [];
+    for (var i = 0; i < options.length; i++) {
+      if (i === currentIndex) continue;
+      var opt = options[i];
+      if (!isBotPlayedCardActionLabel(optionBotLabel(opt))) continue;
+      var cards = Array.isArray(opt && opt.cards) ? opt.cards : [];
+      for (var ci = 0; ci < cards.length; ci++) {
+        if (cards[ci] && !cards[ci].isDisabled) return true;
+      }
+    }
+    return false;
+  }
+
+  function shouldDeferBotPlayCard(card, state, playContext) {
+    var name = botCardName(card);
+    if (name === "CEO's Favorite Project") {
+      if (estimateBotGensLeft(state) > 1) return true;
+      return botHasOtherPlayedCardAction(playContext);
+    }
+    return false;
+  }
+
+  function bestNonDeferredBotCard(rankedCards, state, playContext) {
+    rankedCards = Array.isArray(rankedCards) ? rankedCards : [];
+    for (var i = 0; i < rankedCards.length; i++) {
+      if (!shouldDeferBotPlayCard(rankedCards[i], state, playContext)) return rankedCards[i];
+    }
+    return null;
   }
 
   function compactBotTargetText(value) {
@@ -1979,39 +2052,51 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var rankedActions = TM_ADVISOR.analyzeActions(wf, state) || [];
     if (!rankedActions.length) return null;
 
-    var best = rankedActions[0];
-    var alt = rankedActions.length > 1 ? rankedActions[1] : null;
-    var opt = wf.options[best.index] || null;
-    var optTitle = optionBotLabel(opt);
-    var title = best.action || '';
-    var titleLow = String(title || '').toLowerCase();
-    var detail = normalizeBotActionLabel(title);
-    var reason = best.reason || '';
+    for (var ai = 0; ai < rankedActions.length; ai++) {
+      var best = rankedActions[ai];
+      var alt = rankedActions.length > ai + 1 ? rankedActions[ai + 1] : null;
+      var opt = wf.options[best.index] || null;
+      var optTitle = optionBotLabel(opt);
+      var title = botLabelText(best.action) || optTitle || '';
+      var titleLow = String(title || '').toLowerCase();
+      var detail = normalizeBotActionLabel(title);
+      var reason = best.reason || '';
+      var cardTargetName = '';
 
-    if (opt && opt.cards && opt.cards.length > 0) {
-      var visibleCards = opt.cards.filter(function(card) { return card && !card.isDisabled; });
-      if (((titleLow.indexOf('play') >= 0 && titleLow.indexOf('card') >= 0) || titleLow.indexOf('project card') >= 0) &&
-          typeof TM_ADVISOR.rankHandCards === 'function') {
-        var rankedCards = TM_ADVISOR.rankHandCards(visibleCards, state) || [];
-        if (rankedCards.length > 0) {
-          detail = 'Play ' + rankedCards[0].name;
-          if (rankedCards[0].reason) reason = reason ? (reason + ' · ' + rankedCards[0].reason) : rankedCards[0].reason;
-        } else if (visibleCards.length === 1 && visibleCards[0].name) {
-          detail = 'Play ' + visibleCards[0].name;
+      if (opt && opt.cards && opt.cards.length > 0) {
+        var visibleCards = opt.cards.filter(function(card) { return card && !card.isDisabled; });
+        if (isBotPlayProjectCardLabel(title) && typeof TM_ADVISOR.rankHandCards === 'function') {
+          var rankedCards = TM_ADVISOR.rankHandCards(visibleCards, state) || [];
+          var playContext = { waitingFor: wf, optionIndex: best.index };
+          if (rankedCards.length > 0) {
+            var bestCard = bestNonDeferredBotCard(rankedCards, state, playContext);
+            if (!bestCard) continue;
+            detail = 'Play ' + botCardName(bestCard);
+            cardTargetName = botCardName(bestCard);
+            if (bestCard.reason) reason = reason ? (reason + ' · ' + bestCard.reason) : bestCard.reason;
+          } else if (visibleCards.length === 1 && visibleCards[0].name) {
+            if (shouldDeferBotPlayCard(visibleCards[0], state, playContext)) continue;
+            detail = 'Play ' + visibleCards[0].name;
+            cardTargetName = visibleCards[0].name;
+          }
+        } else if ((isBotPlayedCardActionLabel(title) || titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) && visibleCards.length === 1 && visibleCards[0].name) {
+          detail = 'Use ' + visibleCards[0].name;
+          cardTargetName = visibleCards[0].name;
         }
-      } else if ((titleLow.indexOf('action') >= 0 || titleLow.indexOf('use') >= 0) && visibleCards.length === 1 && visibleCards[0].name) {
-        detail = 'Use ' + visibleCards[0].name;
       }
+
+      return {
+        title: detail,
+        optionTitle: optTitle,
+        optionIndex: best.index,
+        cardName: cardTargetName,
+        reason: reason || 'Action',
+        alt: alt ? normalizeBotActionLabel(botLabelText(alt.action) || optionBotLabel(wf.options[alt.index]) || '') : '',
+        score: best.score
+      };
     }
 
-    return {
-      title: detail,
-      optionTitle: optTitle,
-      optionIndex: best.index,
-      reason: reason || 'Action',
-      alt: alt ? normalizeBotActionLabel(alt.action || '') : '',
-      score: best.score
-    };
+    return null;
   }
 
   function queryFirstIn(root, selectors) {
@@ -2101,6 +2186,25 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     }
   }
 
+  function restoreCardTarget(node) {
+    if (!node) return;
+    if (node.classList && typeof node.classList.remove === 'function') node.classList.remove(_cardTargetClass);
+    if (node.style) {
+      var prevOutline = node.getAttribute && node.getAttribute('data-tm-card-prev-outline');
+      var prevShadow = node.getAttribute && node.getAttribute('data-tm-card-prev-box-shadow');
+      node.style.outline = prevOutline || '';
+      node.style.boxShadow = prevShadow || '';
+    }
+    if (node.getAttribute && node.setAttribute && node.removeAttribute) {
+      var prevTitle = node.getAttribute('data-tm-card-prev-title');
+      if (prevTitle !== null) node.setAttribute('title', prevTitle);
+      else node.removeAttribute('title');
+      node.removeAttribute('data-tm-card-prev-outline');
+      node.removeAttribute('data-tm-card-prev-box-shadow');
+      node.removeAttribute('data-tm-card-prev-title');
+    }
+  }
+
   function clearBotActionTarget(documentObj) {
     documentObj = documentObj || document;
     if (!documentObj || typeof documentObj.querySelectorAll !== 'function') return;
@@ -2112,6 +2216,31 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     }
     var targets = documentObj.querySelectorAll('.' + _actionTargetClass);
     for (var ti = 0; ti < targets.length; ti++) restoreActionTarget(targets[ti]);
+    var cardTargets = documentObj.querySelectorAll('.' + _cardTargetClass);
+    for (var ci = 0; ci < cardTargets.length; ci++) restoreCardTarget(cardTargets[ci]);
+  }
+
+  function findBotCardTarget(botHint, documentObj) {
+    var wanted = compactBotTargetText(botHint && botHint.cardName);
+    if (!wanted || !documentObj || typeof documentObj.querySelectorAll !== 'function') return null;
+    var cards = [];
+    try { cards = documentObj.querySelectorAll('[data-tm-card]') || []; } catch (e) { cards = []; }
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      var name = compactBotTargetText(card && card.getAttribute && card.getAttribute('data-tm-card'));
+      if (!name) name = compactBotTargetText(card && card.textContent);
+      if (name === wanted) return card;
+    }
+    try { cards = documentObj.querySelectorAll('.card-container') || []; } catch (e2) { cards = []; }
+    for (var ci = 0; ci < cards.length; ci++) {
+      var text = compactBotTargetText(cards[ci] && cards[ci].textContent);
+      if (!text) continue;
+      var tailIndex = text.indexOf(' ' + wanted);
+      if (text === wanted || text.indexOf(wanted + ' ') === 0 || text.indexOf(' ' + wanted + ' ') >= 0 || (tailIndex >= 0 && tailIndex === text.length - wanted.length - 1)) {
+        return cards[ci];
+      }
+    }
+    return null;
   }
 
   function markBotActionTarget(botHint, documentObj) {
@@ -2119,8 +2248,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     clearBotActionTarget(documentObj);
     if (!botHint || !documentObj || typeof documentObj.createElement !== 'function') return null;
     var root = findActionRoot(documentObj);
-    if (!root) return null;
-    var candidates = collectActionOptionNodes(root);
+    var candidates = root ? collectActionOptionNodes(root) : [];
     var best = null;
     var bestScore = 0;
     for (var i = 0; i < candidates.length; i++) {
@@ -2130,10 +2258,12 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
         bestScore = score;
       }
     }
-    if (!best || bestScore <= 0) return null;
+    if (!best || bestScore <= 0) best = null;
+    var cardTarget = findBotCardTarget(botHint, documentObj);
+    if (!best && !cardTarget) return null;
 
-    if (best.classList && typeof best.classList.add === 'function') best.classList.add(_actionTargetClass);
-    if (best.style) {
+    if (best && best.classList && typeof best.classList.add === 'function') best.classList.add(_actionTargetClass);
+    if (best && best.style) {
       if (best.getAttribute && best.setAttribute && !best.getAttribute('data-tm-action-prev-outline')) {
         best.setAttribute('data-tm-action-prev-outline', best.style.outline || '');
         best.setAttribute('data-tm-action-prev-box-shadow', best.style.boxShadow || '');
@@ -2142,20 +2272,35 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
       best.style.boxShadow = '0 0 0 3px rgba(96,211,148,0.24)';
     }
     var tooltip = botHintTooltip(botHint);
-    if (best.getAttribute && best.setAttribute) {
+    if (best && best.getAttribute && best.setAttribute) {
       if (!best.getAttribute('data-tm-action-prev-title')) {
         best.setAttribute('data-tm-action-prev-title', best.getAttribute('title') || '');
       }
       best.setAttribute('title', tooltip);
     }
-    if (typeof best.appendChild === 'function') {
+    if (best && typeof best.appendChild === 'function') {
       var badge = documentObj.createElement('span');
       badge.className = _actionBadgeClass;
       badge.textContent = 'BEST';
       if (tooltip && badge.setAttribute) badge.setAttribute('title', tooltip);
       best.appendChild(badge);
     }
-    return best;
+    if (cardTarget && cardTarget.classList && typeof cardTarget.classList.add === 'function') cardTarget.classList.add(_cardTargetClass);
+    if (cardTarget && cardTarget.style) {
+      if (cardTarget.getAttribute && cardTarget.setAttribute && !cardTarget.getAttribute('data-tm-card-prev-outline')) {
+        cardTarget.setAttribute('data-tm-card-prev-outline', cardTarget.style.outline || '');
+        cardTarget.setAttribute('data-tm-card-prev-box-shadow', cardTarget.style.boxShadow || '');
+      }
+      cardTarget.style.outline = '3px solid rgba(241, 196, 15, 0.95)';
+      cardTarget.style.boxShadow = '0 0 0 4px rgba(241,196,15,0.18), 0 0 18px rgba(241,196,15,0.28)';
+    }
+    if (cardTarget && cardTarget.getAttribute && cardTarget.setAttribute) {
+      if (!cardTarget.getAttribute('data-tm-card-prev-title')) {
+        cardTarget.setAttribute('data-tm-card-prev-title', cardTarget.getAttribute('title') || '');
+      }
+      cardTarget.setAttribute('title', 'Best card: ' + (botHint.cardName || botHint.title || 'Card'));
+    }
+    return best || cardTarget;
   }
 
   function renderActions(state) {

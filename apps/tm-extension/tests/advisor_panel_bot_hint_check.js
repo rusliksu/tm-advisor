@@ -70,6 +70,7 @@ function makeElement(tagName = 'div') {
         if (selector.charAt(0) === '.') return hasClass(node, selector.slice(1));
         if (selector.charAt(0) === '#') return node.getAttribute('id') === selector.slice(1);
         if (selector === '[data-tm-game-anchor="actions"]') return node.getAttribute('data-tm-game-anchor') === 'actions';
+        if (selector === '[data-tm-card]') return !!node.getAttribute('data-tm-card');
         if (selector === 'label.form-radio') return node.tagName === 'label' && hasClass(node, 'form-radio');
         if (selector === '.wf-component button') return node.tagName === 'button' && node.parentNode && hasClass(node.parentNode, 'wf-component');
         if (selector === 'button') return node.tagName === 'button';
@@ -152,6 +153,30 @@ assert.strictEqual(onTurnHint.title, 'Play project card');
 assert.strictEqual(onTurnHint.optionTitle, 'Play project card');
 assert.strictEqual(onTurnHint.optionIndex, 0);
 assert.strictEqual(analyzeCalls, 1, 'on-turn hints should call action analysis');
+
+const playCardHint = hooks.buildBotActionHint(makeState({
+  _waitingFor: {
+    type: 'or',
+    options: [{
+      title: 'Play project card',
+      cards: [{name: 'Kelp Farming', cost: 17}],
+    }],
+  },
+}));
+assert.strictEqual(playCardHint.title, 'Play Kelp Farming');
+assert.strictEqual(playCardHint.cardName, 'Kelp Farming');
+
+const deferredCeoHint = hooks.buildBotActionHint(makeState({
+  gensLeft: 2,
+  _waitingFor: {
+    type: 'or',
+    options: [{
+      title: 'Play project card',
+      cards: [{name: "CEO's Favorite Project", cost: 1}],
+    }],
+  },
+}));
+assert.strictEqual(deferredCeoHint, null, "CEO's Favorite Project should be deferred before the last useful timing window");
 
 analyzeCalls = 0;
 assert.strictEqual(
@@ -243,5 +268,16 @@ assert(playOption.getAttribute('title').includes('best available action'), 'targ
 hooks.clearBotActionTarget(actionDocument);
 assert(!playOption.className.includes('tm-advisor-action-target'), 'clear should remove highlight class');
 assert.strictEqual(playOption.querySelectorAll('.tm-advisor-action-badge').length, 0, 'clear should remove BEST badge');
+
+const kelpCard = makeElement('div');
+kelpCard.setAttribute('data-tm-card', 'Kelp Farming');
+actionDocument.body.appendChild(kelpCard);
+const markedWithCard = hooks.markBotActionTarget(playCardHint, actionDocument);
+assert.strictEqual(markedWithCard, playOption, 'action target should still be the matching option node');
+assert(kelpCard.className.includes('tm-advisor-card-target'), 'specific card should receive card highlight class');
+assert(kelpCard.getAttribute('title').includes('Best card: Kelp Farming'), 'card tooltip should name the selected card');
+
+hooks.clearBotActionTarget(actionDocument);
+assert(!kelpCard.className.includes('tm-advisor-card-target'), 'clear should remove card highlight class');
 
 console.log('advisor panel bot hint checks: OK');
