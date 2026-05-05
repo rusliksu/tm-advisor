@@ -1790,6 +1790,20 @@ assert(
   computeCardValue({vpAcc: 1, vpPer: 2}, 5) > 0,
   'real VP/resource action cards should keep recurring value in computeCardValue'
 );
+const ganymedeCityOnlyValue = computeCardValue(
+  {city: 1},
+  1,
+  {ctx: {tags: {jovian: 6, wild: 0}}, effectTags: ['city', 'jovian', 'space']}
+);
+const ganymedeVpTagValue = computeCardValue(
+  {city: 1, vpTag: {tag: 'jovian', per: 1}},
+  1,
+  {ctx: {tags: {jovian: 6, wild: 0}}, effectTags: ['city', 'jovian', 'space']}
+);
+assert(
+  Math.abs((ganymedeVpTagValue - ganymedeCityOnlyValue) - 52.5) < 0.001,
+  'Ganymede Colony-style vpTag cards should include current + self Jovian VP in ROI value'
+);
 
 const prevVpMultipliers = sandbox.TM_VP_MULTIPLIERS;
 sandbox.TM_VP_MULTIPLIERS = {

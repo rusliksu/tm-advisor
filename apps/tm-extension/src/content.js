@@ -1861,6 +1861,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         detectMyCorps: detectMyCorps,
         getCachedOpponentContext: getCachedOpponentContext,
         getCachedPlayerContext: getCachedPlayerContext,
+        getCardTags: getCachedCardTags,
         getFx: getFx,
         getMyHandNames: getMyHandNames,
         getRatingByCardName: _getRatingByCardName,
@@ -2028,6 +2029,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     const vpVal = row[2];
     var o2Maxed = opts && opts.o2Maxed;
     var tempMaxed = opts && opts.tempMaxed;
+    var valueCtx = opts && opts.ctx;
 
     let v = 0;
 
@@ -2046,6 +2048,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // VP
     if (fx.vp) v += fx.vp * vpVal;
+    if (fx.vpTag && fx.vpTag.tag) {
+      var vpTagName = String(fx.vpTag.tag).toLowerCase();
+      var vpTagCount = 0;
+      if (valueCtx && valueCtx.tags) {
+        vpTagCount += valueCtx.tags[vpTagName] || 0;
+        if (vpTagName !== 'wild') vpTagCount += valueCtx.tags.wild || 0;
+      }
+      var effectTagsForValue = opts && opts.effectTags ? opts.effectTags : [];
+      for (var vti = 0; vti < effectTagsForValue.length; vti++) {
+        var effectTagForValue = String(effectTagsForValue[vti] || '').toLowerCase();
+        if (effectTagForValue === vpTagName || effectTagForValue === 'wild') {
+          vpTagCount++;
+          break;
+        }
+      }
+      if (vpTagCount > 0) {
+        v += Math.floor(vpTagCount / Math.max(1, fx.vpTag.per || 1)) * vpVal;
+      }
+    }
 
     // Global param raises (skip if param is maxed)
     if (fx.tmp && !tempMaxed) v += fx.tmp * trVal;
@@ -3400,7 +3421,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var skipVpProjection = false;
         var multFx = getFx(cardName) || {};
         var hasVpProjectionSignal =
-          !!(multFx.vp || multFx.vpAcc || multFx.vpPer) ||
+          !!(multFx.vp || multFx.vpAcc || multFx.vpPer || multFx.vpTag) ||
           /\bvp\b|victory point|\bпо\b/.test(eLower || '');
         if (!hasVpProjectionSignal) {
           skipVpProjection = true;

@@ -96,4 +96,38 @@ assert.strictEqual(earlyMinGlobalReq.checks.length, 1);
 assert.strictEqual(earlyMinGlobalReq.checks[0].tone, 'muted');
 assert(earlyMinGlobalReq.checks[0].text.includes('Окно позже: Темп -30°C/4°C'));
 
+const saturnTriggerState = tooltipState.resolveTooltipTriggerState({
+  cardEl: {
+    classList: {
+      contains() {
+        return false;
+      },
+    },
+  },
+  cardN(card) {
+    return card && (card.name || card);
+  },
+  detectMyCorps() {
+    return ['Saturn Systems'];
+  },
+  getCardTags() {
+    return new Set(['jovian', 'space']);
+  },
+  isOppCard: false,
+  pv: {
+    thisPlayer: {
+      tableau: [{name: 'Saturn Systems'}],
+    },
+  },
+  tagTriggers: {
+    'Saturn Systems': [{tags: ['jovian'], desc: 'Saturn Sys → +1 MC-прод'}],
+  },
+});
+assert.strictEqual(
+  saturnTriggerState.hits.length,
+  1,
+  'corp trigger listed both in tableau and detected corps should appear once'
+);
+assert.strictEqual(saturnTriggerState.hits[0], 'Saturn Sys → +1 MC-прод');
+
 console.log('content tooltip state regressions: OK');
