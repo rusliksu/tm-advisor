@@ -87,6 +87,8 @@ data/game_logs/tm-watch-*.json
 data/game_logs/tm-game-*.json
 data/game_logs/watch_live_*.err
 data/game_logs/watch_live_*.out
+data/game_logs/shadow_*.err
+data/game_logs/shadow_*.out
 data/game_logs/db_backfill_runs/
 
 # Discord bot token
