@@ -450,7 +450,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             name, score, cost, tags, phase, gens_left, rv,
             effect_parser, db, corp_name=me.corp,
             tableau_tags=dict(me.tags) if me.tags else None,
-            player_colonies=getattr(me, "colonies", 0))
+            player_colonies=getattr(me, "colonies", 0),
+            hand_cards=hand)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
         # SELL: low score card (but allow early game speculation and immediate payoff)
@@ -587,6 +588,7 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
                     if "play_before" not in r:
                         r["play_before"] = []
                     r["play_before"].append(f"→ {second_name}: {reason}")
+                    r["sequence_bonus"] = round(r.get("sequence_bonus", 0) + mc_saved, 1)
                     if "combo:" not in r["reason"]:
                         r["reason"] += f" (combo: play before {second_name})"
 
@@ -844,7 +846,8 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 name, score, cost, tags, phase, gens_left, rv,
                 effect_parser, db, corp_name=me.corp,
                 tableau_tags=dict(me.tags) if me.tags else None,
-                player_colonies=getattr(me, "colonies", 0))
+                player_colonies=getattr(me, "colonies", 0),
+                hand_cards=state.cards_in_hand)
             priority = _play_priority(
                 score,
                 cost,
@@ -1263,6 +1266,21 @@ def _detect_play_order(play_results, hand, state, db, effect_parser,
                             "mc_saved": 0,
                         })
                         break
+
+    # ── Scenario 4: Carbon Nanosystems should be before Space/City payoffs ──
+    if "Carbon Nanosystems" in play_names:
+        for b_name in play_names:
+            if b_name == "Carbon Nanosystems":
+                continue
+            b_tags = card_tags_map.get(b_name, [])
+            if "space" not in b_tags and "city" not in b_tags:
+                continue
+            hints.append({
+                "play_first": "Carbon Nanosystems",
+                "then_play": b_name,
+                "reason": "self science tag creates 1 graphene (=4 MC)",
+                "mc_saved": 4,
+            })
 
     # Deduplicate
     seen = set()
@@ -1706,6 +1724,64 @@ def _card_tags(card: dict, db=None) -> list[str]:
     return list(info.get("tags", []) or [])
 
 
+def _tableau_resources(me, card_name: str) -> int:
+    total = 0
+    for card in getattr(me, "tableau", []) or []:
+        if not isinstance(card, dict):
+            continue
+        if card.get("name") != card_name or card.get("isDisabled"):
+            continue
+        try:
+            total += int(card.get("resources") or 0)
+        except (TypeError, ValueError):
+            pass
+    return total
+
+
+def _card_has_any_tag(card_name: str, tags: list[str], wanted: set[str], db=None) -> bool:
+    if not tags and db and card_name:
+        info = db.get_info(card_name) or {}
+        tags = info.get("tags", []) or []
+    tag_set = {str(tag).lower() for tag in tags or []}
+    return bool(tag_set & {tag.lower() for tag in wanted})
+
+
+def _count_hand_tag_any(hand_cards, wanted: set[str], skip_name: str = "", db=None) -> int:
+    count = 0
+    for card in hand_cards or []:
+        name = card.get("name", "") if isinstance(card, dict) else str(card)
+        if not name or name == skip_name:
+            continue
+        raw_tags = card.get("tags", []) if isinstance(card, dict) else []
+        if _card_has_any_tag(name, raw_tags, wanted, db=db):
+            count += 1
+    return count
+
+
+def _carbon_nanosystems_graphene_value(card_name: str, hand_cards, db, gens_left: int) -> float:
+    if card_name != "Carbon Nanosystems":
+        return 0.0
+
+    payment_targets = _count_hand_tag_any(
+        hand_cards, {"Space", "City"}, skip_name=card_name, db=db)
+    science_followups = _count_hand_tag_any(
+        hand_cards, {"Science", "Wild"}, skip_name=card_name, db=db)
+
+    if payment_targets <= 0:
+        return 2.0 if science_followups > 0 and gens_left >= 4 else -2.0
+
+    graphenes = 1 + science_followups  # Carbon triggers on its own science tag.
+    paid_graphenes = min(graphenes, payment_targets)
+    value = paid_graphenes * 4.0
+    if payment_targets >= 2:
+        value += 2.0
+    if science_followups >= 2:
+        value += 2.0
+    if gens_left <= 2:
+        value -= 3.0
+    return max(-3.0, min(14.0, value))
+
+
 def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=None,
                     tableau_discounts=None, discounts_already_applied=False):
     """Calculate effective MC cost after discounts, steel/titanium payment.
@@ -1776,6 +1852,14 @@ def _effective_cost(printed_cost, tags, me, steel_override=None, ti_override=Non
             remaining -= steel_mc
             hints.append(f"{steel_usable} steel={steel_mc} MC")
 
+    if ("space" in tag_set or "city" in tag_set) and remaining > 0:
+        graphenes = _tableau_resources(me, "Carbon Nanosystems")
+        graphene_usable = min(graphenes, (remaining + 3) // 4)
+        if graphene_usable > 0:
+            graphene_mc = min(remaining, graphene_usable * 4)
+            remaining -= graphene_mc
+            hints.append(f"{graphene_usable} graphene={graphene_mc} MC")
+
     # 4. Helion: spend heat as MC
     if me.corp == "Helion" and remaining > 0 and me.heat > 0:
         heat_usable = min(me.heat, remaining)
@@ -1845,8 +1929,12 @@ def _entry(name, action, reason, play_value_now, hold_value,
 
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                               effect_parser=None, db=None, corp_name="",
-                              tableau_tags=None, player_colonies=0):
+                              tableau_tags=None, player_colonies=0,
+                              hand_cards=None):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
+    carbon_bonus = _carbon_nanosystems_graphene_value(
+        name, hand_cards or [], db, gens_left)
+
     # Try effect-based estimation first
     if effect_parser:
         eff = effect_parser.get(name)
@@ -1856,6 +1944,7 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                                         card_cost=cost,
                                         tableau_tags=tableau_tags,
                                         player_colonies=player_colonies)
+            value += carbon_bonus
             # Late-game penalty for engine/draw cards that won't pay off
             if value > 0 and gens_left <= 3:
                 value *= _late_game_engine_multiplier(eff, gens_left)
@@ -1865,7 +1954,7 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                 return max(0, value)
 
     # Fallback: score heuristic (with late-game engine penalty for high-score cards)
-    return _estimate_card_value(score, cost, tags, phase, gens_left, rv)
+    return _estimate_card_value(score, cost, tags, phase, gens_left, rv) + carbon_bonus
 
 
 def _late_game_engine_multiplier(eff, gens_left: int) -> float:

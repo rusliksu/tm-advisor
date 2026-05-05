@@ -794,6 +794,58 @@ function testCardPlaySeesMegaCreditsFromState() {
   assert.ok(input.index !== 2, 'bot with 40 MC should not pass — must play card or SP');
 }
 
+function testCarbonNanosystemsPlaysBeforeSpacePayoff() {
+  const hand = [
+    buildDraftProjectCard('Satellites'),
+    buildDraftProjectCard('Carbon Nanosystems'),
+    buildDraftProjectCard('Jovian Lanterns'),
+  ];
+  const wf = {
+    type: 'or',
+    title: 'Take your first action',
+    options: [
+      {
+        title: 'Play project card',
+        type: 'card',
+        cards: hand,
+        paymentOptions: {},
+      },
+      { title: 'Pass for this generation', type: 'pass' },
+    ],
+  };
+  const state = {
+    cardsInHand: hand,
+    thisPlayer: {
+      color: 'orange',
+      megaCredits: 28,
+      steel: 0,
+      titanium: 0,
+      heat: 0,
+      plants: 0,
+      energy: 0,
+      tableau: [{ name: 'Saturn Systems' }],
+      cardsInHand: hand,
+      tags: { space: 8, science: 2, jovian: 1 },
+      terraformRating: 24,
+      megacreditProduction: 10,
+    },
+    players: [{ color: 'orange' }, { color: 'red' }, { color: 'blue' }],
+    game: {
+      generation: 2,
+      phase: 'action',
+      oxygenLevel: 1,
+      temperature: -26,
+      oceans: 1,
+      venusScaleLevel: 6,
+    },
+  };
+
+  const input = SMARTBOT.handleInput(wf, state);
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.strictEqual(input.response.card, 'Carbon Nanosystems');
+}
+
 function testUnaffordableStandardProjectFallbackDoesNotPickPowerPlant() {
   const wf = {
     type: 'or',
@@ -908,6 +960,7 @@ function run() {
   testAwardFundingBranchDoesNotUseStepsBeforeInit();
   testMegaCreditsNormalizationCamelCase();
   testCardPlaySeesMegaCreditsFromState();
+  testCarbonNanosystemsPlaysBeforeSpacePayoff();
   testUnaffordableStandardProjectFallbackDoesNotPickPowerPlant();
   testMinorityRefugeSequencePlaysAnimalBeforeColonyCard();
   testMinorityRefugeSequenceThenPlaysRefugeAndChoosesMiranda();
