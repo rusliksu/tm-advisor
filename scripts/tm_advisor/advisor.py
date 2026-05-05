@@ -1006,8 +1006,11 @@ class AdvisorBot:
 
         # Blue card actions (not in allocation — always free)
         action_cards = []
+        used_actions = set(getattr(me, "actions_this_generation", []) or [])
         for c in me.tableau:
             name = c.get("name", "")
+            if name in used_actions:
+                continue
             if c.get("isDisabled"):
                 continue
             known_actions = {

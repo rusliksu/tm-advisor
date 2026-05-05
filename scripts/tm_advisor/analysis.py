@@ -564,8 +564,11 @@ def _generate_alerts(state) -> list[str]:
         "Orbital Cleanup": "draw per science tag",
     }
     active_actions = []
+    used_actions = set(getattr(me, "actions_this_generation", []) or [])
     for c in me.tableau:
         name = c["name"]
+        if name in used_actions:
+            continue
         if name in action_cards and not c.get("isDisabled"):
             active_actions.append(f"{name}: {action_cards[name]}")
     if active_actions:

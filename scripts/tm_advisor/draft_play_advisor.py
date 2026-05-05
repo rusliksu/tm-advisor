@@ -808,12 +808,14 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     combo = getattr(synergy, 'combo', None) if synergy else None
     effect_parser = combo.parser if combo else None
     db = getattr(synergy, 'db', None) if synergy else None
+    tableau_discounts = _collect_tableau_discounts(me.tableau)
+    play_advice_rows = []
+    if state.cards_in_hand and synergy and req_checker:
+        play_advice_rows = play_hold_advice(state.cards_in_hand, state, synergy, req_checker)
 
     if state.cards_in_hand and synergy and req_checker:
-        tableau_discounts = _collect_tableau_discounts(me.tableau)
         sell_advice_names = {
-            row["name"] for row in play_hold_advice(
-                state.cards_in_hand, state, synergy, req_checker)
+            row["name"] for row in play_advice_rows
             if row.get("action") == "SELL"
         }
         for card in state.cards_in_hand:
@@ -863,6 +865,11 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
                 "cost": cost, "value_mc": round(value_mc),
                 "priority": priority, "type": "card",
             })
+
+    titan_cashout = _titan_shuttles_cashout_allocation(
+        state, me, db, req_checker, tableau_discounts, play_advice_rows)
+    if titan_cashout:
+        allocations.append(titan_cashout)
 
     # 5. Resource conversions (with timing advice)
     if me.plants >= 8:
@@ -926,10 +933,13 @@ def mc_allocation_advice(state, synergy=None, req_checker=None) -> dict:
     # 6. Blue card actions from tableau (with stall value)
     # Count available actions for stall potential
     action_count = 0
+    used_actions = set(getattr(me, "actions_this_generation", []) or [])
     for tc in me.tableau:
         if tc.get("isDisabled"):
             continue
         tname = tc.get("name", "")
+        if tname in used_actions:
+            continue
         if not effect_parser:
             break
         eff = effect_parser.get(tname)
@@ -1738,6 +1748,82 @@ def _tableau_resources(me, card_name: str) -> int:
         except (TypeError, ValueError):
             pass
     return total
+
+
+def _titan_shuttles_cashout_allocation(
+    state, me, db, req_checker, tableau_discounts, play_advice_rows
+) -> dict | None:
+    used_actions = set(getattr(me, "actions_this_generation", []) or [])
+    if "Titan Shuttles" in used_actions:
+        return None
+
+    shuttle_floaters = _tableau_resources(me, "Titan Shuttles")
+    if shuttle_floaters <= 0 or not getattr(state, "cards_in_hand", None):
+        return None
+
+    advice_by_name = {
+        row.get("name"): row
+        for row in play_advice_rows or []
+        if row.get("name")
+    }
+    best = None
+    for card in state.cards_in_hand:
+        name = card.get("name", "")
+        if not name:
+            continue
+        tags = _card_tags(card, db)
+        if "space" not in {str(tag).lower() for tag in tags}:
+            continue
+        if req_checker is not None:
+            req_ok, _ = req_checker.check(name, state)
+            if not req_ok:
+                continue
+
+        cost = card.get("cost", card.get("calculatedCost", 0))
+        current_eff, _ = _effective_cost(
+            cost, tags, me,
+            tableau_discounts=tableau_discounts,
+            discounts_already_applied=_card_cost_is_calculated(card),
+        )
+        after_eff, pay_hint = _effective_cost(
+            cost, tags, me,
+            ti_override=me.titanium + shuttle_floaters,
+            tableau_discounts=tableau_discounts,
+            discounts_already_applied=_card_cost_is_calculated(card),
+        )
+        if current_eff <= me.mc or after_eff > me.mc:
+            continue
+
+        advice = advice_by_name.get(name, {})
+        value = float(advice.get("play_value_now") or 0)
+        if value <= 0:
+            value = max(8.0, float(advice.get("hold_value") or 0))
+        score = value + max(0, current_eff - after_eff) * 0.25
+        if best is None or score > best["score"]:
+            best = {
+                "name": name,
+                "score": score,
+                "value": value,
+                "after_eff": after_eff,
+                "pay_hint": pay_hint,
+            }
+
+    if not best:
+        return None
+
+    return {
+        "action": (
+            f"🔵 Titan Shuttles → +{shuttle_floaters} titanium, "
+            f"then Play {best['name']} ({best['after_eff']} MC after ti)"
+        ),
+        "cost": 0,
+        "value_mc": round(max(best["value"], best["score"])),
+        "priority": 1,
+        "type": "action",
+        "sequence": "titan_shuttles_cashout",
+        "target_card": best["name"],
+        "pay_hint": best["pay_hint"],
+    }
 
 
 def _card_has_any_tag(card_name: str, tags: list[str], wanted: set[str], db=None) -> bool:
