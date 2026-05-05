@@ -2099,6 +2099,45 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     return null;
   }
 
+  function buildBotHintStatus(state) {
+    if (!state || !state.thisPlayer || !panelIsMyActionTurn(state)) return null;
+    var wf = state._waitingFor;
+    if (!wf) {
+      return {
+        title: 'No live action prompt',
+        reason: 'Standard actions below are context-only until waitingFor is captured'
+      };
+    }
+    if (wf.type !== 'or') {
+      return {
+        title: 'Prompt: ' + normalizeBotActionLabel(wf.title || wf.type || ''),
+        reason: 'Bot action ranking only supports action-choice prompts'
+      };
+    }
+    if (!wf.options || wf.options.length === 0) {
+      return {
+        title: 'No action options',
+        reason: 'Current waitingFor has no rankable options'
+      };
+    }
+    return {
+      title: 'No ranked bot action',
+      reason: 'Current action prompt has no playable ranked action'
+    };
+  }
+
+  function renderBotHintCard(botHint, isStatus) {
+    if (!botHint) return '';
+    return '<div class="tm-advisor-bot-hint' + (isStatus ? ' tm-advisor-bot-status' : '') + '">' +
+      '<div class="tm-advisor-bot-title">\uD83E\uDD16 Bot hint</div>' +
+      '<div class="tm-advisor-bot-main"><b>' + _esc(botHint.title) + '</b>' +
+      (typeof botHint.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(botHint.score) + ')</span>' : '') +
+      '</div>' +
+      '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason || '') + '</div>' +
+      (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
+    '</div>';
+  }
+
   function queryFirstIn(root, selectors) {
     if (!root || typeof root.querySelector !== 'function') return null;
     for (var i = 0; i < selectors.length; i++) {
@@ -2311,16 +2350,12 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
     var html = '';
     var isMyActionTurn = panelIsMyActionTurn(state);
     var botHint = isMyActionTurn ? buildBotActionHint(state) : null;
+    var botStatus = isMyActionTurn && !botHint ? buildBotHintStatus(state) : null;
     markBotActionTarget(botHint, document);
     if (botHint) {
-      html += '<div class="tm-advisor-bot-hint">' +
-        '<div class="tm-advisor-bot-title">\uD83E\uDD16 Bot hint</div>' +
-        '<div class="tm-advisor-bot-main"><b>' + _esc(botHint.title) + '</b>' +
-        (typeof botHint.score === 'number' ? ' <span class="tm-advisor-bot-score">(' + Math.round(botHint.score) + ')</span>' : '') +
-        '</div>' +
-        '<div class="tm-advisor-bot-reason">' + _esc(botHint.reason) + '</div>' +
-        (botHint.alt ? '<div class="tm-advisor-bot-alt">Alt: ' + _esc(botHint.alt) + '</div>' : '') +
-      '</div>';
+      html += renderBotHintCard(botHint, false);
+    } else if (botStatus) {
+      html += renderBotHintCard(botStatus, true);
     } else if (!isMyActionTurn || !state._waitingFor) {
       html += renderOffTurnPlan(state);
     }
@@ -3176,6 +3211,7 @@ var _TM_RATINGS_GLOBAL_AP = (typeof TM_RATINGS !== 'undefined') ? TM_RATINGS : {
   if (typeof window !== 'undefined' && window.__TM_ADVISOR_PANEL_TEST_HOOKS__) {
     window.__TM_ADVISOR_PANEL_TEST__ = {
       buildBotActionHint: buildBotActionHint,
+      buildBotHintStatus: buildBotHintStatus,
       clearBotActionTarget: clearBotActionTarget,
       markBotActionTarget: markBotActionTarget,
       panelIsMyActionTurn: panelIsMyActionTurn,

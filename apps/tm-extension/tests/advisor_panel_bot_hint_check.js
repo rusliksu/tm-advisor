@@ -126,6 +126,7 @@ vm.runInNewContext(source, {
 const hooks = windowObj.__TM_ADVISOR_PANEL_TEST__;
 assert(hooks, 'advisor panel test hooks should be exposed');
 assert.strictEqual(typeof hooks.buildBotActionHint, 'function');
+assert.strictEqual(typeof hooks.buildBotHintStatus, 'function');
 assert.strictEqual(typeof hooks.markBotActionTarget, 'function');
 assert.strictEqual(typeof hooks.panelIsMyActionTurn, 'function');
 assert.strictEqual(typeof hooks.renderActions, 'function');
@@ -177,6 +178,32 @@ const deferredCeoHint = hooks.buildBotActionHint(makeState({
   },
 }));
 assert.strictEqual(deferredCeoHint, null, "CEO's Favorite Project should be deferred before the last useful timing window");
+const deferredCeoStatus = hooks.buildBotHintStatus(makeState({
+  gensLeft: 2,
+  _waitingFor: {
+    type: 'or',
+    options: [{
+      title: 'Play project card',
+      cards: [{name: "CEO's Favorite Project", cost: 1}],
+    }],
+  },
+}));
+assert.strictEqual(deferredCeoStatus.title, 'No ranked bot action');
+
+const noPromptStatus = hooks.buildBotHintStatus({thisPlayer: {color: 'red'}});
+assert.strictEqual(noPromptStatus.title, 'No live action prompt');
+assert(noPromptStatus.reason.includes('context-only'), noPromptStatus.reason);
+
+const spacePromptStatus = hooks.buildBotHintStatus(makeState({
+  _waitingFor: {type: 'space', title: 'Select space for greenery tile'},
+}));
+assert.strictEqual(spacePromptStatus.title, 'Prompt: Select space for greenery tile');
+assert(spacePromptStatus.reason.includes('action-choice'), spacePromptStatus.reason);
+
+const emptyOrStatus = hooks.buildBotHintStatus(makeState({
+  _waitingFor: {type: 'or', title: 'Take your next action', options: []},
+}));
+assert.strictEqual(emptyOrStatus.title, 'No action options');
 
 analyzeCalls = 0;
 assert.strictEqual(
@@ -224,6 +251,14 @@ hooks.renderActions(makeState({
 assert(panelActionsEl.innerHTML.includes('Next action'), panelActionsEl.innerHTML);
 assert(panelActionsEl.innerHTML.includes('Kelp Farming'), panelActionsEl.innerHTML);
 assert.strictEqual(analyzeCalls, 0, 'off-turn renderActions should not analyze stale action options');
+documentObj.body.removeChild(panelActionsEl);
+
+documentObj.body.appendChild(panelActionsEl);
+hooks.renderActions(makeState({
+  _waitingFor: {type: 'space', title: 'Select space for greenery tile'},
+}));
+assert(panelActionsEl.innerHTML.includes('Prompt: Select space for greenery tile'), panelActionsEl.innerHTML);
+assert(panelActionsEl.innerHTML.includes('action-choice'), panelActionsEl.innerHTML);
 documentObj.body.removeChild(panelActionsEl);
 
 assert.strictEqual(

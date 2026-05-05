@@ -215,6 +215,10 @@
   margin-top: 1px;
 }
 
+.tm-advisor-bot-status .tm-advisor-bot-main b {
+  color: #c8d2df;
+}
+
 .tm-advisor-next-plan {
   padding: 2px 0 3px;
 }
