@@ -70,6 +70,7 @@ const getBoardRequirementCountsSource = extractFunctionSource(source, 'getBoardR
 const getBoardRequirementDisplayNameSource = extractFunctionSource(source, 'getBoardRequirementDisplayName');
 const parseBoardRequirementsSource = extractFunctionSource(source, 'parseBoardRequirements');
 const evaluateBoardRequirementsSource = extractFunctionSource(source, 'evaluateBoardRequirements');
+const isCardPlayableNowByStaticRequirementsSource = extractFunctionSource(source, 'isCardPlayableNowByStaticRequirements');
 const computeReqPrioritySource = extractFunctionSource(source, 'computeReqPriority');
 const scoreCardRequirementsSource = extractFunctionSource(source, 'scoreCardRequirements');
 const scoreTagSynergiesSource = extractFunctionSource(source, 'scoreTagSynergies');
@@ -386,6 +387,7 @@ vm.runInNewContext(
     getBoardRequirementDisplayNameSource,
     parseBoardRequirementsSource,
     evaluateBoardRequirementsSource,
+    isCardPlayableNowByStaticRequirementsSource,
     computeReqPrioritySource,
     scoreCardRequirementsSource,
     scoreTagSynergiesSource,
@@ -802,6 +804,39 @@ const cuttingEdgeNoReqStack = scoreHandSynergy(
 assert(
   !cuttingEdgeNoReqStack.reasons.some((reason) => reason.includes('disc stack -4')),
   'Cutting Edge Technology _req discount should not stack on cards without requirements',
+);
+sandbox.TM_CARD_DATA['Birds'] = {requirements: [{oxygen: {min: 13}}]};
+sandbox.TM_CARD_GLOBAL_REQS['Birds'] = {oxygen: {min: 13}};
+const lateCuttingEdgeThinReqTargets = scorePostContextChecks(
+  'Cutting Edge Technology',
+  null,
+  'when playing a card with a requirement, you pay 2 m€ less for it. 1 vp',
+  {e: 'When playing a card with a requirement, you pay 2 M€ less for it. 1 VP.', c: 12},
+  new Set(['science']),
+  {
+    gensLeft: 2,
+    gen: 9,
+    globalParams: {temp: 6, oxy: 13, oceans: 7, venus: 14},
+    prod: {plants: 0, heat: 0},
+    tags: {science: 4},
+    tableauNames: new Set(),
+    _myCorps: [],
+    microbeAccumRate: 0,
+    floaterAccumRate: 0,
+    floaterTargetCount: 0,
+    animalTargetCount: 0,
+    microbeTargetCount: 0,
+  },
+  null,
+  ['Cutting Edge Technology', 'Birds'],
+);
+assert(
+  lateCuttingEdgeThinReqTargets.bonus <= -22,
+  'Late Cutting Edge Technology with only one playable requirement target should get a real context downgrade',
+);
+assert(
+  lateCuttingEdgeThinReqTargets.reasons.some((reason) => reason.includes('CET поздно') && reason.includes('req targets 1')),
+  'Late Cutting Edge Technology target-count downgrade should be visible in reasons',
 );
 sandbox.CORP_ABILITY_SYNERGY = {
   'Tharsis Republic': {tags: ['city'], kw: ['city', 'город'], b: 4},

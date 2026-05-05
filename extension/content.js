@@ -2784,6 +2784,54 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    if (ctx && cardName === 'Cutting Edge Technology') {
+      var cetDiscountEntry = null;
+      if (typeof TM_CARD_DISCOUNTS !== 'undefined' && TM_CARD_DISCOUNTS && TM_CARD_DISCOUNTS[cardName]) {
+        cetDiscountEntry = TM_CARD_DISCOUNTS[cardName];
+      } else if (typeof CARD_DISCOUNTS !== 'undefined' && CARD_DISCOUNTS && CARD_DISCOUNTS[cardName]) {
+        cetDiscountEntry = CARD_DISCOUNTS[cardName];
+      }
+      if (cetDiscountEntry && cetDiscountEntry._req) {
+        var cetHand = Array.isArray(myHand) ? myHand : (typeof getMyHandNames === 'function' ? getMyHandNames() : []);
+        var cetSeenTargets = Object.create(null);
+        var cetTargetCount = 0;
+        var cetPlayableTargetCount = 0;
+        for (var ceti = 0; ceti < cetHand.length; ceti++) {
+          var cetTargetName = cardN(cetHand[ceti]);
+          if (!cetTargetName || cetTargetName === cardName || cetSeenTargets[cetTargetName]) continue;
+          if (!cardMatchesDiscountEntry(cetTargetName, cetDiscountEntry)) continue;
+          cetSeenTargets[cetTargetName] = true;
+          cetTargetCount++;
+          if (!ctx || isCardPlayableNowByStaticRequirements(cetTargetName, ctx)) cetPlayableTargetCount++;
+        }
+
+        var cetGL = ctx.gensLeft == null ? 5 : ctx.gensLeft;
+        var cetRelevantTargets = cetGL <= 2 ? cetPlayableTargetCount : Math.max(cetPlayableTargetCount, cetTargetCount);
+        var cetLatePenalty = 0;
+        if (cetGL <= 1) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 32 : cetRelevantTargets === 1 ? 24 : cetRelevantTargets === 2 ? 12 : 0;
+        } else if (cetGL <= 2) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 28 : cetRelevantTargets === 1 ? 22 : cetRelevantTargets === 2 ? 10 : 0;
+        } else if (cetGL <= 3) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 24 : cetRelevantTargets === 1 ? 18 : cetRelevantTargets === 2 ? 8 : 0;
+        } else if (cetGL <= 4) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 14 : cetRelevantTargets === 1 ? 10 : 0;
+        }
+        if (cetLatePenalty > 0) {
+          bonus -= cetLatePenalty;
+          var cetPlayableSuffix = cetPlayableTargetCount !== cetTargetCount
+            ? ' (' + cetPlayableTargetCount + '/' + cetTargetCount + ' сейчас)'
+            : '';
+          pushStructuredReason(
+            reasons,
+            reasonRows,
+            'CET поздно: req targets ' + cetRelevantTargets + cetPlayableSuffix + ' −' + cetLatePenalty,
+            -cetLatePenalty
+          );
+        }
+      }
+    }
+
     // 42. Endgame conversion chain — greenery cards before heat in final gen
     if (ctx && ctx.gensLeft <= 1 && data.e) {
       var isGreenerySource = isFinalGreenerySource(cardName, eLower, cardTags, ctx);
