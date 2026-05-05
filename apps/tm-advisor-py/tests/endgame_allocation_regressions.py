@@ -258,6 +258,54 @@ def build_titanium_payable_missing_tags_state() -> GameState:
     })
 
 
+def build_late_animal_trigger_action_state() -> GameState:
+    hand = [
+        {"name": "Fish", "calculatedCost": 8, "tags": ["Animal"]},
+        {"name": "Crash Site Cleanup", "calculatedCost": 5, "tags": []},
+    ]
+    me = {
+        "color": "orange",
+        "name": "me",
+        "megaCredits": 20,
+        "steel": 0,
+        "titanium": 5,
+        "plants": 1,
+        "energy": 0,
+        "heat": 2,
+        "megaCreditProduction": 24,
+        "steelProduction": 2,
+        "titaniumProduction": 3,
+        "plantProduction": 6,
+        "energyProduction": 5,
+        "heatProduction": 0,
+        "terraformRating": 49,
+        "cardsInHandNbr": len(hand),
+        "tableau": [
+            {"name": "Cheung Shing MARS"},
+            {"name": "Viral Enhancers"},
+        ],
+        "tags": {},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 8,
+            "phase": "action",
+            "oxygenLevel": 14,
+            "temperature": 8,
+            "oceans": 9,
+            "venusScaleLevel": 16,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "gameOptions": {"expansions": {"prelude": True, "venusNext": True, "colonies": True}},
+        },
+    })
+
+
 def main() -> None:
     db = CardDatabase(str(resolve_data_path("evaluations.json")))
     parser = CardEffectParser(db)
@@ -369,6 +417,26 @@ def main() -> None:
         if a.get("type") == "card" and a.get("action", "").startswith("Play ")
     ]
     assert play_names.index("Aquifer Pumping") < play_names.index("Symbiotic Fungus"), value_order_alloc
+
+    late_animal_state = build_late_animal_trigger_action_state()
+    late_animal_advice = {
+        row["name"]: row
+        for row in play_hold_advice(
+            late_animal_state.cards_in_hand,
+            late_animal_state,
+            synergy,
+            req_checker)
+    }
+    fish = late_animal_advice["Fish"]
+    assert fish["action"] == "PLAY", fish
+    assert fish["play_value_now"] >= 7, fish
+
+    late_animal_alloc = mc_allocation_advice(
+        late_animal_state, synergy, req_checker)["allocations"]
+    assert any(
+        a.get("action", "").startswith("Play Fish")
+        for a in late_animal_alloc
+    ), late_animal_alloc
 
     titanium_state = build_titanium_payable_missing_tags_state()
     titanium_advice = {
