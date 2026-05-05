@@ -40,6 +40,7 @@ const reasonCardLabelSource = extractFunctionSource(source, 'reasonCardLabel');
 const describeNamedSynergySource = extractFunctionSource(source, 'describeNamedSynergy');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
 const getCardCostSource = extractFunctionSource(source, 'getCardCost');
+const computeCardValueSource = extractFunctionSource(source, 'computeCardValue');
 const isPlantEngineCardByFxSource = extractFunctionSource(source, 'isPlantEngineCardByFx');
 const isMeltworksLastGenCashoutSource = extractFunctionSource(source, 'isMeltworksLastGenCashout');
 const isPreludeOrCorpCardSource = extractFunctionSource(source, 'isPreludeOrCorpCard');
@@ -55,6 +56,9 @@ const positionalScoring = new Proxy({
   drawEarlyBonus: 5,
   drawMidBonus: 2,
   drawLatePenalty: 4,
+  maxGL: 13,
+  prodMul: {mp: 1, sp: 1.6, tp: 2.5, pp: 2, ep: 1.5, hp: 0.8},
+  resVal: {mc: 1, st: 2, ti: 3, pl: 1.6, he: 0.5, en: 1, cd: 3},
   tableauSynergyPer: 3,
   tableauSynergyMax: 4,
 }, {
@@ -124,6 +128,12 @@ vm.runInNewContext(
     describeNamedSynergySource,
     getCorpBoostSource,
     getCardCostSource,
+    'var FTN_TABLE = {0: [8, 0, 8], 1: [8, 0.5, 7.5]};',
+    'var FTN_FALLBACK = [7, 5, 5];',
+    'function ftnRow(gl) { return FTN_TABLE[gl] || FTN_TABLE[FTN_TABLE.length - 1] || FTN_FALLBACK; }',
+    'const PROD_MUL = SC.prodMul;',
+    'const RES_VAL = SC.resVal;',
+    computeCardValueSource,
     isPlantEngineCardByFxSource,
     isMeltworksLastGenCashoutSource,
     isPreludeOrCorpCardSource,
@@ -136,6 +146,7 @@ vm.runInNewContext(
     scoreSynergyRulesSource,
     'globalThis.__tm_test_getCorpBoost = getCorpBoost;',
     'globalThis.__tm_test_getCardCost = getCardCost;',
+    'globalThis.__tm_test_computeCardValue = computeCardValue;',
     'globalThis.__tm_test_isPlantEngineCardByFx = isPlantEngineCardByFx;',
     'globalThis.__tm_test_isMeltworksLastGenCashout = isMeltworksLastGenCashout;',
     'globalThis.__tm_test_isPreludeOrCorpCard = isPreludeOrCorpCard;',
@@ -151,6 +162,7 @@ vm.runInNewContext(
 
 const getCorpBoost = sandbox.__tm_test_getCorpBoost;
 const getCardCost = sandbox.__tm_test_getCardCost;
+const computeCardValue = sandbox.__tm_test_computeCardValue;
 const isPlantEngineCardByFx = sandbox.__tm_test_isPlantEngineCardByFx;
 const isMeltworksLastGenCashout = sandbox.__tm_test_isMeltworksLastGenCashout;
 const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
@@ -162,6 +174,7 @@ const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
 
 assert.strictEqual(typeof getCorpBoost, 'function', 'getCorpBoost should be exposed');
 assert.strictEqual(typeof getCardCost, 'function', 'getCardCost should be exposed');
+assert.strictEqual(typeof computeCardValue, 'function', 'computeCardValue should be exposed');
 assert.strictEqual(typeof isPlantEngineCardByFx, 'function', 'isPlantEngineCardByFx should be exposed');
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
@@ -209,6 +222,21 @@ assert.strictEqual(
   }),
   3,
   'Robinson should keep the explicit Suitable Infrastructure bonus'
+);
+
+const ganymedeCityOnlyValue = computeCardValue(
+  {city: 1},
+  1,
+  {ctx: {tags: {jovian: 6, wild: 0}}, effectTags: ['city', 'jovian', 'space']}
+);
+const ganymedeVpTagValue = computeCardValue(
+  {city: 1, vpTag: {tag: 'jovian', per: 1}},
+  1,
+  {ctx: {tags: {jovian: 6, wild: 0}}, effectTags: ['city', 'jovian', 'space']}
+);
+assert(
+  Math.abs((ganymedeVpTagValue - ganymedeCityOnlyValue) - 52.5) < 0.001,
+  'Ganymede Colony-style vpTag cards should include current + self Jovian VP in ROI value'
 );
 
 sandbox.TM_CARD_EFFECTS['Lunar Exports'] = { c: 19, mp: 5 };

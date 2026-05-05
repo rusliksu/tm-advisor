@@ -76,26 +76,34 @@
     if (!tags || tags.size === 0) return {hits: []};
 
     var tableauNames = [];
+    var seenTableauNames = {};
+    function addTableauName(name) {
+      if (!name) return;
+      var key = String(name).toLowerCase();
+      if (seenTableauNames[key]) return;
+      seenTableauNames[key] = true;
+      tableauNames.push(name);
+    }
     if (input.isOppCard && input.oppOwner) {
       if (input.oppOwner.tableau) {
         for (var oi = 0; oi < input.oppOwner.tableau.length; oi++) {
-          tableauNames.push(input.cardN(input.oppOwner.tableau[oi]));
+          addTableauName(input.cardN(input.oppOwner.tableau[oi]));
         }
       }
       if (input.oppCtx && input.oppCtx._myCorps) {
         for (var ci = 0; ci < input.oppCtx._myCorps.length; ci++) {
-          if (input.oppCtx._myCorps[ci]) tableauNames.push(input.oppCtx._myCorps[ci]);
+          addTableauName(input.oppCtx._myCorps[ci]);
         }
       }
     } else {
       if (input.pv && input.pv.thisPlayer && input.pv.thisPlayer.tableau) {
         for (var ti = 0; ti < input.pv.thisPlayer.tableau.length; ti++) {
-          tableauNames.push(input.cardN(input.pv.thisPlayer.tableau[ti]));
+          addTableauName(input.cardN(input.pv.thisPlayer.tableau[ti]));
         }
       }
       var corpsForTrig = input.detectMyCorps();
       for (var cft = 0; cft < corpsForTrig.length; cft++) {
-        if (corpsForTrig[cft]) tableauNames.push(corpsForTrig[cft]);
+        addTableauName(corpsForTrig[cft]);
       }
     }
 
@@ -242,6 +250,15 @@
     var fx = input.getFx(name);
     var ratingData = input.getRatingByCardName(name);
     var effectTags = fx && fx.tags ? fx.tags : ((input.cardEffects && input.cardEffects[name] && input.cardEffects[name].tags) ? input.cardEffects[name].tags : []);
+    if ((!effectTags || effectTags.length === 0) && input.cardEl && typeof input.getCardTags === 'function') {
+      var domTagSet = input.getCardTags(input.cardEl);
+      if (domTagSet && typeof domTagSet.forEach === 'function') {
+        effectTags = [];
+        domTagSet.forEach(function(tag) {
+          effectTags.push(String(tag || '').toLowerCase());
+        });
+      }
+    }
 
     return {
       cardCost: typeof input.cardCost === 'number' ? input.cardCost : 0,
@@ -311,8 +328,10 @@
 
     var valueState = resolveTooltipValueState({
       cardCost: typeof cardState.cardCost === 'number' ? cardState.cardCost : 0,
+      cardEl: input.cardEl,
       cardEffects: input.cardEffects,
       getCachedPlayerContext: input.getCachedPlayerContext,
+      getCardTags: input.getCardTags,
       getFx: input.getFx,
       getRatingByCardName: input.getRatingByCardName,
       isOppCard: ownerState.isOppCard,
