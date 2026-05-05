@@ -1,6 +1,8 @@
 {
   "name": "tm-extension-tools",
   "required_files": [
+    "tools/extension/sync-advisor-panel.js",
+    "scripts/sync-extension-advisor-panel.js",
     "tools/extension/sync-background.js",
     "scripts/sync-extension-background.js",
     "tools/extension/sync-content-badges.js",
@@ -75,7 +77,9 @@
       "path": "package.json",
       "contains": [
         "\"extension:check-background\": \"node tools/extension/sync-background.js --check\"",
+        "\"extension:check-advisor-panel\": \"node tools/extension/sync-advisor-panel.js --check\"",
         "\"extension:sync-background\": \"node tools/extension/sync-background.js\"",
+        "\"extension:sync-advisor-panel\": \"node tools/extension/sync-advisor-panel.js\"",
         "\"extension:check-content-badges\": \"node tools/extension/sync-content-badges.js --check\"",
         "\"extension:sync-content-badges\": \"node tools/extension/sync-content-badges.js\"",
         "\"extension:check-content-card-stats\": \"node tools/extension/sync-content-card-stats.js --check\"",
@@ -142,6 +146,13 @@
         "\"extension:sync-utils\": \"node tools/extension/sync-utils.js\"",
         "\"extension:check-vue-bridge\": \"node tools/extension/sync-vue-bridge.js --check\"",
         "\"extension:sync-vue-bridge\": \"node tools/extension/sync-vue-bridge.js\""
+      ]
+    },
+    {
+      "path": "scripts/sync-extension-advisor-panel.js",
+      "contains": [
+        "const CANONICAL = path.resolve(__dirname, '..', 'tools', 'extension', 'sync-advisor-panel.js');",
+        "process.exit(require(CANONICAL).main(process.argv.slice(2)));"
       ]
     },
     {
