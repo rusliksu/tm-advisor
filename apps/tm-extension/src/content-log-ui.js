@@ -10,6 +10,34 @@
   var logRatingLookup = null;
   var logRatingLookupSource = null;
 
+  function getScrollablePanel(logPanel) {
+    if (!logPanel || typeof logPanel.querySelector !== 'function') return null;
+    return logPanel.querySelector('#logpanel-scrollable') || logPanel.querySelector('.panel-body');
+  }
+
+  function shouldStickLogToBottom(scrollablePanel) {
+    if (!scrollablePanel) return false;
+    var remaining = scrollablePanel.scrollHeight - scrollablePanel.clientHeight - scrollablePanel.scrollTop;
+    return remaining <= 24;
+  }
+
+  function restoreLogScroll(scrollablePanel, shouldStick) {
+    if (!scrollablePanel || !shouldStick) return;
+    var stick = function() {
+      scrollablePanel.scrollTop = scrollablePanel.scrollHeight;
+    };
+    stick();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(function() {
+        stick();
+        requestAnimationFrame(stick);
+      });
+      return;
+    }
+    setTimeout(stick, 0);
+    setTimeout(stick, 50);
+  }
+
   function applyLogFilter(logPanel) {
     if (!logPanel || !logPanel.querySelectorAll) return;
     logPanel.querySelectorAll('li').forEach(function(li) {
@@ -263,19 +291,27 @@
     var documentObj = input && input.documentObj;
     var enabled = !input || input.enabled !== false;
     if (!documentObj || !documentObj.querySelectorAll) return;
+    var logPanel = documentObj.querySelector('.log-panel');
+    var scrollablePanel = getScrollablePanel(logPanel);
+    var stickToBottom = shouldStickLogToBottom(scrollablePanel);
 
     if (!enabled) {
       documentObj.querySelectorAll('.tm-log-card-score').forEach(function(el) { el.remove(); });
+      restoreLogScroll(scrollablePanel, stickToBottom);
       return;
     }
 
+    var mutated = false;
     documentObj.querySelectorAll('.log-card').forEach(function(cardEl) {
       if (!cardEl || typeof cardEl.getAttribute !== 'function') return;
       var oldBadge = findLogCardScoreBadge(cardEl);
       var rawName = getLogCardName(cardEl);
       var rating = resolveLogRating(input, rawName);
       if (!rating || !rating.data || rating.data.s == null || !rating.data.t) {
-        if (oldBadge) oldBadge.remove();
+        if (oldBadge) {
+          oldBadge.remove();
+          mutated = true;
+        }
         if (cardEl.style && typeof cardEl.style.removeProperty === 'function') {
           cardEl.style.removeProperty('position');
           cardEl.style.removeProperty('display');
@@ -284,6 +320,8 @@
         return;
       }
 
+      var oldBadgeText = oldBadge ? oldBadge.textContent : null;
+      var oldBadgeClass = oldBadge ? oldBadge.className : null;
       var badge = oldBadge || documentObj.createElement('span');
       badge.className = 'tm-log-card-score tm-log-tier tm-tier-' + rating.data.t;
       badge.textContent = rating.data.t + ' ' + rating.data.s;
@@ -296,8 +334,13 @@
       if (!oldBadge) {
         if (typeof cardEl.insertAdjacentElement === 'function') cardEl.insertAdjacentElement('afterend', badge);
         else if (cardEl.parentNode && typeof cardEl.parentNode.appendChild === 'function') cardEl.parentNode.appendChild(badge);
+        mutated = true;
+      } else if (oldBadgeText !== badge.textContent || oldBadgeClass !== badge.className) {
+        mutated = true;
       }
     });
+
+    restoreLogScroll(scrollablePanel, stickToBottom && mutated);
   }
 
   global.TM_CONTENT_LOG_UI = {

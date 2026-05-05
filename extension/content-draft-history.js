@@ -8,6 +8,34 @@
   var _storedDraftLogPending = false;
   var _lastDraftLogCount = 0;
 
+  function getScrollablePanel(logPanel) {
+    if (!logPanel || typeof logPanel.querySelector !== 'function') return null;
+    return logPanel.querySelector('#logpanel-scrollable') || logPanel.querySelector('.panel-body');
+  }
+
+  function shouldStickLogToBottom(scrollablePanel) {
+    if (!scrollablePanel) return false;
+    var remaining = scrollablePanel.scrollHeight - scrollablePanel.clientHeight - scrollablePanel.scrollTop;
+    return remaining <= 24;
+  }
+
+  function restoreLogScroll(scrollablePanel, shouldStick) {
+    if (!scrollablePanel || !shouldStick) return;
+    var stick = function() {
+      scrollablePanel.scrollTop = scrollablePanel.scrollHeight;
+    };
+    stick();
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(function() {
+        stick();
+        requestAnimationFrame(stick);
+      });
+      return;
+    }
+    setTimeout(stick, 0);
+    setTimeout(stick, 50);
+  }
+
   function entryCardName(card) {
     if (!card) return '';
     return typeof card === 'string' ? card : (card.name || '');
@@ -121,6 +149,8 @@
 
   function injectDraftHistory(input) {
     var logPanel = input && input.logPanel;
+    var scrollablePanel = getScrollablePanel(logPanel);
+    var stickToBottom = shouldStickLogToBottom(scrollablePanel);
     var draftHistory = input && input.draftHistory;
     var scrollable = logPanel && (logPanel.querySelector('#logpanel-scrollable ul') || logPanel.querySelector('#logpanel-scrollable'));
     if (!scrollable) return 0;
@@ -198,6 +228,7 @@
     }
 
     _lastDraftLogCount = entries.length;
+    restoreLogScroll(scrollablePanel, stickToBottom);
     return _lastDraftLogCount;
   }
 
