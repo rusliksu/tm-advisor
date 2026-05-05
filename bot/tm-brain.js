@@ -1228,6 +1228,17 @@
       getCardTags: function(cardName) { return getCardTagsByName(cardName, null, state); },
     }) : { penalty: 0 };
     var reqPenalty = reqInfo.penalty || 0;
+    function cardHasRequirementForScoring(cardName) {
+      if (!cardName) return false;
+      var resolved = resolveVariantCardName(cardName, state);
+      var base = baseCardName(resolved || cardName);
+      var cardData = getCardDataByName(cardName, state) || {};
+      if (cardData.requirements) return true;
+      return !!(
+        _cardGlobalReqs[resolved] || _cardGlobalReqs[cardName] || _cardGlobalReqs[base] ||
+        _cardTagReqs[resolved] || _cardTagReqs[cardName] || _cardTagReqs[base]
+      );
+    }
 
     var ev = 0;
 
@@ -1335,6 +1346,10 @@
         gensLeft: gensLeft,
         myTags: myTags,
         vpMC: vpMC,
+        resourceVpMC: endgameVpMC,
+        cardName: name,
+        cardTags: tags,
+        tp: tp,
       });
     } else if (vpInfo) {
       if (vpInfo.type === 'static') {
@@ -1427,6 +1442,7 @@
         getCardTags: function(cardName) {
           return _cardTags[cardName] || [];
         },
+        cardHasRequirement: cardHasRequirementForScoring,
       });
     }
 
@@ -2152,6 +2168,7 @@
         getCardTags: function(cardName) {
           return _cardTags[cardName] || [];
         },
+        cardHasRequirement: cardHasRequirementForScoring,
         gensLeft: gensLeft,
         redsTax: redsTax,
         trMC: trMC,

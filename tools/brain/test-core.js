@@ -394,6 +394,27 @@ function testCoreHelpers() {
     9,
     'hand-aware discount value should come from shared brain, not bot-only scoring'
   );
+  assert.strictEqual(
+    core.scoreHandDiscountValue({
+      name: 'Cutting Edge Technology',
+      handCards: [{name: 'Birds'}, {name: 'Research'}, {name: 'Cartel'}],
+      cardHasRequirement: (name) => name === 'Birds',
+    }),
+    2,
+    'Cutting Edge Technology should discount only requirement cards in hand'
+  );
+  assert.strictEqual(
+    core.applyManualEVAdjustments({
+      name: 'Cutting Edge Technology',
+      manual: {perGen: 3},
+      handCards: [{name: 'Birds'}, {name: 'Research'}, {name: 'Cartel'}],
+      selfName: 'Cutting Edge Technology',
+      cardHasRequirement: (name) => name === 'Birds',
+      gensLeft: 3,
+    }),
+    2,
+    'Cutting Edge Technology manual EV should be capped by actual requirement targets'
+  );
   assert(
     core.scoreCityTimingValue({
       name: 'Underground City',

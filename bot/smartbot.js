@@ -236,6 +236,34 @@ function hasCardDiscountUtility(cardName) {
   return !!data.cardDiscount || DISCOUNT_SETUP_CARDS.has(cardName);
 }
 
+function cardHasRequirementForDiscount(cardName) {
+  const data = CARD_DATA[cardName] || {};
+  return !!data.requirements || !!CARD_GLOBAL_REQS[cardName];
+}
+
+function countDiscountSetupTargets(cardName, hand) {
+  const cards = Array.isArray(hand) ? hand : [];
+  if (cardName === 'Cutting Edge Technology') {
+    return cards.filter(card => {
+      const name = card?.name || card || '';
+      return name && name !== cardName && cardHasRequirementForDiscount(name);
+    }).length;
+  }
+  return cards.filter(card => {
+    const name = card?.name || card || '';
+    return name && name !== cardName;
+  }).length;
+}
+
+function shouldPrioritizeDiscountSetupNow(cardName, hand, gensLeft) {
+  if (!hasCardDiscountUtility(cardName)) return false;
+  const targetCount = countDiscountSetupTargets(cardName, hand);
+  if (cardName === 'Cutting Edge Technology') {
+    return targetCount >= (gensLeft <= 2 ? 2 : 1);
+  }
+  return targetCount >= (gensLeft <= 2 ? 2 : 1);
+}
+
 function countSupportTags(state, tag, excludeName) {
   let count = 0;
   const tp = state?.thisPlayer || {};
@@ -1613,7 +1641,7 @@ function planGeneration(state) {
     }
 
     // Discount cards = IMMEDIATE (enables cheaper plays same gen)
-    if (hasDiscount && hand.length > 3) {
+    if (hasDiscount && hand.length > 3 && shouldPrioritizeDiscountSetupNow(name, hand, gensLeft)) {
       playPlan.immediate.push({ name, cost, ev, reason: 'discount → play first' });
       continue;
     }

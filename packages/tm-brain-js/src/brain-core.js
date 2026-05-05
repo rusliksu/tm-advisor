@@ -1431,6 +1431,7 @@
     var gensLeft = opts.gensLeft || 1;
     var myTags = opts.myTags || {};
     var vpMCFn = opts.vpMC || vpMC;
+    var resourceVpMC = opts.resourceVpMC || 8;
 
     if (vpInfo.type === 'static') {
       return (vpInfo.vp || 0) * vpMCFn(gensLeft);
@@ -1439,7 +1440,15 @@
       var resourcePerAction = Number(vpInfo.actionResourceAmount || vpInfo.resourcePerAction || 1);
       if (!isFinite(resourcePerAction) || resourcePerAction <= 0) resourcePerAction = 1;
       var expectedRes = Math.max(1, gensLeft - 2) * resourcePerAction;
-      return (expectedRes / (vpInfo.per || 1)) * vpMCFn(gensLeft) * 0.8;
+      var value = (expectedRes / (vpInfo.per || 1)) * vpMCFn(gensLeft) * 0.8;
+      value += scorePlayedCardResourceTriggers({
+        cardName: opts.cardName,
+        cardTags: opts.cardTags,
+        tp: opts.tp,
+        vpInfo: vpInfo,
+        resourceVpMC: resourceVpMC,
+      });
+      return value;
     }
     if (vpInfo.type === 'per_tag') {
       var tagCount = (myTags[vpInfo.tag] || 0) + 2;
@@ -1452,6 +1461,35 @@
       return vpMCFn(gensLeft) * 2;
     }
     return 0;
+  }
+
+  function scorePlayedCardResourceTriggers(options) {
+    var opts = options || {};
+    var tags = asArray(opts.cardTags);
+    var isBio = false;
+    for (var i = 0; i < tags.length; i++) {
+      if (tags[i] === 'plant' || tags[i] === 'microbe' || tags[i] === 'animal') {
+        isBio = true;
+        break;
+      }
+    }
+    if (!isBio) return 0;
+
+    var tp = opts.tp || {};
+    var tableau = asArray(tp.tableau);
+    var hasViralEnhancers = false;
+    for (var ti = 0; ti < tableau.length; ti++) {
+      var tname = (tableau[ti] && tableau[ti].name) || tableau[ti];
+      if (tname === 'Viral Enhancers') {
+        hasViralEnhancers = true;
+        break;
+      }
+    }
+    if (!hasViralEnhancers) return 0;
+
+    var per = Number(opts.vpInfo && opts.vpInfo.per) || 1;
+    var vpValue = Number(opts.resourceVpMC) || 8;
+    return (1 / per) * vpValue;
   }
 
   function scoreRecurringActionValue(options) {
@@ -1507,13 +1545,14 @@
     var discount = opts.discount || null;
     var handCards = opts.handCards || [];
     var getCardTags = opts.getCardTags || function() { return []; };
+    var cardHasRequirement = opts.cardHasRequirement || function() { return false; };
     var discountMap = {
       'Earth Office': { tag: 'earth', amount: 3 },
       'Earth Catapult': { tag: null, amount: 2 },
       'Space Station': { tag: 'space', amount: 2 },
       'Anti-Gravity Technology': { tag: null, amount: 2 },
       'Warp Drive': { tag: 'space', amount: 4 },
-      'Cutting Edge Technology': { tag: null, amount: 2 },
+      'Cutting Edge Technology': { tag: null, amount: 2, requiresRequirement: true },
       'Sky Docks': { tag: 'earth', amount: 2 },
       'Mass Converter': { tag: 'space', amount: 2 },
       'Shuttles': { tag: 'space', amount: 2 },
@@ -1523,10 +1562,12 @@
     if (!discountInfo && !discount) return 0;
     var requiredTag = discountInfo && discountInfo.tag;
     var amount = (discountInfo && discountInfo.amount) || discount.amount || 1;
+    var requiresRequirement = !!(discountInfo && discountInfo.requiresRequirement);
     var handSaving = 0;
     for (var i = 0; i < handCards.length; i++) {
       var handCardName = handCards[i] && (handCards[i].name || handCards[i]);
       if (!handCardName || handCardName === name) continue;
+      if (requiresRequirement && !cardHasRequirement(handCardName)) continue;
       var handTags = getCardTags(handCardName) || [];
       if (!requiredTag || handTags.indexOf(requiredTag) >= 0) handSaving += amount;
     }
@@ -2129,10 +2170,21 @@
     var handCards = opts.handCards || [];
     var selfName = opts.selfName || name;
     var getCardTags = opts.getCardTags || function() { return []; };
+    var cardHasRequirement = opts.cardHasRequirement || function() { return false; };
     var selfTags = getCardTags(selfName) || [];
 
     var delta = 0;
     var timingGens = Math.min(gensLeft, 6);
+
+    if (name === 'Cutting Edge Technology') {
+      var reqTargets = 0;
+      for (var ceti = 0; ceti < handCards.length; ceti++) {
+        var cetName = handCards[ceti] && (handCards[ceti].name || handCards[ceti]);
+        if (!cetName || cetName === selfName) continue;
+        if (cardHasRequirement(cetName)) reqTargets++;
+      }
+      return Math.min(reqTargets * 2, manual.perGen ? manual.perGen * timingGens : reqTargets * 2);
+    }
 
     if (name === 'Insects') {
       var plantSupport = countEffectiveTagSupport('plant', myTags, handCards, selfName, getCardTags);

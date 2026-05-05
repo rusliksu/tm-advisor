@@ -39,6 +39,9 @@ const cardPlacesCityTileByNameSource = extractFunctionSource(source, 'cardPlaces
 const cardPlacesMapTileByNameSource = extractFunctionSource(source, 'cardPlacesMapTileByName');
 const getCardTypeByNameSource = extractFunctionSource(source, 'getCardTypeByName');
 const isPreludeOrCorpNameSource = extractFunctionSource(source, 'isPreludeOrCorpName');
+const cardHasRequirementsByNameSource = extractFunctionSource(source, 'cardHasRequirementsByName');
+const cardMatchesDiscountEntrySource = extractFunctionSource(source, 'cardMatchesDiscountEntry');
+const getDiscountTargetLabelSource = extractFunctionSource(source, 'getDiscountTargetLabel');
 const getCardNameSource = extractFunctionSource(source, 'getCardName');
 const getCardTagsForNameSource = extractFunctionSource(source, 'getCardTagsForName');
 const resourcePlacementCanReachTargetSource = extractFunctionSource(source, 'resourcePlacementCanReachTarget');
@@ -49,6 +52,7 @@ const reasonCardLabelSource = extractFunctionSource(source, 'reasonCardLabel');
 const describeNamedSynergySource = extractFunctionSource(source, 'describeNamedSynergy');
 const describeCorpBoostReasonSource = extractFunctionSource(source, 'describeCorpBoostReason');
 const formatReasonNumberSource = extractFunctionSource(source, 'formatReasonNumber');
+const formatDiscountTargetReasonSource = extractFunctionSource(source, 'formatDiscountTargetReason');
 const globalParamRaisesSource = extractFunctionSource(source, 'globalParamRaises');
 const estimateGensLeftSource = extractFunctionSource(source, 'estimateGensLeft');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
@@ -352,6 +356,9 @@ vm.runInNewContext(
     cardPlacesMapTileByNameSource,
     getCardTypeByNameSource,
     isPreludeOrCorpNameSource,
+    cardHasRequirementsByNameSource,
+    cardMatchesDiscountEntrySource,
+    getDiscountTargetLabelSource,
     getCardNameSource,
     getCardTagsForNameSource,
     resourcePlacementCanReachTargetSource,
@@ -362,6 +369,7 @@ vm.runInNewContext(
     describeNamedSynergySource,
     describeCorpBoostReasonSource,
     formatReasonNumberSource,
+    formatDiscountTargetReasonSource,
     globalParamRaisesSource,
     estimateGensLeftSource,
     getCorpBoostSource,
@@ -775,6 +783,25 @@ const mercurianDirigiblesSynergy = scoreHandSynergy(
 assert(
   !mercurianDirigiblesSynergy.reasons.some((reason) => reason.includes('Mercurian Alloys') && reason.includes('скидка')),
   'Mercurian Alloys should not be modeled as a generic discount for non-space Venus cards like Dirigibles',
+);
+sandbox.TM_CARD_DISCOUNTS = {
+  'Cutting Edge Technology': {_req: 2},
+  'Earth Catapult': {_all: 2},
+};
+const cuttingEdgeNoReqStack = scoreHandSynergy(
+  'Dirigibles',
+  ['Dirigibles', 'Cutting Edge Technology', 'Earth Catapult'],
+  {
+    gensLeft: 2,
+    gen: 9,
+    globalParams: {temp: 6, oxy: 12, oceans: 7, venus: 14},
+    tags: {science: 4},
+    _myCorps: [],
+  },
+);
+assert(
+  !cuttingEdgeNoReqStack.reasons.some((reason) => reason.includes('disc stack -4')),
+  'Cutting Edge Technology _req discount should not stack on cards without requirements',
 );
 sandbox.CORP_ABILITY_SYNERGY = {
   'Tharsis Republic': {tags: ['city'], kw: ['city', 'город'], b: 4},
@@ -2287,6 +2314,28 @@ assert.strictEqual(
 assert(
   liveTableauSynergy.reasons.some((reason) => reason.includes('Earth Office +3')),
   'Earth Office tableau synergy should remain visible'
+);
+
+sandbox.TM_CARD_TAGS['Cutting Edge Technology'] = ['science'];
+sandbox.TM_CARD_TAGS['Adaptation Technology'] = ['science'];
+sandbox.TM_CARD_TAGS['Research'] = ['science', 'science'];
+sandbox.TM_RATINGS['Cutting Edge Technology'] = { y: ['Adaptation Technology', 'Research'] };
+const lateCuttingEdgePlayedSetupSynergy = scoreTableauSynergy(
+  'Cutting Edge Technology',
+  sandbox.TM_RATINGS['Cutting Edge Technology'],
+  ['Adaptation Technology', 'Research'],
+  new Set(['Adaptation Technology', 'Research']),
+  new Set(),
+  {gensLeft: 1, _handNamesSet: new Set()}
+);
+assert.strictEqual(
+  lateCuttingEdgePlayedSetupSynergy.bonus,
+  1,
+  'Cutting Edge Technology should not get full late tableau aura from already-played science setup cards'
+);
+assert(
+  !lateCuttingEdgePlayedSetupSynergy.reasons.some((reason) => reason.includes('Research')),
+  'Already-played Research should not keep scoring as live Cutting Edge Technology synergy'
 );
 
 sandbox.TM_CARD_EFFECTS['Nitrogen from Titan'] = {c: 25, tr: 2, vp: 1, places: 'floater', placesTag: 'jovian', placesN: 2};

@@ -855,7 +855,7 @@ function testLateBuySkipsLowPriorityPlayableFiller() {
   BOT.flushReasoning();
   assert.strictEqual(input.type, 'card');
   assert.ok(input.cards.includes('Research'));
-  assert.ok(input.cards.includes('Cutting Edge Technology'));
+  assert.ok(!input.cards.includes('Cutting Edge Technology'));
   assert.ok(!input.cards.includes('Weather Balloons'));
   assert.ok(!input.cards.includes('Land Claim'));
 }
