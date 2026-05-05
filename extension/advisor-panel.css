@@ -299,6 +299,12 @@
   border-radius: 4px;
 }
 
+.tm-advisor-card-target {
+  position: relative;
+  outline: 3px solid rgba(241, 196, 15, 0.95);
+  box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.18), 0 0 18px rgba(241, 196, 15, 0.28);
+}
+
 .tm-advisor-action-badge {
   display: inline-flex;
   align-items: center;
