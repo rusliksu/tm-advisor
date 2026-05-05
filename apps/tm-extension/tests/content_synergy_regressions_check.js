@@ -29,6 +29,7 @@ function extractFunctionSource(fileSource, functionName) {
   return fileSource.slice(start, i);
 }
 
+const cardNSource = extractFunctionSource(source, 'cardN');
 const getFxSource = extractFunctionSource(source, 'getFx');
 const cardHasRequirementsByNameSource = extractFunctionSource(source, 'cardHasRequirementsByName');
 const cardMatchesDiscountEntrySource = extractFunctionSource(source, 'cardMatchesDiscountEntry');
@@ -51,6 +52,10 @@ const dampTableauSynergyWeightSource = extractFunctionSource(source, 'dampTablea
 const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTableauSynergy');
 const scoreTableauSynergySource = extractFunctionSource(source, 'scoreTableauSynergy');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
+const getRequirementFlexStepsSource = extractFunctionSource(source, 'getRequirementFlexSteps');
+const isCardPlayableNowByStaticRequirementsSource = extractFunctionSource(source, 'isCardPlayableNowByStaticRequirements');
+const pushStructuredReasonSource = extractFunctionSource(source, 'pushStructuredReason');
+const scorePostContextChecksSource = extractFunctionSource(source, 'scorePostContextChecks');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
 const getColonyBehaviorByNameSource = extractFunctionSource(source, 'getColonyBehaviorByName');
 const scoreSynergyRulesSource = extractFunctionSource(source, '_scoreSynergyRules');
@@ -76,9 +81,13 @@ const sandbox = {
   TM_CARD_EFFECTS: {},
   TM_CARD_DATA: {},
   TM_CARD_TAGS: {},
+  TM_CARD_GLOBAL_REQS: {},
   TM_CARD_TAG_REQS: {},
+  TM_CARD_DISCOUNTS: {},
+  CARD_DISCOUNTS: {},
   TM_RATINGS: {},
   TM_CORPS: {},
+  TM_FLOATER_TRAPS: {},
   kebabLookup: {},
   lowerLookup: {},
   resolveCorpName(name) {
@@ -112,6 +121,12 @@ const sandbox = {
   isFloaterCardByFx() {
     return false;
   },
+  hasSelfFloaterSource() {
+    return false;
+  },
+  isGreeneryTile() {
+    return false;
+  },
   getFx() {
     return null;
   },
@@ -120,6 +135,7 @@ sandbox.globalThis = sandbox;
 
 vm.runInNewContext(
   [
+    cardNSource,
     getFxSource,
     getCardTypeByNameSource,
     isPreludeOrCorpNameSource,
@@ -147,6 +163,10 @@ vm.runInNewContext(
     isSpentTableauSynergySource,
     scoreTableauSynergySource,
     getNamedRequirementDelayProfileSource,
+    getRequirementFlexStepsSource,
+    isCardPlayableNowByStaticRequirementsSource,
+    pushStructuredReasonSource,
+    scorePostContextChecksSource,
     scorePositionalFactorsSource,
     getColonyBehaviorByNameSource,
     scoreSynergyRulesSource,
@@ -159,6 +179,7 @@ vm.runInNewContext(
     'globalThis.__tm_test_isPreludeOrCorpCard = isPreludeOrCorpCard;',
     'globalThis.__tm_test_scoreTableauSynergy = scoreTableauSynergy;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
+    'globalThis.__tm_test_scorePostContextChecks = scorePostContextChecks;',
     'globalThis.__tm_test_scorePositionalFactors = scorePositionalFactors;',
     'globalThis.__tm_test_getColonyBehaviorByName = getColonyBehaviorByName;',
     'globalThis.__tm_test_scoreSynergyRules = _scoreSynergyRules;',
@@ -176,6 +197,7 @@ const isMeltworksLastGenCashout = sandbox.__tm_test_isMeltworksLastGenCashout;
 const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
 const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
+const scorePostContextChecks = sandbox.__tm_test_scorePostContextChecks;
 const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
 const getColonyBehaviorByName = sandbox.__tm_test_getColonyBehaviorByName;
 const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
@@ -187,6 +209,7 @@ assert.strictEqual(typeof cardMatchesDiscountEntry, 'function', 'cardMatchesDisc
 assert.strictEqual(typeof isPlantEngineCardByFx, 'function', 'isPlantEngineCardByFx should be exposed');
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
+assert.strictEqual(typeof scorePostContextChecks, 'function', 'scorePostContextChecks should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
 assert.strictEqual(typeof getColonyBehaviorByName, 'function', 'getColonyBehaviorByName should be exposed');
 assert.strictEqual(typeof scoreSynergyRules, 'function', 'scoreSynergyRules should be exposed');
@@ -249,7 +272,9 @@ assert(
 );
 
 sandbox.TM_CARD_DATA['Birds'] = {requirements: [{oxygen: 13}]};
+sandbox.TM_CARD_GLOBAL_REQS['Birds'] = {oxygen: {min: 13}};
 sandbox.TM_CARD_DATA['Research'] = {};
+sandbox.TM_CARD_DISCOUNTS['Cutting Edge Technology'] = {_req: 2};
 assert.strictEqual(
   cardMatchesDiscountEntry('Birds', {_req: 2}),
   true,
@@ -259,6 +284,38 @@ assert.strictEqual(
   cardMatchesDiscountEntry('Research', {_req: 2}),
   false,
   'Cutting Edge Technology-style _req discounts should not match cards without requirements'
+);
+
+const lateCuttingEdgeLockedTarget = scorePostContextChecks(
+  'Cutting Edge Technology',
+  null,
+  '',
+  {c: 14},
+  [],
+  {
+    gensLeft: 1,
+    gen: 10,
+    globalParams: {oxy: 12, temp: 0, oceans: 0, venus: 0},
+    tags: {},
+    prod: {plants: 0, heat: 0},
+    floaterTargetCount: 0,
+    floaterAccumRate: 0,
+    microbeTargetCount: 0,
+    microbeAccumRate: 0,
+    animalTargetCount: 0,
+    turmoilActive: false,
+  },
+  null,
+  ['Cutting Edge Technology', 'Birds', 'Research']
+);
+assert.strictEqual(
+  lateCuttingEdgeLockedTarget.bonus,
+  -32,
+  'Late Cutting Edge Technology should heavily penalize no playable requirement-discount targets'
+);
+assert(
+  lateCuttingEdgeLockedTarget.reasons.some((reason) => reason.includes('CET late: req targets 0')),
+  'Late Cutting Edge Technology penalty should name the playable requirement target count'
 );
 
 sandbox.TM_CARD_EFFECTS['Lunar Exports'] = { c: 19, mp: 5 };
