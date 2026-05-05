@@ -315,6 +315,61 @@ function testGenericAlertsDoNotRankActionMismatch() {
   assert.strictEqual(stats.actionMismatches.length, 0);
 }
 
+function testUnmatchedActionAlertWithoutBestMoveIsUnranked() {
+  const stats = analyzeEntries([
+    {
+      file: 'action-alert-without-best.jsonl',
+      events: [
+        {
+          type: 'actions_taken',
+          ts: '2026-05-03T22:20:05Z',
+          game_id: 'g-test',
+          player_id: 'p1',
+          player: 'Human',
+          actions: ['Search For Life'],
+          decision_context: {
+            game: {generation: 5, phase: 'action'},
+            me: {mc: 20, production: {mc: 8}},
+            alerts: ['🔵 Actions (1): Extremophiles: +1 microbe (+½ VP)'],
+          },
+        },
+      ],
+    },
+  ], {minGap: 10});
+
+  assert.strictEqual(stats.summary.actions, 1);
+  assert.strictEqual(stats.summary.actionRanked, 0);
+  assert.strictEqual(stats.summary.actionMismatch, 0);
+  assert.strictEqual(stats.summary.actionUnranked, 1);
+  assert.strictEqual(stats.actionMismatches.length, 0);
+}
+
+function testPromptBestMoveDoesNotRankActionMismatch() {
+  const stats = analyzeEntries([
+    {
+      file: 'prompt-over-action.jsonl',
+      events: [
+        actionDecision('2026-05-03T22:25:00Z', 'p1', 'Resolve current prompt: Select one option Save'),
+        {
+          type: 'actions_taken',
+          ts: '2026-05-03T22:25:05Z',
+          game_id: 'g-test',
+          decision_id: 'p1',
+          player_id: 'p1',
+          player: 'Human',
+          actions: ['GHG Producing Bacteria'],
+        },
+      ],
+    },
+  ], {minGap: 10});
+
+  assert.strictEqual(stats.summary.actions, 1);
+  assert.strictEqual(stats.summary.actionRanked, 0);
+  assert.strictEqual(stats.summary.actionMismatch, 0);
+  assert.strictEqual(stats.summary.actionUnranked, 1);
+  assert.strictEqual(stats.actionMismatches.length, 0);
+}
+
 function testAggregatesBlueActionsOverPlayCards() {
   const stats = analyzeEntries([
     {
@@ -402,6 +457,8 @@ testClassifiesLinkedActions();
 testActionAfterCardPlayInSameDecisionIsNoisy();
 testActionMatchesAdvisorActionAlert();
 testGenericAlertsDoNotRankActionMismatch();
+testUnmatchedActionAlertWithoutBestMoveIsUnranked();
+testPromptBestMoveDoesNotRankActionMismatch();
 testAggregatesBlueActionsOverPlayCards();
 testClassifiesEmojiAdvisorMoveTypes();
 testBuildEntriesCanReplayWithInjectedEngine();

@@ -389,6 +389,8 @@ function classifyAction(action) {
   if (action.actionCount !== 1) return 'noisy';
   if (!action.actionHints.length) return 'unranked';
   if (action.matchedHint) return 'aligned';
+  if (!action.bestMove) return 'unranked';
+  if (action.bestMoveType === 'prompt') return 'unranked';
   return 'mismatch';
 }
 
@@ -615,7 +617,7 @@ function analyzeEntries(entries, options = {}) {
     noisy: plays.filter((play) => play.classification === 'noisy').length,
     unranked: plays.filter((play) => play.classification === 'unranked').length,
     actions: actions.length,
-    actionRanked: actions.filter((action) => action.actionHints.length).length,
+    actionRanked: actions.filter((action) => !["noisy", "unranked"].includes(action.classification)).length,
     actionAligned: actions.filter((action) => action.classification === 'aligned').length,
     actionMismatch: actions.filter((action) => action.classification === 'mismatch').length,
     actionNoisy: actions.filter((action) => action.classification === 'noisy').length,
