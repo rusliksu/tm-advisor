@@ -175,7 +175,7 @@
         };
         var myCorps = typeof input.detectMyCorps === 'function' ? input.detectMyCorps() : [];
         var reqFlex = typeof input.getRequirementFlexSteps === 'function'
-          ? input.getRequirementFlexSteps(cardName, myCorps)
+          ? input.getRequirementFlexSteps(cardName, myCorps, ctx)
           : { any: 0, venus: 0 };
         for (var rk in greq) {
           if (!Object.prototype.hasOwnProperty.call(greq, rk)) continue;
@@ -502,7 +502,7 @@
           var gp = { oxy: pv.game.oxygenLevel, temp: pv.game.temperature, oceans: pv.game.oceans, venus: pv.game.venusScaleLevel };
           var pm = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
           var myCorps = typeof detectMyCorps === 'function' ? detectMyCorps() : [];
-          var reqFlex = typeof getRequirementFlexSteps === 'function' ? getRequirementFlexSteps(cardName, myCorps) : { any: 0, venus: 0 };
+          var reqFlex = typeof getRequirementFlexSteps === 'function' ? getRequirementFlexSteps(cardName, myCorps, ctx) : { any: 0, venus: 0 };
           for (var rk in pm) {
             if (!greq[rk]) continue;
             var cv = gp[pm[rk]];

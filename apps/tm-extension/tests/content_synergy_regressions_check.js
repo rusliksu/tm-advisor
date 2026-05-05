@@ -52,10 +52,13 @@ const dampTableauSynergyWeightSource = extractFunctionSource(source, 'dampTablea
 const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTableauSynergy');
 const scoreTableauSynergySource = extractFunctionSource(source, 'scoreTableauSynergy');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
+const ctxHasTableauCardSource = extractFunctionSource(source, 'ctxHasTableauCard');
 const getRequirementFlexStepsSource = extractFunctionSource(source, 'getRequirementFlexSteps');
+const getRequirementHardnessSource = extractFunctionSource(source, 'getRequirementHardness');
 const isCardPlayableNowByStaticRequirementsSource = extractFunctionSource(source, 'isCardPlayableNowByStaticRequirements');
 const pushStructuredReasonSource = extractFunctionSource(source, 'pushStructuredReason');
 const scorePostContextChecksSource = extractFunctionSource(source, 'scorePostContextChecks');
+const scoreCardRequirementsSource = extractFunctionSource(source, 'scoreCardRequirements');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
 const getColonyBehaviorByNameSource = extractFunctionSource(source, 'getColonyBehaviorByName');
 const scoreSynergyRulesSource = extractFunctionSource(source, '_scoreSynergyRules');
@@ -163,10 +166,14 @@ vm.runInNewContext(
     isSpentTableauSynergySource,
     scoreTableauSynergySource,
     getNamedRequirementDelayProfileSource,
+    ctxHasTableauCardSource,
     getRequirementFlexStepsSource,
+    getRequirementHardnessSource,
     isCardPlayableNowByStaticRequirementsSource,
     pushStructuredReasonSource,
     scorePostContextChecksSource,
+    'function evaluateBoardRequirements() { return null; }',
+    scoreCardRequirementsSource,
     scorePositionalFactorsSource,
     getColonyBehaviorByNameSource,
     scoreSynergyRulesSource,
@@ -179,7 +186,9 @@ vm.runInNewContext(
     'globalThis.__tm_test_isPreludeOrCorpCard = isPreludeOrCorpCard;',
     'globalThis.__tm_test_scoreTableauSynergy = scoreTableauSynergy;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
+    'globalThis.__tm_test_getRequirementFlexSteps = getRequirementFlexSteps;',
     'globalThis.__tm_test_scorePostContextChecks = scorePostContextChecks;',
+    'globalThis.__tm_test_scoreCardRequirements = scoreCardRequirements;',
     'globalThis.__tm_test_scorePositionalFactors = scorePositionalFactors;',
     'globalThis.__tm_test_getColonyBehaviorByName = getColonyBehaviorByName;',
     'globalThis.__tm_test_scoreSynergyRules = _scoreSynergyRules;',
@@ -197,7 +206,9 @@ const isMeltworksLastGenCashout = sandbox.__tm_test_isMeltworksLastGenCashout;
 const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
 const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
+const getRequirementFlexSteps = sandbox.__tm_test_getRequirementFlexSteps;
 const scorePostContextChecks = sandbox.__tm_test_scorePostContextChecks;
+const scoreCardRequirements = sandbox.__tm_test_scoreCardRequirements;
 const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
 const getColonyBehaviorByName = sandbox.__tm_test_getColonyBehaviorByName;
 const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
@@ -209,7 +220,9 @@ assert.strictEqual(typeof cardMatchesDiscountEntry, 'function', 'cardMatchesDisc
 assert.strictEqual(typeof isPlantEngineCardByFx, 'function', 'isPlantEngineCardByFx should be exposed');
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
+assert.strictEqual(typeof getRequirementFlexSteps, 'function', 'getRequirementFlexSteps should be exposed');
 assert.strictEqual(typeof scorePostContextChecks, 'function', 'scorePostContextChecks should be exposed');
+assert.strictEqual(typeof scoreCardRequirements, 'function', 'scoreCardRequirements should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
 assert.strictEqual(typeof getColonyBehaviorByName, 'function', 'getColonyBehaviorByName should be exposed');
 assert.strictEqual(typeof scoreSynergyRules, 'function', 'scoreSynergyRules should be exposed');
@@ -284,6 +297,44 @@ assert.strictEqual(
   cardMatchesDiscountEntry('Research', {_req: 2}),
   false,
   'Cutting Edge Technology-style _req discounts should not match cards without requirements'
+);
+
+const adaptationCtx = {
+  gen: 9,
+  gensLeft: 1,
+  globalParams: {oxy: 9, temp: 8, oceans: 6, venus: 0},
+  tableauNames: new Set(['Adaptation Technology']),
+  tags: {},
+  terraformRate: 1,
+};
+assert.strictEqual(
+  getRequirementFlexSteps('Birds', [], adaptationCtx).any,
+  2,
+  'played Adaptation Technology should count as two global-requirement flex steps'
+);
+assert.strictEqual(
+  getNamedRequirementDelayProfile('Birds', {
+    globalParams: {oxy: 7},
+    tableauNames: new Set(['Adaptation Technology']),
+  }).penalty,
+  0,
+  'Birds delay profile should use the Adaptation Technology O2 11 threshold'
+);
+const birdsHardLockedWithoutAdaptation = scoreCardRequirements(
+  null,
+  Object.assign({}, adaptationCtx, {tableauNames: new Set()}),
+  'Birds'
+);
+assert(
+  birdsHardLockedWithoutAdaptation &&
+  birdsHardLockedWithoutAdaptation.reasons.some((reason) => reason.includes('Req далеко oxygen')),
+  'Birds at O2 9 should still be hard-locked without Adaptation Technology'
+);
+const birdsWithAdaptationReq = scoreCardRequirements(null, adaptationCtx, 'Birds');
+assert(
+  !birdsWithAdaptationReq ||
+  !birdsWithAdaptationReq.reasons.some((reason) => reason.includes('Req далеко oxygen')),
+  'Birds at O2 9 with Adaptation Technology should not receive the final-poke hard-lock penalty'
 );
 
 const lateCuttingEdgeLockedTarget = scorePostContextChecks(

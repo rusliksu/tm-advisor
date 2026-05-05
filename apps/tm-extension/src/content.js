@@ -3927,6 +3927,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return 0;
   }
 
+  function ctxHasTableauCard(ctx, cardName) {
+    return !!(ctx && cardName && ctx.tableauNames && typeof ctx.tableauNames.has === 'function' && ctx.tableauNames.has(cardName));
+  }
+
   function getNamedRequirementDelayProfile(cardName, ctx) {
     var profile = { penalty: 0, reason: '', suppressAccumulatorBonus: false, selfResourceFactor: 1 };
     if (!ctx || !ctx.globalParams) return profile;
@@ -3937,7 +3941,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       : (typeof ctx.globalParams.temperature === 'number' ? ctx.globalParams.temperature : -30);
 
     if (cardName === 'Birds') {
-      var birdsGap = Math.max(0, 13 - oxy);
+      var birdsNeed = ctxHasTableauCard(ctx, 'Adaptation Technology') ? 11 : 13;
+      var birdsGap = Math.max(0, birdsNeed - oxy);
       if (birdsGap >= 11) {
         profile.penalty = -10;
         profile.suppressAccumulatorBonus = true;
@@ -4037,20 +4042,24 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
   function getRequirementFlexSteps(cardName, corpsArray) {
     var flex = { any: 0, venus: 0 };
-    if (!cardName || !corpsArray || corpsArray.length === 0) return flex;
+    var ctx = arguments.length > 2 ? arguments[2] : null;
+    if (!cardName) return flex;
 
     var globalReqs = (typeof TM_CARD_GLOBAL_REQS !== 'undefined')
       ? (_lookupCardData ? _lookupCardData(TM_CARD_GLOBAL_REQS, cardName) : TM_CARD_GLOBAL_REQS[cardName])
       : null;
     if (!globalReqs) return flex;
 
-    for (var i = 0; i < corpsArray.length; i++) {
-      var corp = corpsArray[i];
-      if (corp === 'Inventrix') flex.any = Math.max(flex.any, 2);
-      if (corp === 'Morning Star Inc.' && globalReqs.venus && (globalReqs.venus.min != null || globalReqs.venus.max != null)) {
-        flex.venus = Math.max(flex.venus, 2);
+    if (corpsArray && corpsArray.length) {
+      for (var i = 0; i < corpsArray.length; i++) {
+        var corp = corpsArray[i];
+        if (corp === 'Inventrix') flex.any = Math.max(flex.any, 2);
+        if (corp === 'Morning Star Inc.' && globalReqs.venus && (globalReqs.venus.min != null || globalReqs.venus.max != null)) {
+          flex.venus = Math.max(flex.venus, 2);
+        }
       }
     }
+    if (ctxHasTableauCard(ctx, 'Adaptation Technology')) flex.any = Math.max(flex.any, 2);
     return flex;
   }
 
@@ -4239,7 +4248,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       : null;
     var gp = ctx.globalParams || {};
     var reqFlexCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
-    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
+    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps, ctx);
     var paramMap = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
 
     if (globalReqs) {
@@ -4280,7 +4289,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (!globalReqs && !tagReqs && !reqText) return null;
 
     var reqFlexCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
-    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
+    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps, ctx);
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
@@ -4334,7 +4343,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
               if (ctx.gensLeft <= 1 && adjustedNet > 2) {
                 bonus += -30;
                 reasons.push('Req далеко ' + reqParam + ' −30');
-              } else if (adjustedNet > ctx.gensLeft) {
+              } else if (adjustedNet > ctx.gensLeft && netSteps > 2) {
                 var distPen = Math.round(Math.min(15, Math.round(adjustedNet * 2.5)) * genScale);
                 if (distPen > 0) { bonus += -distPen; reasons.push('Req далеко ' + reqParam + ' −' + distPen); }
               } else if (netSteps >= 3) {
@@ -7490,7 +7499,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (!globalReqsHS && !tagReqsHS) return status;
 
       var reqFlexCorpsHS = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
-      var reqFlexHS = getRequirementFlexSteps(targetCardName, reqFlexCorpsHS);
+      var reqFlexHS = getRequirementFlexSteps(targetCardName, reqFlexCorpsHS, ctx);
       var reqHandStepsHS = { temperature: 0, oxygen: 0, oceans: 0, venus: 0 };
       for (var rhs = 0; rhs < myHand.length; rhs++) {
         if (myHand[rhs] === targetCardName) continue;
@@ -7528,7 +7537,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
                   othersRateHS = (wgtHS ? 1 : 0) + Math.max(0, (plHS - 1) * 0.5);
                 }
                 var adjustedNetHS = Math.max(0, netStepsHS - Math.round(othersRateHS * ctx.gensLeft * 0.3));
-                if ((ctx.gensLeft <= 1 && adjustedNetHS > 0) || adjustedNetHS > ctx.gensLeft || netStepsHS >= 3) status.hardBlocked = true;
+                if ((ctx.gensLeft <= 1 && adjustedNetHS > 2) || (adjustedNetHS > ctx.gensLeft && netStepsHS > 2) || netStepsHS >= 3) status.hardBlocked = true;
                 else status.softBlocked = true;
               } else {
                 status.softBlocked = true;
@@ -9717,7 +9726,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     function isTargetOtherwiseReady(targetName, excludeParamName, addedTagCounts, excludeTagName) {
       var targetGlobalReqs = _lookupCardData ? _lookupCardData(_globalReqs, targetName) : _globalReqs[targetName];
       var targetTagReqs = _lookupCardData ? _lookupCardData(_tagReqs, targetName) : _tagReqs[targetName];
-      var targetFlex = getRequirementFlexSteps(targetName, reqFlexCorpsHS2);
+      var targetFlex = getRequirementFlexSteps(targetName, reqFlexCorpsHS2, ctx);
       var targetGp = ctx && ctx.globalParams ? ctx.globalParams : {};
 
       if (targetGlobalReqs) {
@@ -9759,7 +9768,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!targetReqData || !targetReqData[pmName] || targetReqData[pmName].min == null) continue;
 
         var targetReqObj2 = targetReqData[pmName];
-        var targetFlex2 = getRequirementFlexSteps(myHand[_rei], reqFlexCorpsHS2);
+        var targetFlex2 = getRequirementFlexSteps(myHand[_rei], reqFlexCorpsHS2, ctx);
         var curParam2 = gp[pmName === 'oxygen' ? 'oxy' : pmName];
         if (typeof curParam2 !== 'number') curParam2 = 0;
         var effectiveMin2 = targetReqObj2.min - (targetFlex2.any + (pmName === 'venus' ? targetFlex2.venus : 0)) * paramStep[pmKey];
@@ -9804,7 +9813,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       for (var pmKey2 in paramMap) {
         var pmName2 = paramMap[pmKey2];
         if (!myReqs[pmName2] || myReqs[pmName2].min == null) continue;
-        var myFlex2 = getRequirementFlexSteps(cardName, reqFlexCorpsHS2);
+        var myFlex2 = getRequirementFlexSteps(cardName, reqFlexCorpsHS2, ctx);
         var curParam3 = gp[pmName2 === 'oxygen' ? 'oxy' : pmName2];
         if (typeof curParam3 !== 'number') curParam3 = 0;
         var neededMin3 = myReqs[pmName2].min - (myFlex2.any + (pmName2 === 'venus' ? myFlex2.venus : 0)) * paramStep[pmKey2];
@@ -12695,7 +12704,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // Requirement flexibility from Inventrix / Morning Star Inc.
     var myCorpsReq = detectMyCorps();
-    var reqFlex = getRequirementFlexSteps(cardName0, myCorpsReq);
+    var reqFlex = getRequirementFlexSteps(cardName0, myCorpsReq, ctx);
     var reqBonus = reqFlex.any;
     var venusReqBonus = reqFlex.any + reqFlex.venus;
 
@@ -14098,7 +14107,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (greq && pv.game) {
           var gp = { oxy: pv.game.oxygenLevel, temp: pv.game.temperature, oceans: pv.game.oceans, venus: pv.game.venusScaleLevel };
           var pm = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
-          var reqFlex = getRequirementFlexSteps(cardName, detectMyCorps());
+          var reqFlex = getRequirementFlexSteps(cardName, detectMyCorps(), ctx);
           for (var rk in pm) {
             if (greq[rk]) {
               var cv = gp[pm[rk]];
