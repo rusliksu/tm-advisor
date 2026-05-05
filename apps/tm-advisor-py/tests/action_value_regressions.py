@@ -1140,6 +1140,66 @@ def build_kaguya_conversion_state() -> GameState:
     })
 
 
+def build_late_animal_trigger_state() -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 20,
+        "steel": 0,
+        "titanium": 0,
+        "plants": 0,
+        "energy": 0,
+        "heat": 0,
+        "megaCreditProduction": 20,
+        "steelProduction": 0,
+        "titaniumProduction": 0,
+        "plantProduction": 0,
+        "energyProduction": 0,
+        "heatProduction": 0,
+        "terraformRating": 35,
+        "cardsInHandNbr": 2,
+        "tableau": [
+            {"name": "Cheung Shing MARS"},
+            {"name": "Viral Enhancers"},
+        ],
+        "tags": {"microbe": 1, "science": 1},
+    }
+    opp = {
+        "color": "blue",
+        "name": "opp",
+        "megaCredits": 0,
+        "plants": 0,
+        "plantProduction": 1,
+        "terraformRating": 35,
+        "tableau": [],
+        "tags": {},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me, opp],
+        "pickedCorporationCard": [{"name": "Cheung Shing MARS"}],
+        "cardsInHand": [
+            {"name": "Fish", "calculatedCost": 8, "tags": ["Animal"]},
+            {"name": "Crash Site Cleanup", "calculatedCost": 5, "tags": []},
+        ],
+        "game": {
+            "generation": 8,
+            "phase": "action",
+            "oxygenLevel": 14,
+            "temperature": 8,
+            "oceans": 9,
+            "venusScaleLevel": 16,
+            "milestones": [],
+            "awards": [],
+            "spaces": [],
+            "colonies": [],
+            "gameOptions": {
+                "expansions": {"prelude": True, "venus": True},
+            },
+        },
+    })
+
+
 def main() -> int:
     bot = AdvisorBot("test", snapshot_mode=True)
 
@@ -2319,6 +2379,19 @@ def main() -> int:
     assert "Событие (след. gen)" not in final_alert_text, final_alert_text
     assert "станут ruling" not in final_alert_text, final_alert_text
     assert "Dry Deserts" not in final_alert_text, final_alert_text
+
+    late_animal_state = build_late_animal_trigger_state()
+    late_animal_rows = {
+        row["name"]: row
+        for row in play_hold_advice(
+            late_animal_state.cards_in_hand, late_animal_state, bot.synergy, bot.req_checker
+        )
+    }
+    fish_row = late_animal_rows["Fish"]
+    assert fish_row["action"] == "PLAY", fish_row
+    assert fish_row["play_value_now"] >= 7, fish_row
+    crash_site_row = late_animal_rows["Crash Site Cleanup"]
+    assert fish_row["play_value_now"] > crash_site_row["play_value_now"], late_animal_rows
 
     print("action value regressions: OK")
     return 0

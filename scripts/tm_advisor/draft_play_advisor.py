@@ -2851,6 +2851,65 @@ def _trigger_effect_value(trig, eff, card_name, card_tags, gens_left, rv,
     return 0.0
 
 
+def _play_trigger_matches_card_tags(trigger_text: str, card_tags) -> bool:
+    trigger_text = (trigger_text or "").lower()
+    if "play" not in trigger_text and "playing" not in trigger_text:
+        return False
+    if trigger_text in ("play a card", "playing a card"):
+        return True
+    for tag in card_tags or []:
+        tag_text = str(tag or "").lower().replace("-", " ").strip()
+        if not tag_text:
+            continue
+        token = tag_text.rstrip("s")
+        if re.search(rf"\b{re.escape(token)}s?\b", trigger_text):
+            return True
+    return False
+
+
+def _trigger_adds_resource_to_played_card(effect_text: str, target_resource: str) -> float:
+    """Return resource amount when a tableau trigger can add to the card being played."""
+    effect_text = (effect_text or "").lower()
+    if "add" not in effect_text and "put" not in effect_text:
+        return 0.0
+    target_resource = (target_resource or "").lower().strip()
+    matches = re.finditer(
+        r"(?:add|put)\s+(?:(\d+)|an?|one)\s+(.+?)\s+(?:to|on)\s+(?:that|the played|played)\s+card",
+        effect_text,
+    )
+    for match in matches:
+        amount = float(match.group(1) or 1)
+        raw_resource = match.group(2).strip().lower()
+        if "resource" in raw_resource:
+            return amount
+        if target_resource and target_resource in raw_resource:
+            return amount
+    return 0.0
+
+
+def _tableau_play_trigger_resource_vp_value(card_tags, target_eff, me, effect_parser, rv) -> float:
+    """Immediate VP-resource value from existing tableau triggers like Viral Enhancers."""
+    if not me or not effect_parser or not target_eff:
+        return 0.0
+    resource_token_value = _resource_vp_token_value(target_eff, rv)
+    if resource_token_value <= 0:
+        return 0.0
+    target_resource = str(getattr(target_eff, "resource_type", "") or "").lower()
+    total = 0.0
+    for card in getattr(me, "tableau", []) or []:
+        source_name = card.get("name", "") if isinstance(card, dict) else str(card)
+        source_eff = effect_parser.get(source_name) if source_name else None
+        if not source_eff:
+            continue
+        for trig in getattr(source_eff, "triggers", []) or []:
+            if not _play_trigger_matches_card_tags(trig.get("on", ""), card_tags):
+                continue
+            amount = _trigger_adds_resource_to_played_card(trig.get("effect", ""), target_resource)
+            if amount > 0:
+                total += amount * resource_token_value
+    return total
+
+
 def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                               effect_parser=None, db=None, corp_name="",
                               tableau_tags=None, me=None, hand_cards=None,
@@ -2869,7 +2928,8 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                                         card_tags=tags,
                                         hand_cards=hand_cards,
                                         db=db,
-                                        state=state)
+                                        state=state,
+                                        effect_parser=effect_parser)
             # Late-game penalty for engine/draw cards that won't pay off
             if value > 0 and gens_left <= 3:
                 value *= _late_game_engine_multiplier(eff, gens_left)
@@ -2927,7 +2987,7 @@ def _late_game_engine_multiplier(eff, gens_left: int) -> float:
     # maintain value в late game — proven 4-9 VP payoff через accumulated resources.
     # Softer penalty than pure action engines.
     if has_resource_vp:
-        resource_penalties = {1: 0.55, 2: 0.75, 3: 0.90}
+        resource_penalties = {1: 0.60, 2: 0.75, 3: 0.90}
         return resource_penalties.get(gens_left, 1.0)
 
     # Pure engine/draw/action card (no resource-VP tie) — harsh penalty
@@ -3191,7 +3251,7 @@ def _tag_scaling_effects(eff, state=None, me=None, card_tags=None, db=None, card
 
 def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name="", card_cost=0,
                         tableau_tags=None, me=None, card_name="", card_tags=None,
-                        hand_cards=None, db=None, state=None):
+                        hand_cards=None, db=None, state=None, effect_parser=None):
     """Calculate MC-value from CardEffect data."""
     value = 0
 
@@ -3293,6 +3353,9 @@ def _value_from_effects(eff, gens_left, rv, phase, has_colonies=False, corp_name
             # Count external placers in tableau if available.
             resource_token_value = _resource_vp_token_value(eff, rv)
             resources_per_gen = _self_resource_action_rate(eff)
+            value += _tableau_play_trigger_resource_vp_value(
+                card_tags, eff, me, effect_parser, rv
+            )
             if tableau_tags:
                 # Heuristic: each animal/microbe/floater placer in tableau
                 # adds ~0.5 resources/gen to existing accumulators.

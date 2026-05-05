@@ -381,6 +381,66 @@ function testMinorityRefugeSequenceThenPlaysRefugeAndChoosesMiranda() {
   assert.deepStrictEqual(colonyInput, {type: 'colony', colonyName: 'Miranda'});
 }
 
+function makeLateFishViralState() {
+  const cardsInHand = [
+    buildDraftProjectCard('Fish'),
+    buildDraftProjectCard('Crash Site Cleanup'),
+  ];
+  const state = {
+    thisPlayer: {
+      name: 'me',
+      color: 'red',
+      megaCredits: 20,
+      megacredits: 20,
+      megaCreditProduction: 20,
+      megacreditProduction: 20,
+      terraformRating: 35,
+      steel: 0,
+      titanium: 0,
+      plants: 0,
+      energy: 0,
+      heat: 0,
+      tableau: [
+        {name: 'Cheung Shing MARS'},
+        {name: 'Viral Enhancers'},
+      ],
+      tags: {microbe: 1, science: 1},
+      cardsInHand,
+    },
+    players: [
+      {color: 'red'},
+      {color: 'blue', plants: 0, plantProduction: 1},
+    ],
+    cardsInHand,
+    game: {
+      generation: 8,
+      phase: 'action',
+      oxygenLevel: 14,
+      temperature: 8,
+      oceans: 9,
+      venusScaleLevel: 16,
+    },
+  };
+  return state;
+}
+
+function testLateFishWithViralBeatsCrashSiteCleanup() {
+  const state = makeLateFishViralState();
+  const fish = state.cardsInHand.find((card) => card.name === 'Fish');
+  const crash = state.cardsInHand.find((card) => card.name === 'Crash Site Cleanup');
+
+  assert(
+    SMARTBOT.TM_BRAIN.scoreCard(fish, state) > SMARTBOT.TM_BRAIN.scoreCard(crash, state),
+    `Fish should beat Crash Site Cleanup with Viral Enhancers, got Fish=${SMARTBOT.TM_BRAIN.scoreCard(fish, state)} Crash=${SMARTBOT.TM_BRAIN.scoreCard(crash, state)}`
+  );
+
+  const input = SMARTBOT.handleInput(makePlayProjectOrActionWorkflow(state), state);
+  assert.strictEqual(input.type, 'or');
+  assert.strictEqual(input.index, 0);
+  assert.strictEqual(input.response.type, 'projectCard');
+  assert.strictEqual(input.response.card, 'Fish');
+}
+
 function testPlutoDiscardDoesNotUseDraftKeepPriority() {
   const wf = {
     type: 'card',
@@ -1395,6 +1455,7 @@ function run() {
   testOpeningColonyPrefersTritonOverOccupiedEuropaTie();
   testMinorityRefugeSequencePlaysAnimalBeforeColonyCard();
   testMinorityRefugeSequenceThenPlaysRefugeAndChoosesMiranda();
+  testLateFishWithViralBeatsCrashSiteCleanup();
   testPlutoDiscardDoesNotUseDraftKeepPriority();
   testPlutoDiscardProtectsHighPriorityDraftPick();
   testJovianLanternsKeepsImmediateFloaters();
