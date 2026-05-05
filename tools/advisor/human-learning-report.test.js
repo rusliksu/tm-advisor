@@ -147,6 +147,26 @@ function testUsesLinkedDecisionWhenPlayHasNoContext() {
   assert.strictEqual(stats.plays[0].classification, 'reasonable');
 }
 
+function testDeferredAdvisorTopIsSequencingNotTeaching() {
+  const stats = analyzeEntries([
+    {
+      file: 'deferred-top.jsonl',
+      events: [
+        miss('2026-05-03T20:00:00Z', 'Venus Trade Hub', 'Space Port Colony', 30),
+        play('2026-05-03T20:00:03Z', 'Venus Trade Hub', 'Space Port Colony'),
+        play('2026-05-03T20:07:00Z', 'Space Port Colony', 'Space Port Colony'),
+      ],
+    },
+  ], {minGap: 10});
+
+  const deferred = stats.plays.find((row) => row.card === 'Venus Trade Hub');
+  assert.strictEqual(deferred.classification, 'reasonable');
+  assert.strictEqual(deferred.deferredBest.card, 'Space Port Colony');
+  assert.strictEqual(deferred.deferredBest.minutes, 7);
+  assert.strictEqual(stats.summary.teaching, 0);
+  assert.strictEqual(stats.summary.deferredBest, 1);
+}
+
 function testClassifiesLinkedActions() {
   const stats = analyzeEntries([
     {
@@ -326,6 +346,7 @@ function testClassifiesEmojiAdvisorMoveTypes() {
 testDoesNotReuseMissAcrossFiles();
 testIgnoresStaleMissInSameFile();
 testUsesLinkedDecisionWhenPlayHasNoContext();
+testDeferredAdvisorTopIsSequencingNotTeaching();
 testClassifiesLinkedActions();
 testActionMatchesAdvisorActionAlert();
 testGenericAlertsDoNotRankActionMismatch();
