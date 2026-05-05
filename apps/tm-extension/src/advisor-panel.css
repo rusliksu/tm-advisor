@@ -1,0 +1,592 @@
+/* ── TM Advisor Panel ── */
+
+.tm-advisor-panel {
+  position: fixed;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  width: 325px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: rgba(12, 12, 25, 0.96);
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  z-index: 10002;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+  transition: width 0.2s, opacity 0.2s;
+  line-height: 1.4;
+}
+
+.tm-advisor-body {
+  display: grid;
+  gap: 5px;
+}
+
+.tm-advisor-body > div:empty {
+  display: none;
+}
+
+.tm-advisor-panel.tm-advisor-dragging {
+  opacity: 0.85;
+  transition: none;
+}
+
+.tm-advisor-panel.tm-advisor-collapsed {
+  width: 36px;
+  max-height: none;
+  overflow: hidden;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.tm-advisor-panel.tm-advisor-collapsed .tm-advisor-body {
+  display: none;
+}
+
+.tm-advisor-panel.tm-advisor-hidden {
+  display: none;
+}
+
+/* Header */
+.tm-advisor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #333;
+  cursor: grab;
+  user-select: none;
+}
+
+.tm-advisor-header:active {
+  cursor: grabbing;
+}
+
+.tm-advisor-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: #f1c40f;
+  cursor: pointer;
+}
+
+.tm-advisor-title:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.tm-advisor-toggle {
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  font-size: 15px;
+  line-height: 1;
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.tm-advisor-toggle:hover {
+  color: #fff;
+  border-color: #f1c40f;
+}
+
+/* Timing block */
+.tm-advisor-timing {
+  margin-bottom: 0;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.tm-advisor-timing.tm-dz-red {
+  background: rgba(231, 76, 60, 0.2);
+  border-left: 3px solid #e74c3c;
+  color: #ff6b6b;
+}
+
+.tm-advisor-timing.tm-dz-yellow {
+  background: rgba(241, 196, 15, 0.15);
+  border-left: 3px solid #f1c40f;
+  color: #f1c40f;
+}
+
+.tm-advisor-timing.tm-dz-green {
+  background: rgba(46, 204, 113, 0.12);
+  border-left: 3px solid #2ecc71;
+  color: #2ecc71;
+}
+
+.tm-advisor-timing-detail {
+  font-size: 13px;
+  font-weight: normal;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.tm-advisor-timing-detail b {
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Alerts — section separators */
+.tm-advisor-alerts {
+  margin-top: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+.tm-advisor-alerts > div {
+  padding: 1px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.tm-advisor-alerts > div:last-child {
+  border-bottom: none;
+}
+
+/* Alert severity classes */
+.tm-alert-danger { color: #e74c3c; }
+.tm-alert-warning { color: #f39c12; }
+.tm-alert-success { color: #2ecc71; }
+.tm-alert-info { color: #3498db; }
+
+/* Section headers in alerts */
+.tm-alert-section {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.35;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tm-advisor-alerts > div:first-child .tm-alert-section {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Action checklist */
+.tm-advisor-actions {
+  margin-top: 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(52, 152, 219, 0.08);
+  border-left: 2px solid #3498db;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #aad;
+}
+
+.tm-advisor-bot-hint {
+  padding: 2px 0 4px;
+}
+
+.tm-advisor-bot-title {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #d6e9ff;
+}
+
+.tm-advisor-bot-main {
+  font-size: 13px;
+  color: #f3f8ff;
+}
+
+.tm-advisor-bot-main b {
+  color: #ffffff;
+}
+
+.tm-advisor-bot-score {
+  color: #7fc8ff;
+  font-size: 12px;
+}
+
+.tm-advisor-bot-reason,
+.tm-advisor-bot-alt {
+  font-size: 12px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-bot-alt {
+  margin-top: 1px;
+}
+
+.tm-advisor-next-plan {
+  padding: 2px 0 3px;
+}
+
+.tm-advisor-next-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #d6e9ff;
+  margin-bottom: 2px;
+}
+
+.tm-advisor-next-title span,
+.tm-advisor-next-muted {
+  color: #9fb8d1;
+  font-weight: 400;
+}
+
+.tm-advisor-next-main {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #f3f8ff;
+}
+
+.tm-advisor-next-main b {
+  color: #ffffff;
+}
+
+.tm-advisor-next-more {
+  margin-top: 3px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-next-more summary {
+  cursor: pointer;
+  list-style: none;
+  font-size: 10px;
+  line-height: 1.35;
+  color: #9fb8d1;
+}
+
+.tm-advisor-next-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.tm-advisor-next-more summary::before {
+  content: '>';
+  display: inline-block;
+  width: 10px;
+  color: #7fc8ff;
+}
+
+.tm-advisor-next-more[open] summary::before {
+  content: 'v';
+}
+
+.tm-advisor-action-target {
+  position: relative;
+  border-radius: 4px;
+  outline: 2px solid rgba(96, 211, 148, 0.85);
+  box-shadow: 0 0 0 3px rgba(96, 211, 148, 0.16);
+}
+
+.tm-advisor-card-target {
+  position: relative;
+  outline: 3px solid rgba(241, 196, 15, 0.95);
+  box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.18), 0 0 18px rgba(241, 196, 15, 0.28);
+}
+
+.tm-advisor-action-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: #60d394;
+  color: #07130d;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0;
+  pointer-events: none;
+  vertical-align: middle;
+}
+
+.tm-advisor-sp-hint {
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.tm-advisor-sp-gl {
+  color: #7fa6c6;
+  font-size: 11px;
+  font-weight: normal;
+}
+
+.tm-advisor-sp-list {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.tm-advisor-sp-more .tm-advisor-sp-list {
+  margin-top: 3px;
+}
+
+.tm-advisor-sp-row {
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.tm-advisor-sp-row--good {
+  border-color: rgba(46, 204, 113, 0.35);
+  background: rgba(46, 204, 113, 0.08);
+}
+
+.tm-advisor-sp-row--ok {
+  border-color: rgba(241, 196, 15, 0.3);
+  background: rgba(241, 196, 15, 0.08);
+}
+
+.tm-advisor-sp-row--bad {
+  border-color: rgba(231, 76, 60, 0.25);
+  background: rgba(231, 76, 60, 0.06);
+}
+
+.tm-advisor-sp-head,
+.tm-advisor-sp-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tm-advisor-sp-name {
+  color: #eef6ff;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tm-advisor-sp-score {
+  color: #7fc8ff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tm-advisor-sp-meta {
+  margin-top: 1px;
+  font-size: 11px;
+  color: #9fb8d1;
+}
+
+.tm-advisor-sp-net {
+  color: #d6e9ff;
+  white-space: nowrap;
+}
+
+.tm-advisor-sp-detail {
+  flex: 1 1 auto;
+  text-align: right;
+  color: #8ea7bf;
+}
+
+/* Pass indicator */
+.tm-advisor-pass {
+  margin-top: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.tm-advisor-pass-safe {
+  background: rgba(46, 204, 113, 0.12);
+  color: #2ecc71;
+}
+
+.tm-advisor-pass-risky {
+  background: rgba(231, 76, 60, 0.12);
+  color: #e74c3c;
+}
+
+.tm-advisor-pass-neutral {
+  background: rgba(149, 165, 166, 0.12);
+  color: #95a5a6;
+}
+
+/* VP Lead */
+.tm-advisor-vp-lead {
+  font-size: 15px;
+  font-weight: bold;
+  margin-top: 4px;
+}
+
+.tm-advisor-vp-lead.positive { color: #2ecc71; }
+.tm-advisor-vp-lead.negative { color: #e74c3c; }
+.tm-advisor-vp-lead.neutral { color: #95a5a6; }
+
+/* Compact mode — hide detail rows but keep VP header */
+.tm-advisor-compact .tm-advisor-timing-detail,
+.tm-advisor-compact .tm-detail-row {
+  display: none;
+}
+
+.tm-advisor-compact .tm-advisor-vp-lead {
+  font-size: 13px;
+}
+
+.tm-advisor-compact .tm-advisor-timing {
+  font-size: 14px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+}
+
+.tm-advisor-compact .tm-advisor-pass {
+  margin-top: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+/* Compact alerts — inline */
+.tm-advisor-compact .tm-advisor-alerts > div {
+  display: inline;
+  border-bottom: none;
+}
+
+.tm-advisor-compact .tm-advisor-alerts .tm-alert-section {
+  display: none;
+}
+
+.tm-advisor-compact .tm-advisor-actions {
+  font-size: 11px;
+  padding: 2px 6px;
+}
+
+/* Details/Summary toggle */
+.tm-advisor-panel details summary {
+  cursor: pointer;
+  list-style: none;
+  color: #9fb8d1;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.tm-advisor-panel details summary::-webkit-details-marker {
+  display: none;
+}
+
+.tm-advisor-panel details[open] summary {
+  margin-bottom: 3px;
+  opacity: 0.85;
+}
+
+.tm-advisor-more {
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: normal;
+  color: #b8c1d4;
+}
+
+.tm-advisor-more > div {
+  font-weight: normal;
+}
+
+.tm-advisor-panel [style*="font-size:9px"] {
+  font-size: 10px !important;
+}
+
+.tm-advisor-panel [style*="font-size:10px"] {
+  font-size: 11px !important;
+}
+
+.tm-advisor-panel [style*="font-size:11px"] {
+  font-size: 12px !important;
+}
+
+.tm-advisor-panel [style*="font-size:12px"] {
+  font-size: 13px !important;
+}
+
+.tm-advisor-warnings {
+  margin: 0;
+  padding: 3px 5px;
+  background: rgba(243,156,18,0.12);
+  border-radius: 3px;
+  border-left: 2px solid #f39c12;
+  font-size: 11px;
+  color: #f5c842;
+}
+
+.tm-advisor-muted {
+  color: #9ea7b8;
+  opacity: 0.7;
+}
+
+.tm-advisor-minor-section,
+.tm-advisor-deck-section {
+  margin-top: 0;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.tm-advisor-section-label {
+  color: #9ea7b8;
+  font-weight: 600;
+}
+
+.tm-advisor-chip {
+  display: inline-block;
+  margin: 1px 2px 1px 0;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.05);
+  color: #d8dceb;
+}
+
+.tm-advisor-turmoil-action {
+  color: #f1c40f;
+}
+
+.tm-advisor-deck-head {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.tm-advisor-deck-keys {
+  margin-top: 3px;
+  line-height: 20px;
+}
+
+.tm-advisor-deck-synergy {
+  margin-top: 3px;
+  padding-top: 2px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Scrollbar */
+.tm-advisor-panel::-webkit-scrollbar {
+  width: 4px;
+}
+.tm-advisor-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tm-advisor-panel::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 2px;
+}
+
+/* VP bar tooltip */
+.tm-advisor-panel [title] {
+  cursor: default;
+}
+
+/* Table styles in VP comparison */
+.tm-advisor-panel table {
+  border-spacing: 0;
+}
+
+.tm-advisor-panel table td {
+  white-space: nowrap;
+}

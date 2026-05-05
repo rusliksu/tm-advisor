@@ -44,6 +44,8 @@
     "apps/tm-extension/src/presets.css",
     "apps/tm-extension/src/utils.js",
     "apps/tm-extension/src/vue-bridge.js",
+    "apps/tm-extension/src/advisor-panel.js",
+    "apps/tm-extension/src/advisor-panel.css",
     "extension/background.js",
     "extension/content-badges.js",
     "extension/content-card-stats.js",
@@ -82,6 +84,7 @@
     "extension/advisor-core.js",
     "extension/advisor-workflow.js",
     "extension/advisor-panel.js",
+    "extension/advisor-panel.css",
     "extension/shared/brain-core.js",
     "extension/shared/manual-ev.js"
   ],
@@ -119,6 +122,7 @@
     "tools/extension/sync-content.js",
     "tools/extension/sync-gamelog.js",
     "tools/extension/sync-game-watcher.js",
+    "tools/extension/sync-advisor-panel.js",
     "tools/extension/sync-manifest.js",
     "tools/extension/sync-popup.js",
     "tools/extension/sync-presets.js",
@@ -306,6 +310,14 @@
       "source": "packages/tm-advisor-js/src/advisor-workflow.js"
     },
     {
+      "path": "extension/advisor-panel.js",
+      "source": "apps/tm-extension/src/advisor-panel.js"
+    },
+    {
+      "path": "extension/advisor-panel.css",
+      "source": "apps/tm-extension/src/advisor-panel.css"
+    },
+    {
       "path": "extension/shared/brain-core.js",
       "source": "packages/tm-brain-js/src/brain-core.js"
     },
@@ -367,6 +379,7 @@
       "path": "package.json",
       "contains": [
         "\"extension:check-background\": \"node tools/extension/sync-background.js --check\"",
+        "\"extension:check-advisor-panel\": \"node tools/extension/sync-advisor-panel.js --check\"",
         "\"extension:check-content-badges\": \"node tools/extension/sync-content-badges.js --check\"",
         "\"extension:check-content-card-stats\": \"node tools/extension/sync-content-card-stats.js --check\"",
         "\"extension:check-content-cycle\": \"node tools/extension/sync-content-cycle.js --check\"",
@@ -405,6 +418,7 @@
         "\"extension:check-utils\": \"node tools/extension/sync-utils.js --check\"",
         "\"extension:check-vue-bridge\": \"node tools/extension/sync-vue-bridge.js --check\"",
         "\"extension:sync-background\": \"node tools/extension/sync-background.js\"",
+        "\"extension:sync-advisor-panel\": \"node tools/extension/sync-advisor-panel.js\"",
         "\"extension:sync-content-badges\": \"node tools/extension/sync-content-badges.js\"",
         "\"extension:sync-content-card-stats\": \"node tools/extension/sync-content-card-stats.js\"",
         "\"extension:sync-content-cycle\": \"node tools/extension/sync-content-cycle.js\"",

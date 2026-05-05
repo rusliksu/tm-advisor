@@ -38,6 +38,7 @@ Current transition model:
 - canonical presets assets live under `apps/tm-extension/src/presets.js` and `apps/tm-extension/src/presets.css`
 - canonical shared utilities live under `apps/tm-extension/src/utils.js`
 - canonical Vue bridge lives under `apps/tm-extension/src/vue-bridge.js`
+- canonical advisor panel assets live under `apps/tm-extension/src/advisor-panel.js` and `apps/tm-extension/src/advisor-panel.css`
 - browser runtime consumes the mirrored service worker under `extension/background.js`
 - browser runtime consumes the mirrored content badge helpers under `extension/content-badges.js`
 - browser runtime consumes the mirrored content card stats helpers under `extension/content-card-stats.js`
@@ -72,6 +73,7 @@ Current transition model:
 - browser runtime consumes the mirrored presets assets under `extension/presets.js` and `extension/presets.css`
 - browser runtime consumes the mirrored shared utilities under `extension/utils.js`
 - browser runtime consumes the mirrored Vue bridge under `extension/vue-bridge.js`
+- browser runtime consumes the mirrored advisor panel assets under `extension/advisor-panel.js` and `extension/advisor-panel.css`
 - canonical generated data comes from `packages/tm-data/generated/extension/`
 - runtime consumes the mirrored bundle under `extension/data/`
 - shared JS logic comes from `packages/tm-brain-js/src/brain-core.js`
@@ -84,6 +86,7 @@ Scope of this module:
 - extension manifest and browser wiring
 
 Canonical runtime commands:
+- `npm run extension:check-advisor-panel`
 - `npm run extension:check-background`
 - `npm run extension:check-content-badges`
 - `npm run extension:check-content-card-stats`
@@ -152,6 +155,7 @@ Canonical runtime commands:
 - `npm run extension:sync-presets`
 - `npm run extension:sync-utils`
 - `npm run extension:sync-vue-bridge`
+- `npm run extension:sync-advisor-panel`
 - `npm run extension:syntax`
 - `npm run test:syntax`
 - `npm run test:e2e`

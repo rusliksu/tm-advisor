@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 
-const sourcePath = path.resolve(__dirname, '..', '..', '..', 'extension', 'advisor-panel.js');
+const sourcePath = path.resolve(__dirname, '..', 'src', 'advisor-panel.js');
 
 function escapeHtml(text) {
   return String(text || '')
