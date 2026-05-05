@@ -452,7 +452,9 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             tableau_tags=dict(me.tags) if me.tags else None,
             player_colonies=getattr(me, "colonies", 0),
             tableau_cards=getattr(me, "tableau", None),
-            hand_cards=hand)
+            hand_cards=hand,
+            me=me,
+            state=state)
         mc_after = me.mc - eff_cost  # effective cost with steel/ti
 
         # SELL: low score card (but allow early game speculation and immediate payoff)
@@ -461,7 +463,8 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
             has_immediate_value = _has_endgame_immediate_value(
                 name, effect_parser, allow_placement=True,
                 tableau_tags=dict(me.tags) if me.tags else None,
-                player_colonies=getattr(me, "colonies", 0))
+                player_colonies=getattr(me, "colonies", 0),
+                me=me, rv=rv, gens_left=gens_left, state=state)
             if net_play_value <= 0 and not has_immediate_value:
                 results.append(_entry(name, "SELL", f"score {score}, продай за 1 MC",
                                       play_value, 0, eff_cost, 9))
@@ -472,11 +475,13 @@ def play_hold_advice(hand, state, synergy, req_checker) -> list[dict]:
         has_endgame_nonplacement_value = _has_endgame_immediate_value(
             name, effect_parser, allow_placement=False,
             tableau_tags=dict(me.tags) if me.tags else None,
-            player_colonies=getattr(me, "colonies", 0))
+            player_colonies=getattr(me, "colonies", 0),
+            me=me, rv=rv, gens_left=gens_left, state=state)
         has_endgame_immediate_value = _has_endgame_immediate_value(
             name, effect_parser, allow_placement=True,
             tableau_tags=dict(me.tags) if me.tags else None,
-            player_colonies=getattr(me, "colonies", 0))
+            player_colonies=getattr(me, "colonies", 0),
+            me=me, rv=rv, gens_left=gens_left, state=state)
         if (is_production and gens_left <= 2 and
                 not has_endgame_nonplacement_value and
                 (not has_endgame_immediate_value or play_value <= eff_cost)):
@@ -1969,11 +1974,20 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left):
     mc_cost = 0
     mc_value = 0
 
+    if "any energy" in cost_str and ("same mc" in effect_str or "gain same" in effect_str):
+        energy = max(0, int(getattr(me, "energy", 0) or 0))
+        return 0, min(12, energy) * 0.85
+
     # Parse cost
     mc_m = re.search(r'(\d+)\s*(?:mc|m€|megacredit)', cost_str)
     if mc_m:
         mc_cost = int(mc_m.group(1))
-    if "energy" in cost_str:
+    if "energy production" in cost_str:
+        en_m = re.search(r'(\d+)\s*energy\s+production', cost_str)
+        en_needed = int(en_m.group(1)) if en_m else 1
+        if getattr(me, "energy_prod", 0) < en_needed:
+            return 0, 0
+    elif "energy" in cost_str:
         en_m = re.search(r'(\d+)\s*energy', cost_str)
         en_needed = int(en_m.group(1)) if en_m else 1
         if me.energy < en_needed:
@@ -1982,9 +1996,24 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left):
         return 0, 0  # too rare to recommend spending
 
     # Parse value
-    mc_m = re.search(r'(\d+)\s*(?:mc|m€|megacredit)', effect_str)
-    if mc_m:
-        mc_value += int(mc_m.group(1))
+    scale_match = re.search(r'gain\s+(\d+)\s*m[c€$]\s*(?:per|for each)\s+(.+)', effect_str)
+    if scale_match:
+        per_mc = int(scale_match.group(1))
+        scale_target = scale_match.group(2).lower()
+        est_count = 3
+        if 'city' in scale_target or 'tile' in scale_target:
+            est_count = 4
+        elif 'tag' in scale_target:
+            est_count = 5
+        elif 'colony' in scale_target or 'colon' in scale_target:
+            est_count = 3
+        elif 'card' in scale_target:
+            est_count = 5
+        mc_value += per_mc * est_count
+    else:
+        mc_m = re.search(r'(\d+)\s*(?:mc|m€|megacredit)', effect_str)
+        if mc_m:
+            mc_value += int(mc_m.group(1))
     if "card" in effect_str and "draw" in effect_str:
         card_m = re.search(r'(\d+)\s*card', effect_str)
         mc_value += int(card_m.group(1)) * rv["card"] if card_m else rv["card"]
@@ -1996,10 +2025,83 @@ def _estimate_action_value(cost_str, effect_str, me, rv, gens_left):
         mc_value += rv["vp"] * 0.5
     if "production" in effect_str or "prod" in effect_str:
         mc_value += 3  # rough production boost value
-    if "tr" in effect_str and "raise" in effect_str:
+    if "raise" in effect_str and any(
+        word in effect_str
+        for word in ("tr", "venus", "temperature", "temp", "oxygen", "o2")
+    ):
         mc_value += rv["tr"]
 
     return mc_cost, mc_value
+
+
+def _current_gen_blue_action_play_value(name, eff, me, rv, gens_left, state=None):
+    """One likely same-generation use after playing a blue action card.
+
+    Late-game human play often drops a blue card for an immediate action, not
+    for long-term engine value. Keep this conservative and one-shot only.
+    """
+    if not eff or not eff.actions or not me:
+        return 0.0
+
+    if name == "Power Infrastructure":
+        energy = max(0, int(getattr(me, "energy", 0) or 0))
+        # Energy often has some heat/trade opportunity value, so do not count
+        # the conversion at full face value except as urgent liquidity.
+        return min(12, energy) * 0.85
+
+    if name == "Venus Magnetizer":
+        if getattr(me, "energy_prod", 0) <= 0:
+            return 0.0
+        if state is not None and getattr(state, "has_venus", False) and getattr(state, "venus", 0) >= 30:
+            return 0.0
+        future_prod_loss = 0.0 if gens_left <= 1 else min(4.0, (gens_left - 1) * 1.0)
+        return max(0.0, rv["tr"] + 1.0 - future_prod_loss)
+
+    self_resource_vp = bool(
+        eff.vp_per and "resource" in str(eff.vp_per.get("per", "")).lower())
+    best = 0.0
+    for act in eff.actions:
+        effect_str = act.get("effect", "").lower()
+        pure_resource_placement = (
+            "add" in effect_str and
+            any(word in effect_str for word in ("animal", "microbe", "floater", "resource")) and
+            not any(word in effect_str for word in (
+                "mc", "m€", "megacredit", "draw", "vp", "victory",
+                "raise", "venus", "temperature", "temp", "oxygen", "o2", "tr",
+                "production", "prod",
+            ))
+        )
+        if pure_resource_placement and not self_resource_vp:
+            continue
+        cost, value = _estimate_action_value(
+            act.get("cost", "free"), effect_str, me, rv, gens_left)
+        net = value - cost
+        if net > best:
+            best = net
+    return max(0.0, min(12.0, best))
+
+
+def _spin_off_department_trigger_value(name, hand_cards, db, rv):
+    if name != "Spin-off Department":
+        return 0.0
+    expensive_followups = 0
+    for card in hand_cards or []:
+        cname = card.get("name", "") if isinstance(card, dict) else str(card)
+        if not cname or cname == name:
+            continue
+        info = db.get_info(cname) if db else None
+        raw_cost = None
+        if info:
+            raw_cost = info.get("cost")
+        if raw_cost is None and isinstance(card, dict):
+            raw_cost = card.get("cost", card.get("calculatedCost", 0))
+        try:
+            raw_cost = int(raw_cost or 0)
+        except (TypeError, ValueError):
+            raw_cost = 0
+        if raw_cost >= 20:
+            expensive_followups += 1
+    return min(3, expensive_followups) * rv["card"] * 0.9
 
 
 def _entry(name, action, reason, play_value_now, hold_value,
@@ -2019,7 +2121,7 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                               effect_parser=None, db=None, corp_name="",
                               tableau_tags=None, player_colonies=0,
                               tableau_cards=None,
-                              hand_cards=None):
+                              hand_cards=None, me=None, state=None):
     """Effect-based MC-value estimation. Falls back to score heuristic."""
     carbon_bonus = _carbon_nanosystems_graphene_value(
         name, hand_cards or [], db, gens_left)
@@ -2037,9 +2139,14 @@ def _estimate_card_value_rich(name, score, cost, tags, phase, gens_left, rv,
                                         tableau_cards=tableau_cards,
                                         effect_parser=effect_parser)
             value += carbon_bonus
+            current_action_value = _current_gen_blue_action_play_value(
+                name, eff, me, rv, gens_left, state)
+            trigger_value = _spin_off_department_trigger_value(
+                name, hand_cards, db, rv)
             # Late-game penalty for engine/draw cards that won't pay off
             if value > 0 and gens_left <= 3:
                 value *= _late_game_engine_multiplier(eff, gens_left)
+            value += current_action_value + trigger_value
             if value > 0:
                 return value
             if phase == "endgame" and gens_left <= 2 and _has_structured_effect_data(eff):
@@ -2565,7 +2672,8 @@ def _estimate_card_value(score, cost, tags, phase, gens_left, rv):
 
 
 def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True,
-                                 tableau_tags=None, player_colonies=0):
+                                 tableau_tags=None, player_colonies=0,
+                                 me=None, rv=None, gens_left=1, state=None):
     """Whether the card still gives a meaningful payoff this generation."""
     if not effect_parser:
         return False
@@ -2575,6 +2683,8 @@ def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True,
     if eff.tr_gain > 0:
         return True
     if allow_placement and eff.placement:
+        return True
+    if eff.draws_cards > 0:
         return True
     plant_gain = eff.gains_resources.get("plant", 0) + _scaled_resource_gain(
         eff, "plant", tableau_tags, player_colonies)
@@ -2587,6 +2697,11 @@ def _has_endgame_immediate_value(name, effect_parser=None, allow_placement=True,
     if (eff.vp_per and str(eff.vp_per.get("per", "")).lower() == "flat"
             and eff.vp_per.get("amount", 0) > 0):
         return True
+    if me is not None:
+        if rv is None:
+            rv = resource_values(gens_left)
+        if _current_gen_blue_action_play_value(name, eff, me, rv, gens_left, state) >= 2:
+            return True
     return False
 
 

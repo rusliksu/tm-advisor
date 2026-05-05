@@ -17,11 +17,24 @@ from tm_advisor.analysis import _dedupe_alerts  # noqa: E402
 from tm_advisor.card_parser import CardEffectParser  # noqa: E402
 from tm_advisor.combo import ComboDetector  # noqa: E402
 from tm_advisor.database import CardDatabase  # noqa: E402
-from tm_advisor.draft_play_advisor import _estimate_req_gap, mc_allocation_advice  # noqa: E402
+from tm_advisor.draft_play_advisor import (  # noqa: E402
+    _estimate_req_gap,
+    mc_allocation_advice,
+    play_hold_advice,
+)
 from tm_advisor.models import GameState  # noqa: E402
 from tm_advisor.requirements import RequirementsChecker  # noqa: E402
 from tm_advisor.shared_data import resolve_data_path  # noqa: E402
 from tm_advisor.synergy import SynergyEngine  # noqa: E402
+
+
+def advisor_components():
+    db = CardDatabase(str(resolve_data_path("evaluations.json")))
+    parser = CardEffectParser(db)
+    combo = ComboDetector(parser, db)
+    synergy = SynergyEngine(db, combo)
+    req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
+    return db, parser, synergy, req_checker
 
 
 def build_state(hand_names: list[str]) -> GameState:
@@ -153,11 +166,7 @@ def build_blue_action_state(used_actions: list[str]) -> GameState:
 
 
 def assert_used_blue_actions_are_not_recommended_again() -> None:
-    db = CardDatabase(str(resolve_data_path("evaluations.json")))
-    parser = CardEffectParser(db)
-    combo = ComboDetector(parser, db)
-    synergy = SynergyEngine(db, combo)
-    req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
+    _, _, synergy, req_checker = advisor_components()
 
     fresh_actions = mc_allocation_advice(
         build_blue_action_state([]), synergy, req_checker
@@ -213,11 +222,7 @@ def build_titan_shuttles_unlock_state() -> GameState:
 
 
 def assert_titan_shuttles_cashout_unlocks_space_play() -> None:
-    db = CardDatabase(str(resolve_data_path("evaluations.json")))
-    parser = CardEffectParser(db)
-    combo = ComboDetector(parser, db)
-    synergy = SynergyEngine(db, combo)
-    req_checker = RequirementsChecker(str(resolve_data_path("all_cards.json")))
+    _, _, synergy, req_checker = advisor_components()
 
     allocations = mc_allocation_advice(
         build_titan_shuttles_unlock_state(), synergy, req_checker
@@ -231,6 +236,125 @@ def assert_titan_shuttles_cashout_unlocks_space_play() -> None:
     assert sequence[0]["priority"] == 1, sequence
 
 
+def build_endgame_blue_action_play_state() -> GameState:
+    hand = [
+        {"name": "Power Infrastructure", "cost": 4, "tags": ["Power", "Building"]},
+        {"name": "Venus Magnetizer", "cost": 7, "tags": ["Venus"]},
+    ]
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 20,
+        "megaCreditProduction": 20,
+        "energy": 6,
+        "energyProduction": 6,
+        "cardsInHandNbr": len(hand),
+        "tableau": [{"name": "Manutech", "resources": 0, "isDisabled": False}],
+        "tags": {"venus": 4, "building": 3, "power": 2},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "cardsInHand": hand,
+        "game": {
+            "generation": 8,
+            "phase": "action",
+            "oxygenLevel": 14,
+            "temperature": 8,
+            "oceans": 9,
+            "venusScaleLevel": 24,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "spaces": [],
+            "gameOptions": {"expansions": {"venus": True, "colonies": True}},
+        },
+    })
+
+
+def assert_endgame_blue_action_play_value_is_not_zeroed() -> None:
+    _, parser, synergy, req_checker = advisor_components()
+
+    restricted = parser.get("Restricted Area")
+    assert restricted and "special" in restricted.placement, restricted.placement if restricted else None
+
+    weather = parser.get("Weather Balloons")
+    assert weather and any(
+        "per city" in act.get("effect", "").lower()
+        for act in weather.actions
+    ), weather.actions if weather else None
+
+    state = build_endgame_blue_action_play_state()
+    rows = play_hold_advice(state.cards_in_hand, state, synergy, req_checker)
+    by_name = {row["name"]: row for row in rows}
+    assert by_name["Power Infrastructure"]["action"] == "PLAY", by_name["Power Infrastructure"]
+    assert by_name["Power Infrastructure"]["play_value_now"] >= 5, by_name["Power Infrastructure"]
+    assert by_name["Venus Magnetizer"]["action"] == "PLAY", by_name["Venus Magnetizer"]
+    assert by_name["Venus Magnetizer"]["play_value_now"] >= 7, by_name["Venus Magnetizer"]
+
+
+def build_existing_blue_action_value_state(card_name: str) -> GameState:
+    me = {
+        "color": "red",
+        "name": "me",
+        "megaCredits": 0,
+        "megaCreditProduction": 20,
+        "energy": 6 if card_name == "Power Infrastructure" else 0,
+        "energyProduction": 3,
+        "cardsInHandNbr": 0,
+        "actionsThisGeneration": [],
+        "tableau": [
+            {"name": "Manutech", "resources": 0, "isDisabled": False},
+            {"name": card_name, "resources": 0, "isDisabled": False},
+        ],
+        "tags": {"venus": 4, "building": 3, "power": 2},
+    }
+    return GameState({
+        "thisPlayer": me,
+        "players": [me],
+        "cardsInHand": [],
+        "game": {
+            "generation": 8,
+            "phase": "action",
+            "oxygenLevel": 14,
+            "temperature": 8,
+            "oceans": 9,
+            "venusScaleLevel": 24,
+            "milestones": [],
+            "awards": [],
+            "colonies": [],
+            "spaces": [],
+            "gameOptions": {"expansions": {"venus": True, "colonies": True}},
+        },
+    })
+
+
+def assert_existing_blue_actions_have_immediate_value() -> None:
+    _, _, synergy, req_checker = advisor_components()
+
+    power_allocations = mc_allocation_advice(
+        build_existing_blue_action_value_state("Power Infrastructure"),
+        synergy, req_checker,
+    )["allocations"]
+    power_rows = [
+        row for row in power_allocations
+        if "Power Infrastructure" in row.get("action", "")
+    ]
+    assert power_rows, power_allocations
+    assert power_rows[0]["value_mc"] >= 5, power_rows
+
+    venus_allocations = mc_allocation_advice(
+        build_existing_blue_action_value_state("Venus Magnetizer"),
+        synergy, req_checker,
+    )["allocations"]
+    venus_rows = [
+        row for row in venus_allocations
+        if "Venus Magnetizer" in row.get("action", "")
+    ]
+    assert venus_rows, venus_allocations
+    assert venus_rows[0]["value_mc"] >= 7, venus_rows
+
+
 def main() -> None:
     assert_no_wrong_cross_card_leaks()
     assert_value_trade_alert_suppresses_track_only_trade_first()
@@ -238,6 +362,8 @@ def main() -> None:
     assert_max_requirement_is_not_treated_as_soon()
     assert_used_blue_actions_are_not_recommended_again()
     assert_titan_shuttles_cashout_unlocks_space_play()
+    assert_endgame_blue_action_play_value_is_not_zeroed()
+    assert_existing_blue_actions_have_immediate_value()
     print("advisor action-ordering regression checks: OK")
 
 
