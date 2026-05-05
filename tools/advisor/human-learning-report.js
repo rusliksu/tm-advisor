@@ -225,12 +225,29 @@ function actionHintTexts(event, linkedDecision = null) {
   const alerts = []
     .concat(decisionContext.alerts || [])
     .concat(linkedDecision?.alerts || []);
-  return [
+  const explicitBestMoves = [
     decisionContext.best_move,
     linkedDecision?.best_move,
-    ...summaryLines,
-    ...alerts,
   ].filter(Boolean);
+  const actionHints = []
+    .concat(summaryLines)
+    .concat(alerts)
+    .filter(isActionRecommendationHint);
+  return explicitBestMoves.concat(actionHints);
+}
+
+function isActionRecommendationHint(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return false;
+  const text = compactText(raw);
+  return (
+    raw.includes('🔵') ||
+    text.startsWith('use ') ||
+    text.startsWith('action ') ||
+    text.includes(' actions ') ||
+    text.includes('perform an action') ||
+    text.includes('blue action')
+  );
 }
 
 function findMatchingActionHint(actionText, hints) {

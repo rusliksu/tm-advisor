@@ -227,6 +227,39 @@ function testActionMatchesAdvisorActionAlert() {
   assert.strictEqual(stats.actions[0].matchedHint.includes('Restricted Area'), true);
 }
 
+function testGenericAlertsDoNotRankActionMismatch() {
+  const stats = analyzeEntries([
+    {
+      file: 'generic-alerts.jsonl',
+      events: [
+        {
+          type: 'actions_taken',
+          ts: '2026-05-03T22:10:05Z',
+          game_id: 'g-test',
+          player_id: 'p1',
+          player: 'Human',
+          actions: ['Aquifer Pumping'],
+          decision_context: {
+            game: {generation: 5, phase: 'action'},
+            me: {mc: 20, production: {mc: 8}},
+            alerts: [
+              '⚠️ Opponent can fund Space Baron',
+              '🏅 ФОНДИРУЙ через ~1 gen',
+              '🧠 Engine note, not an action recommendation',
+            ],
+          },
+        },
+      ],
+    },
+  ], {minGap: 10});
+
+  assert.strictEqual(stats.summary.actions, 1);
+  assert.strictEqual(stats.summary.actionRanked, 0);
+  assert.strictEqual(stats.summary.actionMismatch, 0);
+  assert.strictEqual(stats.summary.actionUnranked, 1);
+  assert.strictEqual(stats.actionMismatches.length, 0);
+}
+
 function testAggregatesBlueActionsOverPlayCards() {
   const stats = analyzeEntries([
     {
@@ -295,6 +328,7 @@ testIgnoresStaleMissInSameFile();
 testUsesLinkedDecisionWhenPlayHasNoContext();
 testClassifiesLinkedActions();
 testActionMatchesAdvisorActionAlert();
+testGenericAlertsDoNotRankActionMismatch();
 testAggregatesBlueActionsOverPlayCards();
 testClassifiesEmojiAdvisorMoveTypes();
 console.log('human-learning-report tests: OK');
