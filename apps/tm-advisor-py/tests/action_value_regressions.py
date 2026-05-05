@@ -1580,6 +1580,11 @@ def main() -> int:
     assert phobos_eff is not None
     assert phobos_eff.production_change == {"titanium": 1}, phobos_eff.production_change
 
+    dawn_city_eff = bot.effect_parser.get("Dawn City")
+    assert dawn_city_eff is not None
+    assert dawn_city_eff.production_change == {"energy": -1, "titanium": 1}, dawn_city_eff.production_change
+    assert dawn_city_eff.vp_per == {"amount": 3, "per": "flat"}, dawn_city_eff.vp_per
+
     dirigibles_eff = bot.effect_parser.get("Dirigibles")
     atmo_eff = bot.effect_parser.get("Atmo Collectors")
     sulphur_eff = bot.effect_parser.get("Sulphur-Eating Bacteria")

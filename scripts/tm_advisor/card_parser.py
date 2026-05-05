@@ -65,7 +65,8 @@ class CardEffectParser:
         "grn": "greenery",
     }
     _GENERATED_PROD_EXCLUDES = {
-        # Generated fx currently leaks a fake mp:3 into this city card.
+        # Generated fx currently leaks fake mp into these city cards.
+        "Dawn City": {"mc"},
         "Phobos Space Haven": {"mc"},
         # Action costs are not immediate production changes.
         "Equatorial Magnetizer": {"energy"},

@@ -737,7 +737,6 @@ const TM_CARD_EFFECTS = {
  },
  "Dawn City": {
   "c": 15,
-  "mp": 3,
   "city": 1,
   "ep": -1,
   "tp": 1,

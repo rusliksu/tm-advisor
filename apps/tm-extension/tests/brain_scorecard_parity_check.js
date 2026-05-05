@@ -429,6 +429,13 @@ function testScoreCardParityDiffCategories() {
   );
 }
 
+function testGeneratedDawnCityEffectsAreFactual() {
+  assert.strictEqual(CARD_EFFECTS['Dawn City'].mp, undefined, 'Dawn City should not expose fake +3 MC production');
+  assert.strictEqual(CARD_EFFECTS['Dawn City'].ep, -1);
+  assert.strictEqual(CARD_EFFECTS['Dawn City'].tp, 1);
+  assert.strictEqual(CARD_EFFECTS['Dawn City'].vp, 3);
+}
+
 function normalizeManualEV(manualEV) {
   return Object.fromEntries(
     Object.entries(manualEV || {})
@@ -454,6 +461,7 @@ testScoreCardParityOnEndgameDiscardHand();
 testScoreCardParityOnOpeningEngineShell();
 testScoreCardParityOnMidgameSharedPolicy();
 testScoreCardParityDiffCategories();
+testGeneratedDawnCityEffectsAreFactual();
 testScoreCardParityForAllProjectCards();
 testManualEVParity();
 

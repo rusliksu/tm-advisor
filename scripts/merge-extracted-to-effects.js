@@ -134,6 +134,9 @@ const STALE_EFFECT_KEYS = {
   'Search For Life': ['vp'],
 };
 const MANUAL_EFFECT_PATCHES = {
+  // Reserved city + 3 VP. Extracted/generated render symbols leaked the
+  // printed VP as fake +3 MC production.
+  'Dawn City': {remove: ['mp']},
   // Paid draw actions should stay explicit. A net actMC shortcut makes these
   // look like recurring cash income and hides the real card draw/cost.
   'Restricted Area': {set: {actMC: -2, actCD: 1}},
