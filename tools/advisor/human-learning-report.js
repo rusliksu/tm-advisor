@@ -342,6 +342,7 @@ function normalizeAction(event, file, decisionsByFileKey = new Map()) {
 
 function classifyAction(action) {
   if (action.snapshotError) return 'noisy';
+  if (action.staleAfterCardPlay) return 'noisy';
   if (action.actionCount !== 1) return 'noisy';
   if (!action.actionHints.length) return 'unranked';
   if (action.matchedHint) return 'aligned';
@@ -504,10 +505,12 @@ function analyzeEntries(entries, options = {}) {
   const decisionsByFileKey = new Map();
   const rawPlays = [];
   const rawActions = [];
+  let eventIndex = 0;
 
   for (const {file, events} of entries) {
     files.add(file);
     for (const event of events) {
+      const index = eventIndex++;
       if (event.type === 'decision_observed' && event.decision_id) {
         decisionsByFileKey.set(fileDecisionKey(file, event.decision_id), event);
       } else if (event.type === 'advisor_miss') {
@@ -517,9 +520,9 @@ function analyzeEntries(entries, options = {}) {
         list.sort((a, b) => (eventTimeMs(a) ?? 0) - (eventTimeMs(b) ?? 0));
         missesByFileKey.set(key, list);
       } else if (event.type === 'card_played') {
-        rawPlays.push({file, event});
+        rawPlays.push({file, event, index});
       } else if (event.type === 'actions_taken') {
-        rawActions.push({file, event});
+        rawActions.push({file, event, index});
       }
     }
   }
@@ -527,7 +530,34 @@ function analyzeEntries(entries, options = {}) {
   const plays = rawPlays.map(({file, event}) => normalizePlay(event, file, missesByFileKey, decisionsByFileKey));
   markDeferredAdvisorBest(plays, options);
   for (const play of plays) play.classification = classify(play, minGap);
-  const actions = rawActions.map(({file, event}) => normalizeAction(event, file, decisionsByFileKey));
+  const cardPlayByDecision = new Map();
+  for (const {file, event, index} of rawPlays) {
+    if (!event.decision_id) continue;
+    const key = fileDecisionKey(file, event.decision_id);
+    const time = eventTimeMs(event);
+    const existing = cardPlayByDecision.get(key);
+    if (!existing || (time ?? 0) < (existing.time ?? 0) || ((time ?? 0) === (existing.time ?? 0) && index < existing.index)) {
+      cardPlayByDecision.set(key, {card: event.card || event.action?.card || null, time, index});
+    }
+  }
+  const actions = rawActions.map(({file, event, index}) => {
+    const action = normalizeAction(event, file, decisionsByFileKey);
+    if (event.decision_id) {
+      const cardPlay = cardPlayByDecision.get(fileDecisionKey(file, event.decision_id));
+      const actionTime = eventTimeMs(event);
+      if (
+        cardPlay &&
+        actionTime != null &&
+        (actionTime > cardPlay.time || (actionTime === cardPlay.time && index > cardPlay.index))
+      ) {
+        action.staleAfterCardPlay = {
+          card: cardPlay.card,
+          ts: event.ts || null,
+        };
+      }
+    }
+    return action;
+  });
   for (const action of actions) action.classification = classifyAction(action);
 
   const summary = {
@@ -546,6 +576,7 @@ function analyzeEntries(entries, options = {}) {
     actionAligned: actions.filter((action) => action.classification === 'aligned').length,
     actionMismatch: actions.filter((action) => action.classification === 'mismatch').length,
     actionNoisy: actions.filter((action) => action.classification === 'noisy').length,
+    actionStaleAfterCardPlay: actions.filter((action) => action.staleAfterCardPlay).length,
     actionUnranked: actions.filter((action) => action.classification === 'unranked').length,
   };
 
@@ -622,6 +653,7 @@ function compactActionExample(action) {
     player: action.player,
     action: action.actionText,
     bestMove: action.bestMove,
+    staleAfterCardPlay: action.staleAfterCardPlay || null,
   };
 }
 
@@ -688,7 +720,7 @@ function formatReport(stats) {
   lines.push('Human learning report');
   lines.push(`Files: ${s.files} | plays: ${s.plays} | ranked: ${s.ranked}`);
   lines.push(`Aligned: ${s.aligned} | reasonable alt: ${s.reasonable} | teaching: ${s.teaching} | candidate: ${s.candidate} | deferred top later: ${s.deferredBest} | noisy: ${s.noisy} | unranked: ${s.unranked}`);
-  lines.push(`Actions: ${s.actions} | ranked: ${s.actionRanked} | aligned: ${s.actionAligned} | mismatch: ${s.actionMismatch} | noisy: ${s.actionNoisy} | unranked: ${s.actionUnranked}`);
+  lines.push(`Actions: ${s.actions} | ranked: ${s.actionRanked} | aligned: ${s.actionAligned} | mismatch: ${s.actionMismatch} | noisy: ${s.actionNoisy} | stale after card: ${s.actionStaleAfterCardPlay} | unranked: ${s.actionUnranked}`);
   lines.push('');
   lines.push(...formatAgg(stats.aggregates.pairs, 'Repeated human-over-advisor pairs'));
   lines.push('');

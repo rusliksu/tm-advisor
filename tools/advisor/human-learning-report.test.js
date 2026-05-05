@@ -208,6 +208,41 @@ function testClassifiesLinkedActions() {
   assert.strictEqual(stats.aggregates.actionTypes[0].key, 'blue_action <- play_card');
 }
 
+function testActionAfterCardPlayInSameDecisionIsNoisy() {
+  const stats = analyzeEntries([
+    {
+      file: 'stale-action.jsonl',
+      events: [
+        actionDecision('2026-05-03T21:10:00Z', 's1', 'PLAY Omnicourt - highest play value'),
+        {
+          type: 'card_played',
+          ts: '2026-05-03T21:10:03Z',
+          game_id: 'g-test',
+          decision_id: 's1',
+          player_id: 'p1',
+          player: 'Human',
+          card: 'Omnicourt',
+        },
+        {
+          type: 'actions_taken',
+          ts: '2026-05-03T21:10:03Z',
+          game_id: 'g-test',
+          decision_id: 's1',
+          player_id: 'p1',
+          player: 'Human',
+          actions: ['Local Shading'],
+        },
+      ],
+    },
+  ], {minGap: 10});
+
+  assert.strictEqual(stats.summary.actions, 1);
+  assert.strictEqual(stats.summary.actionMismatch, 0);
+  assert.strictEqual(stats.summary.actionNoisy, 1);
+  assert.strictEqual(stats.summary.actionStaleAfterCardPlay, 1);
+  assert.deepStrictEqual(stats.actions[0].staleAfterCardPlay.card, 'Omnicourt');
+}
+
 function testActionMatchesAdvisorActionAlert() {
   const stats = analyzeEntries([
     {
@@ -348,6 +383,7 @@ testIgnoresStaleMissInSameFile();
 testUsesLinkedDecisionWhenPlayHasNoContext();
 testDeferredAdvisorTopIsSequencingNotTeaching();
 testClassifiesLinkedActions();
+testActionAfterCardPlayInSameDecisionIsNoisy();
 testActionMatchesAdvisorActionAlert();
 testGenericAlertsDoNotRankActionMismatch();
 testAggregatesBlueActionsOverPlayCards();
