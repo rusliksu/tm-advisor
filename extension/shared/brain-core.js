@@ -9,6 +9,27 @@
     seeds: 0, auroraiData: 0, graphene: 0, kuiperAsteroids: 0
   };
 
+  function asArray(value) {
+    return Array.isArray(value) ? value : [];
+  }
+
+  function asNumber(value, fallback) {
+    var n = Number(value);
+    return isFinite(n) ? n : (fallback || 0);
+  }
+
+  function tableauResourceCount(tp, cardName) {
+    var tableau = asArray(tp && tp.tableau);
+    var total = 0;
+    for (var i = 0; i < tableau.length; i++) {
+      var card = tableau[i] || {};
+      var name = card.name || card.cardName || '';
+      if (name !== cardName || card.isDisabled) continue;
+      total += asNumber(card.resources, 0);
+    }
+    return total;
+  }
+
   function smartPay(amount, state, wfOrOpts, tags) {
     var tp = (state && state.thisPlayer) || {};
     var pay = {};
@@ -65,6 +86,9 @@
       if (!resourceAllowed) continue;
       if (pay[alt.key] > 0) continue;
       var available = wfRes[alt.key] || tp[alt.key] || 0;
+      if (alt.key === 'graphene' && available <= 0) {
+        available = tableauResourceCount(tp, 'Carbon Nanosystems');
+      }
       if (available <= 0) continue;
       var use = Math.min(available, Math.ceil(remaining / alt.val));
       pay[alt.key] = use;
@@ -1515,6 +1539,36 @@
     return Math.min(14, bonus);
   }
 
+  function scoreCarbonNanosystemsRuntimeAdjustment(options) {
+    var opts = options || {};
+    var handCards = opts.handCards || [];
+    var getCardTags = opts.getCardTags || function() { return []; };
+    var gensLeft = Math.max(1, Number(opts.gensLeft) || estimateGensLeftFromState(opts.state || {}));
+    var scienceFollowups = countTagsInHand('science', handCards, 'Carbon Nanosystems', getCardTags) +
+      countTagsInHand('wild', handCards, 'Carbon Nanosystems', getCardTags);
+    var paymentTargets = 0;
+
+    for (var i = 0; i < handCards.length; i++) {
+      var handName = handCards[i].name || handCards[i];
+      if (!handName || handName === 'Carbon Nanosystems') continue;
+      var tags = getCardTags(handName) || [];
+      if (tags.indexOf('space') >= 0 || tags.indexOf('city') >= 0) paymentTargets++;
+    }
+
+    if (paymentTargets <= 0) {
+      if (scienceFollowups > 0 && gensLeft >= 4) return 2;
+      return -3;
+    }
+
+    var graphenes = 1 + scienceFollowups;
+    var paidGraphenes = Math.min(graphenes, paymentTargets);
+    var value = paidGraphenes * 4;
+    if (paymentTargets >= 2) value += 2;
+    if (scienceFollowups >= 2) value += 2;
+    if (gensLeft <= 2) value -= 3;
+    return Math.max(-4, Math.min(14, value));
+  }
+
   function scoreFieldCappedCityRuntimeAdjustment(options) {
     var opts = options || {};
     var state = opts.state || {};
@@ -1539,7 +1593,6 @@
         if (tags[ti] === 'plant' || tags[ti] === 'wild') plantTagSupport++;
       }
     }
-
     var greenerySupport = Math.max(0, num(tp.plantProduction, 0)) >= 3 ||
       Math.max(0, num(tp.plants, 0)) >= 6 ||
       plantTagSupport >= 2 ||
@@ -1584,6 +1637,7 @@
     if (name === 'Molecular Printing') delta += countCitiesAndColoniesInPlay(options && options.state);
     if (name === 'Field-Capped City') delta += scoreFieldCappedCityRuntimeAdjustment(options);
     if (name === 'Ice Moon Colony') delta += scoreIceMoonColonyRuntimeAdjustment(options);
+    if (name === 'Carbon Nanosystems') delta += scoreCarbonNanosystemsRuntimeAdjustment(options);
     return delta;
   }
 

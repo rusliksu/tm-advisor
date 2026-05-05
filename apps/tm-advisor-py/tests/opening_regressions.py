@@ -15,6 +15,7 @@ if str(SCRIPTS_DIR) not in sys.path:
 from tm_advisor.advisor import AdvisorBot  # noqa: E402
 from tm_advisor.analysis import _generate_alerts  # noqa: E402
 from tm_advisor.colony_advisor import analyze_settlement, analyze_trade_options, colony_strategy_advice, format_trade_hints  # noqa: E402
+from tm_advisor.draft_play_advisor import play_hold_advice  # noqa: E402
 from tm_advisor.models import GameState  # noqa: E402
 
 
@@ -76,6 +77,18 @@ def project_score(bot: AdvisorBot, state: GameState, corp_name: str, card_name: 
         state,
         context="draft",
     )
+
+
+def project_card(bot: AdvisorBot, card_name: str) -> dict:
+    info = bot.db.get_info(card_name) or {}
+    cost = info.get("cost", 0) or 0
+    return {
+        "name": card_name,
+        "cost": cost,
+        "calculatedCost": cost,
+        "tags": info.get("tags", []) or [],
+        "description": info.get("description", "") or "",
+    }
 
 
 def best_corp(bot: AdvisorBot, state: GameState) -> str:
@@ -716,6 +729,75 @@ def main():
     assert any("добора мало" in alert for alert in engine_alerts)
     engine_draw_ok_alerts = _generate_alerts(engine_with_draw_state)
     assert not any("добора мало" in alert for alert in engine_draw_ok_alerts)
+
+    carbon_sequence_state = GameState({
+        "thisPlayer": {
+            "color": "orange",
+            "name": "me",
+            "megaCredits": 28,
+            "megaCreditProduction": 10,
+            "terraformRating": 24,
+            "tableau": [{"name": "Saturn Systems"}],
+            "tags": {"Space": 8, "Science": 2, "Jovian": 1},
+        },
+        "players": [{"color": "orange", "name": "me"}, {"color": "red", "name": "opp"}],
+        "cardsInHand": [
+            project_card(bot, "Satellites"),
+            project_card(bot, "Carbon Nanosystems"),
+        ],
+        "game": {
+            "generation": 2,
+            "phase": "action",
+            "oxygenLevel": 1,
+            "temperature": -26,
+            "oceans": 1,
+            "venusScaleLevel": 6,
+        },
+    })
+    carbon_advice = play_hold_advice(
+        carbon_sequence_state.cards_in_hand,
+        carbon_sequence_state,
+        bot.synergy,
+        bot.req_checker,
+    )
+    carbon_row = next(row for row in carbon_advice if row["name"] == "Carbon Nanosystems")
+    assert carbon_row["action"] == "PLAY", carbon_row
+    assert carbon_row.get("sequence_bonus", 0) >= 4, carbon_row
+    assert any("Satellites" in hint for hint in carbon_row.get("play_before", [])), carbon_row
+
+    graphene_payment_state = GameState({
+        "thisPlayer": {
+            "color": "orange",
+            "name": "me",
+            "megaCredits": 6,
+            "megaCreditProduction": 10,
+            "terraformRating": 24,
+            "tableau": [
+                {"name": "Saturn Systems"},
+                {"name": "Carbon Nanosystems", "resources": 1},
+            ],
+            "tags": {"Space": 8, "Science": 3, "Jovian": 1},
+        },
+        "players": [{"color": "orange", "name": "me"}, {"color": "red", "name": "opp"}],
+        "cardsInHand": [project_card(bot, "Satellites")],
+        "game": {
+            "generation": 3,
+            "phase": "action",
+            "oxygenLevel": 1,
+            "temperature": -24,
+            "oceans": 1,
+            "venusScaleLevel": 6,
+        },
+    })
+    graphene_advice = play_hold_advice(
+        graphene_payment_state.cards_in_hand,
+        graphene_payment_state,
+        bot.synergy,
+        bot.req_checker,
+    )
+    satellites_row = next(row for row in graphene_advice if row["name"] == "Satellites")
+    assert satellites_row["action"] == "PLAY", satellites_row
+    assert "graphene" in satellites_row["reason"], satellites_row
 
     print("advisor opening regression checks: OK")
 

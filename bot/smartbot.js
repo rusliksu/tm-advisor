@@ -237,7 +237,51 @@ function estimateCardCashCost(card, state) {
   let covered = 0;
   if (tags.includes('building')) covered += (tp.steel || 0) * (tp.steelValue || 2);
   if (tags.includes('space')) covered += (tp.titanium || 0) * (tp.titaniumValue || 3);
+  if (tags.includes('space') || tags.includes('city')) {
+    covered += getTableauResourceCount(state, 'Carbon Nanosystems') * 4;
+  }
   return Math.max(0, cost - covered);
+}
+
+function getTableauResourceCount(state, cardName) {
+  const tableau = state?.thisPlayer?.tableau || [];
+  return tableau.reduce((total, card) => {
+    if (!card || card.isDisabled || card.name !== cardName) return total;
+    return total + (Number(card.resources) || 0);
+  }, 0);
+}
+
+function isGraphenePaymentTarget(cardName) {
+  const tags = CARD_TAGS[cardName] || [];
+  return tags.includes('space') || tags.includes('city');
+}
+
+function applyCarbonNanosystemsPlayOrder(scoredCards, state) {
+  if (!Array.isArray(scoredCards) || scoredCards.length < 2) return scoredCards;
+  const carbon = scoredCards.find(card => card?.name === 'Carbon Nanosystems');
+  if (!carbon) return scoredCards;
+
+  const targets = scoredCards
+    .filter(card => card && card.name !== 'Carbon Nanosystems' && isGraphenePaymentTarget(card.name))
+    .sort((a, b) => (b._score ?? -999) - (a._score ?? -999));
+  const bestTarget = targets[0];
+  if (!bestTarget) return scoredCards;
+
+  const mc = getMegaCredits(state?.thisPlayer);
+  const carbonCashCost = estimateCardCashCost(carbon, state);
+  const targetCashCost = estimateCardCashCost(bestTarget, state);
+  if (mc - carbonCashCost + 4 < targetCashCost) return scoredCards;
+
+  const targetScore = Number(bestTarget._score);
+  if (isFinite(targetScore) && targetScore >= (Number(carbon._score) || -999)) {
+    carbon._score = targetScore + 1;
+    carbon._sequenceReason = `graphene before ${bestTarget.name}`;
+  }
+  return scoredCards;
+}
+
+function getMegaCredits(player) {
+  return player?.megacredits ?? player?.megaCredits ?? 0;
 }
 
 function isLiquidityProtectedCard(cardName) {
@@ -1718,7 +1762,7 @@ function handleInput(wf, state, depth = 0) {
         const _spReserve = (spAvailable && gen >= 5 && _anyGlobalOpen) ? 5 : 0;
         const _lowMcPlayFloor = computeLowMcPlayFloor(state, urgency, spAvailable);
         const totalBudget = mc + extraMC;
-        const playable = hand
+        const playableCards = hand
           .filter(c => {
             if (c.isDisabled || bl.has(c.name)) return false;
             const cost = c.calculatedCost ?? c.cost ?? 999;
@@ -1741,7 +1785,8 @@ function handleInput(wf, state, depth = 0) {
               if (ev < _lowMcPlayFloor) return false;
             }
             return true;
-          })
+          });
+        const playable = applyCarbonNanosystemsPlayOrder(playableCards
           .map(c => {
             let score = scoreCard(c, state);
             // v76: Sunk cost recovery — card already bought for 3 MC, not playing = wasted 3 MC
@@ -1903,7 +1948,7 @@ function handleInput(wf, state, depth = 0) {
               score -= (5 - cashAfter) * 1.5;
             }
             return { ...c, _score: score, _preLowMcScore: preLowMcScore };
-          })
+          }), state)
           .sort((a, b) => b._score - a._score);
         // Greedy: pick highest-scored playable card
         // v70: Lower threshold from 0 to -8. Cards already bought (3 MC sunk cost).
@@ -2597,8 +2642,11 @@ function handleInput(wf, state, depth = 0) {
         if (cTags.includes('space')) budget += tiAvail;
         return cost <= budget;
       });
-      // Sort by scoreCard and pick best
-      const sorted = affordable.sort((a, b) => scoreCard(b, state) - scoreCard(a, state));
+      // Sort by scoreCard and pick best, with setup sequencing for payment engines.
+      const sorted = applyCarbonNanosystemsPlayOrder(
+        affordable.map(card => ({...card, _score: scoreCard(card, state)})),
+        state,
+      ).sort((a, b) => b._score - a._score);
       if (sorted.length > 0) {
         return { type: 'projectCard', card: sorted[0].name, payment: smartPay(sorted[0].calculatedCost || 0, state, wf, CARD_TAGS[sorted[0].name], sorted[0].name) };
       }
