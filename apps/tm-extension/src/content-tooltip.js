@@ -136,8 +136,6 @@
     var fx = input && input.fx;
     if (!ctx || !fx) return '';
 
-    var mcVal = input.computeCardValue(fx, ctx.gensLeft);
-    var baseCost = (fx.c || 0) + input.draftCost;
     var cardTagSet = new Set();
 
     if (input.effectTags) {
@@ -152,6 +150,11 @@
       });
     }
 
+    var mcVal = input.computeCardValue(fx, ctx.gensLeft, {
+      ctx: ctx,
+      effectTags: Array.from(cardTagSet)
+    });
+    var baseCost = (fx.c || 0) + input.draftCost;
     var effectiveCost = (ctx.discounts && cardTagSet.size > 0)
       ? input.getEffectiveCost(fx.c || 0, cardTagSet, ctx.discounts) + input.draftCost
       : baseCost;

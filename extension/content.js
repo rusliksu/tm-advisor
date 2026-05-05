@@ -1579,6 +1579,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         detectMyCorps: detectMyCorps,
         getCachedOpponentContext: getCachedOpponentContext,
         getCachedPlayerContext: getCachedPlayerContext,
+        getCardTags: getCachedCardTags,
         getFx: getFx,
         getMyHandNames: getMyHandNames,
         getRatingByCardName: _getRatingByCardName,
@@ -1743,6 +1744,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     const vpVal = row[2];
     var o2Maxed = opts && opts.o2Maxed;
     var tempMaxed = opts && opts.tempMaxed;
+    var valueCtx = opts && opts.ctx;
 
     let v = 0;
 
@@ -1761,6 +1763,25 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // VP
     if (fx.vp) v += fx.vp * vpVal;
+    if (fx.vpTag && fx.vpTag.tag) {
+      var vpTagName = String(fx.vpTag.tag).toLowerCase();
+      var vpTagCount = 0;
+      if (valueCtx && valueCtx.tags) {
+        vpTagCount += valueCtx.tags[vpTagName] || 0;
+        if (vpTagName !== 'wild') vpTagCount += valueCtx.tags.wild || 0;
+      }
+      var effectTagsForValue = opts && opts.effectTags ? opts.effectTags : [];
+      for (var vti = 0; vti < effectTagsForValue.length; vti++) {
+        var effectTagForValue = String(effectTagsForValue[vti] || '').toLowerCase();
+        if (effectTagForValue === vpTagName || effectTagForValue === 'wild') {
+          vpTagCount++;
+          break;
+        }
+      }
+      if (vpTagCount > 0) {
+        v += Math.floor(vpTagCount / Math.max(1, fx.vpTag.per || 1)) * vpVal;
+      }
+    }
 
     // Global param raises (skip if param is maxed)
     if (fx.tmp && !tempMaxed) v += fx.tmp * trVal;
@@ -2384,6 +2405,54 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       }
     }
 
+    if (ctx && cardName === 'Cutting Edge Technology') {
+      var cetDiscountEntry = null;
+      if (typeof TM_CARD_DISCOUNTS !== 'undefined' && TM_CARD_DISCOUNTS && TM_CARD_DISCOUNTS[cardName]) {
+        cetDiscountEntry = TM_CARD_DISCOUNTS[cardName];
+      } else if (typeof CARD_DISCOUNTS !== 'undefined' && CARD_DISCOUNTS && CARD_DISCOUNTS[cardName]) {
+        cetDiscountEntry = CARD_DISCOUNTS[cardName];
+      }
+      if (cetDiscountEntry && cetDiscountEntry._req) {
+        var cetHand = Array.isArray(myHand) ? myHand : (typeof getMyHandNames === 'function' ? getMyHandNames() : []);
+        var cetSeenTargets = Object.create(null);
+        var cetTargetCount = 0;
+        var cetPlayableTargetCount = 0;
+        for (var ceti = 0; ceti < cetHand.length; ceti++) {
+          var cetTargetName = cetHand[ceti] && cardN(cetHand[ceti]);
+          if (!cetTargetName || cetTargetName === cardName || cetSeenTargets[cetTargetName]) continue;
+          if (!cardMatchesDiscountEntry(cetTargetName, cetDiscountEntry)) continue;
+          cetSeenTargets[cetTargetName] = true;
+          cetTargetCount++;
+          if (isCardPlayableNowByStaticRequirements(cetTargetName, ctx)) cetPlayableTargetCount++;
+        }
+
+        var cetGL = ctx.gensLeft == null ? 5 : ctx.gensLeft;
+        var cetRelevantTargets = cetGL <= 2 ? cetPlayableTargetCount : Math.max(cetPlayableTargetCount, cetTargetCount);
+        var cetLatePenalty = 0;
+        if (cetGL <= 1) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 32 : cetRelevantTargets === 1 ? 24 : cetRelevantTargets === 2 ? 12 : 0;
+        } else if (cetGL <= 2) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 28 : cetRelevantTargets === 1 ? 22 : cetRelevantTargets === 2 ? 10 : 0;
+        } else if (cetGL <= 3) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 24 : cetRelevantTargets === 1 ? 18 : cetRelevantTargets === 2 ? 8 : 0;
+        } else if (cetGL <= 4) {
+          cetLatePenalty = cetRelevantTargets <= 0 ? 14 : cetRelevantTargets === 1 ? 10 : 0;
+        }
+        if (cetLatePenalty > 0) {
+          bonus -= cetLatePenalty;
+          var cetPlayableSuffix = cetPlayableTargetCount !== cetTargetCount
+            ? ' (' + cetPlayableTargetCount + '/' + cetTargetCount + ' now)'
+            : '';
+          pushStructuredReason(
+            reasons,
+            reasonRows,
+            'CET late: req targets ' + cetRelevantTargets + cetPlayableSuffix + ' -' + cetLatePenalty,
+            -cetLatePenalty
+          );
+        }
+      }
+    }
+
     // 42. Endgame conversion chain — greenery cards before heat in final gen
     if (ctx && ctx.gensLeft <= 1 && data.e) {
       var isGreenerySource = eLower.includes('green') || eLower.includes('озелен') || eLower.includes('plant') || eLower.includes('раст');
@@ -2900,6 +2969,13 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (mult && mult.vpPer) {
         var projectedVP = 0;
         var skipVpProjection = false;
+        var multFx = getFx(cardName) || {};
+        var hasVpProjectionSignal =
+          !!(multFx.vp || multFx.vpAcc || multFx.vpPer || multFx.vpTag) ||
+          /\bvp\b|victory point|\bпо\b/.test(eLower || '');
+        if (!hasVpProjectionSignal) {
+          skipVpProjection = true;
+        }
         if (mult.vpPer === 'jovian' || mult.vpPer === 'science' || mult.vpPer === 'space' || mult.vpPer === 'earth' || mult.vpPer === 'venus') {
           var targetTag = mult.vpPer;
           // Self-contribution (does this card add the target tag?)
@@ -3851,6 +3927,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return 0;
   }
 
+  function ctxHasTableauCard(ctx, cardName) {
+    return !!(ctx && cardName && ctx.tableauNames && typeof ctx.tableauNames.has === 'function' && ctx.tableauNames.has(cardName));
+  }
+
   function getNamedRequirementDelayProfile(cardName, ctx) {
     var profile = { penalty: 0, reason: '', suppressAccumulatorBonus: false, selfResourceFactor: 1 };
     if (!ctx || !ctx.globalParams) return profile;
@@ -3861,7 +3941,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       : (typeof ctx.globalParams.temperature === 'number' ? ctx.globalParams.temperature : -30);
 
     if (cardName === 'Birds') {
-      var birdsGap = Math.max(0, 13 - oxy);
+      var birdsNeed = ctxHasTableauCard(ctx, 'Adaptation Technology') ? 11 : 13;
+      var birdsGap = Math.max(0, birdsNeed - oxy);
       if (birdsGap >= 11) {
         profile.penalty = -10;
         profile.suppressAccumulatorBonus = true;
@@ -3961,20 +4042,24 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
   function getRequirementFlexSteps(cardName, corpsArray) {
     var flex = { any: 0, venus: 0 };
-    if (!cardName || !corpsArray || corpsArray.length === 0) return flex;
+    var ctx = arguments.length > 2 ? arguments[2] : null;
+    if (!cardName) return flex;
 
     var globalReqs = (typeof TM_CARD_GLOBAL_REQS !== 'undefined')
       ? (_lookupCardData ? _lookupCardData(TM_CARD_GLOBAL_REQS, cardName) : TM_CARD_GLOBAL_REQS[cardName])
       : null;
     if (!globalReqs) return flex;
 
-    for (var i = 0; i < corpsArray.length; i++) {
-      var corp = corpsArray[i];
-      if (corp === 'Inventrix') flex.any = Math.max(flex.any, 2);
-      if (corp === 'Morning Star Inc.' && globalReqs.venus && (globalReqs.venus.min != null || globalReqs.venus.max != null)) {
-        flex.venus = Math.max(flex.venus, 2);
+    if (corpsArray && corpsArray.length) {
+      for (var i = 0; i < corpsArray.length; i++) {
+        var corp = corpsArray[i];
+        if (corp === 'Inventrix') flex.any = Math.max(flex.any, 2);
+        if (corp === 'Morning Star Inc.' && globalReqs.venus && (globalReqs.venus.min != null || globalReqs.venus.max != null)) {
+          flex.venus = Math.max(flex.venus, 2);
+        }
       }
     }
+    if (ctxHasTableauCard(ctx, 'Adaptation Technology')) flex.any = Math.max(flex.any, 2);
     return flex;
   }
 
@@ -4163,7 +4248,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       : null;
     var gp = ctx.globalParams || {};
     var reqFlexCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
-    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
+    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps, ctx);
     var paramMap = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
 
     if (globalReqs) {
@@ -4204,7 +4289,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     if (!globalReqs && !tagReqs && !reqText) return null;
 
     var reqFlexCorps = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
-    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps);
+    var reqFlex = getRequirementFlexSteps(cardName, reqFlexCorps, ctx);
     var bonus = 0;
     var reasons = [];
     var reasonRows = [];
@@ -4258,7 +4343,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
               if (ctx.gensLeft <= 1 && adjustedNet > 2) {
                 bonus += -30;
                 reasons.push('Req далеко ' + reqParam + ' −30');
-              } else if (adjustedNet > ctx.gensLeft) {
+              } else if (adjustedNet > ctx.gensLeft && netSteps > 2) {
                 var distPen = Math.round(Math.min(15, Math.round(adjustedNet * 2.5)) * genScale);
                 if (distPen > 0) { bonus += -distPen; reasons.push('Req далеко ' + reqParam + ' −' + distPen); }
               } else if (netSteps >= 3) {
@@ -7414,7 +7499,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (!globalReqsHS && !tagReqsHS) return status;
 
       var reqFlexCorpsHS = (ctx && ctx._myCorps && ctx._myCorps.length) ? ctx._myCorps : detectMyCorps();
-      var reqFlexHS = getRequirementFlexSteps(targetCardName, reqFlexCorpsHS);
+      var reqFlexHS = getRequirementFlexSteps(targetCardName, reqFlexCorpsHS, ctx);
       var reqHandStepsHS = { temperature: 0, oxygen: 0, oceans: 0, venus: 0 };
       for (var rhs = 0; rhs < myHand.length; rhs++) {
         if (myHand[rhs] === targetCardName) continue;
@@ -7452,7 +7537,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
                   othersRateHS = (wgtHS ? 1 : 0) + Math.max(0, (plHS - 1) * 0.5);
                 }
                 var adjustedNetHS = Math.max(0, netStepsHS - Math.round(othersRateHS * ctx.gensLeft * 0.3));
-                if ((ctx.gensLeft <= 1 && adjustedNetHS > 0) || adjustedNetHS > ctx.gensLeft || netStepsHS >= 3) status.hardBlocked = true;
+                if ((ctx.gensLeft <= 1 && adjustedNetHS > 2) || (adjustedNetHS > ctx.gensLeft && netStepsHS > 2) || netStepsHS >= 3) status.hardBlocked = true;
                 else status.softBlocked = true;
               } else {
                 status.softBlocked = true;
@@ -9510,7 +9595,8 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!mdEntry) continue;
         for (var mdTag in mdEntry) {
           if (mdEntry[mdTag] <= 0) continue;
-          if (mdTag === '_all' || mdTag === '_req' || cardTagsArr.indexOf(mdTag) >= 0) {
+          var mdReqMatch = mdTag === '_req' && cardHasRequirementsByName(cardName);
+          if (mdTag === '_all' || mdReqMatch || cardTagsArr.indexOf(mdTag) >= 0) {
             totalDiscount += mdEntry[mdTag];
             discountSources++;
             break;
@@ -9640,7 +9726,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     function isTargetOtherwiseReady(targetName, excludeParamName, addedTagCounts, excludeTagName) {
       var targetGlobalReqs = _lookupCardData ? _lookupCardData(_globalReqs, targetName) : _globalReqs[targetName];
       var targetTagReqs = _lookupCardData ? _lookupCardData(_tagReqs, targetName) : _tagReqs[targetName];
-      var targetFlex = getRequirementFlexSteps(targetName, reqFlexCorpsHS2);
+      var targetFlex = getRequirementFlexSteps(targetName, reqFlexCorpsHS2, ctx);
       var targetGp = ctx && ctx.globalParams ? ctx.globalParams : {};
 
       if (targetGlobalReqs) {
@@ -9682,7 +9768,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (!targetReqData || !targetReqData[pmName] || targetReqData[pmName].min == null) continue;
 
         var targetReqObj2 = targetReqData[pmName];
-        var targetFlex2 = getRequirementFlexSteps(myHand[_rei], reqFlexCorpsHS2);
+        var targetFlex2 = getRequirementFlexSteps(myHand[_rei], reqFlexCorpsHS2, ctx);
         var curParam2 = gp[pmName === 'oxygen' ? 'oxy' : pmName];
         if (typeof curParam2 !== 'number') curParam2 = 0;
         var effectiveMin2 = targetReqObj2.min - (targetFlex2.any + (pmName === 'venus' ? targetFlex2.venus : 0)) * paramStep[pmKey];
@@ -9727,7 +9813,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       for (var pmKey2 in paramMap) {
         var pmName2 = paramMap[pmKey2];
         if (!myReqs[pmName2] || myReqs[pmName2].min == null) continue;
-        var myFlex2 = getRequirementFlexSteps(cardName, reqFlexCorpsHS2);
+        var myFlex2 = getRequirementFlexSteps(cardName, reqFlexCorpsHS2, ctx);
         var curParam3 = gp[pmName2 === 'oxygen' ? 'oxy' : pmName2];
         if (typeof curParam3 !== 'number') curParam3 = 0;
         var neededMin3 = myReqs[pmName2].min - (myFlex2.any + (pmName2 === 'venus' ? myFlex2.venus : 0)) * paramStep[pmKey2];
@@ -10769,8 +10855,38 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     return label + ' ' + (weight < 0 ? weight : ('+' + weight));
   }
 
-  function isSpentTableauSynergy(cardName, targetName) {
+  function dampTableauSynergyWeight(cardName, targetName, weight, reverse, options) {
+    if (cardName === 'Power Infrastructure' || targetName === 'Power Infrastructure') {
+      return Math.min(weight, reverse ? 0.5 : 1);
+    }
+    if (cardName === 'Cutting Edge Technology') {
+      var cetSetupCaps = {
+        'Adaptation Technology': 1,
+        'Special Design': 1,
+        'Mars University': 1,
+        'Olympus Conference': 1,
+        'Research': 1
+      };
+      if (Object.prototype.hasOwnProperty.call(cetSetupCaps, targetName)) {
+        return Math.min(weight, cetSetupCaps[targetName]);
+      }
+    }
+    return weight;
+  }
+
+  function isSpentTableauSynergy(cardName, targetName, options) {
     if (!cardName || !targetName) return false;
+    var sourceInHand = !!(options && options.inHand);
+    var oneShotPlayedSynergies = {
+      'Research': 1,
+      'Invention Contest': 1,
+      'Business Contacts': 1,
+      'Business Network': 1,
+      'Technology Demonstration': 1,
+      'Sponsored Academies': 1,
+      'Acquired Space Agency': 1
+    };
+    if (!sourceInHand && oneShotPlayedSynergies[targetName]) return true;
     var cardTags = getCardTagsForName(cardName);
     if (!cardTags || cardTags.length === 0) return false;
     var hasWildcard = cardTags.indexOf('wild') >= 0;
@@ -10813,11 +10929,12 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
   }
 
   // Synergy with tableau cards — forward (data.y) + reverse lookup
-  function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents) {
+  function scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents, ctx) {
     let synTotal = 0;
     let synCount = 0;
     let synDescs = [];
     let directPartners = new Set();
+    var handNamesSet = ctx && ctx._handNamesSet ? ctx._handNamesSet : new Set();
     // Skip corps — already scored in corp synergy (5c), avoid double-count
     var _corpSet = typeof TM_CORPS !== 'undefined' ? TM_CORPS : {};
     if (data.y) {
@@ -10826,9 +10943,11 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         var sw = yWeight(entry) || SC.tableauSynergyPer;
         if (playedEvents.has(sn)) continue;
         if (_corpSet[sn]) continue; // corp already handled in 5c
-        if (isSpentTableauSynergy(cardName, sn)) continue;
+        var sourceInHand = handNamesSet.has(sn);
+        if (isSpentTableauSynergy(cardName, sn, { inHand: sourceInHand })) continue;
         if (allMyCardsSet.has(sn) && synCount < SC.tableauSynergyMax) {
           synCount++;
+          sw = dampTableauSynergyWeight(cardName, sn, sw, false, { inHand: sourceInHand, gensLeft: ctx && ctx.gensLeft });
           synTotal += sw;
           directPartners.add(sn);
           var directReason = formatTableauSynergyReason(cardName, sn, sw, false);
@@ -10847,8 +10966,10 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
       if (directPartners.has(myCard)) continue;
       for (const re of myData.y) {
         if (yName(re) === cardName && synCount < SC.tableauSynergyMax) {
-          if (isSpentTableauSynergy(cardName, myCard)) break;
+          var reverseSourceInHand = handNamesSet.has(myCard);
+          if (isSpentTableauSynergy(cardName, myCard, { inHand: reverseSourceInHand })) break;
           var rw = Math.round(((yWeight(re) || SC.tableauSynergyPer) * reverseScale) * 10) / 10;
+          rw = dampTableauSynergyWeight(cardName, myCard, rw, true, { inHand: reverseSourceInHand, gensLeft: ctx && ctx.gensLeft });
           synCount++;
           synTotal += rw;
           var reverseReason = formatTableauSynergyReason(cardName, myCard, rw, true);
@@ -11146,7 +11267,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
     const allMyCards = ctx && ctx._allMyCards ? ctx._allMyCards : [...myTableau, ...myHand];
     const allMyCardsSet = ctx && ctx._allMyCardsSet ? ctx._allMyCardsSet : new Set(allMyCards);
     var playedEvents = ctx && ctx._playedEvents ? ctx._playedEvents : new Set();
-    bonus = applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents), bonus, reasons, reasonRows);
+    bonus = applyResult(scoreTableauSynergy(cardName, data, allMyCards, allMyCardsSet, playedEvents, ctx), bonus, reasons, reasonRows);
 
     // Combo + anti-combo potential (indexed lookup with timing)
     bonus = applyResult(scoreComboPotential(cardName, eLower, allMyCardsSet, ctx), bonus, reasons, reasonRows);
@@ -12583,7 +12704,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
 
     // Requirement flexibility from Inventrix / Morning Star Inc.
     var myCorpsReq = detectMyCorps();
-    var reqFlex = getRequirementFlexSteps(cardName0, myCorpsReq);
+    var reqFlex = getRequirementFlexSteps(cardName0, myCorpsReq, ctx);
     var reqBonus = reqFlex.any;
     var venusReqBonus = reqFlex.any + reqFlex.venus;
 
@@ -13986,7 +14107,7 @@ var TM_CONTENT_VP_OVERLAYS = (typeof globalThis !== 'undefined' && globalThis.TM
         if (greq && pv.game) {
           var gp = { oxy: pv.game.oxygenLevel, temp: pv.game.temperature, oceans: pv.game.oceans, venus: pv.game.venusScaleLevel };
           var pm = { oceans: 'oceans', oxygen: 'oxy', temperature: 'temp', venus: 'venus' };
-          var reqFlex = getRequirementFlexSteps(cardName, detectMyCorps());
+          var reqFlex = getRequirementFlexSteps(cardName, detectMyCorps(), ctx);
           for (var rk in pm) {
             if (greq[rk]) {
               var cv = gp[pm[rk]];

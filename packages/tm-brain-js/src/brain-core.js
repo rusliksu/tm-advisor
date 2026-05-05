@@ -1439,6 +1439,17 @@
     var genericCardsPerGen = opts.genericCardsPerGen || 2.5;
     var tagCardsPerGen = opts.tagCardsPerGen || 1;
     var cardsPerGen = discount.tag ? tagCardsPerGen : genericCardsPerGen;
+    if (opts.name === 'Cutting Edge Technology') {
+      var handCards = opts.handCards || [];
+      var cardHasRequirement = opts.cardHasRequirement || function() { return false; };
+      var reqTargets = 0;
+      for (var i = 0; i < handCards.length; i++) {
+        var handCardName = cardNameOf(handCards[i]);
+        if (!handCardName || handCardName === opts.name) continue;
+        if (cardHasRequirement(handCardName)) reqTargets++;
+      }
+      if (handCards.length > 0) return reqTargets * discount.amount;
+    }
     return discount.amount * cardsPerGen * gensLeft;
   }
 
@@ -1717,9 +1728,21 @@
     var handCards = opts.handCards || [];
     var selfName = opts.selfName || name;
     var getCardTags = opts.getCardTags || function() { return []; };
+    var cardHasRequirement = opts.cardHasRequirement || function() { return false; };
     var selfTags = getCardTags(selfName) || [];
 
     var timingGens = Math.min(gensLeft, 6);
+
+    if (name === 'Cutting Edge Technology') {
+      var reqTargets = 0;
+      for (var ceti = 0; ceti < handCards.length; ceti++) {
+        var cetName = cardNameOf(handCards[ceti]);
+        if (!cetName || cetName === selfName) continue;
+        if (cardHasRequirement(cetName)) reqTargets++;
+      }
+      if (manual && manual.perGen) delta += Math.min(reqTargets * 2, manual.perGen * timingGens);
+      return delta;
+    }
 
     if (name === 'Insects') {
       var plantSupport = countEffectiveTagSupport('plant', myTags, handCards, selfName, getCardTags);

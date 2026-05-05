@@ -82,6 +82,7 @@ class CardEffectParser:
                            {"cost": "1 floater", "effect": "+1 MC-prod"}],
         "Orbital Cleanup": [{"cost": "free", "effect": "gain MC = space tags x 2"}],
         "Electro Catapult": [{"cost": "1 plant/steel", "effect": "gain 7 MC"}],
+        "Power Infrastructure": [{"cost": "any energy", "effect": "gain same MC"}],
         "Development Center": [{"cost": "1 energy", "effect": "draw 1 card"}],
         "Physics Complex": [{"cost": "6 energy", "effect": "add 1 science to this card"}],
         "Search For Life": [{"cost": "1 MC", "effect": "reveal top card, if microbe keep science"}],
@@ -95,6 +96,15 @@ class CardEffectParser:
             {"cost": "free", "effect": "gain 1 plant", "choice_group": "or"},
             {"cost": "free", "effect": "add 2 microbes to another card", "choice_group": "or"},
         ],
+        "Venus Magnetizer": [{"cost": "1 energy production", "effect": "raise venus 1 step"}],
+        "Weather Balloons": [
+            {"cost": "free", "effect": "add 1 floater to this card", "choice_group": "or"},
+            {"cost": "1 floater", "effect": "gain 1 MC per city on Mars", "choice_group": "or"},
+        ],
+    }
+
+    _PLACEMENT_OVERRIDES: dict[str, list[str]] = {
+        "Restricted Area": ["special"],
     }
 
     _ACTION_RESOURCE_ADD_OVERRIDES: dict[str, list[dict]] = {
@@ -184,6 +194,10 @@ class CardEffectParser:
             elif info.get("hasAction") and res_type in self._SELF_ADD_RESOURCES:
                 if not eff.actions:  # don't override if already parsed
                     eff.actions.append({"cost": "free", "effect": f"add 1 {res_type.lower()} to this card", "implicit": True})
+
+            for placement in self._PLACEMENT_OVERRIDES.get(name, []):
+                if placement not in eff.placement:
+                    eff.placement.append(placement)
 
             # Ensure all resource-holding action cards have self-add in adds_resources
             # (even if actions were parsed from description, e.g. Ants)

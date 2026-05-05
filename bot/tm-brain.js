@@ -1322,6 +1322,17 @@
     var act = cd.action || {};
     var vpInfo = cd.vp || _cardVP[name] || null;
     var discount = cd.cardDiscount || null;
+    function cardHasRequirementForScoring(cardName) {
+      if (!cardName) return false;
+      var resolved = resolveVariantCardName(cardName, state);
+      var base = baseCardName(resolved || cardName);
+      var cardData = getCardDataByName(cardName, state) || {};
+      if (cardData.requirements) return true;
+      return !!(
+        _cardGlobalReqs[resolved] || _cardGlobalReqs[cardName] || _cardGlobalReqs[base] ||
+        _cardTagReqs[resolved] || _cardTagReqs[cardName] || _cardTagReqs[base]
+      );
+    }
 
     var ev = 0;
 
@@ -1481,8 +1492,11 @@
     // ── CARD DISCOUNT (engine value) ──
     if (sharedScoreCardDiscountValue) {
       ev += sharedScoreCardDiscountValue({
+        name: name,
         discount: discount,
         gensLeft: gensLeft,
+        handCards: handCards,
+        cardHasRequirement: cardHasRequirementForScoring,
       });
     } else if (discount && discount.amount) {
       var cardsPerGen = 2.5; // avg cards played per gen (universal discount)
@@ -2091,6 +2105,7 @@
         getCardTags: function(cardName) {
           return _cardTags[cardName] || [];
         },
+        cardHasRequirement: cardHasRequirementForScoring,
         gensLeft: gensLeft,
         redsTax: redsTax,
         trMC: trMC,

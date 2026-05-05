@@ -29,7 +29,10 @@ function extractFunctionSource(fileSource, functionName) {
   return fileSource.slice(start, i);
 }
 
+const cardNSource = extractFunctionSource(source, 'cardN');
 const getFxSource = extractFunctionSource(source, 'getFx');
+const cardHasRequirementsByNameSource = extractFunctionSource(source, 'cardHasRequirementsByName');
+const cardMatchesDiscountEntrySource = extractFunctionSource(source, 'cardMatchesDiscountEntry');
 const getCardTypeByNameSource = extractFunctionSource(source, 'getCardTypeByName');
 const isPreludeOrCorpNameSource = extractFunctionSource(source, 'isPreludeOrCorpName');
 const getCardNameSource = extractFunctionSource(source, 'getCardName');
@@ -40,13 +43,22 @@ const reasonCardLabelSource = extractFunctionSource(source, 'reasonCardLabel');
 const describeNamedSynergySource = extractFunctionSource(source, 'describeNamedSynergy');
 const getCorpBoostSource = extractFunctionSource(source, 'getCorpBoost');
 const getCardCostSource = extractFunctionSource(source, 'getCardCost');
+const computeCardValueSource = extractFunctionSource(source, 'computeCardValue');
 const isPlantEngineCardByFxSource = extractFunctionSource(source, 'isPlantEngineCardByFx');
 const isMeltworksLastGenCashoutSource = extractFunctionSource(source, 'isMeltworksLastGenCashout');
 const isPreludeOrCorpCardSource = extractFunctionSource(source, 'isPreludeOrCorpCard');
 const formatTableauSynergyReasonSource = extractFunctionSource(source, 'formatTableauSynergyReason');
+const dampTableauSynergyWeightSource = extractFunctionSource(source, 'dampTableauSynergyWeight');
 const isSpentTableauSynergySource = extractFunctionSource(source, 'isSpentTableauSynergy');
 const scoreTableauSynergySource = extractFunctionSource(source, 'scoreTableauSynergy');
 const getNamedRequirementDelayProfileSource = extractFunctionSource(source, 'getNamedRequirementDelayProfile');
+const ctxHasTableauCardSource = extractFunctionSource(source, 'ctxHasTableauCard');
+const getRequirementFlexStepsSource = extractFunctionSource(source, 'getRequirementFlexSteps');
+const getRequirementHardnessSource = extractFunctionSource(source, 'getRequirementHardness');
+const isCardPlayableNowByStaticRequirementsSource = extractFunctionSource(source, 'isCardPlayableNowByStaticRequirements');
+const pushStructuredReasonSource = extractFunctionSource(source, 'pushStructuredReason');
+const scorePostContextChecksSource = extractFunctionSource(source, 'scorePostContextChecks');
+const scoreCardRequirementsSource = extractFunctionSource(source, 'scoreCardRequirements');
 const scorePositionalFactorsSource = extractFunctionSource(source, 'scorePositionalFactors');
 const getColonyBehaviorByNameSource = extractFunctionSource(source, 'getColonyBehaviorByName');
 const scoreSynergyRulesSource = extractFunctionSource(source, '_scoreSynergyRules');
@@ -55,6 +67,9 @@ const positionalScoring = new Proxy({
   drawEarlyBonus: 5,
   drawMidBonus: 2,
   drawLatePenalty: 4,
+  maxGL: 13,
+  prodMul: {mp: 1, sp: 1.6, tp: 2.5, pp: 2, ep: 1.5, hp: 0.8},
+  resVal: {mc: 1, st: 2, ti: 3, pl: 1.6, he: 0.5, en: 1, cd: 3},
   tableauSynergyPer: 3,
   tableauSynergyMax: 4,
 }, {
@@ -69,9 +84,13 @@ const sandbox = {
   TM_CARD_EFFECTS: {},
   TM_CARD_DATA: {},
   TM_CARD_TAGS: {},
+  TM_CARD_GLOBAL_REQS: {},
   TM_CARD_TAG_REQS: {},
+  TM_CARD_DISCOUNTS: {},
+  CARD_DISCOUNTS: {},
   TM_RATINGS: {},
   TM_CORPS: {},
+  TM_FLOATER_TRAPS: {},
   kebabLookup: {},
   lowerLookup: {},
   resolveCorpName(name) {
@@ -105,6 +124,12 @@ const sandbox = {
   isFloaterCardByFx() {
     return false;
   },
+  hasSelfFloaterSource() {
+    return false;
+  },
+  isGreeneryTile() {
+    return false;
+  },
   getFx() {
     return null;
   },
@@ -113,6 +138,7 @@ sandbox.globalThis = sandbox;
 
 vm.runInNewContext(
   [
+    cardNSource,
     getFxSource,
     getCardTypeByNameSource,
     isPreludeOrCorpNameSource,
@@ -124,23 +150,45 @@ vm.runInNewContext(
     describeNamedSynergySource,
     getCorpBoostSource,
     getCardCostSource,
+    'var FTN_TABLE = {0: [8, 0, 8], 1: [8, 0.5, 7.5]};',
+    'var FTN_FALLBACK = [7, 5, 5];',
+    'function ftnRow(gl) { return FTN_TABLE[gl] || FTN_TABLE[FTN_TABLE.length - 1] || FTN_FALLBACK; }',
+    'const PROD_MUL = SC.prodMul;',
+    'const RES_VAL = SC.resVal;',
+    computeCardValueSource,
+    cardHasRequirementsByNameSource,
+    cardMatchesDiscountEntrySource,
     isPlantEngineCardByFxSource,
     isMeltworksLastGenCashoutSource,
     isPreludeOrCorpCardSource,
     formatTableauSynergyReasonSource,
+    dampTableauSynergyWeightSource,
     isSpentTableauSynergySource,
     scoreTableauSynergySource,
     getNamedRequirementDelayProfileSource,
+    ctxHasTableauCardSource,
+    getRequirementFlexStepsSource,
+    getRequirementHardnessSource,
+    isCardPlayableNowByStaticRequirementsSource,
+    pushStructuredReasonSource,
+    scorePostContextChecksSource,
+    'function evaluateBoardRequirements() { return null; }',
+    scoreCardRequirementsSource,
     scorePositionalFactorsSource,
     getColonyBehaviorByNameSource,
     scoreSynergyRulesSource,
     'globalThis.__tm_test_getCorpBoost = getCorpBoost;',
     'globalThis.__tm_test_getCardCost = getCardCost;',
+    'globalThis.__tm_test_computeCardValue = computeCardValue;',
+    'globalThis.__tm_test_cardMatchesDiscountEntry = cardMatchesDiscountEntry;',
     'globalThis.__tm_test_isPlantEngineCardByFx = isPlantEngineCardByFx;',
     'globalThis.__tm_test_isMeltworksLastGenCashout = isMeltworksLastGenCashout;',
     'globalThis.__tm_test_isPreludeOrCorpCard = isPreludeOrCorpCard;',
     'globalThis.__tm_test_scoreTableauSynergy = scoreTableauSynergy;',
     'globalThis.__tm_test_getNamedRequirementDelayProfile = getNamedRequirementDelayProfile;',
+    'globalThis.__tm_test_getRequirementFlexSteps = getRequirementFlexSteps;',
+    'globalThis.__tm_test_scorePostContextChecks = scorePostContextChecks;',
+    'globalThis.__tm_test_scoreCardRequirements = scoreCardRequirements;',
     'globalThis.__tm_test_scorePositionalFactors = scorePositionalFactors;',
     'globalThis.__tm_test_getColonyBehaviorByName = getColonyBehaviorByName;',
     'globalThis.__tm_test_scoreSynergyRules = _scoreSynergyRules;',
@@ -151,20 +199,30 @@ vm.runInNewContext(
 
 const getCorpBoost = sandbox.__tm_test_getCorpBoost;
 const getCardCost = sandbox.__tm_test_getCardCost;
+const computeCardValue = sandbox.__tm_test_computeCardValue;
+const cardMatchesDiscountEntry = sandbox.__tm_test_cardMatchesDiscountEntry;
 const isPlantEngineCardByFx = sandbox.__tm_test_isPlantEngineCardByFx;
 const isMeltworksLastGenCashout = sandbox.__tm_test_isMeltworksLastGenCashout;
 const isPreludeOrCorpCard = sandbox.__tm_test_isPreludeOrCorpCard;
 const scoreTableauSynergy = sandbox.__tm_test_scoreTableauSynergy;
 const getNamedRequirementDelayProfile = sandbox.__tm_test_getNamedRequirementDelayProfile;
+const getRequirementFlexSteps = sandbox.__tm_test_getRequirementFlexSteps;
+const scorePostContextChecks = sandbox.__tm_test_scorePostContextChecks;
+const scoreCardRequirements = sandbox.__tm_test_scoreCardRequirements;
 const scorePositionalFactors = sandbox.__tm_test_scorePositionalFactors;
 const getColonyBehaviorByName = sandbox.__tm_test_getColonyBehaviorByName;
 const scoreSynergyRules = sandbox.__tm_test_scoreSynergyRules;
 
 assert.strictEqual(typeof getCorpBoost, 'function', 'getCorpBoost should be exposed');
 assert.strictEqual(typeof getCardCost, 'function', 'getCardCost should be exposed');
+assert.strictEqual(typeof computeCardValue, 'function', 'computeCardValue should be exposed');
+assert.strictEqual(typeof cardMatchesDiscountEntry, 'function', 'cardMatchesDiscountEntry should be exposed');
 assert.strictEqual(typeof isPlantEngineCardByFx, 'function', 'isPlantEngineCardByFx should be exposed');
 assert.strictEqual(typeof isMeltworksLastGenCashout, 'function', 'isMeltworksLastGenCashout should be exposed');
 assert.strictEqual(typeof scoreTableauSynergy, 'function', 'scoreTableauSynergy should be exposed');
+assert.strictEqual(typeof getRequirementFlexSteps, 'function', 'getRequirementFlexSteps should be exposed');
+assert.strictEqual(typeof scorePostContextChecks, 'function', 'scorePostContextChecks should be exposed');
+assert.strictEqual(typeof scoreCardRequirements, 'function', 'scoreCardRequirements should be exposed');
 assert.strictEqual(typeof scorePositionalFactors, 'function', 'scorePositionalFactors should be exposed');
 assert.strictEqual(typeof getColonyBehaviorByName, 'function', 'getColonyBehaviorByName should be exposed');
 assert.strictEqual(typeof scoreSynergyRules, 'function', 'scoreSynergyRules should be exposed');
@@ -209,6 +267,106 @@ assert.strictEqual(
   }),
   3,
   'Robinson should keep the explicit Suitable Infrastructure bonus'
+);
+
+const ganymedeCityOnlyValue = computeCardValue(
+  {city: 1},
+  1,
+  {ctx: {tags: {jovian: 6, wild: 0}}, effectTags: ['city', 'jovian', 'space']}
+);
+const ganymedeVpTagValue = computeCardValue(
+  {city: 1, vpTag: {tag: 'jovian', per: 1}},
+  1,
+  {ctx: {tags: {jovian: 6, wild: 0}}, effectTags: ['city', 'jovian', 'space']}
+);
+assert(
+  Math.abs((ganymedeVpTagValue - ganymedeCityOnlyValue) - 52.5) < 0.001,
+  'Ganymede Colony-style vpTag cards should include current + self Jovian VP in ROI value'
+);
+
+sandbox.TM_CARD_DATA['Birds'] = {requirements: [{oxygen: 13}]};
+sandbox.TM_CARD_GLOBAL_REQS['Birds'] = {oxygen: {min: 13}};
+sandbox.TM_CARD_DATA['Research'] = {};
+sandbox.TM_CARD_DISCOUNTS['Cutting Edge Technology'] = {_req: 2};
+assert.strictEqual(
+  cardMatchesDiscountEntry('Birds', {_req: 2}),
+  true,
+  'Cutting Edge Technology-style _req discounts should match cards with requirements'
+);
+assert.strictEqual(
+  cardMatchesDiscountEntry('Research', {_req: 2}),
+  false,
+  'Cutting Edge Technology-style _req discounts should not match cards without requirements'
+);
+
+const adaptationCtx = {
+  gen: 9,
+  gensLeft: 1,
+  globalParams: {oxy: 9, temp: 8, oceans: 6, venus: 0},
+  tableauNames: new Set(['Adaptation Technology']),
+  tags: {},
+  terraformRate: 1,
+};
+assert.strictEqual(
+  getRequirementFlexSteps('Birds', [], adaptationCtx).any,
+  2,
+  'played Adaptation Technology should count as two global-requirement flex steps'
+);
+assert.strictEqual(
+  getNamedRequirementDelayProfile('Birds', {
+    globalParams: {oxy: 7},
+    tableauNames: new Set(['Adaptation Technology']),
+  }).penalty,
+  0,
+  'Birds delay profile should use the Adaptation Technology O2 11 threshold'
+);
+const birdsHardLockedWithoutAdaptation = scoreCardRequirements(
+  null,
+  Object.assign({}, adaptationCtx, {tableauNames: new Set()}),
+  'Birds'
+);
+assert(
+  birdsHardLockedWithoutAdaptation &&
+  birdsHardLockedWithoutAdaptation.reasons.some((reason) => reason.includes('Req далеко oxygen')),
+  'Birds at O2 9 should still be hard-locked without Adaptation Technology'
+);
+const birdsWithAdaptationReq = scoreCardRequirements(null, adaptationCtx, 'Birds');
+assert(
+  !birdsWithAdaptationReq ||
+  !birdsWithAdaptationReq.reasons.some((reason) => reason.includes('Req далеко oxygen')),
+  'Birds at O2 9 with Adaptation Technology should not receive the final-poke hard-lock penalty'
+);
+
+const lateCuttingEdgeLockedTarget = scorePostContextChecks(
+  'Cutting Edge Technology',
+  null,
+  '',
+  {c: 14},
+  [],
+  {
+    gensLeft: 1,
+    gen: 10,
+    globalParams: {oxy: 12, temp: 0, oceans: 0, venus: 0},
+    tags: {},
+    prod: {plants: 0, heat: 0},
+    floaterTargetCount: 0,
+    floaterAccumRate: 0,
+    microbeTargetCount: 0,
+    microbeAccumRate: 0,
+    animalTargetCount: 0,
+    turmoilActive: false,
+  },
+  null,
+  ['Cutting Edge Technology', 'Birds', 'Research']
+);
+assert.strictEqual(
+  lateCuttingEdgeLockedTarget.bonus,
+  -32,
+  'Late Cutting Edge Technology should heavily penalize no playable requirement-discount targets'
+);
+assert(
+  lateCuttingEdgeLockedTarget.reasons.some((reason) => reason.includes('CET late: req targets 0')),
+  'Late Cutting Edge Technology penalty should name the playable requirement target count'
 );
 
 sandbox.TM_CARD_EFFECTS['Lunar Exports'] = { c: 19, mp: 5 };
@@ -280,6 +438,28 @@ assert.strictEqual(
 assert(
   liveTableauSynergy.reasons.some((reason) => reason.includes('Earth Office +3')),
   'Earth Office tableau synergy should remain visible'
+);
+
+sandbox.TM_CARD_TAGS['Cutting Edge Technology'] = ['science'];
+sandbox.TM_CARD_TAGS['Adaptation Technology'] = ['science'];
+sandbox.TM_CARD_TAGS['Research'] = ['science', 'science'];
+sandbox.TM_RATINGS['Cutting Edge Technology'] = { y: ['Adaptation Technology', 'Research'] };
+const lateCuttingEdgePlayedSetupSynergy = scoreTableauSynergy(
+  'Cutting Edge Technology',
+  sandbox.TM_RATINGS['Cutting Edge Technology'],
+  ['Adaptation Technology', 'Research'],
+  new Set(['Adaptation Technology', 'Research']),
+  new Set(),
+  {gensLeft: 1, _handNamesSet: new Set()}
+);
+assert.strictEqual(
+  lateCuttingEdgePlayedSetupSynergy.bonus,
+  1,
+  'Cutting Edge Technology should not get full late tableau aura from already-played science setup cards'
+);
+assert(
+  !lateCuttingEdgePlayedSetupSynergy.reasons.some((reason) => reason.includes('Research')),
+  'Already-played Research should not keep scoring as live Cutting Edge Technology synergy'
 );
 
 assert.strictEqual(getCardCost('not-a-dom-node'), null, 'getCardCost should ignore non-element inputs');
